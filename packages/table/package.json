@@ -1,6 +1,6 @@
 {
   "name": "@itzsa/table",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Composable DataTable built on shadcn Table primitives",
   "license": "MIT",
   "sideEffects": false,
@@ -9,21 +9,26 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/index.tsx",
-      "import": "./src/index.tsx",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
       "require": "./dist/index.js",
-      "default": "./src/index.tsx"
+      "default": "./dist/index.mjs"
     },
     "./styles.css": "./src/styles.css"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "dist",
-    "src/styles.css"
+    "src/styles.css",
+    "README.md"
   ],
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "dev": "tsup --watch"
+    "dev": "tsup --watch",
+    "prepublishOnly": "pnpm run typecheck && pnpm run build"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",

@@ -93,6 +93,14 @@ export type DataTableProps<T> = {
   defaultSelectedIds?: string[];
   onSelectionChange?: (selectedIds: string[]) => void;
 
+  /**
+   * Auto serial-number column. Computed by the table — do not put `sn` in row data.
+   * Defaults to `true` (notable default-on behavior; pass `sn={false}` to opt out).
+   */
+  sn?: boolean;
+  /** Header label for the SN column. */
+  snHeader?: string;
+
   // Sticky (all off by default — no sticky rows/columns unless enabled)
   stickyHeader?: boolean;
   stickyFirstColumn?: boolean;

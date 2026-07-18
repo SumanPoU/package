@@ -102,47 +102,73 @@ export default function TableDemoPage() {
   ]);
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-10 sm:px-6">
-      <header className="flex flex-col gap-1.5">
-        <h1 className="text-2xl font-semibold tracking-tight">Employees</h1>
-        <p className="text-sm text-muted-foreground">
-          {SAMPLE_DATA.length} people
-          {selectedIds.length > 0 ? ` · ${selectedIds.length} selected` : null}
-        </p>
-      </header>
+    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-12 px-4 py-10 sm:px-6">
+      <section className="flex flex-col gap-6">
+        <header className="flex flex-col gap-1.5">
+          <h1 className="text-2xl font-semibold tracking-tight">Employees</h1>
+          <p className="text-sm text-muted-foreground">
+            {SAMPLE_DATA.length} people · auto SN on by default (no{" "}
+            <code className="text-foreground">sn</code> field in data)
+            {selectedIds.length > 0
+              ? ` · ${selectedIds.length} selected`
+              : null}
+          </p>
+        </header>
 
-      <DataTable
-        data={SAMPLE_DATA}
-        columns={COLUMNS}
-        pageSize={10}
-        selectable
-        resizable
-        showDensityControl
-        showPagination
-        enableMultiSort
-        radius="xs"
-        maxHeight="28rem"
-        selectedIds={selectedIds}
-        onSelectionChange={setSelectedIds}
-        sort={sort}
-        onSortChange={setSort}
-        renderRowActions={(row) => (
-          <div className="flex flex-col">
-            <button
-              type="button"
-              className="px-2 py-1.5 text-left text-sm hover:bg-muted"
-            >
-              Edit {row.name}
-            </button>
-            <button
-              type="button"
-              className="px-2 py-1.5 text-left text-sm text-destructive hover:bg-muted"
-            >
-              Delete
-            </button>
-          </div>
-        )}
-      />
+        <DataTable
+          data={SAMPLE_DATA}
+          columns={COLUMNS}
+          pageSize={10}
+          selectable
+          resizable
+          showDensityControl
+          showPagination
+          enableMultiSort
+          radius="xs"
+          maxHeight="28rem"
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
+          sort={sort}
+          onSortChange={setSort}
+          renderRowActions={(row) => (
+            <div className="flex flex-col">
+              <button
+                type="button"
+                className="px-2 py-1.5 text-left text-sm hover:bg-muted"
+              >
+                Edit {row.name}
+              </button>
+              <button
+                type="button"
+                className="px-2 py-1.5 text-left text-sm text-destructive hover:bg-muted"
+              >
+                Delete
+              </button>
+            </div>
+          )}
+        />
+      </section>
+
+      <section className="flex flex-col gap-6">
+        <header className="flex flex-col gap-1.5">
+          <h2 className="text-lg font-semibold tracking-tight">
+            Without SN column
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Same data with <code className="text-foreground">sn={"{false}"}</code>{" "}
+            — no serial column, no empty gap.
+          </p>
+        </header>
+
+        <DataTable
+          sn={false}
+          data={SAMPLE_DATA.slice(0, 8)}
+          columns={COLUMNS}
+          pageSize={8}
+          showPagination={false}
+          radius="xs"
+        />
+      </section>
     </main>
   );
 }

@@ -27,7 +27,7 @@ export type SmartValueInputProps = {
 };
 
 const fieldBase =
-  "h-7 w-full border border-input bg-transparent px-2 text-xs outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50";
+  "h-8 w-full border border-input bg-background px-2.5 text-xs outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50";
 
 export function SmartValueInput({
   column,
@@ -46,7 +46,7 @@ export function SmartValueInput({
         <SelectTrigger
           size="sm"
           className={cn(
-            "h-7 w-full border-input px-2 text-xs shadow-none data-[size=sm]:h-7",
+            "h-8 w-full border-input px-2.5 text-xs shadow-none data-[size=sm]:h-8",
             radiusClass,
             errCls,
           )}
@@ -56,7 +56,8 @@ export function SmartValueInput({
         <SelectContent
           position="popper"
           sideOffset={8}
-          className={cn("text-xs", radiusClass)}
+          align="start"
+          className={cn("z-[80] text-xs", radiusClass)}
         >
           {(column.options ?? []).map((option) => (
             <SelectItem key={option} value={option} className="text-xs">
@@ -79,7 +80,7 @@ export function SmartValueInput({
     return (
       <div
         className={cn(
-          "flex min-h-7 flex-wrap gap-1 border border-input bg-transparent p-1",
+          "flex min-h-8 flex-wrap gap-1 border border-input bg-background p-1.5",
           radiusClass,
           errCls,
         )}
@@ -116,7 +117,7 @@ export function SmartValueInput({
         aria-checked={checked}
         onClick={() => onChange(checked ? "false" : "true")}
         className={cn(
-          "flex h-7 w-full items-center justify-between border border-input px-2 text-xs",
+          "flex h-8 w-full items-center justify-between border border-input bg-background px-2.5 text-xs",
           radiusClass,
           errCls,
         )}
@@ -142,7 +143,7 @@ export function SmartValueInput({
     return (
       <div
         className={cn(
-          "flex h-7 items-center gap-2 border border-input px-2",
+          "flex h-8 items-center gap-2 border border-input bg-background px-2.5",
           radiusClass,
           errCls,
         )}
@@ -170,7 +171,7 @@ export function SmartValueInput({
     return (
       <div
         className={cn(
-          "flex h-7 items-center gap-2 border border-input px-2",
+          "flex h-8 items-center gap-2 border border-input bg-background px-2.5",
           radiusClass,
           errCls,
         )}

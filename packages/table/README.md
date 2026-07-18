@@ -153,6 +153,22 @@ const [sort, setSort] = useState<DataTableSort[]>([
 />
 ```
 
+## Phase 3: virtualization
+
+```tsx
+<DataTable
+  enableVirtualization
+  maxHeight="28rem"
+  pageSize={50}
+  virtualOverscan={8}
+  // optional: virtualRowHeight={48}
+  data={rows}
+  columns={columns}
+/>
+```
+
+Uses `@tanstack/react-virtual` to render only visible body rows. Sticky header + scroll container work together; if `maxHeight` is omitted with virtualization on, defaults to `28rem`.
+
 ## Filter builder
 
 Opt-in advanced filters. Only columns with `filterable: true` appear.

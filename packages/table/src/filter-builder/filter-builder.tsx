@@ -80,7 +80,7 @@ function OperatorSelect({
       <SelectTrigger
         size="sm"
         className={cn(
-          "h-7 w-full border-input px-2 text-xs shadow-none data-[size=sm]:h-7",
+          "h-8 w-full border-input px-2.5 text-xs shadow-none data-[size=sm]:h-8",
           radiusClass,
         )}
       >
@@ -89,7 +89,8 @@ function OperatorSelect({
       <SelectContent
         position="popper"
         sideOffset={8}
-        className={cn("text-xs", radiusClass)}
+        align="start"
+        className={cn("z-[80] text-xs", radiusClass)}
       >
         {FILTER_OPERATORS.map((operator) => (
           <SelectItem
@@ -173,13 +174,10 @@ export function FilterBuilder({
 
   const updateRow = (
     id: string,
-    field: keyof FilterCondition,
-    nextValue: string,
+    patch: Partial<Omit<FilterCondition, "id">>,
   ) => {
     setRows((prev) =>
-      prev.map((row) =>
-        row.id === id ? { ...row, [field]: nextValue } : row,
-      ),
+      prev.map((row) => (row.id === id ? { ...row, ...patch } : row)),
     );
   };
 
@@ -230,24 +228,32 @@ export function FilterBuilder({
     <div
       data-slot="data-table-filter-builder"
       className={cn(
-        "overflow-hidden border border-input bg-card text-card-foreground shadow-sm",
+        "overflow-hidden border border-input bg-card text-card-foreground shadow-md",
         radiusClass,
         className,
       )}
     >
-      <div className="flex items-center justify-between gap-2 border-b border-black/[0.04] px-3 py-2 dark:border-white/[0.06]">
+      <div className="flex items-center justify-between gap-2 border-b border-black/[0.05] bg-muted/20 px-3.5 py-2.5 dark:border-white/[0.07]">
         <div className="flex items-center gap-2">
           <SlidersHorizontalIcon className="size-3.5 text-muted-foreground" />
-          <span className="text-[11px] font-semibold tracking-wide uppercase">
+          <span className="text-xs font-semibold tracking-wide">
             {title}
           </span>
-          <span className="bg-muted px-1.5 py-0.5 text-[10px] tabular-nums text-muted-foreground">
+          <span
+            className={cn(
+              "bg-muted px-1.5 py-0.5 text-[10px] tabular-nums text-muted-foreground",
+              radiusClass,
+            )}
+          >
             {rows.length}
           </span>
         </div>
+        <p className="text-[11px] text-muted-foreground">
+          Only filterable columns
+        </p>
       </div>
 
-      <div className="data-table-thin-scroll flex max-h-72 flex-col overflow-y-auto">
+      <div className="data-table-thin-scroll flex max-h-80 flex-col overflow-y-auto">
         {rows.map((row, index) => {
           const colDef = getFilterColumnDef(columns, row.column);
           if (!colDef) return null;
@@ -264,15 +270,15 @@ export function FilterBuilder({
             <div
               key={row.id}
               className={cn(
-                "border-b border-black/[0.04] px-3 py-2 last:border-b-0 dark:border-white/[0.06]",
+                "border-b border-black/[0.04] px-3.5 py-3 last:border-b-0 dark:border-white/[0.06]",
                 hasError && "bg-destructive/5",
               )}
             >
-              <div className="flex items-start gap-2">
-                <div className="flex h-7 w-11 shrink-0 items-center justify-center">
+              <div className="flex items-start gap-2.5">
+                <div className="flex h-8 w-12 shrink-0 items-center justify-center">
                   {!isSingle ? (
                     isFirst ? (
-                      <span className="text-[10px] tracking-wide text-muted-foreground/60 uppercase">
+                      <span className="text-[10px] tracking-wide text-muted-foreground/70 uppercase">
                         where
                       </span>
                     ) : (
@@ -287,15 +293,15 @@ export function FilterBuilder({
 
                 <div
                   className={cn(
-                    "grid min-w-0 flex-1 gap-2",
+                    "grid min-w-0 flex-1 gap-2.5",
                     isWide
                       ? "grid-cols-1 sm:grid-cols-2"
-                      : "grid-cols-1 sm:grid-cols-[1fr_0.9fr_1fr]",
+                      : "grid-cols-1 sm:grid-cols-3",
                   )}
                 >
-                  <div className="min-w-0">
+                  <div className="min-w-0 space-y-1">
                     {isFirst ? (
-                      <p className="mb-1 text-[10px] tracking-wide text-muted-foreground/60 uppercase">
+                      <p className="text-[10px] font-medium tracking-wide text-muted-foreground uppercase">
                         Column
                       </p>
                     ) : null}
@@ -304,37 +310,36 @@ export function FilterBuilder({
                       value={row.column}
                       radiusClass={radiusClass}
                       onChange={(next) => {
-                        updateRow(row.id, "column", next);
-                        updateRow(row.id, "value", "");
+                        updateRow(row.id, { column: next, value: "" });
                       }}
                     />
                   </div>
 
-                  <div className="min-w-0">
+                  <div className="min-w-0 space-y-1">
                     {isFirst ? (
-                      <p className="mb-1 text-[10px] tracking-wide text-muted-foreground/60 uppercase">
+                      <p className="text-[10px] font-medium tracking-wide text-muted-foreground uppercase">
                         Operator
                       </p>
                     ) : null}
                     <OperatorSelect
                       value={row.operator}
                       onChange={(next) =>
-                        updateRow(row.id, "operator", next)
+                        updateRow(row.id, { operator: next })
                       }
                       radiusClass={radiusClass}
                     />
                   </div>
 
                   {!isWide ? (
-                    <div className="min-w-0">
+                    <div className="min-w-0 space-y-1">
                       {isFirst ? (
-                        <div className="mb-1 flex items-center gap-1.5">
-                          <span className="text-[10px] tracking-wide text-muted-foreground/60 uppercase">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] font-medium tracking-wide text-muted-foreground uppercase">
                             Value
                           </span>
                           <span
                             className={cn(
-                              "px-1 py-px text-[10px] font-medium",
+                              "px-1.5 py-0.5 text-[10px] font-medium",
                               radiusClass,
                               meta.badge,
                             )}
@@ -348,9 +353,7 @@ export function FilterBuilder({
                         value={row.value}
                         hasError={hasError}
                         radiusClass={radiusClass}
-                        onChange={(next) =>
-                          updateRow(row.id, "value", next)
-                        }
+                        onChange={(next) => updateRow(row.id, { value: next })}
                       />
                     </div>
                   ) : null}
@@ -362,7 +365,7 @@ export function FilterBuilder({
                   disabled={rows.length === 1}
                   onClick={() => removeRow(row.id)}
                   className={cn(
-                    "mt-0 flex size-7 shrink-0 items-center justify-center text-muted-foreground/50 transition-colors hover:bg-destructive/10 hover:text-destructive disabled:pointer-events-none disabled:opacity-30",
+                    "flex size-8 shrink-0 items-center justify-center text-muted-foreground/50 transition-colors hover:bg-destructive/10 hover:text-destructive disabled:pointer-events-none disabled:opacity-30",
                     isFirst && "mt-5",
                     radiusClass,
                   )}
@@ -372,14 +375,14 @@ export function FilterBuilder({
               </div>
 
               {isWide ? (
-                <div className="mt-2 ml-[3.25rem] mr-9">
-                  <div className="mb-1 flex items-center gap-1.5">
-                    <span className="text-[10px] tracking-wide text-muted-foreground/60 uppercase">
+                <div className="mt-2.5 ml-14 mr-10 space-y-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] font-medium tracking-wide text-muted-foreground uppercase">
                       Value
                     </span>
                     <span
                       className={cn(
-                        "px-1 py-px text-[10px] font-medium",
+                        "px-1.5 py-0.5 text-[10px] font-medium",
                         radiusClass,
                         meta.badge,
                       )}
@@ -392,7 +395,7 @@ export function FilterBuilder({
                     value={row.value}
                     hasError={hasError}
                     radiusClass={radiusClass}
-                    onChange={(next) => updateRow(row.id, "value", next)}
+                    onChange={(next) => updateRow(row.id, { value: next })}
                   />
                 </div>
               ) : null}
@@ -401,11 +404,11 @@ export function FilterBuilder({
         })}
       </div>
 
-      <div className="flex items-center justify-between gap-2 border-t border-black/[0.04] px-3 py-2 dark:border-white/[0.06]">
+      <div className="flex items-center justify-between gap-2 border-t border-black/[0.05] bg-muted/10 px-3.5 py-2.5 dark:border-white/[0.07]">
         <button
           type="button"
           onClick={addRow}
-          className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground transition-colors hover:text-foreground"
+          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
         >
           <PlusIcon className="size-3.5" />
           Add condition
@@ -417,18 +420,18 @@ export function FilterBuilder({
             size="xs"
             variant="ghost"
             onClick={clear}
-            className={cn("h-7 gap-1 text-xs text-muted-foreground", radiusClass)}
+            className={cn("h-8 gap-1.5 px-2.5 text-xs text-muted-foreground", radiusClass)}
           >
-            <Trash2Icon className="size-3" />
+            <Trash2Icon className="size-3.5" />
             Clear
           </Button>
           <Button
             type="button"
             size="xs"
             onClick={apply}
-            className={cn("h-7 gap-1 text-xs", radiusClass)}
+            className={cn("h-8 gap-1.5 px-3 text-xs", radiusClass)}
           >
-            <CheckIcon className="size-3" />
+            <CheckIcon className="size-3.5" />
             Apply
           </Button>
         </div>

@@ -12,59 +12,38 @@ import {
   TableHeader,
   TableRow,
 } from "./components/ui/table";
+import { FilterBar } from "./filter-bar";
 import { cn } from "./lib/utils";
+import { RowActionsPopover } from "./row-actions-popover";
 import { TablePagination } from "./table-pagination";
+import {
+  DENSITY_CELL_CLASS,
+  DENSITY_HEADER_CLASS,
+  HIDE_BELOW_CLASS,
+  RADIUS_CLASS,
+  cycleMultiSort,
+  normalizeSort,
+  type DataTableFilters,
+  type DataTableProps,
+  type DataTableSort,
+  type DataTableState,
+} from "./types";
 import { useTableSelection } from "./use-table-selection";
 
-export type SortDirection = "asc" | "desc";
+export type {
+  DataTableClassNames,
+  DataTableColumn,
+  DataTableDensity,
+  DataTableFilters,
+  DataTableMode,
+  DataTableProps,
+  DataTableRadius,
+  DataTableSort,
+  DataTableState,
+  SortDirection,
+} from "./types";
 
-export type DataTableSort = {
-  key: string;
-  direction: SortDirection;
-};
-
-export type DataTableColumn<T> = {
-  key: string;
-  header: string;
-  sortable?: boolean;
-  hideBelow?: "sm" | "md" | "lg";
-  /** Optional custom cell renderer. Defaults to `String(row[key])`. */
-  cell?: (row: T, index: number) => React.ReactNode;
-  className?: string;
-  headerClassName?: string;
-};
-
-export type DataTableProps<T> = {
-  data: T[];
-  columns: DataTableColumn<T>[];
-  pageSize?: number;
-  selectable?: boolean;
-  stickyHeader?: boolean;
-  maxHeight?: string;
-  /** Empty-state message shown when `data` is empty. */
-  emptyMessage?: string;
-  /** Resolve a stable row id. Defaults to `row.id` or the row index. */
-  getRowId?: (row: T, index: number) => string;
-  /** Controlled selection. */
-  selectedIds?: string[];
-  defaultSelectedIds?: string[];
-  onSelectionChange?: (selectedIds: string[]) => void;
-  /** Controlled sort. */
-  sort?: DataTableSort | null;
-  defaultSort?: DataTableSort | null;
-  onSortChange?: (sort: DataTableSort | null) => void;
-  /** Highlight a single active row (e.g. keyboard/focus target). */
-  activeRowId?: string | null;
-  onRowClick?: (row: T, index: number) => void;
-  className?: string;
-  rowClassName?: string | ((row: T, index: number) => string | undefined);
-};
-
-const HIDE_BELOW_CLASS: Record<"sm" | "md" | "lg", string> = {
-  sm: "hidden sm:table-cell",
-  md: "hidden md:table-cell",
-  lg: "hidden lg:table-cell",
-};
+export { cycleMultiSort, normalizeSort } from "./types";
 
 function defaultGetRowId<T>(row: T, index: number): string {
   if (
@@ -90,14 +69,38 @@ function compareValues(a: unknown, b: unknown): number {
   if (a == null && b == null) return 0;
   if (a == null) return -1;
   if (b == null) return 1;
-
-  if (typeof a === "number" && typeof b === "number") {
-    return a - b;
-  }
-
+  if (typeof a === "number" && typeof b === "number") return a - b;
   return String(a).localeCompare(String(b), undefined, {
     numeric: true,
     sensitivity: "base",
+  });
+}
+
+function matchesFilters<T>(row: T, filters: DataTableFilters): boolean {
+  return Object.entries(filters).every(([key, raw]) => {
+    const query = String(raw ?? "").trim().toLowerCase();
+    if (!query) return true;
+    const value = getCellValue(row, key);
+    return String(value ?? "")
+      .toLowerCase()
+      .includes(query);
+  });
+}
+
+function sortRows<T>(rows: T[], sort: DataTableSort[]): T[] {
+  if (sort.length === 0) return rows;
+
+  return [...rows].sort((a, b) => {
+    for (const rule of sort) {
+      const result = compareValues(
+        getCellValue(a, rule.key),
+        getCellValue(b, rule.key),
+      );
+      if (result !== 0) {
+        return rule.direction === "asc" ? result : -result;
+      }
+    }
+    return 0;
   });
 }
 
@@ -106,28 +109,63 @@ export function DataTable<T>({
   columns,
   pageSize: pageSizeProp = 10,
   selectable = false,
-  stickyHeader = false,
-  maxHeight = "24rem",
+  stickyHeader = true,
+  stickyFirstColumn = true,
+  minTableWidth = "42rem",
+  maxHeight = "28rem",
   emptyMessage = "No results.",
   getRowId = defaultGetRowId,
   selectedIds,
   defaultSelectedIds,
   onSelectionChange,
   sort: controlledSort,
-  defaultSort = null,
+  defaultSort = [],
   onSortChange,
+  enableFiltering = false,
+  filters: controlledFilters,
+  defaultFilters = {},
+  onFiltersChange,
   activeRowId = null,
   onRowClick,
   className,
+  style,
+  classNames,
   rowClassName,
+  radius = "xs",
+  mode = "client",
+  totalRows,
+  loading = false,
+  onStateChange,
+  popoverOffset = 8,
+  popoverPlacement = "bottom-start",
+  renderRowActions,
+  density = "comfortable",
+  toolbar,
 }: DataTableProps<T>) {
+  const isServer = mode === "server";
+  const radiusClass = RADIUS_CLASS[radius];
+  const densityCell = DENSITY_CELL_CLASS[density];
+  const densityHeader = DENSITY_HEADER_CLASS[density];
+  const showActions = typeof renderRowActions === "function";
+  const showFilterBar =
+    enableFiltering && columns.some((column) => column.filterable);
+
   const [page, setPage] = React.useState(1);
   const [pageSize, setPageSize] = React.useState(pageSizeProp);
-  const [uncontrolledSort, setUncontrolledSort] =
-    React.useState<DataTableSort | null>(defaultSort);
+  const [uncontrolledSort, setUncontrolledSort] = React.useState<DataTableSort[]>(
+    normalizeSort(defaultSort),
+  );
+  const [uncontrolledFilters, setUncontrolledFilters] =
+    React.useState<DataTableFilters>(defaultFilters);
 
   const isSortControlled = controlledSort !== undefined;
-  const sort = isSortControlled ? controlledSort : uncontrolledSort;
+  const isFiltersControlled = controlledFilters !== undefined;
+  const sort = isSortControlled
+    ? normalizeSort(controlledSort)
+    : uncontrolledSort;
+  const filters = isFiltersControlled
+    ? controlledFilters
+    : uncontrolledFilters;
 
   const selection = useTableSelection({
     selectedIds,
@@ -135,66 +173,98 @@ export function DataTable<T>({
     onSelectionChange,
   });
 
+  const emitState = React.useCallback(
+    (next: Partial<DataTableState>) => {
+      onStateChange?.({
+        page,
+        pageSize,
+        sort,
+        filters,
+        ...next,
+      });
+    },
+    [filters, onStateChange, page, pageSize, sort],
+  );
+
   React.useEffect(() => {
     setPageSize(pageSizeProp);
     setPage(1);
   }, [pageSizeProp]);
 
-  const sortedData = React.useMemo(() => {
-    if (!sort) return data;
+  const processedData = React.useMemo(() => {
+    if (isServer) return data;
+    const filtered = enableFiltering
+      ? data.filter((row) => matchesFilters(row, filters))
+      : data;
+    return sortRows(filtered, sort);
+  }, [data, enableFiltering, filters, isServer, sort]);
 
-    const copy = [...data];
-    copy.sort((a, b) => {
-      const result = compareValues(
-        getCellValue(a, sort.key),
-        getCellValue(b, sort.key),
-      );
-      return sort.direction === "asc" ? result : -result;
-    });
-    return copy;
-  }, [data, sort]);
-
-  const pageCount = Math.max(1, Math.ceil(sortedData.length / pageSize));
+  const totalItems = isServer
+    ? (totalRows ?? data.length)
+    : processedData.length;
+  const pageCount = Math.max(1, Math.ceil(totalItems / pageSize) || 1);
 
   React.useEffect(() => {
-    if (page > pageCount) {
-      setPage(pageCount);
-    }
+    if (page > pageCount) setPage(pageCount);
   }, [page, pageCount]);
 
   const pageRows = React.useMemo(() => {
+    if (isServer) {
+      return data.map((row, index) => ({
+        row,
+        index,
+        id: getRowId(row, index),
+      }));
+    }
+
     const start = (page - 1) * pageSize;
-    return sortedData.slice(start, start + pageSize).map((row, index) => ({
+    return processedData.slice(start, start + pageSize).map((row, index) => ({
       row,
       index: start + index,
       id: getRowId(row, start + index),
     }));
-  }, [getRowId, page, pageSize, sortedData]);
+  }, [data, getRowId, isServer, page, pageSize, processedData]);
 
   const pageIds = pageRows.map((item) => item.id);
   const allPageSelected = selection.isAllSelected(pageIds);
   const somePageSelected = selection.isSomeSelected(pageIds);
+  const colSpan =
+    columns.length + (selectable ? 1 : 0) + (showActions ? 1 : 0);
 
-  const colSpan = columns.length + (selectable ? 1 : 0);
+  const firstStickyLeft = selectable ? "2.5rem" : "0";
+
+  const handlePageChange = (nextPage: number) => {
+    setPage(nextPage);
+    emitState({ page: nextPage });
+  };
+
+  const handlePageSizeChange = (nextSize: number) => {
+    setPageSize(nextSize);
+    setPage(1);
+    emitState({ page: 1, pageSize: nextSize });
+  };
 
   const handleSort = (key: string) => {
-    const next: DataTableSort | null =
-      sort?.key === key
-        ? sort.direction === "asc"
-          ? { key, direction: "desc" }
-          : null
-        : { key, direction: "asc" };
+    const resolved = cycleMultiSort(sort, key, { replace: false });
 
-    if (!isSortControlled) {
-      setUncontrolledSort(next);
-    }
-    onSortChange?.(next);
+    if (!isSortControlled) setUncontrolledSort(resolved);
+    onSortChange?.(resolved);
+    setPage(1);
+    emitState({ sort: resolved, page: 1 });
+  };
+
+  const handleFiltersChange = (next: DataTableFilters) => {
+    if (!isFiltersControlled) setUncontrolledFilters(next);
+    onFiltersChange?.(next);
+    setPage(1);
+    emitState({ filters: next, page: 1 });
   };
 
   const handleSelectAll = (checked: boolean | "indeterminate") => {
     if (checked === true) {
-      const merged = Array.from(new Set([...selection.selectedIds, ...pageIds]));
-      selection.selectAll(merged);
+      selection.selectAll(
+        Array.from(new Set([...selection.selectedIds, ...pageIds])),
+      );
       return;
     }
     selection.selectAll(
@@ -205,26 +275,82 @@ export function DataTable<T>({
   return (
     <div
       data-slot="data-table"
+      data-density={density}
+      data-radius={radius}
+      data-mode={mode}
+      style={style}
       className={cn(
-        "w-full overflow-hidden rounded-md border bg-background",
+        "w-full overflow-hidden bg-card text-card-foreground shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.04)] ring-1 ring-black/[0.06] dark:shadow-[0_1px_2px_rgba(0,0,0,0.4)] dark:ring-white/10",
+        radiusClass,
+        classNames?.root,
         className,
       )}
     >
+      {toolbar ? (
+        <div
+          data-slot="data-table-toolbar"
+          className={cn(
+            "flex flex-wrap items-center justify-between gap-3 border-b border-black/[0.04] px-3 py-2.5 dark:border-white/[0.06]",
+            classNames?.toolbar,
+          )}
+        >
+          {toolbar}
+        </div>
+      ) : null}
+
+      {showFilterBar ? (
+        <FilterBar
+          columns={columns}
+          filters={filters}
+          onFiltersChange={handleFiltersChange}
+          className={classNames?.filterBar}
+          radiusClass={radiusClass}
+        />
+      ) : null}
+
       <div
         data-slot="data-table-scroll"
-        className="relative w-full overflow-auto"
+        className="relative w-full overflow-auto overscroll-x-contain"
         style={{ maxHeight }}
       >
-        <Table>
+        {loading ? (
+          <div
+            data-slot="data-table-loading"
+            className="absolute inset-0 z-30 flex items-center justify-center bg-background/60 backdrop-blur-[1px]"
+            aria-live="polite"
+            aria-busy="true"
+          >
+            <span className="text-sm text-muted-foreground">Loading…</span>
+          </div>
+        ) : null}
+
+        <Table
+          className={cn("min-w-full", classNames?.table)}
+          style={{ minWidth: minTableWidth }}
+        >
           <TableHeader
             className={cn(
               stickyHeader &&
-                "sticky top-0 z-20 bg-background shadow-[inset_0_-1px_0_0_var(--border)]",
+                "sticky top-0 z-20 bg-card/95 backdrop-blur-md supports-[backdrop-filter]:bg-card/80",
+              classNames?.header,
             )}
           >
-            <TableRow data-state="header" className="hover:bg-transparent">
+            <TableRow
+              data-state="header"
+              className={cn(
+                "hover:bg-transparent border-black/[0.06] dark:border-white/[0.08]",
+                classNames?.headerRow,
+              )}
+            >
               {selectable ? (
-                <TableHead className="w-10">
+                <TableHead
+                  className={cn(
+                    "w-10 bg-card",
+                    densityHeader,
+                    stickyFirstColumn && "sticky left-0 z-30",
+                    classNames?.headerCell,
+                  )}
+                >
                   <Checkbox
                     checked={
                       allPageSelected
@@ -239,22 +365,35 @@ export function DataTable<T>({
                 </TableHead>
               ) : null}
 
-              {columns.map((column) => {
-                const isSorted = sort?.key === column.key;
-                const direction = isSorted ? sort.direction : undefined;
+              {columns.map((column, columnIndex) => {
+                const sortIndex = sort.findIndex((item) => item.key === column.key);
+                const sortRule = sortIndex >= 0 ? sort[sortIndex] : undefined;
+                const isSticky =
+                  column.sticky ||
+                  (stickyFirstColumn && columnIndex === 0);
 
                 return (
                   <TableHead
                     key={column.key}
                     className={cn(
+                      "bg-card",
+                      densityHeader,
                       column.hideBelow && HIDE_BELOW_CLASS[column.hideBelow],
+                      column.wrap && "whitespace-normal",
+                      isSticky && "sticky z-30 shadow-[1px_0_0_0_rgba(0,0,0,0.04)]",
                       column.headerClassName,
+                      classNames?.headerCell,
                     )}
+                    style={
+                      isSticky
+                        ? { left: stickyFirstColumn && columnIndex === 0 ? firstStickyLeft : undefined }
+                        : undefined
+                    }
                     aria-sort={
                       column.sortable
-                        ? direction === "asc"
+                        ? sortRule?.direction === "asc"
                           ? "ascending"
-                          : direction === "desc"
+                          : sortRule?.direction === "desc"
                             ? "descending"
                             : "none"
                         : undefined
@@ -263,40 +402,64 @@ export function DataTable<T>({
                     {column.sortable ? (
                       <button
                         type="button"
-                        className="inline-flex items-center gap-1 rounded-sm outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                        className="inline-flex max-w-full items-center gap-1.5 outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
                         onClick={() => handleSort(column.key)}
                         aria-label={`Sort by ${column.header}`}
                       >
-                        {column.header}
-                        {direction === "asc" ? (
-                          <ArrowUpIcon className="size-3.5" aria-hidden="true" />
-                        ) : direction === "desc" ? (
+                        <span className="truncate">{column.header}</span>
+                        {sortRule?.direction === "asc" ? (
+                          <ArrowUpIcon className="size-3.5 shrink-0" aria-hidden="true" />
+                        ) : sortRule?.direction === "desc" ? (
                           <ArrowDownIcon
-                            className="size-3.5"
+                            className="size-3.5 shrink-0"
                             aria-hidden="true"
                           />
                         ) : (
                           <ArrowUpDownIcon
-                            className="size-3.5 opacity-50"
+                            className="size-3.5 shrink-0 opacity-40"
                             aria-hidden="true"
                           />
                         )}
+                        {sortIndex >= 0 && sort.length > 1 ? (
+                          <span
+                            className="inline-flex size-4 shrink-0 items-center justify-center bg-muted text-[10px] font-semibold text-muted-foreground"
+                            aria-label={`Sort priority ${sortIndex + 1}`}
+                          >
+                            {sortIndex + 1}
+                          </span>
+                        ) : null}
                       </button>
                     ) : (
-                      column.header
+                      <span className="truncate">{column.header}</span>
                     )}
                   </TableHead>
                 );
               })}
+
+              {showActions ? (
+                <TableHead
+                  className={cn(
+                    "w-10 bg-card",
+                    densityHeader,
+                    classNames?.headerCell,
+                  )}
+                >
+                  <span className="sr-only">Actions</span>
+                </TableHead>
+              ) : null}
             </TableRow>
           </TableHeader>
 
-          <TableBody>
+          <TableBody className={classNames?.body}>
             {pageRows.length === 0 ? (
               <TableRow className="hover:bg-transparent">
                 <TableCell
                   colSpan={colSpan}
-                  className="h-24 text-center text-muted-foreground"
+                  className={cn(
+                    "h-28 text-center text-muted-foreground",
+                    densityCell,
+                    classNames?.cell,
+                  )}
                 >
                   {emptyMessage}
                 </TableCell>
@@ -318,12 +481,21 @@ export function DataTable<T>({
                     }
                     className={cn(
                       onRowClick && "cursor-pointer",
+                      classNames?.row,
                       resolvedRowClassName,
                     )}
                     onClick={() => onRowClick?.(row, index)}
                   >
                     {selectable ? (
-                      <TableCell>
+                      <TableCell
+                        className={cn(
+                          "bg-card",
+                          densityCell,
+                          stickyFirstColumn && "sticky left-0 z-10",
+                          isSelected && "bg-muted/60",
+                          classNames?.cell,
+                        )}
+                      >
                         <Checkbox
                           checked={isSelected}
                           onCheckedChange={() => selection.toggle(id)}
@@ -333,27 +505,59 @@ export function DataTable<T>({
                       </TableCell>
                     ) : null}
 
-                    {columns.map((column) => {
+                    {columns.map((column, columnIndex) => {
                       const content = column.cell
                         ? column.cell(row, index)
                         : (() => {
                             const value = getCellValue(row, column.key);
                             return value == null ? "" : String(value);
                           })();
+                      const isSticky =
+                        column.sticky ||
+                        (stickyFirstColumn && columnIndex === 0);
 
                       return (
                         <TableCell
                           key={column.key}
                           className={cn(
+                            "bg-card",
+                            densityCell,
                             column.hideBelow &&
                               HIDE_BELOW_CLASS[column.hideBelow],
+                            column.wrap
+                              ? "whitespace-normal break-words"
+                              : "whitespace-nowrap",
+                            isSticky &&
+                              "sticky z-10 shadow-[1px_0_0_0_rgba(0,0,0,0.04)]",
+                            isSelected && "bg-muted/60",
                             column.className,
+                            classNames?.cell,
                           )}
+                          style={
+                            isSticky && stickyFirstColumn && columnIndex === 0
+                              ? { left: firstStickyLeft }
+                              : undefined
+                          }
                         >
                           {content}
                         </TableCell>
                       );
                     })}
+
+                    {showActions ? (
+                      <TableCell
+                        className={cn("bg-card", densityCell, classNames?.cell)}
+                      >
+                        <RowActionsPopover
+                          placement={popoverPlacement}
+                          offsetDistance={popoverOffset}
+                          radiusClass={radiusClass}
+                          aria-label={`Actions for row ${id}`}
+                        >
+                          {renderRowActions(row)}
+                        </RowActionsPopover>
+                      </TableCell>
+                    ) : null}
                   </TableRow>
                 );
               })
@@ -366,12 +570,11 @@ export function DataTable<T>({
         page={page}
         pageCount={pageCount}
         pageSize={pageSize}
-        totalItems={sortedData.length}
-        onPageChange={setPage}
-        onPageSizeChange={(next) => {
-          setPageSize(next);
-          setPage(1);
-        }}
+        totalItems={totalItems}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
+        className={classNames?.pagination}
+        radiusClass={radiusClass}
       />
     </div>
   );

@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ChevronsLeftIcon,
-  ChevronsRightIcon,
-} from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 import { Button } from "./components/ui/button";
 import {
@@ -26,22 +21,22 @@ export type TablePaginationProps = {
   onPageSizeChange?: (pageSize: number) => void;
   pageSizeOptions?: number[];
   className?: string;
+  radiusClass?: string;
 };
 
-function getVisiblePages(page: number, pageCount: number): (number | "ellipsis")[] {
-  if (pageCount <= 7) {
+/** Sliding window of at most 3 page numbers around the current page. */
+function getVisiblePages(page: number, pageCount: number): number[] {
+  if (pageCount <= 0) return [];
+  if (pageCount <= 3) {
     return Array.from({ length: pageCount }, (_, i) => i + 1);
   }
 
-  if (page <= 3) {
-    return [1, 2, 3, 4, "ellipsis", pageCount];
+  if (page <= 2) return [1, 2, 3];
+  if (page >= pageCount - 1) {
+    return [pageCount - 2, pageCount - 1, pageCount];
   }
 
-  if (page >= pageCount - 2) {
-    return [1, "ellipsis", pageCount - 3, pageCount - 2, pageCount - 1, pageCount];
-  }
-
-  return [1, "ellipsis", page - 1, page, page + 1, "ellipsis", pageCount];
+  return [page - 1, page, page + 1];
 }
 
 export function TablePagination({
@@ -53,6 +48,7 @@ export function TablePagination({
   onPageSizeChange,
   pageSizeOptions = [5, 10, 20, 50],
   className,
+  radiusClass = "",
 }: TablePaginationProps) {
   const visiblePages = getVisiblePages(page, pageCount);
   const from = totalItems === 0 ? 0 : (page - 1) * pageSize + 1;
@@ -62,17 +58,22 @@ export function TablePagination({
     <div
       data-slot="table-pagination"
       className={cn(
-        "flex flex-col gap-3 border-t px-2 py-3 sm:flex-row sm:items-center sm:justify-between",
+        "flex flex-col gap-3 border-t border-black/[0.04] px-3 py-3 dark:border-white/[0.06] sm:flex-row sm:items-center sm:justify-between",
         className,
       )}
     >
       <p className="text-sm text-muted-foreground">
-        Showing <span className="font-medium text-foreground">{from}</span>–
-        <span className="font-medium text-foreground">{to}</span> of{" "}
-        <span className="font-medium text-foreground">{totalItems}</span>
+        Showing{" "}
+        <span className="tabular-nums font-medium text-foreground">
+          {from}–{to}
+        </span>{" "}
+        of{" "}
+        <span className="tabular-nums font-medium text-foreground">
+          {totalItems}
+        </span>
       </p>
 
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-3">
         {onPageSizeChange ? (
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Rows</span>
@@ -80,10 +81,14 @@ export function TablePagination({
               value={String(pageSize)}
               onValueChange={(value) => onPageSizeChange(Number(value))}
             >
-              <SelectTrigger size="sm" aria-label="Rows per page">
+              <SelectTrigger
+                size="sm"
+                aria-label="Rows per page"
+                className={cn("h-8 min-w-16 shadow-none", radiusClass)}
+              >
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className={radiusClass}>
                 {pageSizeOptions.map((option) => (
                   <SelectItem key={option} value={String(option)}>
                     {option}
@@ -94,71 +99,50 @@ export function TablePagination({
           </div>
         ) : null}
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           <Button
             type="button"
-            variant="outline"
-            size="icon-sm"
-            aria-label="First page"
-            disabled={page <= 1}
-            onClick={() => onPageChange(1)}
-          >
-            <ChevronsLeftIcon />
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
+            variant="ghost"
             size="icon-sm"
             aria-label="Previous page"
             disabled={page <= 1}
             onClick={() => onPageChange(page - 1)}
+            className={cn("text-muted-foreground", radiusClass)}
           >
             <ChevronLeftIcon />
           </Button>
 
-          {visiblePages.map((item, index) =>
-            item === "ellipsis" ? (
-              <span
-                key={`ellipsis-${index}`}
-                className="px-1 text-sm text-muted-foreground"
-                aria-hidden="true"
-              >
-                …
-              </span>
-            ) : (
-              <Button
-                key={item}
-                type="button"
-                variant={item === page ? "default" : "outline"}
-                size="icon-sm"
-                aria-label={`Page ${item}`}
-                aria-current={item === page ? "page" : undefined}
-                onClick={() => onPageChange(item)}
-              >
-                {item}
-              </Button>
-            ),
-          )}
+          {visiblePages.map((item) => (
+            <Button
+              key={item}
+              type="button"
+              variant={item === page ? "secondary" : "ghost"}
+              size="icon-sm"
+              aria-label={`Page ${item}`}
+              aria-current={item === page ? "page" : undefined}
+              onClick={() => onPageChange(item)}
+              className={cn(
+                "tabular-nums",
+                item === page
+                  ? "font-semibold shadow-sm"
+                  : "text-muted-foreground",
+                radiusClass,
+              )}
+            >
+              {item}
+            </Button>
+          ))}
 
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             size="icon-sm"
             aria-label="Next page"
             disabled={page >= pageCount || pageCount === 0}
             onClick={() => onPageChange(page + 1)}
+            className={cn("text-muted-foreground", radiusClass)}
           >
             <ChevronRightIcon />
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-sm"
-            aria-label="Last page"
-            disabled={page >= pageCount || pageCount === 0}
-            onClick={() => onPageChange(pageCount)}
-          >
-            <ChevronsRightIcon />
           </Button>
         </div>
       </div>

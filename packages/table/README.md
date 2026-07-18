@@ -1,6 +1,6 @@
 # @ss-components/table
 
-Composable `DataTable` built on shadcn Table primitives — pagination, row selection, sticky header, sortable columns, responsive column hiding, and empty state in one component.
+Composable `DataTable` built on shadcn Table primitives — pagination, selection, sticky header, sorting, filtering, server/client modes, density, and row-action popovers.
 
 ## Install
 
@@ -10,17 +10,9 @@ pnpm add @ss-components/table
 
 ### Tailwind v4
 
-Scan this package so utility classes are generated:
-
 ```css
 @import "tailwindcss";
 @source "../node_modules/@ss-components/table";
-```
-
-Optionally import the bundled theme tokens:
-
-```css
-@import "@ss-components/table/styles.css";
 ```
 
 ## Minimal usage
@@ -43,53 +35,111 @@ export function UsersTable() {
 }
 ```
 
-## Full-featured usage
+## Multi-column sorting
+
+Click headers to stack sorts (priority badges appear when more than one is active). Click again to flip direction, click a third time to remove that column from the sort list.
+
+```tsx
+const [sort, setSort] = useState<DataTableSort[]>([
+  { key: "department", direction: "asc" },
+  { key: "name", direction: "asc" },
+]);
+
+<DataTable
+  data={employees}
+  columns={columns}
+  sort={sort}
+  onSortChange={setSort}
+/>
+```
+
+## Density
+
+```tsx
+<DataTable density="compact" ... />
+<DataTable density="comfortable" ... />
+<DataTable density="spacious" ... />
+```
+
+Pass a `toolbar` slot to render density controls above the table.
+
+## Filtering (opt-in)
+
+Filtering is **off by default**. Enable it explicitly:
+
+```tsx
+<DataTable
+  enableFiltering
+  data={employees}
+  columns={[
+    { key: "name", header: "Name", filterable: true },
+    {
+      key: "department",
+      header: "Department",
+      filterable: true,
+      filterType: "select",
+      filterOptions: ["Engineering", "Design"],
+    },
+  ]}
+/>
+```
+
+## Server mode with pagination
 
 ```tsx
 import { useState } from "react";
-import { DataTable, type DataTableSort } from "@ss-components/table";
+import { DataTable, type DataTableState } from "@ss-components/table";
 
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  status: string;
-};
+export function ServerUsersTable() {
+  const [rows, setRows] = useState([]);
+  const [totalRows, setTotalRows] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-const data: User[] = [
-  /* ... */
-];
-
-const columns = [
-  { key: "name", header: "Name", sortable: true },
-  { key: "email", header: "Email", hideBelow: "md" as const },
-  { key: "role", header: "Role", sortable: true },
-  { key: "status", header: "Status", hideBelow: "lg" as const },
-];
-
-export function UsersTable() {
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [sort, setSort] = useState<DataTableSort | null>({
-    key: "name",
-    direction: "asc",
-  });
+  async function load(state: DataTableState) {
+    setLoading(true);
+    const res = await fetch(
+      `/api/users?page=${state.page}&pageSize=${state.pageSize}`,
+    );
+    const json = await res.json();
+    setRows(json.items);
+    setTotalRows(json.total);
+    setLoading(false);
+  }
 
   return (
     <DataTable
-      data={data}
-      columns={columns}
-      pageSize={10}
-      selectable
-      stickyHeader
-      maxHeight="28rem"
-      selectedIds={selectedIds}
-      onSelectionChange={setSelectedIds}
-      sort={sort}
-      onSortChange={setSort}
+      mode="server"
+      data={rows}
+      totalRows={totalRows}
+      loading={loading}
+      columns={[
+        { key: "name", header: "Name", sortable: true },
+        { key: "email", header: "Email" },
+      ]}
+      onStateChange={load}
     />
   );
 }
+```
+
+## Row-actions popover
+
+```tsx
+<DataTable
+  data={employees}
+  columns={columns}
+  selectable
+  radius="xs"
+  popoverOffset={12}
+  popoverPlacement="right-start"
+  renderRowActions={(row) => (
+    <div className="flex flex-col gap-0.5 p-0.5">
+      <button type="button" className="px-2 py-1.5 text-left text-sm hover:bg-muted">
+        Edit {row.name}
+      </button>
+    </div>
+  )}
+/>
 ```
 
 ## Props / API
@@ -101,44 +151,52 @@ export function UsersTable() {
 | `data` | `T[]` | — | Row data |
 | `columns` | `DataTableColumn<T>[]` | — | Column config |
 | `pageSize` | `number` | `10` | Rows per page |
-| `selectable` | `boolean` | `false` | Show checkbox selection column |
-| `stickyHeader` | `boolean` | `false` | Keep header fixed while scrolling |
-| `maxHeight` | `string` | `"24rem"` | Max height of the scroll container |
-| `emptyMessage` | `string` | `"No results."` | Message when `data` is empty |
-| `getRowId` | `(row, index) => string` | `row.id` or index | Stable row id for selection |
-| `selectedIds` | `string[]` | — | Controlled selection |
-| `defaultSelectedIds` | `string[]` | `[]` | Uncontrolled initial selection |
-| `onSelectionChange` | `(ids: string[]) => void` | — | Selection change callback |
-| `sort` | `DataTableSort \| null` | — | Controlled sort |
-| `defaultSort` | `DataTableSort \| null` | `null` | Uncontrolled initial sort |
-| `onSortChange` | `(sort) => void` | — | Sort change callback |
-| `activeRowId` | `string \| null` | `null` | Highlight an active row |
-| `onRowClick` | `(row, index) => void` | — | Row click handler |
-| `className` | `string` | — | Root className |
-| `rowClassName` | `string \| ((row, index) => string)` | — | Per-row className |
+| `selectable` | `boolean` | `false` | Checkbox column |
+| `stickyHeader` | `boolean` | `true` | Sticky header on vertical scroll |
+| `stickyFirstColumn` | `boolean` | `true` | Sticky first column on horizontal scroll |
+| `minTableWidth` | `string` | `"42rem"` | Min width before horizontal scroll |
+| `maxHeight` | `string` | `"28rem"` | Scroll container max height |
+| `sort` / `defaultSort` | `DataTableSort[]` | `[]` | Multi-column sort (priority order) |
+| `onSortChange` | `(sort) => void` | — | Sort callback |
+| `enableFiltering` | `boolean` | `false` | Show filter bar when columns are filterable |
+| `density` | `'compact' \| 'comfortable' \| 'spacious'` | `'comfortable'` | Row padding / type size |
+| `radius` | `'none' \| 'xs' \| 'sm' \| 'md'` | `'xs'` | Corner radius |
+| `toolbar` | `ReactNode` | — | Optional bar above the table |
+| `mode` | `'client' \| 'server'` | `'client'` | Who owns slice/sort/filter |
+| `totalRows` | `number` | — | Server-mode total |
+| `loading` | `boolean` | `false` | Loading overlay |
+| `onStateChange` | `(state) => void` | — | Page/sort/filter changes |
+| `className` / `style` / `classNames` | — | — | Styling overrides |
+| `renderRowActions` | `(row) => ReactNode` | — | Row action popover |
+| `popoverOffset` / `popoverPlacement` | — | `8` / `bottom-start` | floating-ui options |
 
 ### `DataTableColumn`
 
 | Prop | Type | Description |
 | --- | --- | --- |
-| `key` | `string` | Property key on each row |
-| `header` | `string` | Header label |
-| `sortable` | `boolean` | Enable click-to-sort |
-| `hideBelow` | `"sm" \| "md" \| "lg"` | Hide column below breakpoint (`hidden` / `md:table-cell` pattern) |
-| `cell` | `(row, index) => ReactNode` | Custom cell renderer |
-| `className` | `string` | Cell className |
-| `headerClassName` | `string` | Header className |
+| `key` / `header` | `string` | Field + label |
+| `sortable` | `boolean` | Multi-sort participation |
+| `hideBelow` | `'sm' \| 'md' \| 'lg'` | Responsive column hiding |
+| `wrap` | `boolean` | Allow text wrap (better on narrow screens) |
+| `sticky` | `boolean` | Force sticky column |
+| `filterable` / `filterType` / `filterOptions` | — | Used only when `enableFiltering` |
+| `cell` | `(row, index) => ReactNode` | Custom renderer |
+
 
 ### Also exported
 
 | Export | Description |
 | --- | --- |
 | `TablePagination` | Standalone pagination control |
+| `FilterBar` | Standalone filter bar |
+| `RowActionsPopover` | Floating row-actions menu |
 | `useTableSelection` | Controllable selection hook |
-| `Table`, `TableHeader`, `TableBody`, `TableHead`, `TableRow`, `TableCell`, `TableCaption` | shadcn table primitives |
+| `Table`, `TableHeader`, `TableBody`, `TableHead`, `TableRow`, `TableCell`, `TableCaption` | Table primitives |
 | `Checkbox`, `Button`, `Select` (+ parts) | Supporting primitives |
 
 ## Notes
 
-- `@ss-components/resizable-09` was not available (registry not configured). The official shadcn `table` primitive was used instead, along with `checkbox`, `button`, and `select`.
+- Client mode filters with AND logic across active column filters.
+- Server mode trusts `data` as the current page and uses `totalRows` for page math.
+- Consumer `className` / `classNames.*` always merge last via `tailwind-merge`.
 - Packages are framework-agnostic — no Next.js APIs inside this package.

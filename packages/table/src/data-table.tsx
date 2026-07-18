@@ -12,6 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from "./components/ui/table";
+import { DensityControl } from "./density-control";
+import { CellContent } from "./cell-content";
 import { FilterBar } from "./filter-bar";
 import { cn } from "./lib/utils";
 import { RowActionsPopover } from "./row-actions-popover";
@@ -22,17 +24,22 @@ import {
   HIDE_BELOW_CLASS,
   RADIUS_CLASS,
   cycleMultiSort,
+  getColumnSizeStyle,
   normalizeSort,
+  shouldTruncateColumn,
+  type DataTableDensity,
   type DataTableFilters,
   type DataTableProps,
   type DataTableSort,
   type DataTableState,
 } from "./types";
+import { useColumnResize } from "./use-column-resize";
 import { useTableSelection } from "./use-table-selection";
 
 export type {
   DataTableClassNames,
   DataTableColumn,
+  DataTableColumnWidths,
   DataTableDensity,
   DataTableFilters,
   DataTableMode,
@@ -43,7 +50,13 @@ export type {
   SortDirection,
 } from "./types";
 
-export { cycleMultiSort, normalizeSort } from "./types";
+export {
+  DENSITY_OPTIONS,
+  cycleMultiSort,
+  getColumnSizeStyle,
+  normalizeSort,
+  shouldTruncateColumn,
+} from "./types";
 
 function defaultGetRowId<T>(row: T, index: number): string {
   if (
@@ -107,17 +120,20 @@ function sortRows<T>(rows: T[], sort: DataTableSort[]): T[] {
 export function DataTable<T>({
   data,
   columns,
+  showPagination = true,
   pageSize: pageSizeProp = 10,
+  pageSizeOptions,
   selectable = false,
-  stickyHeader = true,
-  stickyFirstColumn = true,
-  minTableWidth = "42rem",
-  maxHeight = "28rem",
+  stickyHeader = false,
+  stickyFirstColumn = false,
+  minTableWidth,
+  maxHeight,
   emptyMessage = "No results.",
   getRowId = defaultGetRowId,
   selectedIds,
   defaultSelectedIds,
   onSelectionChange,
+  enableMultiSort = true,
   sort: controlledSort,
   defaultSort = [],
   onSortChange,
@@ -125,6 +141,14 @@ export function DataTable<T>({
   filters: controlledFilters,
   defaultFilters = {},
   onFiltersChange,
+  resizable = false,
+  columnWidths,
+  defaultColumnWidths,
+  onColumnWidthsChange,
+  density: controlledDensity,
+  defaultDensity = "comfortable",
+  onDensityChange,
+  showDensityControl = false,
   activeRowId = null,
   onRowClick,
   className,
@@ -139,16 +163,14 @@ export function DataTable<T>({
   popoverOffset = 8,
   popoverPlacement = "bottom-start",
   renderRowActions,
-  density = "comfortable",
   toolbar,
 }: DataTableProps<T>) {
   const isServer = mode === "server";
   const radiusClass = RADIUS_CLASS[radius];
-  const densityCell = DENSITY_CELL_CLASS[density];
-  const densityHeader = DENSITY_HEADER_CLASS[density];
   const showActions = typeof renderRowActions === "function";
   const showFilterBar =
     enableFiltering && columns.some((column) => column.filterable);
+  const showToolbar = showDensityControl || toolbar != null;
 
   const [page, setPage] = React.useState(1);
   const [pageSize, setPageSize] = React.useState(pageSizeProp);
@@ -157,20 +179,38 @@ export function DataTable<T>({
   );
   const [uncontrolledFilters, setUncontrolledFilters] =
     React.useState<DataTableFilters>(defaultFilters);
+  const [uncontrolledDensity, setUncontrolledDensity] =
+    React.useState<DataTableDensity>(defaultDensity);
 
   const isSortControlled = controlledSort !== undefined;
   const isFiltersControlled = controlledFilters !== undefined;
+  const isDensityControlled = controlledDensity !== undefined;
+
   const sort = isSortControlled
     ? normalizeSort(controlledSort)
     : uncontrolledSort;
   const filters = isFiltersControlled
     ? controlledFilters
     : uncontrolledFilters;
+  const density = isDensityControlled
+    ? controlledDensity
+    : uncontrolledDensity;
+
+  const densityCell = DENSITY_CELL_CLASS[density];
+  const densityHeader = DENSITY_HEADER_CLASS[density];
 
   const selection = useTableSelection({
     selectedIds,
     defaultSelectedIds,
     onSelectionChange,
+  });
+
+  const resize = useColumnResize({
+    columns,
+    enabled: resizable,
+    columnWidths,
+    defaultColumnWidths,
+    onColumnWidthsChange,
   });
 
   const emitState = React.useCallback(
@@ -180,10 +220,12 @@ export function DataTable<T>({
         pageSize,
         sort,
         filters,
+        density,
+        columnWidths: resize.widths,
         ...next,
       });
     },
-    [filters, onStateChange, page, pageSize, sort],
+    [density, filters, onStateChange, page, pageSize, resize.widths, sort],
   );
 
   React.useEffect(() => {
@@ -233,6 +275,17 @@ export function DataTable<T>({
 
   const firstStickyLeft = selectable ? "2.5rem" : "0";
 
+  const tableMinWidth = React.useMemo(() => {
+    if (minTableWidth) return minTableWidth;
+    if (!resizable) return undefined;
+    const dataWidth = columns.reduce(
+      (sum, column) => sum + resize.getWidth(column.key, column),
+      0,
+    );
+    const extras = (selectable ? 40 : 0) + (showActions ? 40 : 0);
+    return `${dataWidth + extras}px`;
+  }, [columns, minTableWidth, resizable, resize, selectable, showActions]);
+
   const handlePageChange = (nextPage: number) => {
     setPage(nextPage);
     emitState({ page: nextPage });
@@ -245,7 +298,9 @@ export function DataTable<T>({
   };
 
   const handleSort = (key: string) => {
-    const resolved = cycleMultiSort(sort, key, { replace: false });
+    const resolved = cycleMultiSort(sort, key, {
+      replace: !enableMultiSort,
+    });
 
     if (!isSortControlled) setUncontrolledSort(resolved);
     onSortChange?.(resolved);
@@ -258,6 +313,12 @@ export function DataTable<T>({
     onFiltersChange?.(next);
     setPage(1);
     emitState({ filters: next, page: 1 });
+  };
+
+  const handleDensityChange = (next: DataTableDensity) => {
+    if (!isDensityControlled) setUncontrolledDensity(next);
+    onDensityChange?.(next);
+    emitState({ density: next });
   };
 
   const handleSelectAll = (checked: boolean | "indeterminate") => {
@@ -278,15 +339,17 @@ export function DataTable<T>({
       data-density={density}
       data-radius={radius}
       data-mode={mode}
+      data-resizable={resizable ? "true" : "false"}
       style={style}
       className={cn(
         "w-full overflow-hidden bg-card text-card-foreground shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.04)] ring-1 ring-black/[0.06] dark:shadow-[0_1px_2px_rgba(0,0,0,0.4)] dark:ring-white/10",
         radiusClass,
+        resize.isResizing && "select-none",
         classNames?.root,
         className,
       )}
     >
-      {toolbar ? (
+      {showToolbar ? (
         <div
           data-slot="data-table-toolbar"
           className={cn(
@@ -294,7 +357,15 @@ export function DataTable<T>({
             classNames?.toolbar,
           )}
         >
-          {toolbar}
+          <div className="min-w-0 flex-1">{toolbar}</div>
+          {showDensityControl ? (
+            <DensityControl
+              value={density}
+              onChange={handleDensityChange}
+              radiusClass={radiusClass}
+              className={classNames?.densityControl}
+            />
+          ) : null}
         </div>
       ) : null}
 
@@ -311,7 +382,7 @@ export function DataTable<T>({
       <div
         data-slot="data-table-scroll"
         className="relative w-full overflow-auto overscroll-x-contain"
-        style={{ maxHeight }}
+        style={maxHeight ? { maxHeight } : undefined}
       >
         {loading ? (
           <div
@@ -325,9 +396,36 @@ export function DataTable<T>({
         ) : null}
 
         <Table
-          className={cn("min-w-full", classNames?.table)}
-          style={{ minWidth: minTableWidth }}
+          className={cn(
+            "min-w-full",
+            (resizable || columns.some((c) => c.width || c.maxWidth)) &&
+              "table-fixed",
+            classNames?.table,
+          )}
+          style={tableMinWidth ? { minWidth: tableMinWidth } : undefined}
         >
+          {resizable || columns.some((c) => c.width || c.minWidth) ? (
+            <colgroup>
+              {selectable ? <col style={{ width: 40 }} /> : null}
+              {columns.map((column) => {
+                const width = resizable
+                  ? resize.getWidth(column.key, column)
+                  : column.width;
+                return (
+                  <col
+                    key={column.key}
+                    style={{
+                      width,
+                      minWidth: column.minWidth,
+                      maxWidth: column.maxWidth,
+                    }}
+                  />
+                );
+              })}
+              {showActions ? <col style={{ width: 40 }} /> : null}
+            </colgroup>
+          ) : null}
+
           <TableHeader
             className={cn(
               stickyHeader &&
@@ -366,29 +464,39 @@ export function DataTable<T>({
               ) : null}
 
               {columns.map((column, columnIndex) => {
-                const sortIndex = sort.findIndex((item) => item.key === column.key);
+                const sortIndex = sort.findIndex(
+                  (item) => item.key === column.key,
+                );
                 const sortRule = sortIndex >= 0 ? sort[sortIndex] : undefined;
                 const isSticky =
-                  column.sticky ||
+                  Boolean(column.sticky) ||
                   (stickyFirstColumn && columnIndex === 0);
+                const canResize =
+                  resizable && column.resizable !== false;
+                const resizedWidth = resizable
+                  ? resize.getWidth(column.key, column)
+                  : undefined;
+                const sizeStyle = getColumnSizeStyle(column, resizedWidth);
+                const truncate = shouldTruncateColumn(column);
 
                 return (
                   <TableHead
                     key={column.key}
                     className={cn(
-                      "bg-card",
+                      "relative overflow-hidden bg-card",
                       densityHeader,
                       column.hideBelow && HIDE_BELOW_CLASS[column.hideBelow],
-                      column.wrap && "whitespace-normal",
-                      isSticky && "sticky z-30 shadow-[1px_0_0_0_rgba(0,0,0,0.04)]",
+                      isSticky &&
+                        "sticky z-30 shadow-[1px_0_0_0_rgba(0,0,0,0.04)]",
                       column.headerClassName,
                       classNames?.headerCell,
                     )}
-                    style={
-                      isSticky
-                        ? { left: stickyFirstColumn && columnIndex === 0 ? firstStickyLeft : undefined }
-                        : undefined
-                    }
+                    style={{
+                      ...sizeStyle,
+                      ...(isSticky && stickyFirstColumn && columnIndex === 0
+                        ? { left: firstStickyLeft }
+                        : null),
+                    }}
                     aria-sort={
                       column.sortable
                         ? sortRule?.direction === "asc"
@@ -399,39 +507,108 @@ export function DataTable<T>({
                         : undefined
                     }
                   >
-                    {column.sortable ? (
-                      <button
-                        type="button"
-                        className="inline-flex max-w-full items-center gap-1.5 outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
-                        onClick={() => handleSort(column.key)}
-                        aria-label={`Sort by ${column.header}`}
+                    <div
+                      className={cn(
+                        "flex min-w-0 items-center gap-1.5",
+                        canResize && "pr-2",
+                      )}
+                    >
+                      {column.sortable ? (
+                        <button
+                          type="button"
+                          className="inline-flex min-w-0 max-w-full items-center gap-1.5 outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                          onClick={() => handleSort(column.key)}
+                          aria-label={`Sort by ${column.header}`}
+                          title={column.header}
+                        >
+                          <CellContent truncate={truncate} wrap={column.wrap}>
+                            {column.header}
+                          </CellContent>
+                          {sortRule?.direction === "asc" ? (
+                            <ArrowUpIcon
+                              className="size-3.5 shrink-0"
+                              aria-hidden="true"
+                            />
+                          ) : sortRule?.direction === "desc" ? (
+                            <ArrowDownIcon
+                              className="size-3.5 shrink-0"
+                              aria-hidden="true"
+                            />
+                          ) : (
+                            <ArrowUpDownIcon
+                              className="size-3.5 shrink-0 opacity-40"
+                              aria-hidden="true"
+                            />
+                          )}
+                          {sortIndex >= 0 && sort.length > 1 ? (
+                            <span
+                              className="inline-flex size-4 shrink-0 items-center justify-center bg-muted text-[10px] font-semibold text-muted-foreground"
+                              aria-label={`Sort priority ${sortIndex + 1}`}
+                            >
+                              {sortIndex + 1}
+                            </span>
+                          ) : null}
+                        </button>
+                      ) : (
+                        <CellContent
+                          truncate={truncate}
+                          wrap={column.wrap}
+                          title={column.header}
+                        >
+                          {column.header}
+                        </CellContent>
+                      )}
+                    </div>
+
+                    {canResize ? (
+                      <div
+                        role="separator"
+                        aria-orientation="vertical"
+                        aria-label={`Resize ${column.header} column`}
+                        tabIndex={0}
+                        className="absolute top-0 right-0 z-40 flex h-full w-3 cursor-col-resize touch-none select-none items-center justify-center"
+                        onMouseDown={(event) =>
+                          resize.beginResize(column.key, event, {
+                            minWidth: column.minWidth,
+                            maxWidth: column.maxWidth,
+                          })
+                        }
+                        onTouchStart={(event) =>
+                          resize.beginResize(column.key, event, {
+                            minWidth: column.minWidth,
+                            maxWidth: column.maxWidth,
+                          })
+                        }
+                        onKeyDown={(event) => {
+                          if (
+                            event.key !== "ArrowLeft" &&
+                            event.key !== "ArrowRight"
+                          ) {
+                            return;
+                          }
+                          event.preventDefault();
+                          const delta = event.key === "ArrowRight" ? 8 : -8;
+                          const current = resize.getWidth(column.key, column);
+                          resize.setWidth(column.key, current + delta, {
+                            minWidth: column.minWidth,
+                            maxWidth: column.maxWidth,
+                          });
+                        }}
+                        onDoubleClick={(event) => {
+                          event.stopPropagation();
+                          resize.setWidth(
+                            column.key,
+                            column.width ?? column.minWidth ?? 160,
+                            {
+                              minWidth: column.minWidth,
+                              maxWidth: column.maxWidth,
+                            },
+                          );
+                        }}
                       >
-                        <span className="truncate">{column.header}</span>
-                        {sortRule?.direction === "asc" ? (
-                          <ArrowUpIcon className="size-3.5 shrink-0" aria-hidden="true" />
-                        ) : sortRule?.direction === "desc" ? (
-                          <ArrowDownIcon
-                            className="size-3.5 shrink-0"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <ArrowUpDownIcon
-                            className="size-3.5 shrink-0 opacity-40"
-                            aria-hidden="true"
-                          />
-                        )}
-                        {sortIndex >= 0 && sort.length > 1 ? (
-                          <span
-                            className="inline-flex size-4 shrink-0 items-center justify-center bg-muted text-[10px] font-semibold text-muted-foreground"
-                            aria-label={`Sort priority ${sortIndex + 1}`}
-                          >
-                            {sortIndex + 1}
-                          </span>
-                        ) : null}
-                      </button>
-                    ) : (
-                      <span className="truncate">{column.header}</span>
-                    )}
+                        <span className="h-4 w-px bg-border opacity-0 transition-opacity group-hover/table:opacity-100 hover:!opacity-100 [.relative:hover_&]:opacity-100" />
+                      </div>
+                    ) : null}
                   </TableHead>
                 );
               })}
@@ -506,40 +683,56 @@ export function DataTable<T>({
                     ) : null}
 
                     {columns.map((column, columnIndex) => {
+                      const rawValue = getCellValue(row, column.key);
+                      const textValue =
+                        rawValue == null ? "" : String(rawValue);
                       const content = column.cell
                         ? column.cell(row, index)
-                        : (() => {
-                            const value = getCellValue(row, column.key);
-                            return value == null ? "" : String(value);
-                          })();
+                        : textValue;
                       const isSticky =
-                        column.sticky ||
+                        Boolean(column.sticky) ||
                         (stickyFirstColumn && columnIndex === 0);
+                      const resizedWidth = resizable
+                        ? resize.getWidth(column.key, column)
+                        : undefined;
+                      const sizeStyle = getColumnSizeStyle(
+                        column,
+                        resizedWidth,
+                      );
+                      const truncate = shouldTruncateColumn(column);
 
                       return (
                         <TableCell
                           key={column.key}
                           className={cn(
-                            "bg-card",
+                            "overflow-hidden bg-card",
                             densityCell,
                             column.hideBelow &&
                               HIDE_BELOW_CLASS[column.hideBelow],
-                            column.wrap
-                              ? "whitespace-normal break-words"
-                              : "whitespace-nowrap",
                             isSticky &&
                               "sticky z-10 shadow-[1px_0_0_0_rgba(0,0,0,0.04)]",
                             isSelected && "bg-muted/60",
                             column.className,
                             classNames?.cell,
                           )}
-                          style={
-                            isSticky && stickyFirstColumn && columnIndex === 0
+                          style={{
+                            ...sizeStyle,
+                            ...(isSticky &&
+                            stickyFirstColumn &&
+                            columnIndex === 0
                               ? { left: firstStickyLeft }
-                              : undefined
-                          }
+                              : null),
+                          }}
                         >
-                          {content}
+                          <CellContent
+                            wrap={column.wrap}
+                            truncate={truncate}
+                            title={
+                              truncate && !column.cell ? textValue : undefined
+                            }
+                          >
+                            {content}
+                          </CellContent>
                         </TableCell>
                       );
                     })}
@@ -566,16 +759,19 @@ export function DataTable<T>({
         </Table>
       </div>
 
-      <TablePagination
-        page={page}
-        pageCount={pageCount}
-        pageSize={pageSize}
-        totalItems={totalItems}
-        onPageChange={handlePageChange}
-        onPageSizeChange={handlePageSizeChange}
-        className={classNames?.pagination}
-        radiusClass={radiusClass}
-      />
+      {showPagination ? (
+        <TablePagination
+          page={page}
+          pageCount={pageCount}
+          pageSize={pageSize}
+          totalItems={totalItems}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          pageSizeOptions={pageSizeOptions}
+          className={classNames?.pagination}
+          radiusClass={radiusClass}
+        />
+      ) : null}
     </div>
   );
 }

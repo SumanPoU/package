@@ -133,7 +133,7 @@ export default function TableDemoPage() {
         <header className="flex flex-col gap-1.5">
           <h1 className="text-2xl font-semibold tracking-tight">Employees</h1>
           <p className="text-sm text-muted-foreground">
-            Menu actions (⋯ only) · filter builder · client pagination
+            Menu actions · filters · virtualization · client pagination
             {selectedIds.length > 0
               ? ` · ${selectedIds.length} selected`
               : null}
@@ -144,9 +144,9 @@ export default function TableDemoPage() {
           data={SAMPLE_DATA}
           columns={COLUMNS}
           paginationMode="client"
-          pageSize={10}
+          pageSize={25}
           paginationOptions={{
-            pageSizeOptions: [5, 10, 20, 50],
+            pageSizeOptions: [10, 25, 50, 100],
             showPageSizeOptions: true,
             showPageNumbers: true,
             maxVisiblePages: 3,
@@ -156,6 +156,8 @@ export default function TableDemoPage() {
           selectable
           sn
           stickyHeader
+          enableVirtualization
+          maxHeight="28rem"
           resizable
           reorderable
           showColumnMenu

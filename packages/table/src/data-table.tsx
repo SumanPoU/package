@@ -58,6 +58,7 @@ import {
 } from "./types";
 import { useColumnResize } from "./use-column-resize";
 import { useTableSelection } from "./use-table-selection";
+import { useTableVirtualization } from "./use-table-virtualization";
 import { ColumnHeaderMenu } from "./column-header-menu";
 
 export type {
@@ -252,6 +253,9 @@ export function DataTable<T>({
   renderRowActions,
   showRowBorders = true,
   showColumnBorders = false,
+  enableVirtualization = false,
+  virtualRowHeight,
+  virtualOverscan = 8,
   toolbar,
 }: DataTableProps<T>) {
   const resolvedMode = paginationMode ?? mode;
@@ -274,7 +278,8 @@ export function DataTable<T>({
   const resolvedPageSizeOptions =
     paginationOptions?.pageSizeOptions ?? pageSizeOptions;
   const resolvedMaxHeight =
-    maxHeight ?? (stickyHeaderEnabled ? "28rem" : undefined);
+    maxHeight ??
+    (stickyHeaderEnabled || enableVirtualization ? "28rem" : undefined);
   const showFilterBar =
     enableFiltering && columns.some((column) => column.filterable);
   const showToolbar =
@@ -304,6 +309,9 @@ export function DataTable<T>({
   const [uncontrolledPinned, setUncontrolledPinned] =
     React.useState<DataTablePinnedColumns>(defaultPinnedColumns);
   const [draggingKey, setDraggingKey] = React.useState<string | null>(null);
+  const [scrollElement, setScrollElement] = React.useState<HTMLDivElement | null>(
+    null,
+  );
 
   const isSortControlled = controlledSort !== undefined;
   const isFiltersControlled = controlledFilters !== undefined;
@@ -544,6 +552,28 @@ export function DataTable<T>({
   const pageIds = pageRows.map((item) => item.id);
   const allPageSelected = selection.isAllSelected(pageIds);
   const somePageSelected = selection.isSomeSelected(pageIds);
+
+  const virtualization = useTableVirtualization({
+    enabled: enableVirtualization && pageRows.length > 0 && !loading,
+    count: pageRows.length,
+    scrollElement,
+    density,
+    estimateSize: virtualRowHeight,
+    overscan: virtualOverscan,
+  });
+
+  const bodyRows = virtualization.enabled
+    ? virtualization.virtualRows.map((virtualRow) => ({
+        virtualRow,
+        ...pageRows[virtualRow.index]!,
+        rowIndexOnPage: virtualRow.index,
+      }))
+    : pageRows.map((item, rowIndexOnPage) => ({
+        virtualRow: null,
+        ...item,
+        rowIndexOnPage,
+      }));
+
   const colSpan =
     visibleColumns.length +
     (selectable ? 1 : 0) +
@@ -798,7 +828,9 @@ export function DataTable<T>({
       ) : null}
 
       <div
+        ref={setScrollElement}
         data-slot="data-table-scroll"
+        data-virtualized={virtualization.enabled ? "true" : "false"}
         className="data-table-thin-scroll relative w-full overflow-auto overscroll-x-contain [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-black/15 dark:[&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-track]:bg-transparent"
         style={resolvedMaxHeight ? { maxHeight: resolvedMaxHeight } : undefined}
       >
@@ -1148,7 +1180,21 @@ export function DataTable<T>({
                 </TableCell>
               </TableRow>
             ) : (
-              pageRows.map(({ row, index, id }, rowIndexOnPage) => {
+              <>
+                {virtualization.enabled && virtualization.paddingTop > 0 ? (
+                  <tr aria-hidden="true">
+                    <td
+                      colSpan={colSpan}
+                      style={{
+                        height: virtualization.paddingTop,
+                        padding: 0,
+                        border: 0,
+                      }}
+                    />
+                  </tr>
+                ) : null}
+
+                {bodyRows.map(({ row, index, id, rowIndexOnPage }) => {
                 const isSelected = selection.isSelected(id);
                 const isActive = activeRowId === id;
                 const resolvedRowClassName =
@@ -1159,6 +1205,7 @@ export function DataTable<T>({
                 return (
                   <TableRow
                     key={id}
+                    data-index={rowIndexOnPage}
                     data-state={
                       isSelected ? "selected" : isActive ? "active" : undefined
                     }
@@ -1340,7 +1387,21 @@ export function DataTable<T>({
                     ) : null}
                   </TableRow>
                 );
-              })
+              })}
+
+                {virtualization.enabled && virtualization.paddingBottom > 0 ? (
+                  <tr aria-hidden="true">
+                    <td
+                      colSpan={colSpan}
+                      style={{
+                        height: virtualization.paddingBottom,
+                        padding: 0,
+                        border: 0,
+                      }}
+                    />
+                  </tr>
+                ) : null}
+              </>
             )}
           </TableBody>
         </Table>

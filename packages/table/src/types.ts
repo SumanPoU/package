@@ -346,6 +346,18 @@ export type DataTableProps<T> = {
   showRowBorders?: boolean;
   /** Vertical border between columns. Defaults to `false`. */
   showColumnBorders?: boolean;
+
+  /**
+   * Phase 3 — virtualize body rows for large pages.
+   * Uses `@tanstack/react-virtual`. Requires a scroll container (`maxHeight`
+   * or sticky header default).
+   */
+  enableVirtualization?: boolean;
+  /** Estimated row height in px. Defaults from density. */
+  virtualRowHeight?: number;
+  /** Extra rows rendered outside the viewport. Defaults to `8`. */
+  virtualOverscan?: number;
+
   /** Extra toolbar content (rendered beside built-in density control when enabled). */
   toolbar?: React.ReactNode;
 };

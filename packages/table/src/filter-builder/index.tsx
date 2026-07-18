@@ -37,6 +37,17 @@ export type FilterBuilderMenuProps = {
   popoverOffset?: number;
 };
 
+function isInsideFilterUi(target: EventTarget | null): boolean {
+  if (!(target instanceof Element)) return false;
+  return Boolean(
+    target.closest("[data-slot='data-table-filter-builder']") ||
+      target.closest("[data-slot='data-table-filter-column-select']") ||
+      target.closest("[data-slot='data-table-filter-column-trigger']") ||
+      target.closest("[data-slot='select-content']") ||
+      target.closest("[data-radix-popper-content-wrapper]"),
+  );
+}
+
 export function FilterBuilderMenu({
   columns,
   applied = [],
@@ -54,15 +65,14 @@ export function FilterBuilderMenu({
 
   React.useEffect(() => {
     if (!open) return;
-    setDraft(
-      applied.length > 0 ? applied : [makeFilterCondition(columns)],
-    );
+    setDraft(applied.length > 0 ? applied : [makeFilterCondition(columns)]);
   }, [applied, columns, open]);
 
   const { refs, floatingStyles, context } = useFloating({
     open,
     onOpenChange: setOpen,
     placement: "bottom-end",
+    strategy: "fixed",
     whileElementsMounted: autoUpdate,
     middleware: [
       offset(popoverOffset),
@@ -74,14 +84,7 @@ export function FilterBuilderMenu({
   const click = useClick(context);
   const dismiss = useDismiss(context, {
     escapeKey: true,
-    outsidePress: (event) => {
-      const target = event.target as HTMLElement | null;
-      if (!target) return true;
-      // Keep open when interacting with nested Select / column popovers.
-      if (target.closest("[data-slot='select-content']")) return false;
-      if (target.closest("[data-slot='data-table-filter-builder']")) return false;
-      return true;
-    },
+    outsidePress: (event) => !isInsideFilterUi(event.target),
   });
   const role = useRole(context, { role: "dialog" });
   const { getReferenceProps, getFloatingProps } = useInteractions([
@@ -99,7 +102,7 @@ export function FilterBuilderMenu({
         data-slot="data-table-filter-builder-trigger"
         className={cn(
           toolbarSelectTriggerClass,
-          "min-w-[6.5rem]",
+          "min-w-[6.75rem]",
           radiusClass,
           className,
         )}
@@ -121,8 +124,11 @@ export function FilterBuilderMenu({
           <div
             ref={refs.setFloating}
             style={floatingStyles}
-            className="z-50 w-[min(28rem,calc(100vw-1.5rem))]"
-            {...getFloatingProps()}
+            className="z-[70] w-[min(34rem,calc(100vw-1.25rem))]"
+            {...getFloatingProps({
+              onClick: (event) => event.stopPropagation(),
+              onPointerDown: (event) => event.stopPropagation(),
+            })}
           >
             <FilterBuilder
               columns={columns}

@@ -101,6 +101,9 @@ export type {
   UseTableSelectionReturn,
 } from "./use-table-selection";
 
+export { useTableVirtualization, VIRTUAL_ROW_HEIGHT } from "./use-table-virtualization";
+export type { UseTableVirtualizationOptions } from "./use-table-virtualization";
+
 export { useColumnResize } from "./use-column-resize";
 export type {
   UseColumnResizeOptions,

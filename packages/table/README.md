@@ -153,6 +153,33 @@ const [sort, setSort] = useState<DataTableSort[]>([
 />
 ```
 
+## Filter builder
+
+Opt-in advanced filters. Only columns with `filterable: true` appear.
+
+```tsx
+<DataTable
+  showFilterBuilder
+  columns={[
+    { key: "name", header: "Name", filterable: true, filterType: "string" },
+    {
+      key: "status",
+      header: "Status",
+      filterable: true,
+      filterType: "enum",
+      filterOptions: ["Active", "Away", "Offline"],
+    },
+    { key: "joined", header: "Joined" }, // not in filter builder
+  ]}
+  data={rows}
+  onFilterBuilderApply={({ conditions, params }) => {
+    // server mode: send params / conditions to your API
+  }}
+/>
+```
+
+Supported `filterType` values: `string`, `textarea`, `number`, `range`, `date`, `datetime`, `time`, `boolean`, `email`, `url`, `color`, `enum`, `multi` (plus legacy `text` / `select`).
+
 ## Pagination mode & options
 
 ```tsx

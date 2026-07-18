@@ -16,6 +16,11 @@ import { DensityControl } from "./density-control";
 import { CellContent } from "./cell-content";
 import { ColumnVisibilityMenu } from "./column-visibility-menu";
 import { FilterBar } from "./filter-bar";
+import { FilterBuilderMenu } from "./filter-builder";
+import {
+  matchesFilterConditions,
+  toFilterBuilderColumns,
+} from "./filter-builder/types";
 import { cn } from "./lib/utils";
 import { QuickFilter } from "./quick-filter";
 import { RowActions } from "./row-actions";
@@ -48,6 +53,7 @@ import {
   type DataTableProps,
   type DataTableSort,
   type DataTableState,
+  type FilterCondition,
   type SortDirection,
 } from "./types";
 import { useColumnResize } from "./use-column-resize";
@@ -72,6 +78,7 @@ export type {
   DataTableRowAction,
   DataTableSort,
   DataTableState,
+  FilterCondition,
   SortDirection,
 } from "./types";
 
@@ -196,6 +203,11 @@ export function DataTable<T>({
   filters: controlledFilters,
   defaultFilters = {},
   onFiltersChange,
+  showFilterBuilder = false,
+  advancedFilters: controlledAdvancedFilters,
+  defaultAdvancedFilters,
+  onAdvancedFiltersChange,
+  onFilterBuilderApply,
   enableQuickFilter = false,
   quickFilter: controlledQuickFilter,
   defaultQuickFilter = "",
@@ -269,6 +281,7 @@ export function DataTable<T>({
     showDensityControl ||
     showColumnSelector ||
     enableQuickFilter ||
+    showFilterBuilder ||
     toolbar != null;
 
   const [page, setPage] = React.useState(1);
@@ -278,6 +291,8 @@ export function DataTable<T>({
   );
   const [uncontrolledFilters, setUncontrolledFilters] =
     React.useState<DataTableFilters>(defaultFilters);
+  const [uncontrolledAdvancedFilters, setUncontrolledAdvancedFilters] =
+    React.useState<FilterCondition[]>(defaultAdvancedFilters ?? []);
   const [uncontrolledDensity, setUncontrolledDensity] =
     React.useState<DataTableDensity>(defaultDensity);
   const [uncontrolledQuickFilter, setUncontrolledQuickFilter] =
@@ -292,6 +307,7 @@ export function DataTable<T>({
 
   const isSortControlled = controlledSort !== undefined;
   const isFiltersControlled = controlledFilters !== undefined;
+  const isAdvancedFiltersControlled = controlledAdvancedFilters !== undefined;
   const isDensityControlled = controlledDensity !== undefined;
   const isQuickFilterControlled = controlledQuickFilter !== undefined;
   const isVisibilityControlled = controlledVisibility !== undefined;
@@ -304,6 +320,9 @@ export function DataTable<T>({
   const filters = isFiltersControlled
     ? controlledFilters
     : uncontrolledFilters;
+  const advancedFilters = isAdvancedFiltersControlled
+    ? controlledAdvancedFilters
+    : uncontrolledAdvancedFilters;
   const density = isDensityControlled
     ? controlledDensity
     : uncontrolledDensity;
@@ -436,10 +455,12 @@ export function DataTable<T>({
         columnOrder,
         pinnedColumns,
         quickFilter,
+        advancedFilters,
         ...next,
       });
     },
     [
+      advancedFilters,
       columnOrder,
       columnVisibility,
       density,
@@ -468,6 +489,12 @@ export function DataTable<T>({
       rows = rows.filter((row) => matchesFilters(row, filters));
     }
 
+    if (showFilterBuilder && advancedFilters.length > 0) {
+      rows = rows.filter((row) =>
+        matchesFilterConditions(row, advancedFilters, getCellValue),
+      );
+    }
+
     if (enableQuickFilter && quickFilter.trim()) {
       rows = rows.filter((row) =>
         matchesQuickFilter(row, quickFilter, visibleColumns),
@@ -476,12 +503,14 @@ export function DataTable<T>({
 
     return sortRows(rows, sort);
   }, [
+    advancedFilters,
     data,
     enableFiltering,
     enableQuickFilter,
     filters,
     isServer,
     quickFilter,
+    showFilterBuilder,
     sort,
     visibleColumns,
   ]);
@@ -574,6 +603,31 @@ export function DataTable<T>({
     setPage(1);
     emitState({ filters: next, page: 1 });
   };
+
+  const handleFilterBuilderApply = (payload: {
+    conditions: FilterCondition[];
+    params: URLSearchParams | null;
+  }) => {
+    const next = payload.params == null ? [] : payload.conditions;
+    if (!isAdvancedFiltersControlled) setUncontrolledAdvancedFilters(next);
+    onAdvancedFiltersChange?.(next);
+    onFilterBuilderApply?.(payload);
+    setPage(1);
+    emitState({ advancedFilters: next, page: 1 });
+  };
+
+  const filterBuilderColumns = React.useMemo(
+    () => toFilterBuilderColumns(columns),
+    [columns],
+  );
+
+  const appliedAdvancedFilterCount = advancedFilters.filter((condition) => {
+    const needsValue = !["boolean", "range", "color"].includes(
+      filterBuilderColumns.find((column) => column.value === condition.column)
+        ?.type ?? "string",
+    );
+    return needsValue ? condition.value.trim() !== "" : true;
+  }).length;
 
   const handleDensityChange = (next: DataTableDensity) => {
     if (!isDensityControlled) setUncontrolledDensity(next);
@@ -699,6 +753,19 @@ export function DataTable<T>({
           <div className="min-w-0 flex-1">{toolbar}</div>
 
           <div className="ml-auto flex flex-wrap items-center gap-1.5">
+            {showFilterBuilder ? (
+              <FilterBuilderMenu
+                columns={filterBuilderColumns}
+                applied={advancedFilters}
+                onApply={handleFilterBuilderApply}
+                onClear={() =>
+                  handleFilterBuilderApply({ conditions: [], params: null })
+                }
+                activeCount={appliedAdvancedFilterCount}
+                radiusClass={radiusClass}
+                className={classNames?.filterBuilder}
+              />
+            ) : null}
             {showColumnSelector ? (
               <ColumnVisibilityMenu
                 columns={columns}

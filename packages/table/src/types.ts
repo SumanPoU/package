@@ -1,6 +1,17 @@
 import type * as React from "react";
 import type { Placement } from "@floating-ui/react";
 
+import type { FilterCondition } from "./filter-builder/types";
+
+export type {
+  FilterBuilderApplyPayload,
+  FilterBuilderColumn,
+  FilterColumnType,
+  FilterCondition,
+  FilterLogic,
+  FilterOperatorValue,
+} from "./filter-builder/types";
+
 export type SortDirection = "asc" | "desc";
 
 export type DataTableSort = {
@@ -101,6 +112,7 @@ export type DataTableState = {
   columnOrder: string[];
   pinnedColumns: DataTablePinnedColumns;
   quickFilter: string;
+  advancedFilters: FilterCondition[];
 };
 
 export type DataTableColumn<T> = {
@@ -130,8 +142,30 @@ export type DataTableColumn<T> = {
   /** Maximum width in px (resize + layout). */
   maxWidth?: number;
   filterable?: boolean;
-  filterType?: "text" | "select";
+  /**
+   * Value editor type for the filter builder / filter bar.
+   * Legacy aliases: `text` → `string`, `select` → `enum`.
+   */
+  filterType?:
+    | "text"
+    | "select"
+    | "string"
+    | "textarea"
+    | "number"
+    | "range"
+    | "date"
+    | "datetime"
+    | "time"
+    | "boolean"
+    | "email"
+    | "url"
+    | "color"
+    | "enum"
+    | "multi";
   filterOptions?: string[];
+  filterMin?: number;
+  filterMax?: number;
+  filterStep?: number;
   cell?: (row: T, index: number) => React.ReactNode;
   className?: string;
   headerClassName?: string;
@@ -148,6 +182,7 @@ export type DataTableClassNames = {
   cell?: string;
   pagination?: string;
   filterBar?: string;
+  filterBuilder?: string;
   toolbar?: string;
   densityControl?: string;
   quickFilter?: string;
@@ -216,6 +251,19 @@ export type DataTableProps<T> = {
   filters?: DataTableFilters;
   defaultFilters?: DataTableFilters;
   onFiltersChange?: (filters: DataTableFilters) => void;
+
+  /**
+   * Advanced multi-condition filter builder (toolbar popover).
+   * Only columns with `filterable: true` appear in the builder.
+   */
+  showFilterBuilder?: boolean;
+  advancedFilters?: FilterCondition[];
+  defaultAdvancedFilters?: FilterCondition[];
+  onAdvancedFiltersChange?: (conditions: FilterCondition[]) => void;
+  onFilterBuilderApply?: (payload: {
+    conditions: FilterCondition[];
+    params: URLSearchParams | null;
+  }) => void;
 
   // Quick filter (global search across visible columns)
   enableQuickFilter?: boolean;

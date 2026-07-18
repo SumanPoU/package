@@ -109,6 +109,24 @@ export type {
   UseTableEditingReturn,
 } from "./use-table-editing";
 
+export { ExportMenu } from "./export-menu";
+export type { ExportMenuProps } from "./export-menu";
+export {
+  buildCsv,
+  copyTextToClipboard,
+  downloadTextFile,
+  escapeCsvValue,
+  rowsToCsvMatrix,
+} from "./export-utils";
+export type { BuildCsvOptions, ExportTableDataOptions } from "./export-utils";
+
+export { useTableKeyboard } from "./use-table-keyboard";
+export type {
+  TableFocusCell,
+  UseTableKeyboardOptions,
+  UseTableKeyboardReturn,
+} from "./use-table-keyboard";
+
 export { useTableSelection } from "./use-table-selection";
 export type {
   UseTableSelectionOptions,

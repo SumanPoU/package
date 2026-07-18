@@ -1,5 +1,5 @@
 {
-  "name": "@ss-components/table",
+  "name": "@itzsa/table",
   "version": "0.0.0",
   "description": "Composable DataTable built on shadcn Table primitives",
   "license": "MIT",

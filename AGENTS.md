@@ -6,7 +6,7 @@ This repo is a **multi-package component library monorepo**, published to npm. E
 
 - Root is a workspace (pnpm/npm/yarn workspaces). Every publishable unit lives under `packages/<name>`.
 - `apps/docs` (if present) is a Next.js app used only for local development/preview of components — it is NEVER published to npm.
-- Shared types/utils used by more than one package go in `packages/core`, and other packages depend on it via the workspace protocol (`"core": "workspace:*"`), not a relative import across package boundaries.
+- Shared types/utils used by more than one package go in `packages/core` (`@itzsa/core`), and other packages depend on it via the workspace protocol (`"@itzsa/core": "workspace:*"`), not a relative import across package boundaries.
 
 ## Rules for creating a new package
 
@@ -14,7 +14,7 @@ When asked to scaffold a new package (e.g. "create the table package"):
 
 1. Create `packages/<name>/` with:
    - `src/index.ts(x)` — the public entry point. Only export what's meant to be public API.
-   - `package.json` — name it `@<scope>/<name>` (ask for the npm scope if not yet known), set `"main"`, `"module"`, `"types"`, and `"exports"` fields, mark `"sideEffects": false`.
+   - `package.json` — name it `@itzsa/<name>` (scope is `@itzsa`), set `"main"`, `"module"`, `"types"`, and `"exports"` fields, mark `"sideEffects": false`.
    - `tsconfig.json` — extend the root `tsconfig.base.json`, do not duplicate compiler options.
    - `README.md` — install command, minimal usage example, props/API table.
 2. Do not add a `next.config.js` or Next.js-specific config inside `packages/*` — packages must be framework-agnostic (usable outside Next.js) unless explicitly scoped otherwise.

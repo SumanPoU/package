@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 /*
-  Theme tokens required by @ss-components/table.
+  Theme tokens required by @itzsa/table.
   Consumers using Tailwind v4 should also add:
 
-    @source "../node_modules/@ss-components/table";
+    @source "../node_modules/@itzsa/table";
 */
 
 :root {

@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Component library",
-  description: "Local demos for @ss-components packages",
+  description: "Local demos for @itzsa packages",
 };
 
 export default function RootLayout({

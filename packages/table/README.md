@@ -35,10 +35,12 @@ export function UsersTable() {
 }
 ```
 
-## Feature defaults (all opt-in)
+## Feature defaults
 
 | Feature | Prop | Default |
 | --- | --- | --- |
+| Auto serial number (SN) | `sn` | `true` |
+| SN header label | `snHeader` | `"SN"` |
 | Checkbox selection | `selectable` | `false` |
 | Sticky header | `stickyHeader` | `false` |
 | Sticky first column | `stickyFirstColumn` | `false` |
@@ -48,6 +50,25 @@ export function UsersTable() {
 | Pagination | `showPagination` | `true` |
 | Multi-sort | `enableMultiSort` | `true` |
 | Radius | `radius` | `'xs'` |
+
+### Notable default: Auto SN is on
+
+By default every table shows an **SN** column (1, 2, 3…). You do **not** put `sn` in your row data — the package computes it from page position:
+
+`sn = (page - 1) * pageSize + rowIndexOnPage + 1`
+
+Page 2 with `pageSize={10}` shows `11, 12, 13…`. Opt out with `sn={false}`.
+
+```tsx
+{/* Default — SN column visible */}
+<DataTable data={rows} columns={columns} />
+
+{/* Hide SN */}
+<DataTable sn={false} data={rows} columns={columns} />
+
+{/* Custom header */}
+<DataTable sn snHeader="#" data={rows} columns={columns} />
+```
 
 Density options live in the package (`DENSITY_OPTIONS` + `DensityControl`). Enable with `showDensityControl`.
 

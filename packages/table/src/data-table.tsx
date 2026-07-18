@@ -17,6 +17,12 @@ import { CellContent } from "./cell-content";
 import { FilterBar } from "./filter-bar";
 import { cn } from "./lib/utils";
 import { RowActionsPopover } from "./row-actions-popover";
+import {
+  SN_COLUMN_WIDTH,
+  SnCell,
+  SnHeader,
+  getSerialNumber,
+} from "./sn-column";
 import { TablePagination } from "./table-pagination";
 import {
   DENSITY_CELL_CLASS,
@@ -124,6 +130,8 @@ export function DataTable<T>({
   pageSize: pageSizeProp = 10,
   pageSizeOptions,
   selectable = false,
+  sn = true,
+  snHeader = "SN",
   stickyHeader = false,
   stickyFirstColumn = false,
   minTableWidth,
@@ -271,7 +279,10 @@ export function DataTable<T>({
   const allPageSelected = selection.isAllSelected(pageIds);
   const somePageSelected = selection.isSomeSelected(pageIds);
   const colSpan =
-    columns.length + (selectable ? 1 : 0) + (showActions ? 1 : 0);
+    columns.length +
+    (selectable ? 1 : 0) +
+    (sn ? 1 : 0) +
+    (showActions ? 1 : 0);
 
   const firstStickyLeft = selectable ? "2.5rem" : "0";
 
@@ -282,9 +293,12 @@ export function DataTable<T>({
       (sum, column) => sum + resize.getWidth(column.key, column),
       0,
     );
-    const extras = (selectable ? 40 : 0) + (showActions ? 40 : 0);
+    const extras =
+      (selectable ? 40 : 0) +
+      (sn ? SN_COLUMN_WIDTH : 0) +
+      (showActions ? 40 : 0);
     return `${dataWidth + extras}px`;
-  }, [columns, minTableWidth, resizable, resize, selectable, showActions]);
+  }, [columns, minTableWidth, resizable, resize, selectable, showActions, sn]);
 
   const handlePageChange = (nextPage: number) => {
     setPage(nextPage);
@@ -404,9 +418,18 @@ export function DataTable<T>({
           )}
           style={tableMinWidth ? { minWidth: tableMinWidth } : undefined}
         >
-          {resizable || columns.some((c) => c.width || c.minWidth) ? (
+          {resizable || columns.some((c) => c.width || c.minWidth) || sn ? (
             <colgroup>
               {selectable ? <col style={{ width: 40 }} /> : null}
+              {sn ? (
+                <col
+                  style={{
+                    width: SN_COLUMN_WIDTH,
+                    minWidth: SN_COLUMN_WIDTH,
+                    maxWidth: SN_COLUMN_WIDTH,
+                  }}
+                />
+              ) : null}
               {columns.map((column) => {
                 const width = resizable
                   ? resize.getWidth(column.key, column)
@@ -461,6 +484,10 @@ export function DataTable<T>({
                     aria-label="Select all rows on this page"
                   />
                 </TableHead>
+              ) : null}
+
+              {sn ? (
+                <SnHeader label={snHeader} className={classNames?.headerCell} />
               ) : null}
 
               {columns.map((column, columnIndex) => {
@@ -642,7 +669,7 @@ export function DataTable<T>({
                 </TableCell>
               </TableRow>
             ) : (
-              pageRows.map(({ row, index, id }) => {
+              pageRows.map(({ row, index, id }, rowIndexOnPage) => {
                 const isSelected = selection.isSelected(id);
                 const isActive = activeRowId === id;
                 const resolvedRowClassName =
@@ -680,6 +707,16 @@ export function DataTable<T>({
                           onClick={(event) => event.stopPropagation()}
                         />
                       </TableCell>
+                    ) : null}
+
+                    {sn ? (
+                      <SnCell
+                        value={getSerialNumber(page, pageSize, rowIndexOnPage)}
+                        className={cn(
+                          isSelected && "bg-muted/60",
+                          classNames?.cell,
+                        )}
+                      />
                     ) : null}
 
                     {columns.map((column, columnIndex) => {

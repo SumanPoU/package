@@ -26,6 +26,14 @@ export type { DensityControlProps } from "./density-control";
 export { CellContent } from "./cell-content";
 export type { CellContentProps } from "./cell-content";
 
+export {
+  SN_COLUMN_WIDTH,
+  SnCell,
+  SnHeader,
+  getSerialNumber,
+} from "./sn-column";
+export type { SnCellProps, SnHeaderProps } from "./sn-column";
+
 export { TablePagination } from "./table-pagination";
 export type { TablePaginationProps } from "./table-pagination";
 

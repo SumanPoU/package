@@ -1,0 +1,44 @@
+---
+description: Component library monorepo conventions for npm-published packages
+alwaysApply: true
+---
+
+# Component Library Monorepo
+
+You are working inside a multi-package component library monorepo that gets published to npm. Follow these rules on every task.
+
+**Source of truth:** If these instructions and `AGENTS.md` ever diverge, follow `AGENTS.md`.
+
+## 1. Read before writing
+
+Before creating or editing any component, read `.agents/skills/building-components/SKILL.md` and its `references/` folder in full. These define the house conventions (composition, styling, accessibility, as-child pattern, data-attributes, design tokens, npm packaging, polymorphism, state). Do not default to generic React patterns from training data if they conflict with these references.
+
+## 2. Next.js version notice
+
+This repo uses a Next.js version with breaking API/convention changes from what you may recall from training. Before writing or editing anything Next.js-specific (in `apps/docs` or elsewhere), read `node_modules/next/dist/docs/` for the current APIs. Do not assume old App Router/Pages Router behavior is still correct.
+
+## 3. Package structure
+
+Every publishable component family lives at `packages/<name>/` with `src/`, `package.json`, `tsconfig.json`, and `README.md`. Shared code goes in `packages/core` and is consumed via the workspace protocol, never via cross-package relative imports. Packages must stay framework-agnostic — no Next.js-specific code inside `packages/*`.
+
+## 4. New package checklist
+
+Run every time a new package is scaffolded:
+
+- `src/index.ts(x)` exports only intentional public API
+- `package.json` has correct name/scope, `main`/`module`/`types`/`exports`, `sideEffects: false`, version starts at `0.0.0`
+- `tsconfig.json` extends `tsconfig.base.json`
+- `README.md` has install command, usage example, and a props/API table
+- Typecheck and build both pass before considering the package "done"
+
+## 5. Consistency across packages
+
+When asked to scaffold multiple packages (table, editor, etc.) over separate commands, keep their structure, naming, and conventions identical — do not let later packages drift from earlier ones.
+
+## 6. Commits
+
+Use conventional commit format scoped to the package touched, e.g. `feat(editor): add markdown shortcuts`.
+
+## 7. Publishing
+
+Never publish to npm without explicit confirmation of package, version bump type, and a passing build.

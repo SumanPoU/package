@@ -16,6 +16,7 @@ export type {
   DataTableRowAction,
   DataTableSort,
   DataTableState,
+  DataTableStyles,
   FilterCondition,
   SortDirection,
 } from "./data-table";
@@ -31,6 +32,7 @@ export {
   isColumnVisible,
   isRowActionDisabled,
   isRowActionVisible,
+  mergePageSizeOptions,
   normalizeSort,
   orderColumns,
   resolvePinnedSide,

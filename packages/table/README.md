@@ -80,6 +80,64 @@ Handlers that cannot live in JSON (`processRowUpdate`, `getDetailPanelContent`, 
 
 Pass `path` through `getTreeDataPath={(row) => row.path}`.
 
+## Styling (MUI-like slots)
+
+Customize appearance with Tailwind classes and/or inline CSS — similar to MUI DataGrid `classes` + `sx`:
+
+```tsx
+<DataTable
+  className="shadow-lg"
+  style={{ "--dt-accent": "oklch(0.6 0.15 250)" } as React.CSSProperties}
+  classNames={{
+    root: "border-border",
+    header: "bg-muted/40",
+    row: "hover:bg-muted/30",
+    cell: "align-middle",
+    pagination: "bg-card",
+    scroll: "max-h-[32rem]",
+  }}
+  styles={{
+    root: { borderRadius: 12 },
+    headerCell: { fontWeight: 600 },
+    pagination: { paddingBlock: 12 },
+  }}
+  data={rows}
+  columns={columns}
+/>
+```
+
+| Prop | Role |
+| --- | --- |
+| `className` / `style` | Root element |
+| `classNames.*` | Per-slot Tailwind classes (merged last) |
+| `styles.*` | Per-slot inline `CSSProperties` |
+| `column.className` / `headerClassName` | Per-column |
+| `rowClassName` | String or `(row, index) => string` |
+
+Slots include: `root`, `table`, `header`, `headerRow`, `headerCell`, `body`, `row`, `cell`, `scroll`, `toolbar`, `pagination`, `filterBar`, `empty`, `loading`, `detailPanel`, and toolbar control keys.
+
+## Custom page size (type any limit)
+
+By default the footer uses **one combobox**: type a custom limit in the field, or open the chevron for presets.
+
+```tsx
+<DataTable
+  pageSize={18}
+  paginationOptions={{
+    allowCustomPageSize: true, // default — type inside the same control
+    pageSizeOptions: [10, 18, 25, 50],
+    minPageSize: 1,
+    maxPageSize: 200,
+  }}
+  data={rows}
+  columns={columns}
+/>
+```
+
+- Type a number → Enter or blur applies it (clamped to `minPageSize`/`maxPageSize`).
+- Chevron opens the preset list in the same control.
+- Set `allowCustomPageSize: false` to pick presets only (field becomes read-only).
+
 ## Feature defaults
 
 | Feature | Prop | Default |
@@ -352,9 +410,12 @@ Supported `filterType` values: `string`, `textarea`, `number`, `range`, `date`, 
 ```tsx
 <DataTable
   paginationMode="client" // or "server"
-  pageSize={10}
+  pageSize={18} // initial size — users can type a different limit in the footer
   paginationOptions={{
-    pageSizeOptions: [5, 10, 20, 50],
+    pageSizeOptions: [10, 18, 25, 50], // suggestions when allowCustomPageSize
+    allowCustomPageSize: true,
+    minPageSize: 1,
+    maxPageSize: 200,
     showPageSizeOptions: true,
     showPageNumbers: true,
     maxVisiblePages: 3,
@@ -370,7 +431,7 @@ Supported `filterType` values: `string`, `textarea`, `number`, `range`, `date`, 
 />
 ```
 
-`paginationMode` wins over `mode` when both are set.
+`paginationMode` wins over `mode` when both are set. With `allowCustomPageSize` (default), the footer page-size control is a single combobox (type + dropdown).
 
 ## Row actions (menu / icons / permissions)
 
@@ -522,7 +583,7 @@ export function ServerUsersTable() {
 | --- | --- | --- | --- |
 | `data` | `T[]` | — | Row data |
 | `columns` | `DataTableColumn<T>[]` | — | Column config |
-| `pageSize` | `number` | `10` | Rows per page |
+| `pageSize` | `number` | `10` | Rows per page (any value, e.g. `18`) |
 | `selectable` | `boolean` | `false` | Checkbox column |
 | `stickyHeader` | `boolean` | `true` | Sticky header on vertical scroll |
 | `stickyFirstColumn` | `boolean` | `true` | Sticky first column on horizontal scroll |
@@ -538,7 +599,7 @@ export function ServerUsersTable() {
 | `totalRows` | `number` | — | Server-mode total |
 | `loading` | `boolean` | `false` | Loading overlay |
 | `onStateChange` | `(state) => void` | — | Page/sort/filter changes |
-| `className` / `style` / `classNames` | — | — | Styling overrides |
+| `className` / `style` / `classNames` / `styles` | — | — | Styling overrides (MUI-like slots) |
 | `renderRowActions` | `(row) => ReactNode` | — | Row action popover |
 | `popoverOffset` / `popoverPlacement` | — | `8` / `bottom-start` | floating-ui options |
 
@@ -577,4 +638,6 @@ export function ServerUsersTable() {
 - Client mode filters with AND logic across active column filters.
 - Server mode trusts `data` as the current page and uses `totalRows` for page math.
 - Consumer `className` / `classNames.*` always merge last via `tailwind-merge`.
+- `styles.*` apply as inline CSS on the matching slots (after internal layout styles).
+- `pageSize` is always included in the rows-per-page select via `mergePageSizeOptions`.
 - Packages are framework-agnostic — no Next.js APIs inside this package.

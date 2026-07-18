@@ -33,17 +33,30 @@ export type DataTableMode = "client" | "server";
 export type DataTablePaginationMode = DataTableMode;
 
 export type DataTablePaginationOptions = {
-  /** Show the rows-per-page select. Defaults to `true`. */
+  /** Show the rows-per-page control. Defaults to `true`. */
   showPageSizeOptions?: boolean;
-  /** Choices for the rows-per-page select. */
+  /**
+   * Preset choices for rows-per-page.
+   * When `allowCustomPageSize` is on, these appear as suggestions; the user can
+   * still type any value (e.g. `18`).
+   */
   pageSizeOptions?: number[];
+  /**
+   * Let the user type a custom rows-per-page value (not only pick presets).
+   * Defaults to `true`.
+   */
+  allowCustomPageSize?: boolean;
+  /** Minimum accepted typed/selected page size. Defaults to `1`. */
+  minPageSize?: number;
+  /** Maximum accepted typed/selected page size. Defaults to `500`. */
+  maxPageSize?: number;
   /** Show numbered page buttons. Defaults to `true`. */
   showPageNumbers?: boolean;
   /** Max numbered buttons in the sliding window. Defaults to `3`. */
   maxVisiblePages?: number;
   /** Show “Showing X–Y of Z”. Defaults to `true`. */
   showTotal?: boolean;
-  /** Label beside the page-size select. Defaults to `"Rows"`. */
+  /** Label beside the page-size control. Defaults to `"Rows"`. */
   rowsLabel?: string;
   /** Show previous / next buttons. Defaults to `true`. */
   showPrevNext?: boolean;
@@ -204,6 +217,38 @@ export type DataTableClassNames = {
   quickFilter?: string;
   columnSelector?: string;
   export?: string;
+  /** Scroll container around the table. */
+  scroll?: string;
+  loading?: string;
+  empty?: string;
+  detailPanel?: string;
+  expandCell?: string;
+  checkboxCell?: string;
+  snCell?: string;
+  actionsCell?: string;
+  actionsHeader?: string;
+};
+
+/**
+ * Per-slot inline styles (MUI DataGrid–style customization without Emotion).
+ * Prefer Tailwind via `classNames` when possible; use `styles` for one-off CSS.
+ */
+export type DataTableStyles = {
+  root?: React.CSSProperties;
+  table?: React.CSSProperties;
+  header?: React.CSSProperties;
+  headerRow?: React.CSSProperties;
+  headerCell?: React.CSSProperties;
+  body?: React.CSSProperties;
+  row?: React.CSSProperties;
+  cell?: React.CSSProperties;
+  pagination?: React.CSSProperties;
+  filterBar?: React.CSSProperties;
+  toolbar?: React.CSSProperties;
+  scroll?: React.CSSProperties;
+  loading?: React.CSSProperties;
+  empty?: React.CSSProperties;
+  detailPanel?: React.CSSProperties;
 };
 
 /**
@@ -216,6 +261,11 @@ export type DataTableProps<T> = {
 
   // Pagination
   showPagination?: boolean;
+  /**
+   * Rows per page. Any positive number works (e.g. `18`).
+   * Defaults to `10`. Pair with `paginationOptions.pageSizeOptions` to customize
+   * the dropdown; the current `pageSize` is always merged into that list.
+   */
   pageSize?: number;
   /** @deprecated Prefer `paginationOptions.pageSizeOptions`. */
   pageSizeOptions?: number[];
@@ -358,7 +408,16 @@ export type DataTableProps<T> = {
   radius?: DataTableRadius;
   className?: string;
   style?: React.CSSProperties;
+  /**
+   * Per-slot Tailwind / CSS class overrides (merge last via `tailwind-merge`).
+   * Similar to MUI DataGrid `classes` / `slotProps.*.className`.
+   */
   classNames?: DataTableClassNames;
+  /**
+   * Per-slot inline styles. Similar to a scoped MUI `sx` map without Emotion.
+   * Merged onto the matching element after internal styles.
+   */
+  styles?: DataTableStyles;
   /** Horizontal border between rows. Defaults to `true`. */
   showRowBorders?: boolean;
   /** Vertical border between columns. Defaults to `false`. */
@@ -474,6 +533,23 @@ export const DENSITY_OPTIONS: {
   { value: "comfortable", label: "Comfortable" },
   { value: "spacious", label: "Spacious" },
 ];
+
+/**
+ * Ensure the active `pageSize` appears in the rows-per-page select.
+ * Allows `pageSize={18}` even when options are `[10, 25, 50]`.
+ */
+export function mergePageSizeOptions(
+  options: number[] | undefined,
+  pageSize: number,
+  fallback: number[] = [5, 10, 20, 50],
+): number[] {
+  const base = (options?.length ? options : fallback).filter(
+    (n) => Number.isFinite(n) && n > 0,
+  );
+  const unique = new Set(base);
+  if (Number.isFinite(pageSize) && pageSize > 0) unique.add(pageSize);
+  return Array.from(unique).sort((a, b) => a - b);
+}
 
 export const RADIUS_CLASS: Record<DataTableRadius, string> = {
   none: "rounded-none",

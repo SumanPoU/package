@@ -49,6 +49,7 @@ import {
   getColumnSizeStyle,
   getVisibleColumns,
   isColumnVisible,
+  mergePageSizeOptions,
   normalizeSort,
   orderColumns,
   resolvePinnedSide,
@@ -107,6 +108,7 @@ export type {
   DataTableRowAction,
   DataTableSort,
   DataTableState,
+  DataTableStyles,
   FilterCondition,
   SortDirection,
 } from "./types";
@@ -121,6 +123,7 @@ export {
   isColumnVisible,
   isRowActionDisabled,
   isRowActionVisible,
+  mergePageSizeOptions,
   normalizeSort,
   orderColumns,
   resolvePinnedSide,
@@ -267,6 +270,7 @@ export function DataTable<T>({
   className,
   style,
   classNames,
+  styles,
   rowClassName,
   radius = "xs",
   mode = "client",
@@ -344,8 +348,6 @@ export function DataTable<T>({
           ? 108
           : 40;
   const stickyHeaderEnabled = stickyHeader || stickyHeading;
-  const resolvedPageSizeOptions =
-    paginationOptions?.pageSizeOptions ?? pageSizeOptions;
   const resolvedMaxHeight =
     maxHeight ??
     (stickyHeaderEnabled || virtualizationAllowed ? "28rem" : undefined);
@@ -361,6 +363,14 @@ export function DataTable<T>({
 
   const [page, setPage] = React.useState(1);
   const [pageSize, setPageSize] = React.useState(pageSizeProp);
+  const resolvedPageSizeOptions = React.useMemo(
+    () =>
+      mergePageSizeOptions(
+        paginationOptions?.pageSizeOptions ?? pageSizeOptions,
+        pageSize,
+      ),
+    [pageSize, pageSizeOptions, paginationOptions?.pageSizeOptions],
+  );
   const [uncontrolledSort, setUncontrolledSort] = React.useState<DataTableSort[]>(
     normalizeSort(defaultSort),
   );
@@ -1085,7 +1095,7 @@ export function DataTable<T>({
       data-resizable={resizable ? "true" : "false"}
       data-tree={treeEnabled ? "true" : "false"}
       data-detail-panel={showDetailExpand ? "true" : "false"}
-      style={style}
+      style={{ ...styles?.root, ...style }}
       className={cn(
         "w-full overflow-hidden bg-card text-card-foreground shadow-[0_1px_3px_rgba(0,0,0,0.06)] ring-1 ring-black/[0.04] dark:shadow-[0_1px_3px_rgba(0,0,0,0.35)] dark:ring-white/8",
         radiusClass,
@@ -1101,6 +1111,7 @@ export function DataTable<T>({
             "flex flex-wrap items-center gap-1.5 border-b border-black/[0.04] px-3 py-2 dark:border-white/[0.06]",
             classNames?.toolbar,
           )}
+          style={styles?.toolbar}
         >
           {enableQuickFilter ? (
             <QuickFilter
@@ -1165,6 +1176,7 @@ export function DataTable<T>({
           onFiltersChange={handleFiltersChange}
           className={classNames?.filterBar}
           radiusClass={radiusClass}
+          style={styles?.filterBar}
         />
       ) : null}
 
@@ -1172,13 +1184,23 @@ export function DataTable<T>({
         ref={setScrollElement}
         data-slot="data-table-scroll"
         data-virtualized={virtualization.enabled ? "true" : "false"}
-        className="data-table-thin-scroll relative w-full overflow-auto overscroll-x-contain [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-black/15 dark:[&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-track]:bg-transparent"
-        style={resolvedMaxHeight ? { maxHeight: resolvedMaxHeight } : undefined}
+        className={cn(
+          "data-table-thin-scroll relative w-full overflow-auto overscroll-x-contain [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-black/15 dark:[&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-track]:bg-transparent",
+          classNames?.scroll,
+        )}
+        style={{
+          ...(resolvedMaxHeight ? { maxHeight: resolvedMaxHeight } : null),
+          ...styles?.scroll,
+        }}
       >
         {loading ? (
           <div
             data-slot="data-table-loading"
-            className="absolute inset-0 z-30 flex items-center justify-center bg-background/60 backdrop-blur-[1px]"
+            className={cn(
+              "absolute inset-0 z-30 flex items-center justify-center bg-background/60 backdrop-blur-[1px]",
+              classNames?.loading,
+            )}
+            style={styles?.loading}
             aria-live="polite"
             aria-busy="true"
           >
@@ -1194,7 +1216,10 @@ export function DataTable<T>({
               "table-fixed",
             classNames?.table,
           )}
-          style={tableMinWidth ? { minWidth: tableMinWidth } : undefined}
+          style={{
+            ...(tableMinWidth ? { minWidth: tableMinWidth } : null),
+            ...styles?.table,
+          }}
         >
           {resizable ||
           visibleColumns.some((c) => c.width || c.minWidth) ||
@@ -1244,10 +1269,12 @@ export function DataTable<T>({
                 "sticky top-0 z-20 bg-card shadow-[0_1px_0_0_rgba(0,0,0,0.04)] dark:shadow-[0_1px_0_0_rgba(255,255,255,0.06)]",
               classNames?.header,
             )}
+            style={styles?.header}
           >
             <TableRow
               data-state="header"
               className={cn("hover:bg-transparent", classNames?.headerRow)}
+              style={styles?.headerRow}
             >
               {selectable ? (
                 <TableHead
@@ -1543,7 +1570,7 @@ export function DataTable<T>({
             </TableRow>
           </TableHeader>
 
-          <TableBody className={classNames?.body}>
+          <TableBody className={classNames?.body} style={styles?.body}>
             {pageRows.length === 0 ? (
               <TableRow className="hover:bg-transparent">
                 <TableCell
@@ -1552,7 +1579,9 @@ export function DataTable<T>({
                     "h-28 text-center text-muted-foreground",
                     densityCell,
                     classNames?.cell,
+                    classNames?.empty,
                   )}
+                  style={{ ...styles?.cell, ...styles?.empty }}
                 >
                   {resolvedEmptyMessage}
                 </TableCell>
@@ -1603,6 +1632,7 @@ export function DataTable<T>({
                       classNames?.row,
                       resolvedRowClassName,
                     )}
+                    style={styles?.row}
                     onClick={() => {
                       if (isGroup) return;
                       onRowClick?.(row, index);
@@ -1778,6 +1808,7 @@ export function DataTable<T>({
                             ...(pinnedRight != null
                               ? { right: pinnedRight }
                               : null),
+                            ...styles?.cell,
                           }}
                           {...keyboardProps}
                           onDoubleClick={(event) => {
@@ -1980,7 +2011,9 @@ export function DataTable<T>({
                           "bg-muted/20",
                           densityCell,
                           classNames?.cell,
+                          classNames?.detailPanel,
                         )}
+                        style={{ ...styles?.cell, ...styles?.detailPanel }}
                         aria-label={locale.detailPanelAria}
                       >
                         {detailContent}
@@ -2020,6 +2053,7 @@ export function DataTable<T>({
           pageSizeOptions={resolvedPageSizeOptions}
           options={paginationOptions}
           className={classNames?.pagination}
+          style={styles?.pagination}
           radiusClass={radiusClass}
         />
       ) : null}

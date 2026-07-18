@@ -43,6 +43,7 @@ export type DataTableLocaleText = {
   paginationOf: string;
   paginationRowsLabel: string;
   paginationRowsPerPageAria: string;
+  paginationCustomPageSizeAria: string;
   paginationPrevious: string;
   paginationNext: string;
   paginationPageAria: (n: number) => string;
@@ -119,6 +120,7 @@ export const DEFAULT_LOCALE_TEXT: DataTableLocaleText = {
   paginationOf: "of",
   paginationRowsLabel: "Rows",
   paginationRowsPerPageAria: "Rows per page",
+  paginationCustomPageSizeAria: "Custom rows per page",
   paginationPrevious: "Previous page",
   paginationNext: "Next page",
   paginationPageAria: (n) => `Page ${n}`,

@@ -13,8 +13,10 @@ pnpm add @ss-components/table
 ```css
 @import "tailwindcss";
 @source "../node_modules/@ss-components/table";
+@import "@ss-components/table/styles.css";
 ```
 
+Thin scrollbars and theme tokens ship in `styles.css`.
 ## Minimal usage
 
 ```tsx
@@ -48,6 +50,8 @@ export function UsersTable() {
 | Sticky first column | `stickyFirstColumn` | `false` |
 | Per-column filter bar | `enableFiltering` | `false` |
 | Column resize | `resizable` | `false` |
+| Column reorder (drag headers) | `reorderable` | `false` |
+| Per-header column menu | `showColumnMenu` | `false` |
 | Density control UI | `showDensityControl` | `false` |
 | Pagination | `showPagination` | `true` |
 | Multi-sort | `enableMultiSort` | `true` |
@@ -118,8 +122,11 @@ Drag the right edge of a header to resize. Double-click resets. Arrow keys work 
 
 ## Density (built into the package)
 
+Density uses a **Select** with `position="popper"` and `sideOffset={8}`:
+
 ```tsx
 <DataTable showDensityControl data={rows} columns={columns} />
+<DataTable density="compact" data={rows} columns={columns} />
 ```
 
 Or use the control yourself:
@@ -128,6 +135,7 @@ Or use the control yourself:
 import { DensityControl, DENSITY_OPTIONS } from "@ss-components/table";
 ```
 
+## Multi-sort
 
 Click headers to stack sorts (priority badges appear when more than one is active). Click again to flip direction, click a third time to remove that column from the sort list.
 
@@ -145,15 +153,93 @@ const [sort, setSort] = useState<DataTableSort[]>([
 />
 ```
 
-## Density
+## Pagination mode & options
 
 ```tsx
-<DataTable density="compact" ... />
-<DataTable density="comfortable" ... />
-<DataTable density="spacious" ... />
+<DataTable
+  paginationMode="client" // or "server"
+  pageSize={10}
+  paginationOptions={{
+    pageSizeOptions: [5, 10, 20, 50],
+    showPageSizeOptions: true,
+    showPageNumbers: true,
+    maxVisiblePages: 3,
+    showTotal: true,
+    rowsLabel: "Rows",
+    showPrevNext: true,
+  }}
+  // server mode also needs:
+  // totalRows={1000}
+  // onStateChange={(state) => fetchPage(state)}
+  data={rows}
+  columns={columns}
+/>
 ```
 
-Pass a `toolbar` slot to render density controls above the table.
+`paginationMode` wins over `mode` when both are set.
+
+## Row actions (menu / icons / permissions)
+
+```tsx
+<DataTable
+  actionsDisplay="menu" // or "icons" — never both in one table
+  actionsOptions={{
+    permissions: ["users:edit", "users:delete"],
+    // or: canAccess: (permission, row) => check(permission, row),
+    sticky: true,
+  }}
+  actions={[
+    {
+      label: "Edit",
+      icon: <PencilIcon className="size-3.5" />,
+      permission: "users:edit",
+      show: (row) => row.status !== "locked",
+      onClick: (row) => edit(row),
+    },
+    {
+      label: "Delete",
+      variant: "destructive",
+      permission: "users:delete",
+      onClick: (row) => remove(row),
+    },
+  ]}
+  data={rows}
+  columns={columns}
+/>
+```
+
+- **`menu`** — only the ⋯ popover (all actions inside)
+- **`icons`** — only inline icon buttons (no ⋯)
+- **`show` / `hidden` / `permission`** — per-action visibility
+
+## Phase 2: reorder, pin, column menu
+
+```tsx
+<DataTable
+  reorderable
+  showColumnMenu
+  showColumnSelector
+  showDensityControl
+  stickyHeader
+  resizable
+  showRowBorders
+  showColumnBorders={false}
+  actions={[
+    { label: "Edit", onClick: (row) => console.log(row) },
+    { label: "Delete", variant: "destructive", onClick: (row) => console.log(row) },
+  ]}
+  data={rows}
+  columns={columns}
+/>
+```
+
+- **Reorder** — drag column headers when `reorderable` is on (`columnOrder` / `onColumnOrderChange` for controlled).
+- **Pin** — pin left/right from the header ⋮ menu; pinned columns move to the edge and stay sticky while scrolling (`pinnedColumns` / `onPinnedColumnsChange`, or `column.pinned`).
+- **Column menu** — sort, hide, pin/unpin per column (`showColumnMenu`).
+- **Columns selector** — includes a search field to filter column names.
+- **Row borders** — `showRowBorders` (default `true`).
+- **Column borders** — `showColumnBorders` (default `false`).
+- **Actions** — pass `actions` (array or `(row) => actions`) for the row ⋯ menu.
 
 ## Filtering (opt-in)
 

@@ -1,14 +1,6 @@
-export {
-  DataTable,
-  DENSITY_OPTIONS,
-  cycleMultiSort,
-  getColumnSizeStyle,
-  getVisibleColumns,
-  isColumnVisible,
-  normalizeSort,
-  shouldTruncateColumn,
-} from "./data-table";
 export type {
+  DataTableActionsDisplay,
+  DataTableActionsOptions,
   DataTableClassNames,
   DataTableColumn,
   DataTableColumnVisibility,
@@ -16,21 +8,49 @@ export type {
   DataTableDensity,
   DataTableFilters,
   DataTableMode,
+  DataTablePaginationMode,
+  DataTablePaginationOptions,
+  DataTablePinnedColumns,
   DataTableProps,
   DataTableRadius,
+  DataTableRowAction,
   DataTableSort,
   DataTableState,
   SortDirection,
-} from "./types";
+} from "./data-table";
+
+export {
+  DataTable,
+  DENSITY_OPTIONS,
+  applyPinOrder,
+  cycleMultiSort,
+  getColumnSizeStyle,
+  getVisibleColumns,
+  hasActionPermission,
+  isColumnVisible,
+  isRowActionDisabled,
+  isRowActionVisible,
+  normalizeSort,
+  orderColumns,
+  resolvePinnedSide,
+  resolveRowActions,
+  shouldTruncateColumn,
+  splitRowActionsByDisplay,
+} from "./data-table";
 
 export { DensityControl } from "./density-control";
 export type { DensityControlProps } from "./density-control";
+
+export { toolbarSelectTriggerClass } from "./toolbar-control";
 
 export { CellContent } from "./cell-content";
 export type { CellContentProps } from "./cell-content";
 
 export { ColumnVisibilityMenu } from "./column-visibility-menu";
 export type { ColumnVisibilityMenuProps } from "./column-visibility-menu";
+
+export { ColumnHeaderMenu } from "./column-header-menu";
+export type { ColumnHeaderMenuProps } from "./column-header-menu";
 
 export { QuickFilter } from "./quick-filter";
 export type { QuickFilterProps } from "./quick-filter";
@@ -48,6 +68,9 @@ export type { TablePaginationProps } from "./table-pagination";
 
 export { FilterBar } from "./filter-bar";
 export type { FilterBarProps } from "./filter-bar";
+
+export { RowActions } from "./row-actions";
+export type { RowActionsProps } from "./row-actions";
 
 export { RowActionsPopover } from "./row-actions-popover";
 export type { RowActionsPopoverProps } from "./row-actions-popover";

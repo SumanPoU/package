@@ -18,22 +18,32 @@ import { MoreHorizontalIcon } from "lucide-react";
 
 import { Button } from "./components/ui/button";
 import { cn } from "./lib/utils";
+import {
+  isRowActionDisabled,
+  type DataTableRowAction,
+} from "./types";
 
-export type RowActionsPopoverProps = {
-  children: React.ReactNode;
+export type RowActionsPopoverProps<T = unknown> = {
+  /** Declarative actions for this row. */
+  actions?: DataTableRowAction<T>[];
+  row?: T;
+  /** Custom menu body — used when `actions` is empty/omitted. */
+  children?: React.ReactNode;
   placement?: Placement;
   offsetDistance?: number;
   radiusClass?: string;
   "aria-label"?: string;
 };
 
-export function RowActionsPopover({
+export function RowActionsPopover<T>({
+  actions,
+  row,
   children,
   placement = "bottom-start",
   offsetDistance = 8,
   radiusClass = "rounded-none",
   "aria-label": ariaLabel = "Row actions",
-}: RowActionsPopoverProps) {
+}: RowActionsPopoverProps<T>) {
   const [open, setOpen] = React.useState(false);
 
   const { refs, floatingStyles, context } = useFloating({
@@ -57,6 +67,11 @@ export function RowActionsPopover({
     role,
   ]);
 
+  const hasActions = Boolean(actions?.length);
+  const hasChildren = children != null && children !== false;
+
+  if (!hasActions && !hasChildren) return null;
+
   return (
     <>
       <Button
@@ -68,8 +83,9 @@ export function RowActionsPopover({
         aria-expanded={open}
         data-state={open ? "open" : "closed"}
         className={cn("text-muted-foreground", radiusClass)}
-        onClick={(event) => event.stopPropagation()}
-        {...getReferenceProps()}
+        {...getReferenceProps({
+          onClick: (event) => event.stopPropagation(),
+        })}
       >
         <MoreHorizontalIcon />
       </Button>
@@ -79,16 +95,45 @@ export function RowActionsPopover({
           <div
             ref={refs.setFloating}
             style={floatingStyles}
-            data-slot="data-table-row-actions"
+            data-slot="data-table-row-actions-menu"
             data-state="open"
             className={cn(
-              "z-50 min-w-40 border border-border bg-popover p-1 text-popover-foreground shadow-md outline-none",
+              "z-50 min-w-40 border border-input bg-popover p-1 text-popover-foreground shadow-md outline-none",
               radiusClass,
             )}
-            onClick={(event) => event.stopPropagation()}
-            {...getFloatingProps()}
+            {...getFloatingProps({
+              onClick: (event) => event.stopPropagation(),
+            })}
           >
-            {children}
+            {hasActions && row !== undefined
+              ? actions!.map((action, index) => {
+                  const disabled = isRowActionDisabled(action, row);
+                  return (
+                    <button
+                      key={action.id ?? `${action.label}-${index}`}
+                      type="button"
+                      role="menuitem"
+                      disabled={disabled}
+                      className={cn(
+                        "flex w-full items-center gap-2 px-2 py-1.5 text-left text-sm outline-none hover:bg-muted disabled:pointer-events-none disabled:opacity-50",
+                        action.variant === "destructive" &&
+                          "text-destructive hover:bg-destructive/10",
+                        radiusClass,
+                      )}
+                      onPointerDown={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        if (disabled) return;
+                        action.onClick(row);
+                        setOpen(false);
+                      }}
+                    >
+                      {action.icon}
+                      <span className="truncate">{action.label}</span>
+                    </button>
+                  );
+                })
+              : children}
           </div>
         </FloatingPortal>
       ) : null}

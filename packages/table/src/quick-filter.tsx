@@ -35,7 +35,7 @@ export function QuickFilter({
         placeholder={placeholder}
         aria-label="Quick filter"
         className={cn(
-          "h-8 w-full border border-input bg-transparent py-1 pr-8 pl-8 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
+          "h-7 w-full border border-input bg-transparent py-1 pr-8 pl-8 text-xs outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
           radiusClass,
         )}
       />

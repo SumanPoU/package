@@ -1,5 +1,7 @@
 "use client";
 
+import type * as React from "react";
+
 import { TableCell, TableHead } from "./components/ui/table";
 import { cn } from "./lib/utils";
 
@@ -9,13 +11,14 @@ export const SN_COLUMN_WIDTH = 52;
 export type SnHeaderProps = {
   label: string;
   className?: string;
+  style?: React.CSSProperties;
 };
 
 /**
  * Isolated SN header so Phase 2 column-menu/reorder/pin can treat SN as a
  * special non-configurable column without touching data-column render paths.
  */
-export function SnHeader({ label, className }: SnHeaderProps) {
+export function SnHeader({ label, className, style }: SnHeaderProps) {
   return (
     <TableHead
       data-slot="data-table-sn-header"
@@ -23,7 +26,12 @@ export function SnHeader({ label, className }: SnHeaderProps) {
         "w-[52px] max-w-[52px] min-w-[52px] bg-card px-1.5 text-center text-xs font-medium text-muted-foreground",
         className,
       )}
-      style={{ width: SN_COLUMN_WIDTH, minWidth: SN_COLUMN_WIDTH, maxWidth: SN_COLUMN_WIDTH }}
+      style={{
+        width: SN_COLUMN_WIDTH,
+        minWidth: SN_COLUMN_WIDTH,
+        maxWidth: SN_COLUMN_WIDTH,
+        ...style,
+      }}
     >
       {label}
     </TableHead>
@@ -33,9 +41,10 @@ export function SnHeader({ label, className }: SnHeaderProps) {
 export type SnCellProps = {
   value: number;
   className?: string;
+  style?: React.CSSProperties;
 };
 
-export function SnCell({ value, className }: SnCellProps) {
+export function SnCell({ value, className, style }: SnCellProps) {
   return (
     <TableCell
       data-slot="data-table-sn-cell"
@@ -43,7 +52,12 @@ export function SnCell({ value, className }: SnCellProps) {
         "w-[52px] max-w-[52px] min-w-[52px] bg-card px-1.5 text-center tabular-nums text-xs text-muted-foreground",
         className,
       )}
-      style={{ width: SN_COLUMN_WIDTH, minWidth: SN_COLUMN_WIDTH, maxWidth: SN_COLUMN_WIDTH }}
+      style={{
+        width: SN_COLUMN_WIDTH,
+        minWidth: SN_COLUMN_WIDTH,
+        maxWidth: SN_COLUMN_WIDTH,
+        ...style,
+      }}
     >
       {value}
     </TableCell>

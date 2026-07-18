@@ -1,26 +1,26 @@
-# @ss-components/table
+# @itzsa/table
 
 Composable `DataTable` built on shadcn Table primitives — pagination, selection, sticky header, sorting, filtering, server/client modes, density, and row-action popovers.
 
 ## Install
 
 ```bash
-pnpm add @ss-components/table
+pnpm add @itzsa/table
 ```
 
 ### Tailwind v4
 
 ```css
 @import "tailwindcss";
-@source "../node_modules/@ss-components/table";
-@import "@ss-components/table/styles.css";
+@source "../node_modules/@itzsa/table";
+@import "@itzsa/table/styles.css";
 ```
 
 Thin scrollbars and theme tokens ship in `styles.css`.
 ## Minimal usage
 
 ```tsx
-import { DataTable } from "@ss-components/table";
+import { DataTable } from "@itzsa/table";
 
 const data = [
   { id: "1", name: "Ada Lovelace", role: "Mathematician" },
@@ -233,7 +233,7 @@ Density uses a **Select** with `position="popper"` and `sideOffset={8}`:
 Or use the control yourself:
 
 ```tsx
-import { DensityControl, DENSITY_OPTIONS } from "@ss-components/table";
+import { DensityControl, DENSITY_OPTIONS } from "@itzsa/table";
 ```
 
 ## Multi-sort
@@ -521,7 +521,7 @@ Filtering is **off by default**. Enable it explicitly:
 
 ```tsx
 import { useState } from "react";
-import { DataTable, type DataTableState } from "@ss-components/table";
+import { DataTable, type DataTableState } from "@itzsa/table";
 
 export function ServerUsersTable() {
   const [rows, setRows] = useState([]);

@@ -6,7 +6,7 @@ import {
   DataTable,
   type DataTableLocaleText,
   type DataTableSort,
-} from "@ss-components/table";
+} from "@itzsa/table";
 
 import {
   EMPLOYEE_COLUMNS,

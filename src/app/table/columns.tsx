@@ -1,6 +1,6 @@
 "use client";
 
-import type { DataTableColumn } from "@ss-components/table";
+import type { DataTableColumn } from "@itzsa/table";
 
 import {
   DEPARTMENT_OPTIONS,

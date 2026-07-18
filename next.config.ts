@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
-  transpilePackages: ["@ss-components/table"],
+  transpilePackages: ["@itzsa/table"],
 };
 
 export default nextConfig;

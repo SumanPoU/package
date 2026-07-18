@@ -4,7 +4,7 @@
 
 ```bash
 pnpm dlx shadcn@latest init
-pnpm dlx shadcn@latest add table   # fallback: @ss-components/resizable-09 registry was unavailable
+pnpm dlx shadcn@latest add table   # fallback: registry @itzsa/resizable-09 was unavailable
 pnpm dlx shadcn@latest add checkbox button select
 pnpm add lucide-react
 ```

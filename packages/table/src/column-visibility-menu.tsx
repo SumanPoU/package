@@ -17,6 +17,7 @@ import {
 
 import { Checkbox } from "./components/ui/checkbox";
 import { cn } from "./lib/utils";
+import { useDataTableLocale } from "./locale-text";
 import { toolbarSelectTriggerClass } from "./toolbar-control";
 import type { DataTableColumn, DataTableColumnVisibility } from "./types";
 
@@ -38,6 +39,7 @@ export function ColumnVisibilityMenu<T>({
   className,
   popoverOffset = 8,
 }: ColumnVisibilityMenuProps<T>) {
+  const locale = useDataTableLocale();
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
 
@@ -104,7 +106,7 @@ export function ColumnVisibilityMenu<T>({
       >
         <span className="inline-flex min-w-0 items-center gap-1.5">
           <Columns3Icon className="size-3 opacity-70" aria-hidden="true" />
-          <span className="truncate">Columns</span>
+          <span className="truncate">{locale.columnsLabel}</span>
         </span>
         <ChevronDownIcon className="size-3 opacity-50" aria-hidden="true" />
       </button>
@@ -130,8 +132,8 @@ export function ColumnVisibilityMenu<T>({
                 type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search columns…"
-                aria-label="Search columns"
+                placeholder={locale.columnsSearchPlaceholder}
+                aria-label={locale.columnsSearchAriaLabel}
                 className={cn(
                   "h-7 w-full border border-input bg-transparent py-1 pr-2 pl-8 text-xs outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
                   radiusClass,
@@ -141,7 +143,7 @@ export function ColumnVisibilityMenu<T>({
 
             <div className="mb-1.5 flex items-center justify-between gap-2 px-1">
               <p className="text-[11px] font-medium text-muted-foreground">
-                {filtered.length} columns
+                {locale.columnsCount(filtered.length)}
               </p>
               <div className="flex gap-1">
                 <button
@@ -149,7 +151,7 @@ export function ColumnVisibilityMenu<T>({
                   className="text-[11px] text-muted-foreground hover:text-foreground"
                   onClick={showAll}
                 >
-                  All
+                  {locale.columnsShowAll}
                 </button>
                 <span className="text-[11px] text-muted-foreground">/</span>
                 <button
@@ -157,7 +159,7 @@ export function ColumnVisibilityMenu<T>({
                   className="text-[11px] text-muted-foreground hover:text-foreground"
                   onClick={hideAll}
                 >
-                  None
+                  {locale.columnsHideAll}
                 </button>
               </div>
             </div>
@@ -165,7 +167,7 @@ export function ColumnVisibilityMenu<T>({
             <ul className="data-table-thin-scroll flex max-h-56 flex-col gap-0.5 overflow-auto">
               {filtered.length === 0 ? (
                 <li className="px-1 py-3 text-center text-xs text-muted-foreground">
-                  No columns match
+                  {locale.columnsNoMatch}
                 </li>
               ) : (
                 filtered.map((column) => {
@@ -178,7 +180,7 @@ export function ColumnVisibilityMenu<T>({
                           onCheckedChange={(checked) =>
                             toggle(column.key, checked === true)
                           }
-                          aria-label={`Toggle ${column.header}`}
+                          aria-label={locale.columnsToggleAria(column.header)}
                         />
                         <span className="truncate">{column.header}</span>
                       </label>

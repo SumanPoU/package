@@ -73,6 +73,21 @@ import { ColumnHeaderMenu } from "./column-header-menu";
 import { ExportMenu } from "./export-menu";
 import { rowsToCsvMatrix } from "./export-utils";
 import { useTableKeyboard } from "./use-table-keyboard";
+import {
+  DataTableLocaleProvider,
+  resolveLocaleText,
+} from "./locale-text";
+import {
+  DETAIL_EXPAND_COLUMN_WIDTH,
+  DetailExpandButton,
+} from "./detail-panel";
+import {
+  buildTreeFromPaths,
+  flattenVisibleTree,
+  getDefaultExpandedGroupIds,
+  isSelectableTreeRow,
+  type TreeFlatRow,
+} from "./tree-data";
 
 export type {
   DataTableActionsDisplay,
@@ -198,13 +213,13 @@ export function DataTable<T>({
   paginationOptions,
   selectable = false,
   sn = true,
-  snHeader = "SN",
+  snHeader,
   stickyHeader = false,
   stickyHeading = false,
   stickyFirstColumn = false,
   minTableWidth,
   maxHeight,
-  emptyMessage = "No results.",
+  emptyMessage,
   getRowId = defaultGetRowId,
   selectedIds,
   defaultSelectedIds,
@@ -226,7 +241,7 @@ export function DataTable<T>({
   quickFilter: controlledQuickFilter,
   defaultQuickFilter = "",
   onQuickFilterChange,
-  quickFilterPlaceholder = "Search…",
+  quickFilterPlaceholder,
   columnVisibility: controlledVisibility,
   defaultColumnVisibility = {},
   onColumnVisibilityChange,
@@ -282,8 +297,33 @@ export function DataTable<T>({
   exportScope = "filtered",
   onExported,
   enableKeyboardNavigation = false,
+  getDetailPanelContent,
+  detailPanelExpandedRowIds: controlledDetailExpanded,
+  defaultDetailPanelExpandedRowIds = [],
+  onDetailPanelExpandedRowIdsChange,
+  treeData = false,
+  getTreeDataPath,
+  expandedTreeIds: controlledTreeExpanded,
+  defaultExpandedTreeIds,
+  onExpandedTreeIdsChange,
+  defaultGroupingExpansionDepth = 1,
+  groupingColDef,
+  localeText: localeTextProp,
   toolbar,
 }: DataTableProps<T>) {
+  const locale = React.useMemo(
+    () => resolveLocaleText(localeTextProp),
+    [localeTextProp],
+  );
+  const resolvedEmptyMessage = emptyMessage ?? locale.emptyMessage;
+  const resolvedSnHeader = snHeader ?? locale.snHeader;
+  const resolvedQuickFilterPlaceholder =
+    quickFilterPlaceholder ?? locale.quickFilterPlaceholder;
+  const showDetailExpand = typeof getDetailPanelContent === "function";
+  const treeEnabled = treeData && typeof getTreeDataPath === "function";
+  const virtualizationAllowed =
+    enableVirtualization && !showDetailExpand && !treeEnabled;
+
   const resolvedMode = paginationMode ?? mode;
   const isServer = resolvedMode === "server";
   const radiusClass = RADIUS_CLASS[radius];
@@ -308,7 +348,7 @@ export function DataTable<T>({
     paginationOptions?.pageSizeOptions ?? pageSizeOptions;
   const resolvedMaxHeight =
     maxHeight ??
-    (stickyHeaderEnabled || enableVirtualization ? "28rem" : undefined);
+    (stickyHeaderEnabled || virtualizationAllowed ? "28rem" : undefined);
   const showFilterBar =
     enableFiltering && columns.some((column) => column.filterable);
   const showToolbar =
@@ -338,6 +378,13 @@ export function DataTable<T>({
     React.useState<string[]>(defaultColumnOrder);
   const [uncontrolledPinned, setUncontrolledPinned] =
     React.useState<DataTablePinnedColumns>(defaultPinnedColumns);
+  const [uncontrolledDetailExpanded, setUncontrolledDetailExpanded] =
+    React.useState<string[]>(defaultDetailPanelExpandedRowIds);
+  const [uncontrolledTreeExpanded, setUncontrolledTreeExpanded] =
+    React.useState<string[]>(defaultExpandedTreeIds ?? []);
+  const [treeExpandSeeded, setTreeExpandSeeded] = React.useState(
+    () => defaultExpandedTreeIds != null,
+  );
   const [draggingKey, setDraggingKey] = React.useState<string | null>(null);
   const [scrollElement, setScrollElement] = React.useState<HTMLDivElement | null>(
     null,
@@ -351,6 +398,8 @@ export function DataTable<T>({
   const isVisibilityControlled = controlledVisibility !== undefined;
   const isOrderControlled = controlledOrder !== undefined;
   const isPinnedControlled = controlledPinned !== undefined;
+  const isDetailExpandedControlled = controlledDetailExpanded !== undefined;
+  const isTreeExpandedControlled = controlledTreeExpanded !== undefined;
 
   const sort = isSortControlled
     ? normalizeSort(controlledSort)
@@ -374,6 +423,20 @@ export function DataTable<T>({
   const pinnedColumns = isPinnedControlled
     ? controlledPinned
     : uncontrolledPinned;
+  const detailExpandedIds = isDetailExpandedControlled
+    ? controlledDetailExpanded
+    : uncontrolledDetailExpanded;
+  const expandedTreeIdList = isTreeExpandedControlled
+    ? controlledTreeExpanded
+    : uncontrolledTreeExpanded;
+  const expandedTreeIdSet = React.useMemo(
+    () => new Set(expandedTreeIdList),
+    [expandedTreeIdList],
+  );
+  const detailExpandedSet = React.useMemo(
+    () => new Set(detailExpandedIds),
+    [detailExpandedIds],
+  );
 
   const visibleColumns = React.useMemo(() => {
     const ordered = orderColumns(columns, columnOrder);
@@ -462,6 +525,7 @@ export function DataTable<T>({
   const getPinnedLeftOffset = React.useCallback(
     (key: string) => {
       let left = selectable ? 40 : 0;
+      left += showDetailExpand ? DETAIL_EXPAND_COLUMN_WIDTH : 0;
       left += sn ? SN_COLUMN_WIDTH : 0;
       for (const pinnedKey of leftPinnedKeys) {
         if (pinnedKey === key) return left;
@@ -474,6 +538,7 @@ export function DataTable<T>({
       getColumnWidthPx,
       leftPinnedKeys,
       selectable,
+      showDetailExpand,
       sn,
       visibleColumns,
     ],
@@ -572,18 +637,99 @@ export function DataTable<T>({
     visibleColumns,
   ]);
 
-  const totalItems = isServer
+  const totalItemsBase = isServer
     ? (totalRows ?? data.length)
     : processedData.length;
+
+  const treeRoot = React.useMemo(() => {
+    if (!treeEnabled || !getTreeDataPath) return null;
+    const source = isServer ? data : processedData;
+    return buildTreeFromPaths({
+      rows: source,
+      getTreeDataPath,
+      getRowId,
+    });
+  }, [data, getRowId, getTreeDataPath, isServer, processedData, treeEnabled]);
+
+  React.useEffect(() => {
+    if (
+      !treeEnabled ||
+      !treeRoot ||
+      treeExpandSeeded ||
+      isTreeExpandedControlled
+    ) {
+      return;
+    }
+    setUncontrolledTreeExpanded(
+      getDefaultExpandedGroupIds(treeRoot, defaultGroupingExpansionDepth),
+    );
+    setTreeExpandSeeded(true);
+  }, [
+    defaultGroupingExpansionDepth,
+    isTreeExpandedControlled,
+    treeEnabled,
+    treeExpandSeeded,
+    treeRoot,
+  ]);
+
+  const flattenedTreeRows = React.useMemo(() => {
+    if (!treeRoot) return null;
+    return flattenVisibleTree(treeRoot, { expandedIds: expandedTreeIdSet });
+  }, [expandedTreeIdSet, treeRoot]);
+
+  const totalItems =
+    treeEnabled && flattenedTreeRows
+      ? isServer
+        ? (totalRows ?? flattenedTreeRows.length)
+        : flattenedTreeRows.length
+      : totalItemsBase;
   const pageCount = Math.max(1, Math.ceil(totalItems / pageSize) || 1);
 
   React.useEffect(() => {
     if (page > pageCount) setPage(pageCount);
   }, [page, pageCount]);
 
-  const pageRows = React.useMemo(() => {
+  const pageRows = React.useMemo((): Array<{
+    row: T;
+    index: number;
+    id: string;
+    tree?: TreeFlatRow<T>;
+  }> => {
+    type PageRow = {
+      row: T;
+      index: number;
+      id: string;
+      tree?: TreeFlatRow<T>;
+    };
+
+    if (treeEnabled && flattenedTreeRows) {
+      const start = isServer ? 0 : (page - 1) * pageSize;
+      const slice = isServer
+        ? flattenedTreeRows
+        : flattenedTreeRows.slice(start, start + pageSize);
+
+      return slice.map((treeRow, indexOnPage): PageRow => {
+        const absoluteIndex = start + indexOnPage;
+        if (treeRow.kind === "leaf" && treeRow.row != null) {
+          const id = treeRow.id;
+          return {
+            row: editing.getDisplayRow(treeRow.row, id),
+            index: absoluteIndex,
+            id,
+            tree: treeRow,
+          };
+        }
+        return {
+          row: treeRow.row ?? ({} as T),
+          index: absoluteIndex,
+          id: treeRow.id,
+          tree: treeRow,
+        };
+      });
+    }
+
     if (isServer) {
-      return data.map((row, index) => {
+      return data.map((row, index): PageRow => {
         const id = getRowId(row, index);
         return {
           row: editing.getDisplayRow(row, id),
@@ -594,7 +740,7 @@ export function DataTable<T>({
     }
 
     const start = (page - 1) * pageSize;
-    return processedData.slice(start, start + pageSize).map((row, index) => {
+    return processedData.slice(start, start + pageSize).map((row, index): PageRow => {
       const absoluteIndex = start + index;
       const id = getRowId(row, absoluteIndex);
       return {
@@ -607,25 +753,65 @@ export function DataTable<T>({
     data,
     editing.getDisplayRow,
     editing.rowOverrides,
+    flattenedTreeRows,
     getRowId,
     isServer,
     page,
     pageSize,
     processedData,
+    treeEnabled,
   ]);
 
-  const pageIds = pageRows.map((item) => item.id);
+  const pageIds = pageRows
+    .filter((item) => !item.tree || isSelectableTreeRow(item.tree))
+    .map((item) => item.id);
   const allPageSelected = selection.isAllSelected(pageIds);
   const somePageSelected = selection.isSomeSelected(pageIds);
 
   const virtualization = useTableVirtualization({
-    enabled: enableVirtualization && pageRows.length > 0 && !loading,
+    enabled: virtualizationAllowed && pageRows.length > 0 && !loading,
     count: pageRows.length,
     scrollElement,
     density,
     estimateSize: virtualRowHeight,
     overscan: virtualOverscan,
   });
+
+  const setDetailExpanded = React.useCallback(
+    (ids: string[]) => {
+      if (!isDetailExpandedControlled) setUncontrolledDetailExpanded(ids);
+      onDetailPanelExpandedRowIdsChange?.(ids);
+    },
+    [isDetailExpandedControlled, onDetailPanelExpandedRowIdsChange],
+  );
+
+  const toggleDetailExpanded = React.useCallback(
+    (id: string) => {
+      const next = detailExpandedSet.has(id)
+        ? detailExpandedIds.filter((item) => item !== id)
+        : [...detailExpandedIds, id];
+      setDetailExpanded(next);
+    },
+    [detailExpandedIds, detailExpandedSet, setDetailExpanded],
+  );
+
+  const setTreeExpanded = React.useCallback(
+    (ids: string[]) => {
+      if (!isTreeExpandedControlled) setUncontrolledTreeExpanded(ids);
+      onExpandedTreeIdsChange?.(ids);
+    },
+    [isTreeExpandedControlled, onExpandedTreeIdsChange],
+  );
+
+  const toggleTreeExpanded = React.useCallback(
+    (id: string) => {
+      const next = expandedTreeIdSet.has(id)
+        ? expandedTreeIdList.filter((item) => item !== id)
+        : [...expandedTreeIdList, id];
+      setTreeExpanded(next);
+    },
+    [expandedTreeIdList, expandedTreeIdSet, setTreeExpanded],
+  );
 
   const bodyRows = virtualization.enabled
     ? virtualization.virtualRows.map((virtualRow) => ({
@@ -649,7 +835,8 @@ export function DataTable<T>({
     onStartEdit: ({ rowIndex, colIndex }) => {
       const item = pageRows[rowIndex];
       const column = visibleColumns[colIndex];
-      if (!item || !column || !isColumnEditable(column)) return;
+      if (!item || !column || item.tree?.kind === "group") return;
+      if (!isColumnEditable(column)) return;
       const value = getCellValue(item.row, column.key);
       const params = {
         id: item.id,
@@ -670,7 +857,9 @@ export function DataTable<T>({
 
     let exportRows: T[] = [];
     if (exportScope === "page") {
-      exportRows = pageRows.map((item) => item.row);
+      exportRows = pageRows
+        .filter((item) => !item.tree || isSelectableTreeRow(item.tree))
+        .map((item) => item.row);
     } else if (exportScope === "selected") {
       const selected = new Set(selection.selectedIds);
       const source = isServer ? data : processedData;
@@ -708,10 +897,17 @@ export function DataTable<T>({
   const colSpan =
     visibleColumns.length +
     (selectable ? 1 : 0) +
+    (showDetailExpand ? 1 : 0) +
     (sn ? 1 : 0) +
     (showActions ? 1 : 0);
 
-  const firstStickyLeft = selectable ? "2.5rem" : "0";
+  const firstStickyLeft = selectable
+    ? showDetailExpand
+      ? `${40 + DETAIL_EXPAND_COLUMN_WIDTH}px`
+      : "2.5rem"
+    : showDetailExpand
+      ? `${DETAIL_EXPAND_COLUMN_WIDTH}px`
+      : "0";
 
   const tableMinWidth = React.useMemo(() => {
     if (minTableWidth) return minTableWidth;
@@ -722,6 +918,7 @@ export function DataTable<T>({
     );
     const extras =
       (selectable ? 40 : 0) +
+      (showDetailExpand ? DETAIL_EXPAND_COLUMN_WIDTH : 0) +
       (sn ? SN_COLUMN_WIDTH : 0) +
       (showActions ? actionsColumnWidth : 0);
     return `${dataWidth + extras}px`;
@@ -732,6 +929,7 @@ export function DataTable<T>({
     resize,
     selectable,
     showActions,
+    showDetailExpand,
     sn,
     visibleColumns,
   ]);
@@ -877,6 +1075,7 @@ export function DataTable<T>({
   };
 
   return (
+    <DataTableLocaleProvider value={locale}>
     <div
       data-slot="data-table"
       data-density={density}
@@ -884,6 +1083,8 @@ export function DataTable<T>({
       data-mode={resolvedMode}
       data-sticky-header={stickyHeaderEnabled ? "true" : "false"}
       data-resizable={resizable ? "true" : "false"}
+      data-tree={treeEnabled ? "true" : "false"}
+      data-detail-panel={showDetailExpand ? "true" : "false"}
       style={style}
       className={cn(
         "w-full overflow-hidden bg-card text-card-foreground shadow-[0_1px_3px_rgba(0,0,0,0.06)] ring-1 ring-black/[0.04] dark:shadow-[0_1px_3px_rgba(0,0,0,0.35)] dark:ring-white/8",
@@ -905,7 +1106,7 @@ export function DataTable<T>({
             <QuickFilter
               value={quickFilter}
               onChange={handleQuickFilterChange}
-              placeholder={quickFilterPlaceholder}
+              placeholder={resolvedQuickFilterPlaceholder}
               radiusClass={radiusClass}
               className={classNames?.quickFilter}
             />
@@ -981,7 +1182,7 @@ export function DataTable<T>({
             aria-live="polite"
             aria-busy="true"
           >
-            <span className="text-sm text-muted-foreground">Loading…</span>
+            <span className="text-sm text-muted-foreground">{locale.loading}</span>
           </div>
         ) : null}
 
@@ -997,9 +1198,13 @@ export function DataTable<T>({
         >
           {resizable ||
           visibleColumns.some((c) => c.width || c.minWidth) ||
-          sn ? (
+          sn ||
+          showDetailExpand ? (
             <colgroup>
               {selectable ? <col style={{ width: 40 }} /> : null}
+              {showDetailExpand ? (
+                <col style={{ width: DETAIL_EXPAND_COLUMN_WIDTH }} />
+              ) : null}
               {sn ? (
                 <col
                   style={{
@@ -1012,7 +1217,10 @@ export function DataTable<T>({
               {visibleColumns.map((column) => {
                 const width = resizable
                   ? resize.getWidth(column.key, column)
-                  : column.width;
+                  : column.key === visibleColumns[0]?.key &&
+                      groupingColDef?.width != null
+                    ? groupingColDef.width
+                    : column.width;
                 return (
                   <col
                     key={column.key}
@@ -1061,14 +1269,28 @@ export function DataTable<T>({
                           : false
                     }
                     onCheckedChange={handleSelectAll}
-                    aria-label="Select all rows on this page"
+                    aria-label={locale.selectAllAria}
                   />
+                </TableHead>
+              ) : null}
+
+              {showDetailExpand ? (
+                <TableHead
+                  className={cn(
+                    "w-9 bg-card",
+                    densityHeader,
+                    cellBorderClass,
+                    classNames?.headerCell,
+                  )}
+                  style={{ width: DETAIL_EXPAND_COLUMN_WIDTH }}
+                >
+                  <span className="sr-only">{locale.detailPanelAria}</span>
                 </TableHead>
               ) : null}
 
               {sn ? (
                 <SnHeader
-                  label={snHeader}
+                  label={resolvedSnHeader}
                   className={cn(
                     cellBorderClass,
                     (stickyFirstColumn || leftPinnedKeys.length > 0) &&
@@ -1077,7 +1299,13 @@ export function DataTable<T>({
                   )}
                   style={
                     stickyFirstColumn || leftPinnedKeys.length > 0
-                      ? { left: selectable ? 40 : 0 }
+                      ? {
+                          left:
+                            (selectable ? 40 : 0) +
+                            (showDetailExpand
+                              ? DETAIL_EXPAND_COLUMN_WIDTH
+                              : 0),
+                        }
                       : undefined
                   }
                 />
@@ -1173,11 +1401,21 @@ export function DataTable<T>({
                           type="button"
                           className="inline-flex min-w-0 max-w-full items-center gap-1.5 outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
                           onClick={() => handleSort(column.key)}
-                          aria-label={`Sort by ${column.header}`}
-                          title={column.header}
+                          aria-label={locale.sortByAria(
+                            columnIndex === 0 && groupingColDef?.headerName
+                              ? groupingColDef.headerName
+                              : column.header,
+                          )}
+                          title={
+                            columnIndex === 0 && groupingColDef?.headerName
+                              ? groupingColDef.headerName
+                              : column.header
+                          }
                         >
                           <CellContent truncate={truncate} wrap={column.wrap}>
-                            {column.header}
+                            {columnIndex === 0 && groupingColDef?.headerName
+                              ? groupingColDef.headerName
+                              : column.header}
                           </CellContent>
                           {sortRule?.direction === "asc" ? (
                             <ArrowUpIcon
@@ -1198,7 +1436,7 @@ export function DataTable<T>({
                           {sortIndex >= 0 && sort.length > 1 ? (
                             <span
                               className="inline-flex size-4 shrink-0 items-center justify-center bg-muted text-[10px] font-semibold text-muted-foreground"
-                              aria-label={`Sort priority ${sortIndex + 1}`}
+                              aria-label={locale.sortPriorityAria(sortIndex + 1)}
                             >
                               {sortIndex + 1}
                             </span>
@@ -1235,7 +1473,7 @@ export function DataTable<T>({
                       <div
                         role="separator"
                         aria-orientation="vertical"
-                        aria-label={`Resize ${column.header} column`}
+                        aria-label={locale.resizeColumnAria(column.header)}
                         tabIndex={0}
                         className="group/resize absolute top-0 right-0 z-40 flex h-full w-2.5 cursor-col-resize touch-none select-none items-center justify-center"
                         onMouseDown={(event) =>
@@ -1299,7 +1537,7 @@ export function DataTable<T>({
                     minWidth: actionsColumnWidth,
                   }}
                 >
-                  <span className="sr-only">Actions</span>
+                  <span className="sr-only">{locale.actionsHeader}</span>
                 </TableHead>
               ) : null}
             </TableRow>
@@ -1316,7 +1554,7 @@ export function DataTable<T>({
                     classNames?.cell,
                   )}
                 >
-                  {emptyMessage}
+                  {resolvedEmptyMessage}
                 </TableCell>
               </TableRow>
             ) : (
@@ -1334,27 +1572,41 @@ export function DataTable<T>({
                   </tr>
                 ) : null}
 
-                {bodyRows.map(({ row, index, id, rowIndexOnPage }) => {
-                const isSelected = selection.isSelected(id);
+                {bodyRows.map(({ row, index, id, rowIndexOnPage, tree }) => {
+                const isGroup = tree?.kind === "group";
+                const canSelect = !tree || isSelectableTreeRow(tree);
+                const isSelected = canSelect && selection.isSelected(id);
                 const isActive = activeRowId === id;
                 const resolvedRowClassName =
                   typeof rowClassName === "function"
                     ? rowClassName(row, index)
                     : rowClassName;
+                const detailContent =
+                  !isGroup && showDetailExpand && getDetailPanelContent
+                    ? getDetailPanelContent({ id, row })
+                    : null;
+                const canExpandDetail = detailContent != null;
+                const detailOpen =
+                  canExpandDetail && detailExpandedSet.has(id);
 
                 return (
+                  <React.Fragment key={id}>
                   <TableRow
-                    key={id}
                     data-index={rowIndexOnPage}
+                    data-tree-kind={tree?.kind}
                     data-state={
                       isSelected ? "selected" : isActive ? "active" : undefined
                     }
                     className={cn(
-                      onRowClick && "cursor-pointer",
+                      onRowClick && !isGroup && "cursor-pointer",
+                      isGroup && "bg-muted/20 font-medium",
                       classNames?.row,
                       resolvedRowClassName,
                     )}
-                    onClick={() => onRowClick?.(row, index)}
+                    onClick={() => {
+                      if (isGroup) return;
+                      onRowClick?.(row, index);
+                    }}
                   >
                     {selectable ? (
                       <TableCell
@@ -1368,12 +1620,35 @@ export function DataTable<T>({
                           classNames?.cell,
                         )}
                       >
-                        <Checkbox
-                          checked={isSelected}
-                          onCheckedChange={() => selection.toggle(id)}
-                          aria-label={`Select row ${id}`}
-                          onClick={(event) => event.stopPropagation()}
-                        />
+                        {canSelect ? (
+                          <Checkbox
+                            checked={isSelected}
+                            onCheckedChange={() => selection.toggle(id)}
+                            aria-label={locale.selectRowAria(id)}
+                            onClick={(event) => event.stopPropagation()}
+                          />
+                        ) : null}
+                      </TableCell>
+                    ) : null}
+
+                    {showDetailExpand ? (
+                      <TableCell
+                        className={cn(
+                          "bg-card",
+                          densityCell,
+                          cellBorderClass,
+                          isSelected && "bg-muted/40",
+                          classNames?.cell,
+                        )}
+                        style={{ width: DETAIL_EXPAND_COLUMN_WIDTH }}
+                      >
+                        {canExpandDetail ? (
+                          <DetailExpandButton
+                            expanded={detailOpen}
+                            onToggle={() => toggleDetailExpanded(id)}
+                            variant="detail"
+                          />
+                        ) : null}
                       </TableCell>
                     ) : null}
 
@@ -1389,19 +1664,35 @@ export function DataTable<T>({
                         )}
                         style={
                           stickyFirstColumn || leftPinnedKeys.length > 0
-                            ? { left: selectable ? 40 : 0 }
+                            ? {
+                                left:
+                                  (selectable ? 40 : 0) +
+                                  (showDetailExpand
+                                    ? DETAIL_EXPAND_COLUMN_WIDTH
+                                    : 0),
+                              }
                             : undefined
                         }
                       />
                     ) : null}
 
                     {visibleColumns.map((column, columnIndex) => {
-                      const rawValue = getCellValue(row, column.key);
+                      const rawValue =
+                        isGroup && columnIndex === 0
+                          ? (tree?.label ?? "")
+                          : isGroup
+                            ? ""
+                            : getCellValue(row, column.key);
                       const textValue =
                         rawValue == null ? "" : String(rawValue);
-                      const content = column.cell
-                        ? column.cell(row, index)
-                        : textValue;
+                      const content =
+                        isGroup && columnIndex === 0
+                          ? null
+                          : isGroup
+                            ? null
+                            : column.cell
+                              ? column.cell(row, index)
+                              : textValue;
                       const pinnedSide = resolvePinnedSide(
                         column.key,
                         pinnedColumns,
@@ -1436,23 +1727,29 @@ export function DataTable<T>({
                         pinnedSide === "right"
                           ? getPinnedRightOffset(column.key)
                           : undefined;
-                      const canEdit = isColumnEditable(column);
-                      const cellEditing = editing.isEditingCell(
-                        id,
-                        column.key,
-                      );
+                      const canEdit = !isGroup && isColumnEditable(column);
+                      const cellEditing =
+                        !isGroup &&
+                        editing.isEditingCell(id, column.key);
                       const editValue =
                         editing.draft[column.key] !== undefined
                           ? editing.draft[column.key]
                           : rawValue;
-                      const keyboardProps = enableKeyboardNavigation
-                        ? keyboard.getCellProps(rowIndexOnPage, columnIndex)
-                        : null;
+                      const keyboardProps =
+                        enableKeyboardNavigation && !isGroup
+                          ? keyboard.getCellProps(rowIndexOnPage, columnIndex)
+                          : null;
+                      const showTreeChrome =
+                        treeEnabled && columnIndex === 0 && tree != null;
 
                       return (
                         <TableCell
                           key={column.key}
-                          data-table-cell={`${rowIndexOnPage}:${columnIndex}`}
+                          data-table-cell={
+                            isGroup
+                              ? undefined
+                              : `${rowIndexOnPage}:${columnIndex}`
+                          }
                           className={cn(
                             "overflow-hidden bg-card",
                             densityCell,
@@ -1468,6 +1765,7 @@ export function DataTable<T>({
                             canEdit && "cursor-text",
                             cellEditing && "bg-muted/30",
                             enableKeyboardNavigation &&
+                              !isGroup &&
                               "outline-none focus-visible:ring-2 focus-visible:ring-ring/40 data-[focused=true]:ring-2 data-[focused=true]:ring-ring/50",
                             column.className,
                             classNames?.cell,
@@ -1504,7 +1802,7 @@ export function DataTable<T>({
                               editType={column.editType}
                               editOptions={column.editOptions}
                               radiusClass={radiusClass}
-                              aria-label={`Edit ${column.header}`}
+                              aria-label={locale.editFieldAria(column.header)}
                               onChange={(next) =>
                                 editing.setDraftValue(column.key, next)
                               }
@@ -1524,6 +1822,37 @@ export function DataTable<T>({
                                   : undefined
                               }
                             />
+                          ) : showTreeChrome ? (
+                            <div
+                              className="flex min-w-0 items-center gap-0.5"
+                              style={{
+                                paddingLeft: `${(tree?.depth ?? 0) * 1.05}rem`,
+                              }}
+                            >
+                              {isGroup ? (
+                                <DetailExpandButton
+                                  expanded={expandedTreeIdSet.has(id)}
+                                  onToggle={() => toggleTreeExpanded(id)}
+                                  variant="group"
+                                  className="size-6"
+                                />
+                              ) : (
+                                <span className="inline-block size-6 shrink-0" />
+                              )}
+                              <CellContent
+                                wrap={column.wrap}
+                                truncate={truncate}
+                                title={
+                                  isGroup
+                                    ? tree?.label
+                                    : truncate && !column.cell
+                                      ? textValue
+                                      : undefined
+                                }
+                              >
+                                {isGroup ? tree?.label : content}
+                              </CellContent>
+                            </div>
                           ) : (
                             <CellContent
                               wrap={column.wrap}
@@ -1567,6 +1896,7 @@ export function DataTable<T>({
                           ),
                         }}
                       >
+                        {!isGroup ? (
                         <div className="flex items-center justify-end gap-0.5">
                           {showRowEditControls && editing.isEditingRow(id) ? (
                             <>
@@ -1574,7 +1904,7 @@ export function DataTable<T>({
                                 type="button"
                                 size="icon-xs"
                                 variant="ghost"
-                                aria-label="Save row"
+                                aria-label={locale.saveRowAria}
                                 className={cn(
                                   "text-emerald-600 hover:bg-emerald-500/10 hover:text-emerald-700",
                                   radiusClass,
@@ -1590,7 +1920,7 @@ export function DataTable<T>({
                                 type="button"
                                 size="icon-xs"
                                 variant="ghost"
-                                aria-label="Cancel edit"
+                                aria-label={locale.cancelEditAria}
                                 className={cn(
                                   "text-muted-foreground hover:bg-destructive/10 hover:text-destructive",
                                   radiusClass,
@@ -1618,7 +1948,7 @@ export function DataTable<T>({
                               radiusClass={radiusClass}
                               menuAriaLabel={
                                 actionsOptions?.menuAriaLabel ??
-                                `Actions for row ${id}`
+                                locale.rowActionsAria(id)
                               }
                             />
                           ) : renderRowActions ? (
@@ -1629,15 +1959,35 @@ export function DataTable<T>({
                               placement={popoverPlacement}
                               offsetDistance={popoverOffset}
                               radiusClass={radiusClass}
-                              menuAriaLabel={`Actions for row ${id}`}
+                              menuAriaLabel={locale.rowActionsAria(id)}
                             >
                               {renderRowActions(row)}
                             </RowActions>
                           ) : null}
                         </div>
+                        ) : null}
                       </TableCell>
                     ) : null}
                   </TableRow>
+                  {detailOpen && canExpandDetail ? (
+                    <TableRow
+                      data-slot="data-table-detail-panel"
+                      className="hover:bg-transparent"
+                    >
+                      <TableCell
+                        colSpan={colSpan}
+                        className={cn(
+                          "bg-muted/20",
+                          densityCell,
+                          classNames?.cell,
+                        )}
+                        aria-label={locale.detailPanelAria}
+                      >
+                        {detailContent}
+                      </TableCell>
+                    </TableRow>
+                  ) : null}
+                  </React.Fragment>
                 );
               })}
 
@@ -1674,5 +2024,6 @@ export function DataTable<T>({
         />
       ) : null}
     </div>
+    </DataTableLocaleProvider>
   );
 }

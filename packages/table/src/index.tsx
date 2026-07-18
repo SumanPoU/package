@@ -127,6 +127,29 @@ export type {
   UseTableKeyboardReturn,
 } from "./use-table-keyboard";
 
+export {
+  DEFAULT_LOCALE_TEXT,
+  DataTableLocaleProvider,
+  resolveLocaleText,
+  useDataTableLocale,
+} from "./locale-text";
+export type { DataTableLocaleText } from "./locale-text";
+
+export {
+  DETAIL_EXPAND_COLUMN_WIDTH,
+  DetailExpandButton,
+} from "./detail-panel";
+export type { DetailExpandButtonProps } from "./detail-panel";
+
+export {
+  buildTreeFromPaths,
+  flattenVisibleTree,
+  getDefaultExpandedGroupIds,
+  isSelectableTreeRow,
+  pathToGroupId,
+} from "./tree-data";
+export type { TreeFlatRow, TreeNodeKind } from "./tree-data";
+
 export { useTableSelection } from "./use-table-selection";
 export type {
   UseTableSelectionOptions,

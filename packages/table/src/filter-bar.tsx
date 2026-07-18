@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "./components/ui/select";
 import { cn } from "./lib/utils";
+import { useDataTableLocale } from "./locale-text";
 import type { DataTableColumn, DataTableFilters } from "./types";
 
 export type FilterBarProps<T> = {
@@ -29,6 +30,7 @@ export function FilterBar<T>({
   className,
   radiusClass = "",
 }: FilterBarProps<T>) {
+  const locale = useDataTableLocale();
   const filterableColumns = columns.filter((column) => column.filterable);
 
   if (filterableColumns.length === 0) {
@@ -79,12 +81,12 @@ export function FilterBar<T>({
                 <SelectTrigger
                   size="sm"
                   className={cn("h-8 w-full shadow-none", radiusClass)}
-                  aria-label={`Filter by ${column.header}`}
+                  aria-label={locale.filterBarAria(column.header)}
                 >
-                  <SelectValue placeholder="All" />
+                  <SelectValue placeholder={locale.filterBarAll} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__all__">All</SelectItem>
+                  <SelectItem value="__all__">{locale.filterBarAll}</SelectItem>
                   {(column.filterOptions ?? []).map((option) => (
                     <SelectItem key={option} value={option}>
                       {option}
@@ -97,8 +99,8 @@ export function FilterBar<T>({
                 type="search"
                 value={value}
                 onChange={(event) => setFilter(column.key, event.target.value)}
-                placeholder={`Filter ${column.header.toLowerCase()}…`}
-                aria-label={`Filter by ${column.header}`}
+                placeholder={locale.filterBarPlaceholder(column.header)}
+                aria-label={locale.filterBarAria(column.header)}
                 className={cn(
                   "h-8 w-full border border-input bg-transparent px-2.5 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
                   radiusClass,
@@ -112,7 +114,7 @@ export function FilterBar<T>({
       {activeCount > 0 ? (
         <div className="flex items-center gap-2 pb-0.5">
           <span className="text-xs text-muted-foreground">
-            {activeCount} active
+            {locale.filterBarActiveCount(activeCount)}
           </span>
           <Button
             type="button"
@@ -122,7 +124,7 @@ export function FilterBar<T>({
             className={cn("h-8 gap-1 px-2 text-muted-foreground", radiusClass)}
           >
             <XIcon className="size-3.5" />
-            Clear filters
+            {locale.filterBarClear}
           </Button>
         </div>
       ) : null}

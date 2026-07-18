@@ -16,6 +16,7 @@ import {
 } from "@floating-ui/react";
 
 import { cn } from "../lib/utils";
+import { useDataTableLocale } from "../locale-text";
 import { toolbarSelectTriggerClass } from "../toolbar-control";
 import { FilterBuilder } from "./filter-builder";
 import {
@@ -58,6 +59,7 @@ export function FilterBuilderMenu({
   activeCount = 0,
   popoverOffset = 8,
 }: FilterBuilderMenuProps) {
+  const locale = useDataTableLocale();
   const [open, setOpen] = React.useState(false);
   const [draft, setDraft] = React.useState<FilterCondition[]>(() =>
     applied.length > 0 ? applied : [makeFilterCondition(columns)],
@@ -110,7 +112,7 @@ export function FilterBuilderMenu({
       >
         <span className="inline-flex min-w-0 items-center gap-1.5">
           <SlidersHorizontalIcon className="size-3 opacity-70" />
-          <span className="truncate">Filters</span>
+          <span className="truncate">{locale.filterBuilderLabel}</span>
           {activeCount > 0 ? (
             <span className="bg-muted px-1 py-px text-[10px] tabular-nums text-muted-foreground">
               {activeCount}

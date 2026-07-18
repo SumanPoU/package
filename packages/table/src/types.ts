@@ -2,6 +2,7 @@ import type * as React from "react";
 import type { Placement } from "@floating-ui/react";
 
 import type { FilterCondition } from "./filter-builder/types";
+import type { DataTableLocaleText } from "./locale-text";
 
 export type {
   FilterBuilderApplyPayload,
@@ -425,6 +426,41 @@ export type DataTableProps<T> = {
    * Enter starts edit when `editable` is on.
    */
   enableKeyboardNavigation?: boolean;
+
+  /**
+   * Master-detail — expandable panel under a row.
+   * When set, an expand column is shown. Virtualization is disabled.
+   */
+  getDetailPanelContent?: (params: {
+    id: string;
+    row: T;
+  }) => React.ReactNode;
+  detailPanelExpandedRowIds?: string[];
+  defaultDetailPanelExpandedRowIds?: string[];
+  onDetailPanelExpandedRowIdsChange?: (ids: string[]) => void;
+
+  /**
+   * Tree data — hierarchical rows via path segments.
+   * Requires `getTreeDataPath`. Virtualization is disabled.
+   */
+  treeData?: boolean;
+  getTreeDataPath?: (row: T) => readonly string[];
+  expandedTreeIds?: string[];
+  defaultExpandedTreeIds?: string[];
+  onExpandedTreeIdsChange?: (ids: string[]) => void;
+  /**
+   * Initial expansion depth when uncontrolled.
+   * `-1` = all groups; `0` = none; `1` = top level (default).
+   */
+  defaultGroupingExpansionDepth?: number;
+  /** Optional chrome for the tree/grouping column (first data column). */
+  groupingColDef?: {
+    headerName?: string;
+    width?: number;
+  };
+
+  /** Partial override of built-in UI strings. */
+  localeText?: Partial<DataTableLocaleText>;
 
   /** Extra toolbar content (rendered beside built-in density control when enabled). */
   toolbar?: React.ReactNode;

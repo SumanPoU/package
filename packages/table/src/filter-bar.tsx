@@ -21,6 +21,7 @@ export type FilterBarProps<T> = {
   onFiltersChange: (filters: DataTableFilters) => void;
   className?: string;
   radiusClass?: string;
+  style?: React.CSSProperties;
 };
 
 export function FilterBar<T>({
@@ -29,6 +30,7 @@ export function FilterBar<T>({
   onFiltersChange,
   className,
   radiusClass = "",
+  style,
 }: FilterBarProps<T>) {
   const locale = useDataTableLocale();
   const filterableColumns = columns.filter((column) => column.filterable);
@@ -56,6 +58,7 @@ export function FilterBar<T>({
   return (
     <div
       data-slot="data-table-filter-bar"
+      style={style}
       className={cn(
         "flex flex-wrap items-end gap-3 border-b border-black/[0.04] px-3 py-3 dark:border-white/[0.06]",
         className,

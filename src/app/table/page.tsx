@@ -4,213 +4,57 @@ import { useState } from "react";
 import { EyeIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import {
   DataTable,
-  type DataTableColumn,
+  type DataTableLocaleText,
   type DataTableSort,
 } from "@ss-components/table";
 
-import employees from "./employees.json";
+import {
+  EMPLOYEE_COLUMNS,
+  LOCALE_COLUMNS,
+  ORG_TREE_COLUMNS,
+} from "./columns";
+import employeesData from "./data/employees.json";
+import localeSampleData from "./data/locale-sample.json";
+import orgTreeData from "./data/org-tree.json";
+import rowEditData from "./data/row-edit.json";
+import demoProps from "./props/demos.json";
+import type { Employee, OrgNode } from "./types";
 
-type Employee = {
-  id: string;
-  name: string;
-  email: string;
-  department: string;
-  role: string;
-  status: "Active" | "Away" | "Offline";
-  location: string;
-  joined: string;
-};
+const EMPLOYEES = employeesData as Employee[];
+const ROW_EDIT_ROWS = rowEditData as Employee[];
+const LOCALE_ROWS = localeSampleData as Employee[];
+const ORG_TREE_ROWS = orgTreeData as OrgNode[];
 
-const INITIAL_DATA = employees as Employee[];
-
-const COLUMNS: DataTableColumn<Employee>[] = [
-  {
-    key: "name",
-    header: "Name",
-    sortable: true,
-    editable: true,
-    editType: "text",
-    filterable: true,
-    filterType: "string",
-    minWidth: 120,
-    maxWidth: 220,
-    truncate: true,
-  },
-  {
-    key: "email",
-    header: "Email",
-    editable: true,
-    editType: "text",
-    filterable: true,
-    filterType: "email",
-    hideBelow: "md",
-    minWidth: 140,
-    maxWidth: 260,
-    truncate: true,
-  },
-  {
-    key: "department",
-    header: "Department",
-    sortable: true,
-    editable: true,
-    editType: "select",
-    editOptions: [
-      "Engineering",
-      "Design",
-      "Product",
-      "Marketing",
-      "Sales",
-      "Support",
-      "Finance",
-      "People",
-    ],
-    filterable: true,
-    filterType: "enum",
-    filterOptions: [
-      "Engineering",
-      "Design",
-      "Product",
-      "Marketing",
-      "Sales",
-      "Support",
-      "Finance",
-      "People",
-    ],
-    minWidth: 110,
-    maxWidth: 180,
-    truncate: true,
-  },
-  {
-    key: "role",
-    header: "Role",
-    sortable: true,
-    editable: true,
-    editType: "text",
-    filterable: true,
-    filterType: "string",
-    hideBelow: "sm",
-    minWidth: 110,
-    maxWidth: 180,
-    truncate: true,
-  },
-  {
-    key: "status",
-    header: "Status",
-    sortable: true,
-    editable: true,
-    editType: "select",
-    editOptions: ["Active", "Away", "Offline"],
-    filterable: true,
-    filterType: "enum",
-    filterOptions: ["Active", "Away", "Offline"],
-    minWidth: 96,
-    maxWidth: 120,
-    cell: (row) => (
-      <span
-        className={
-          row.status === "Active"
-            ? "inline-flex items-center rounded-xs bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-400"
-            : row.status === "Away"
-              ? "inline-flex items-center rounded-xs bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-400"
-              : "inline-flex items-center rounded-xs bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground"
-        }
-      >
-        {row.status}
-      </span>
-    ),
-  },
-  {
-    key: "location",
-    header: "Location",
-    editable: true,
-    editType: "text",
-    filterable: true,
-    filterType: "string",
-    hideBelow: "lg",
-    minWidth: 110,
-    maxWidth: 160,
-    truncate: true,
-  },
-  {
-    key: "joined",
-    header: "Joined",
-    sortable: true,
-    filterable: true,
-    filterType: "string",
-    hideBelow: "md",
-    minWidth: 100,
-    maxWidth: 120,
-  },
-];
-
-type OrgNode = {
-  id: string;
-  name: string;
-  role: string;
-  path: string[];
-};
-
-const TREE_ROWS: OrgNode[] = [
-  {
-    id: "e1",
-    name: "Ava Chen",
-    role: "VP Engineering",
-    path: ["Engineering", "Ava Chen"],
-  },
-  {
-    id: "e2",
-    name: "Ben Ortiz",
-    role: "Staff Engineer",
-    path: ["Engineering", "Platform", "Ben Ortiz"],
-  },
-  {
-    id: "e3",
-    name: "Cara Ng",
-    role: "Engineer",
-    path: ["Engineering", "Platform", "Cara Ng"],
-  },
-  {
-    id: "e4",
-    name: "Drew Kim",
-    role: "Design Lead",
-    path: ["Design", "Drew Kim"],
-  },
-  {
-    id: "e5",
-    name: "Elena Ruiz",
-    role: "Product Designer",
-    path: ["Design", "Product", "Elena Ruiz"],
-  },
-];
-
-const TREE_COLUMNS: DataTableColumn<OrgNode>[] = [
-  {
-    key: "name",
-    header: "Name",
-    minWidth: 180,
-  },
-  {
-    key: "role",
-    header: "Role",
-    minWidth: 140,
-  },
-];
+const full = demoProps.fullFeatures;
+const rowEdit = demoProps.rowEdit;
+const tree = demoProps.tree;
+const locale = demoProps.locale;
 
 export default function TableDemoPage() {
-  const [rows, setRows] = useState(INITIAL_DATA);
+  const [rows, setRows] = useState(EMPLOYEES);
+  const [rowEditRows, setRowEditRows] = useState(ROW_EDIT_ROWS);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [sort, setSort] = useState<DataTableSort[]>([
-    { key: "department", direction: "asc" },
-    { key: "name", direction: "asc" },
-  ]);
+  const [sort, setSort] = useState<DataTableSort[]>(
+    full.defaultSort as DataTableSort[],
+  );
+
+  const syncEmployee = (newRow: Employee) => {
+    setRows((prev) =>
+      prev.map((row) => (row.id === newRow.id ? newRow : row)),
+    );
+    setRowEditRows((prev) =>
+      prev.map((row) => (row.id === newRow.id ? newRow : row)),
+    );
+    return newRow;
+  };
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-12 px-4 py-10 sm:px-6">
       <section className="flex flex-col gap-6">
         <header className="flex flex-col gap-1.5">
-          <h1 className="text-2xl font-semibold tracking-tight">Employees</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{full.title}</h1>
           <p className="text-sm text-muted-foreground">
-            Export · keyboard · cell edit · expand row for details
+            {full.description}
             {selectedIds.length > 0
               ? ` · ${selectedIds.length} selected`
               : null}
@@ -219,29 +63,17 @@ export default function TableDemoPage() {
 
         <DataTable
           data={rows}
-          columns={COLUMNS}
-          paginationMode="client"
-          pageSize={25}
-          paginationOptions={{
-            pageSizeOptions: [10, 25, 50, 100],
-            showPageSizeOptions: true,
-            showPageNumbers: true,
-            maxVisiblePages: 3,
-            showTotal: true,
-            rowsLabel: "Rows",
-          }}
-          selectable
-          sn
-          stickyHeader
-          enableVirtualization={false}
-          editable
-          editMode="cell"
-          processRowUpdate={(newRow) => {
-            setRows((prev) =>
-              prev.map((row) => (row.id === newRow.id ? newRow : row)),
-            );
-            return newRow;
-          }}
+          columns={EMPLOYEE_COLUMNS}
+          paginationMode={full.paginationMode as "client"}
+          pageSize={full.pageSize}
+          paginationOptions={full.paginationOptions}
+          selectable={full.selectable}
+          sn={full.sn}
+          stickyHeader={full.stickyHeader}
+          enableVirtualization={full.enableVirtualization}
+          editable={full.editable}
+          editMode={full.editMode as "cell"}
+          processRowUpdate={syncEmployee}
           getDetailPanelContent={({ row }) => (
             <div className="flex flex-col gap-1 px-2 py-2 text-sm text-muted-foreground">
               <p>
@@ -254,29 +86,29 @@ export default function TableDemoPage() {
               </p>
             </div>
           )}
-          maxHeight="28rem"
-          resizable
-          reorderable
-          showColumnMenu
-          enableQuickFilter
-          showColumnSelector
-          showDensityControl
-          showFilterBuilder
-          showExport
-          exportFilename="employees.csv"
-          exportScope="filtered"
-          enableKeyboardNavigation
-          showPagination
-          enableMultiSort
-          showRowBorders
-          showColumnBorders={false}
-          radius="xs"
+          maxHeight={full.maxHeight}
+          resizable={full.resizable}
+          reorderable={full.reorderable}
+          showColumnMenu={full.showColumnMenu}
+          enableQuickFilter={full.enableQuickFilter}
+          showColumnSelector={full.showColumnSelector}
+          showDensityControl={full.showDensityControl}
+          showFilterBuilder={full.showFilterBuilder}
+          showExport={full.showExport}
+          exportFilename={full.exportFilename}
+          exportScope={full.exportScope as "filtered"}
+          enableKeyboardNavigation={full.enableKeyboardNavigation}
+          showPagination={full.showPagination}
+          enableMultiSort={full.enableMultiSort}
+          showRowBorders={full.showRowBorders}
+          showColumnBorders={full.showColumnBorders}
+          radius={full.radius as "xs"}
           selectedIds={selectedIds}
           onSelectionChange={setSelectedIds}
           sort={sort}
           onSortChange={setSort}
-          actionsDisplay="menu"
-          actionsOptions={{ sticky: true }}
+          actionsDisplay={full.actionsDisplay as "menu"}
+          actionsOptions={full.actionsOptions}
           actions={[
             {
               id: "view",
@@ -306,93 +138,69 @@ export default function TableDemoPage() {
       <section className="flex flex-col gap-6">
         <header className="flex flex-col gap-1.5">
           <h2 className="text-lg font-semibold tracking-tight">
-            Row edit mode
+            {rowEdit.title}
           </h2>
-          <p className="text-sm text-muted-foreground">
-            <code className="text-foreground">editMode=&quot;row&quot;</code>
-            {" — "}
-            double-click, edit multiple fields, then ✓ / ✕
-          </p>
+          <p className="text-sm text-muted-foreground">{rowEdit.description}</p>
         </header>
 
         <DataTable
-          data={rows.slice(0, 8)}
-          columns={COLUMNS}
-          paginationMode="client"
-          pageSize={8}
-          showPagination={false}
-          sn={false}
-          editable
-          editMode="row"
-          processRowUpdate={(newRow) => {
-            setRows((prev) =>
-              prev.map((row) => (row.id === newRow.id ? newRow : row)),
-            );
-            return newRow;
-          }}
-          radius="xs"
+          data={rowEditRows}
+          columns={EMPLOYEE_COLUMNS}
+          paginationMode={rowEdit.paginationMode as "client"}
+          pageSize={rowEdit.pageSize}
+          showPagination={rowEdit.showPagination}
+          sn={rowEdit.sn}
+          editable={rowEdit.editable}
+          editMode={rowEdit.editMode as "row"}
+          processRowUpdate={syncEmployee}
+          radius={rowEdit.radius as "xs"}
         />
       </section>
 
       <section className="flex flex-col gap-6">
         <header className="flex flex-col gap-1.5">
-          <h2 className="text-lg font-semibold tracking-tight">Tree data</h2>
-          <p className="text-sm text-muted-foreground">
-            Path-based hierarchy via{" "}
-            <code className="text-foreground">getTreeDataPath</code>
-          </p>
+          <h2 className="text-lg font-semibold tracking-tight">{tree.title}</h2>
+          <p className="text-sm text-muted-foreground">{tree.description}</p>
         </header>
 
         <DataTable
-          data={TREE_ROWS}
-          columns={TREE_COLUMNS}
-          treeData
+          data={ORG_TREE_ROWS}
+          columns={ORG_TREE_COLUMNS}
+          treeData={tree.treeData}
           getTreeDataPath={(row) => row.path}
-          defaultGroupingExpansionDepth={1}
-          groupingColDef={{ headerName: "Org / name" }}
-          paginationMode="client"
-          pageSize={20}
-          showPagination={false}
-          sn={false}
-          selectable
-          radius="xs"
-          maxHeight="20rem"
-          stickyHeader
+          defaultGroupingExpansionDepth={tree.defaultGroupingExpansionDepth}
+          groupingColDef={tree.groupingColDef}
+          paginationMode={tree.paginationMode as "client"}
+          pageSize={tree.pageSize}
+          showPagination={tree.showPagination}
+          sn={tree.sn}
+          selectable={tree.selectable}
+          radius={tree.radius as "xs"}
+          maxHeight={tree.maxHeight}
+          stickyHeader={tree.stickyHeader}
+          showRowBorders={tree.showRowBorders}
         />
       </section>
 
       <section className="flex flex-col gap-6">
         <header className="flex flex-col gap-1.5">
           <h2 className="text-lg font-semibold tracking-tight">
-            Locale override
+            {locale.title}
           </h2>
-          <p className="text-sm text-muted-foreground">
-            Custom <code className="text-foreground">localeText</code> labels
-          </p>
+          <p className="text-sm text-muted-foreground">{locale.description}</p>
         </header>
 
         <DataTable
-          data={rows.slice(0, 5)}
-          columns={COLUMNS.slice(0, 4)}
-          sn={false}
-          showPagination={false}
-          showExport
-          showColumnSelector
-          showDensityControl
-          enableQuickFilter
-          radius="xs"
-          localeText={{
-            emptyMessage: "Nothing here",
-            exportLabel: "Exportar",
-            exportDownloadCsv: "Descargar CSV",
-            exportCopyCsv: "Copiar CSV",
-            columnsLabel: "Columnas",
-            densityLabel: "Densidad",
-            densityCompact: "Compacto",
-            densityComfortable: "Cómodo",
-            densitySpacious: "Espacioso",
-            quickFilterPlaceholder: "Buscar…",
-          }}
+          data={LOCALE_ROWS}
+          columns={LOCALE_COLUMNS}
+          sn={locale.sn}
+          showPagination={locale.showPagination}
+          showExport={locale.showExport}
+          showColumnSelector={locale.showColumnSelector}
+          showDensityControl={locale.showDensityControl}
+          enableQuickFilter={locale.enableQuickFilter}
+          radius={locale.radius as "xs"}
+          localeText={locale.localeText as Partial<DataTableLocaleText>}
         />
       </section>
     </main>

@@ -1,0 +1,137 @@
+[
+  {
+    "id": "eng-ava",
+    "name": "Ava Chen",
+    "role": "VP Engineering",
+    "email": "ava.chen@example.com",
+    "location": "San Francisco",
+    "status": "Active",
+    "path": ["Engineering", "Ava Chen"]
+  },
+  {
+    "id": "eng-plat-ben",
+    "name": "Ben Ortiz",
+    "role": "Staff Engineer",
+    "email": "ben.ortiz@example.com",
+    "location": "Austin",
+    "status": "Active",
+    "path": ["Engineering", "Platform", "Ben Ortiz"]
+  },
+  {
+    "id": "eng-plat-cara",
+    "name": "Cara Ng",
+    "role": "Senior Engineer",
+    "email": "cara.ng@example.com",
+    "location": "Seattle",
+    "status": "Away",
+    "path": ["Engineering", "Platform", "Cara Ng"]
+  },
+  {
+    "id": "eng-plat-dev",
+    "name": "Dev Patel",
+    "role": "Engineer",
+    "email": "dev.patel@example.com",
+    "location": "Remote",
+    "status": "Active",
+    "path": ["Engineering", "Platform", "Dev Patel"]
+  },
+  {
+    "id": "eng-app-mira",
+    "name": "Mira Soto",
+    "role": "Engineering Manager",
+    "email": "mira.soto@example.com",
+    "location": "New York",
+    "status": "Active",
+    "path": ["Engineering", "Applications", "Mira Soto"]
+  },
+  {
+    "id": "eng-app-jon",
+    "name": "Jon Hale",
+    "role": "Engineer",
+    "email": "jon.hale@example.com",
+    "location": "Chicago",
+    "status": "Offline",
+    "path": ["Engineering", "Applications", "Jon Hale"]
+  },
+  {
+    "id": "des-drew",
+    "name": "Drew Kim",
+    "role": "Head of Design",
+    "email": "drew.kim@example.com",
+    "location": "Los Angeles",
+    "status": "Active",
+    "path": ["Design", "Drew Kim"]
+  },
+  {
+    "id": "des-prod-elena",
+    "name": "Elena Ruiz",
+    "role": "Product Designer",
+    "email": "elena.ruiz@example.com",
+    "location": "Madrid",
+    "status": "Active",
+    "path": ["Design", "Product", "Elena Ruiz"]
+  },
+  {
+    "id": "des-prod-sam",
+    "name": "Sam Okonkwo",
+    "role": "UX Researcher",
+    "email": "sam.okonkwo@example.com",
+    "location": "London",
+    "status": "Away",
+    "path": ["Design", "Product", "Sam Okonkwo"]
+  },
+  {
+    "id": "des-brand-lia",
+    "name": "Lia Park",
+    "role": "Brand Designer",
+    "email": "lia.park@example.com",
+    "location": "Seoul",
+    "status": "Active",
+    "path": ["Design", "Brand", "Lia Park"]
+  },
+  {
+    "id": "prod-noah",
+    "name": "Noah Berg",
+    "role": "VP Product",
+    "email": "noah.berg@example.com",
+    "location": "Berlin",
+    "status": "Active",
+    "path": ["Product", "Noah Berg"]
+  },
+  {
+    "id": "prod-growth-iris",
+    "name": "Iris Tran",
+    "role": "Product Manager",
+    "email": "iris.tran@example.com",
+    "location": "Singapore",
+    "status": "Active",
+    "path": ["Product", "Growth", "Iris Tran"]
+  },
+  {
+    "id": "prod-growth-owen",
+    "name": "Owen Blake",
+    "role": "Associate PM",
+    "email": "owen.blake@example.com",
+    "location": "Toronto",
+    "status": "Away",
+    "path": ["Product", "Growth", "Owen Blake"]
+  },
+  {
+    "id": "ops-rita",
+    "name": "Rita Gomez",
+    "role": "Ops Lead",
+    "email": "rita.gomez@example.com",
+    "location": "Mexico City",
+    "status": "Active",
+    "path": ["Operations", "Rita Gomez"]
+  },
+  {
+    "id": "ops-fin-kai",
+    "name": "Kai Nakamura",
+    "role": "Finance Analyst",
+    "email": "kai.nakamura@example.com",
+    "location": "Tokyo",
+    "status": "Active",
+    "path": ["Operations", "Finance", "Kai Nakamura"]
+  }
+]

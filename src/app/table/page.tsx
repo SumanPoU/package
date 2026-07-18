@@ -143,6 +143,59 @@ const COLUMNS: DataTableColumn<Employee>[] = [
   },
 ];
 
+type OrgNode = {
+  id: string;
+  name: string;
+  role: string;
+  path: string[];
+};
+
+const TREE_ROWS: OrgNode[] = [
+  {
+    id: "e1",
+    name: "Ava Chen",
+    role: "VP Engineering",
+    path: ["Engineering", "Ava Chen"],
+  },
+  {
+    id: "e2",
+    name: "Ben Ortiz",
+    role: "Staff Engineer",
+    path: ["Engineering", "Platform", "Ben Ortiz"],
+  },
+  {
+    id: "e3",
+    name: "Cara Ng",
+    role: "Engineer",
+    path: ["Engineering", "Platform", "Cara Ng"],
+  },
+  {
+    id: "e4",
+    name: "Drew Kim",
+    role: "Design Lead",
+    path: ["Design", "Drew Kim"],
+  },
+  {
+    id: "e5",
+    name: "Elena Ruiz",
+    role: "Product Designer",
+    path: ["Design", "Product", "Elena Ruiz"],
+  },
+];
+
+const TREE_COLUMNS: DataTableColumn<OrgNode>[] = [
+  {
+    key: "name",
+    header: "Name",
+    minWidth: 180,
+  },
+  {
+    key: "role",
+    header: "Role",
+    minWidth: 140,
+  },
+];
+
 export default function TableDemoPage() {
   const [rows, setRows] = useState(INITIAL_DATA);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -157,7 +210,7 @@ export default function TableDemoPage() {
         <header className="flex flex-col gap-1.5">
           <h1 className="text-2xl font-semibold tracking-tight">Employees</h1>
           <p className="text-sm text-muted-foreground">
-            Export · keyboard arrows / Enter to edit · Phase 4 cell edit
+            Export · keyboard · cell edit · expand row for details
             {selectedIds.length > 0
               ? ` · ${selectedIds.length} selected`
               : null}
@@ -180,7 +233,7 @@ export default function TableDemoPage() {
           selectable
           sn
           stickyHeader
-          enableVirtualization
+          enableVirtualization={false}
           editable
           editMode="cell"
           processRowUpdate={(newRow) => {
@@ -189,6 +242,18 @@ export default function TableDemoPage() {
             );
             return newRow;
           }}
+          getDetailPanelContent={({ row }) => (
+            <div className="flex flex-col gap-1 px-2 py-2 text-sm text-muted-foreground">
+              <p>
+                <span className="font-medium text-foreground">{row.name}</span>
+                {" · "}
+                {row.role} in {row.department}
+              </p>
+              <p>
+                {row.email} · {row.location} · joined {row.joined}
+              </p>
+            </div>
+          )}
           maxHeight="28rem"
           resizable
           reorderable
@@ -266,6 +331,68 @@ export default function TableDemoPage() {
             return newRow;
           }}
           radius="xs"
+        />
+      </section>
+
+      <section className="flex flex-col gap-6">
+        <header className="flex flex-col gap-1.5">
+          <h2 className="text-lg font-semibold tracking-tight">Tree data</h2>
+          <p className="text-sm text-muted-foreground">
+            Path-based hierarchy via{" "}
+            <code className="text-foreground">getTreeDataPath</code>
+          </p>
+        </header>
+
+        <DataTable
+          data={TREE_ROWS}
+          columns={TREE_COLUMNS}
+          treeData
+          getTreeDataPath={(row) => row.path}
+          defaultGroupingExpansionDepth={1}
+          groupingColDef={{ headerName: "Org / name" }}
+          paginationMode="client"
+          pageSize={20}
+          showPagination={false}
+          sn={false}
+          selectable
+          radius="xs"
+          maxHeight="20rem"
+          stickyHeader
+        />
+      </section>
+
+      <section className="flex flex-col gap-6">
+        <header className="flex flex-col gap-1.5">
+          <h2 className="text-lg font-semibold tracking-tight">
+            Locale override
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Custom <code className="text-foreground">localeText</code> labels
+          </p>
+        </header>
+
+        <DataTable
+          data={rows.slice(0, 5)}
+          columns={COLUMNS.slice(0, 4)}
+          sn={false}
+          showPagination={false}
+          showExport
+          showColumnSelector
+          showDensityControl
+          enableQuickFilter
+          radius="xs"
+          localeText={{
+            emptyMessage: "Nothing here",
+            exportLabel: "Exportar",
+            exportDownloadCsv: "Descargar CSV",
+            exportCopyCsv: "Copiar CSV",
+            columnsLabel: "Columnas",
+            densityLabel: "Densidad",
+            densityCompact: "Compacto",
+            densityComfortable: "Cómodo",
+            densitySpacious: "Espacioso",
+            quickFilterPlaceholder: "Buscar…",
+          }}
         />
       </section>
     </main>

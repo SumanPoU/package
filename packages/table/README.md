@@ -211,6 +211,54 @@ Toolbar **Export** menu: download CSV or copy CSV to clipboard. Scope uses visib
 
 Arrow keys move focus; Home / End (and Ctrl+Home / Ctrl+End) jump; Enter starts edit when `editable` is on. Navigation is skipped while an editor is open.
 
+## Master-detail panels
+
+```tsx
+<DataTable
+  getDetailPanelContent={({ row }) => (
+    <div className="p-3 text-sm">{row.email}</div>
+  )}
+  // optional controlled expansion:
+  // detailPanelExpandedRowIds={ids}
+  // onDetailPanelExpandedRowIdsChange={setIds}
+  data={rows}
+  columns={columns}
+/>
+```
+
+Shows an expand column. Returning `null` from `getDetailPanelContent` hides the toggle for that row. **Virtualization is disabled** while detail panels are enabled.
+
+## Tree data
+
+```tsx
+<DataTable
+  treeData
+  getTreeDataPath={(row) => row.path} // e.g. ["Engineering", "Platform", "Ada"]
+  defaultGroupingExpansionDepth={1} // -1 all, 0 none, 1 top-level
+  groupingColDef={{ headerName: "Org / name" }}
+  data={rows}
+  columns={columns}
+/>
+```
+
+Builds groups from path segments (intermediate nodes need not exist as rows). Expand/collapse on the first data column. Groups are not selectable. **Virtualization is disabled** with tree data.
+
+## Locale text
+
+```tsx
+<DataTable
+  localeText={{
+    exportLabel: "Exportar",
+    emptyMessage: "Sin resultados",
+    quickFilterPlaceholder: "Buscar…",
+  }}
+  data={rows}
+  columns={columns}
+/>
+```
+
+Partial override of built-in UI strings. Explicit props like `emptyMessage` / `snHeader` still win over `localeText`. See `DEFAULT_LOCALE_TEXT` for all keys.
+
 ## Phase 3: virtualization
 
 ```tsx
@@ -472,6 +520,9 @@ export function ServerUsersTable() {
 | `ExportMenu` | Standalone CSV export menu |
 | `buildCsv` / `downloadTextFile` / `copyTextToClipboard` / `rowsToCsvMatrix` | Export helpers |
 | `useTableKeyboard` | Cell focus / arrow-key navigation hook |
+| `DEFAULT_LOCALE_TEXT` / `resolveLocaleText` / `useDataTableLocale` | Locale map |
+| `DetailExpandButton` | Expand/collapse control |
+| `buildTreeFromPaths` / `flattenVisibleTree` | Tree helpers |
 | `useTableSelection` | Controllable selection hook |
 | `Table`, `TableHeader`, `TableBody`, `TableHead`, `TableRow`, `TableCell`, `TableCaption` | Table primitives |
 | `Checkbox`, `Button`, `Select` (+ parts) | Supporting primitives |

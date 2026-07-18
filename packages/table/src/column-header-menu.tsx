@@ -24,6 +24,7 @@ import {
 
 import { Button } from "./components/ui/button";
 import { cn } from "./lib/utils";
+import { useDataTableLocale } from "./locale-text";
 import type { DataTableSort, SortDirection } from "./types";
 
 export type ColumnHeaderMenuProps = {
@@ -51,6 +52,7 @@ export function ColumnHeaderMenu({
   onHide,
   onPin,
 }: ColumnHeaderMenuProps) {
+  const locale = useDataTableLocale();
   const [open, setOpen] = React.useState(false);
 
   const { refs, floatingStyles, context } = useFloating({
@@ -92,7 +94,7 @@ export function ColumnHeaderMenu({
         variant="ghost"
         size="icon-xs"
         ref={refs.setReference}
-        aria-label={`${header} column menu`}
+        aria-label={locale.columnMenuAria(header)}
         aria-expanded={open}
         data-slot="data-table-column-menu-trigger"
         className={cn(
@@ -132,10 +134,10 @@ export function ColumnHeaderMenu({
                   onPointerDown={runAction(() => onSort?.("asc"))}
                 >
                   <ArrowUpIcon className="size-3.5" />
-                  Sort ascending
+                  {locale.columnMenuSortAsc}
                   {sortRule?.direction === "asc" ? (
                     <span className="ml-auto text-[10px] text-muted-foreground">
-                      Active
+                      {locale.columnMenuActive}
                     </span>
                   ) : null}
                 </button>
@@ -146,10 +148,10 @@ export function ColumnHeaderMenu({
                   onPointerDown={runAction(() => onSort?.("desc"))}
                 >
                   <ArrowDownIcon className="size-3.5" />
-                  Sort descending
+                  {locale.columnMenuSortDesc}
                   {sortRule?.direction === "desc" ? (
                     <span className="ml-auto text-[10px] text-muted-foreground">
-                      Active
+                      {locale.columnMenuActive}
                     </span>
                   ) : null}
                 </button>
@@ -160,7 +162,7 @@ export function ColumnHeaderMenu({
                     className={itemClass}
                     onPointerDown={runAction(() => onSort?.(null))}
                   >
-                    Clear sort
+                    {locale.columnMenuClearSort}
                   </button>
                 ) : null}
                 <div className="my-1 h-px bg-border" />
@@ -180,7 +182,9 @@ export function ColumnHeaderMenu({
               ) : (
                 <PinIcon className="size-3.5" />
               )}
-              {pinned === "left" ? "Unpin" : "Pin left"}
+              {pinned === "left"
+                ? locale.columnMenuUnpin
+                : locale.columnMenuPinLeft}
             </button>
             <button
               type="button"
@@ -195,7 +199,9 @@ export function ColumnHeaderMenu({
               ) : (
                 <PinIcon className="size-3.5 rotate-90" />
               )}
-              {pinned === "right" ? "Unpin" : "Pin right"}
+              {pinned === "right"
+                ? locale.columnMenuUnpin
+                : locale.columnMenuPinRight}
             </button>
 
             <div className="my-1 h-px bg-border" />
@@ -207,7 +213,7 @@ export function ColumnHeaderMenu({
               onPointerDown={runAction(() => onHide?.())}
             >
               <EyeOffIcon className="size-3.5" />
-              Hide column
+              {locale.columnMenuHide}
             </button>
           </div>
         </FloatingPortal>

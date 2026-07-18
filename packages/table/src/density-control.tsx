@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from "./components/ui/select";
 import { cn } from "./lib/utils";
+import { useDataTableLocale } from "./locale-text";
 import { toolbarSelectTriggerClass } from "./toolbar-control";
 import { DENSITY_OPTIONS, type DataTableDensity } from "./types";
 
@@ -24,11 +25,24 @@ export type DensityControlProps = {
 export function DensityControl({
   value,
   onChange,
-  options = DENSITY_OPTIONS,
+  options,
   className,
   radiusClass = "rounded-xs",
   sideOffset = 8,
 }: DensityControlProps) {
+  const locale = useDataTableLocale();
+  const resolvedOptions =
+    options ??
+    DENSITY_OPTIONS.map((option) => ({
+      ...option,
+      label:
+        option.value === "compact"
+          ? locale.densityCompact
+          : option.value === "comfortable"
+            ? locale.densityComfortable
+            : locale.densitySpacious,
+    }));
+
   return (
     <Select
       value={value}
@@ -36,7 +50,7 @@ export function DensityControl({
     >
       <SelectTrigger
         size="sm"
-        aria-label="Table density"
+        aria-label={locale.densityAriaLabel}
         data-slot="data-table-density-control"
         className={cn(
           toolbarSelectTriggerClass,
@@ -45,7 +59,7 @@ export function DensityControl({
           className,
         )}
       >
-        <SelectValue placeholder="Density" />
+        <SelectValue placeholder={locale.densityLabel} />
       </SelectTrigger>
       <SelectContent
         position="popper"
@@ -53,7 +67,7 @@ export function DensityControl({
         align="end"
         className={cn("min-w-[8.5rem] text-xs", radiusClass)}
       >
-        {options.map((option) => (
+        {resolvedOptions.map((option) => (
           <SelectItem
             key={option.value}
             value={option.value}

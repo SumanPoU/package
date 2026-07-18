@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "./components/ui/select";
 import { cn } from "./lib/utils";
+import { useDataTableLocale } from "./locale-text";
 import type { DataTablePaginationOptions } from "./types";
 
 export type TablePaginationProps = {
@@ -63,12 +64,13 @@ export function TablePagination({
   className,
   radiusClass = "",
 }: TablePaginationProps) {
+  const locale = useDataTableLocale();
   const showPageSizeOptions = options?.showPageSizeOptions ?? true;
   const showPageNumbers = options?.showPageNumbers ?? true;
   const showTotal = options?.showTotal ?? true;
   const showPrevNext = options?.showPrevNext ?? true;
   const maxVisiblePages = options?.maxVisiblePages ?? 3;
-  const rowsLabel = options?.rowsLabel ?? "Rows";
+  const rowsLabel = options?.rowsLabel ?? locale.paginationRowsLabel;
   const pageSizeOptions =
     options?.pageSizeOptions ?? pageSizeOptionsProp ?? [5, 10, 20, 50];
 
@@ -90,11 +92,11 @@ export function TablePagination({
     >
       {showTotal ? (
         <p className="text-sm text-muted-foreground">
-          Showing{" "}
+          {locale.paginationShowing}{" "}
           <span className="tabular-nums font-medium text-foreground">
             {from}–{to}
           </span>{" "}
-          of{" "}
+          {locale.paginationOf}{" "}
           <span className="tabular-nums font-medium text-foreground">
             {totalItems}
           </span>
@@ -113,7 +115,7 @@ export function TablePagination({
             >
               <SelectTrigger
                 size="sm"
-                aria-label="Rows per page"
+                aria-label={locale.paginationRowsPerPageAria}
                 className={cn(
                   "h-7 min-w-14 border-input px-2 text-xs shadow-none data-[size=sm]:h-7 [&_svg]:size-3",
                   radiusClass,
@@ -143,7 +145,7 @@ export function TablePagination({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
-                aria-label="Previous page"
+                aria-label={locale.paginationPrevious}
                 disabled={page <= 1}
                 onClick={() => onPageChange(page - 1)}
                 className={cn("text-muted-foreground", radiusClass)}
@@ -158,7 +160,7 @@ export function TablePagination({
                 type="button"
                 variant={item === page ? "secondary" : "ghost"}
                 size="icon-sm"
-                aria-label={`Page ${item}`}
+                aria-label={locale.paginationPageAria(item)}
                 aria-current={item === page ? "page" : undefined}
                 onClick={() => onPageChange(item)}
                 className={cn(
@@ -178,7 +180,7 @@ export function TablePagination({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
-                aria-label="Next page"
+                aria-label={locale.paginationNext}
                 disabled={page >= pageCount || pageCount === 0}
                 onClick={() => onPageChange(page + 1)}
                 className={cn("text-muted-foreground", radiusClass)}

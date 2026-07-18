@@ -21,6 +21,7 @@ import {
 } from "@floating-ui/react";
 
 import { cn } from "./lib/utils";
+import { useDataTableLocale } from "./locale-text";
 import { toolbarSelectTriggerClass } from "./toolbar-control";
 import {
   buildCsv,
@@ -45,6 +46,7 @@ export function ExportMenu({
   popoverOffset = 8,
   onExported,
 }: ExportMenuProps) {
+  const locale = useDataTableLocale();
   const [open, setOpen] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
 
@@ -112,7 +114,7 @@ export function ExportMenu({
       >
         <span className="inline-flex min-w-0 items-center gap-1.5">
           <DownloadIcon className="size-3 opacity-70" />
-          <span className="truncate">Export</span>
+          <span className="truncate">{locale.exportLabel}</span>
         </span>
       </button>
 
@@ -130,7 +132,7 @@ export function ExportMenu({
           >
             <button type="button" role="menuitem" className={itemClass} onClick={exportCsv}>
               <FileSpreadsheetIcon className="size-3.5" />
-              Download CSV
+              {locale.exportDownloadCsv}
             </button>
             <button type="button" role="menuitem" className={itemClass} onClick={() => void copyCsv()}>
               {copied ? (
@@ -138,7 +140,7 @@ export function ExportMenu({
               ) : (
                 <ClipboardCopyIcon className="size-3.5" />
               )}
-              {copied ? "Copied" : "Copy CSV"}
+              {copied ? locale.exportCopied : locale.exportCopyCsv}
             </button>
           </div>
         </FloatingPortal>

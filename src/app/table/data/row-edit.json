@@ -1,0 +1,82 @@
+[
+  {
+    "id": "001",
+    "name": "Ada Lovelace",
+    "email": "ada.lovelace001@example.com",
+    "department": "Engineering",
+    "role": "Engineer",
+    "status": "Active",
+    "location": "San Francisco",
+    "joined": "2016-01-01"
+  },
+  {
+    "id": "002",
+    "name": "Alan Lovelace",
+    "email": "alan.lovelace002@example.com",
+    "department": "Design",
+    "role": "Senior Engineer",
+    "status": "Away",
+    "location": "New York",
+    "joined": "2017-02-02"
+  },
+  {
+    "id": "003",
+    "name": "Grace Lovelace",
+    "email": "grace.lovelace003@example.com",
+    "department": "Product",
+    "role": "Designer",
+    "status": "Offline",
+    "location": "London",
+    "joined": "2018-03-03"
+  },
+  {
+    "id": "006",
+    "name": "Margaret Lovelace",
+    "email": "margaret.lovelace006@example.com",
+    "department": "Support",
+    "role": "Lead",
+    "status": "Offline",
+    "location": "Toronto",
+    "joined": "2021-06-06"
+  },
+  {
+    "id": "011",
+    "name": "Guido Lovelace",
+    "email": "guido.lovelace011@example.com",
+    "department": "Product",
+    "role": "Designer",
+    "status": "Away",
+    "location": "London",
+    "joined": "2016-11-11"
+  },
+  {
+    "id": "016",
+    "name": "James Lovelace",
+    "email": "james.lovelace016@example.com",
+    "department": "People",
+    "role": "Specialist",
+    "status": "Active",
+    "location": "Remote",
+    "joined": "2021-04-16"
+  },
+  {
+    "id": "021",
+    "name": "Ada Turing",
+    "email": "ada.turing021@example.com",
+    "department": "Sales",
+    "role": "Analyst",
+    "status": "Offline",
+    "location": "Tokyo",
+    "joined": "2016-09-21"
+  },
+  {
+    "id": "026",
+    "name": "Margaret Turing",
+    "email": "margaret.turing026@example.com",
+    "department": "Design",
+    "role": "Senior Engineer",
+    "status": "Away",
+    "location": "New York",
+    "joined": "2021-02-26"
+  }
+]

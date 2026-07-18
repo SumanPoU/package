@@ -37,6 +37,49 @@ export function UsersTable() {
 }
 ```
 
+## Demo app (`/table`)
+
+The Next.js showcase lives in [`src/app/table`](../../src/app/table). Row data and serializable props are split into JSON so each demo type stays easy to tweak:
+
+```
+src/app/table/
+  page.tsx                 # wires demos + handlers (edit, actions, detail panel)
+  columns.tsx              # column defs (incl. status cell renderer)
+  types.ts                 # Employee / OrgNode types
+  data/
+    employees.json         # 100 employees — full-featured grid
+    row-edit.json          # 8 curated rows — row edit mode
+    locale-sample.json     # 5 rows — localeText demo
+    org-tree.json          # org hierarchy with `path[]` — tree data
+  props/
+    demos.json             # titles + DataTable props per demo section
+```
+
+| Demo | Data file | Props key in `demos.json` |
+| --- | --- | --- |
+| Full features (edit, export, detail, filters…) | `data/employees.json` | `fullFeatures` |
+| Row edit mode | `data/row-edit.json` | `rowEdit` |
+| Tree data | `data/org-tree.json` | `tree` |
+| Locale override | `data/locale-sample.json` | `locale` |
+
+Handlers that cannot live in JSON (`processRowUpdate`, `getDetailPanelContent`, `getTreeDataPath`, `actions`) stay in `page.tsx`.
+
+### Tree row shape
+
+```json
+{
+  "id": "eng-plat-ben",
+  "name": "Ben Ortiz",
+  "role": "Staff Engineer",
+  "email": "ben.ortiz@example.com",
+  "location": "Austin",
+  "status": "Active",
+  "path": ["Engineering", "Platform", "Ben Ortiz"]
+}
+```
+
+Pass `path` through `getTreeDataPath={(row) => row.path}`.
+
 ## Feature defaults
 
 | Feature | Prop | Default |
@@ -231,33 +274,35 @@ Shows an expand column. Returning `null` from `getDetailPanelContent` hides the 
 ## Tree data
 
 ```tsx
+import orgTree from "./data/org-tree.json";
+
 <DataTable
   treeData
   getTreeDataPath={(row) => row.path} // e.g. ["Engineering", "Platform", "Ada"]
   defaultGroupingExpansionDepth={1} // -1 all, 0 none, 1 top-level
   groupingColDef={{ headerName: "Org / name" }}
-  data={rows}
+  data={orgTree}
   columns={columns}
 />
 ```
 
 Builds groups from path segments (intermediate nodes need not exist as rows). Expand/collapse on the first data column. Groups are not selectable. **Virtualization is disabled** with tree data.
 
+See the demo’s [`org-tree.json`](../../src/app/table/data/org-tree.json) for a full sample dataset.
+
 ## Locale text
 
 ```tsx
+import demoProps from "./props/demos.json";
+
 <DataTable
-  localeText={{
-    exportLabel: "Exportar",
-    emptyMessage: "Sin resultados",
-    quickFilterPlaceholder: "Buscar…",
-  }}
+  localeText={demoProps.locale.localeText}
   data={rows}
   columns={columns}
 />
 ```
 
-Partial override of built-in UI strings. Explicit props like `emptyMessage` / `snHeader` still win over `localeText`. See `DEFAULT_LOCALE_TEXT` for all keys.
+Partial override of built-in UI strings. Explicit props like `emptyMessage` / `snHeader` still win over `localeText`. See `DEFAULT_LOCALE_TEXT` for all keys. Demo copy lives in [`props/demos.json`](../../src/app/table/props/demos.json) under `locale.localeText`.
 
 ## Phase 3: virtualization
 

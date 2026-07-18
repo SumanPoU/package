@@ -1,0 +1,52 @@
+[
+  {
+    "id": "001",
+    "name": "Ada Lovelace",
+    "email": "ada.lovelace001@example.com",
+    "department": "Engineering",
+    "role": "Engineer",
+    "status": "Active",
+    "location": "San Francisco",
+    "joined": "2016-01-01"
+  },
+  {
+    "id": "002",
+    "name": "Alan Lovelace",
+    "email": "alan.lovelace002@example.com",
+    "department": "Design",
+    "role": "Senior Engineer",
+    "status": "Away",
+    "location": "New York",
+    "joined": "2017-02-02"
+  },
+  {
+    "id": "003",
+    "name": "Grace Lovelace",
+    "email": "grace.lovelace003@example.com",
+    "department": "Product",
+    "role": "Designer",
+    "status": "Offline",
+    "location": "London",
+    "joined": "2018-03-03"
+  },
+  {
+    "id": "004",
+    "name": "Katherine Lovelace",
+    "email": "katherine.lovelace004@example.com",
+    "department": "Marketing",
+    "role": "Product Manager",
+    "status": "Active",
+    "location": "Berlin",
+    "joined": "2019-04-04"
+  },
+  {
+    "id": "005",
+    "name": "Linus Lovelace",
+    "email": "linus.lovelace005@example.com",
+    "department": "Sales",
+    "role": "Analyst",
+    "status": "Away",
+    "location": "Tokyo",
+    "joined": "2020-05-05"
+  }
+]

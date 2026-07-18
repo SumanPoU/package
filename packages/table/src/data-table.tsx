@@ -14,8 +14,10 @@ import {
 } from "./components/ui/table";
 import { DensityControl } from "./density-control";
 import { CellContent } from "./cell-content";
+import { ColumnVisibilityMenu } from "./column-visibility-menu";
 import { FilterBar } from "./filter-bar";
 import { cn } from "./lib/utils";
+import { QuickFilter } from "./quick-filter";
 import { RowActionsPopover } from "./row-actions-popover";
 import {
   SN_COLUMN_WIDTH,
@@ -31,8 +33,10 @@ import {
   RADIUS_CLASS,
   cycleMultiSort,
   getColumnSizeStyle,
+  getVisibleColumns,
   normalizeSort,
   shouldTruncateColumn,
+  type DataTableColumnVisibility,
   type DataTableDensity,
   type DataTableFilters,
   type DataTableProps,
@@ -45,6 +49,7 @@ import { useTableSelection } from "./use-table-selection";
 export type {
   DataTableClassNames,
   DataTableColumn,
+  DataTableColumnVisibility,
   DataTableColumnWidths,
   DataTableDensity,
   DataTableFilters,
@@ -60,9 +65,26 @@ export {
   DENSITY_OPTIONS,
   cycleMultiSort,
   getColumnSizeStyle,
+  getVisibleColumns,
+  isColumnVisible,
   normalizeSort,
   shouldTruncateColumn,
 } from "./types";
+
+function matchesQuickFilter<T>(
+  row: T,
+  query: string,
+  columns: { key: string }[],
+): boolean {
+  const q = query.trim().toLowerCase();
+  if (!q) return true;
+  return columns.some((column) => {
+    const value = getCellValue(row, column.key);
+    return String(value ?? "")
+      .toLowerCase()
+      .includes(q);
+  });
+}
 
 function defaultGetRowId<T>(row: T, index: number): string {
   if (
@@ -133,6 +155,7 @@ export function DataTable<T>({
   sn = true,
   snHeader = "SN",
   stickyHeader = false,
+  stickyHeading = false,
   stickyFirstColumn = false,
   minTableWidth,
   maxHeight,
@@ -149,6 +172,15 @@ export function DataTable<T>({
   filters: controlledFilters,
   defaultFilters = {},
   onFiltersChange,
+  enableQuickFilter = false,
+  quickFilter: controlledQuickFilter,
+  defaultQuickFilter = "",
+  onQuickFilterChange,
+  quickFilterPlaceholder = "Search…",
+  columnVisibility: controlledVisibility,
+  defaultColumnVisibility = {},
+  onColumnVisibilityChange,
+  showColumnSelector = false,
   resizable = false,
   columnWidths,
   defaultColumnWidths,
@@ -176,9 +208,16 @@ export function DataTable<T>({
   const isServer = mode === "server";
   const radiusClass = RADIUS_CLASS[radius];
   const showActions = typeof renderRowActions === "function";
+  const stickyHeaderEnabled = stickyHeader || stickyHeading;
+  const resolvedMaxHeight =
+    maxHeight ?? (stickyHeaderEnabled ? "28rem" : undefined);
   const showFilterBar =
     enableFiltering && columns.some((column) => column.filterable);
-  const showToolbar = showDensityControl || toolbar != null;
+  const showToolbar =
+    showDensityControl ||
+    showColumnSelector ||
+    enableQuickFilter ||
+    toolbar != null;
 
   const [page, setPage] = React.useState(1);
   const [pageSize, setPageSize] = React.useState(pageSizeProp);
@@ -189,10 +228,16 @@ export function DataTable<T>({
     React.useState<DataTableFilters>(defaultFilters);
   const [uncontrolledDensity, setUncontrolledDensity] =
     React.useState<DataTableDensity>(defaultDensity);
+  const [uncontrolledQuickFilter, setUncontrolledQuickFilter] =
+    React.useState(defaultQuickFilter);
+  const [uncontrolledVisibility, setUncontrolledVisibility] =
+    React.useState<DataTableColumnVisibility>(defaultColumnVisibility);
 
   const isSortControlled = controlledSort !== undefined;
   const isFiltersControlled = controlledFilters !== undefined;
   const isDensityControlled = controlledDensity !== undefined;
+  const isQuickFilterControlled = controlledQuickFilter !== undefined;
+  const isVisibilityControlled = controlledVisibility !== undefined;
 
   const sort = isSortControlled
     ? normalizeSort(controlledSort)
@@ -203,6 +248,17 @@ export function DataTable<T>({
   const density = isDensityControlled
     ? controlledDensity
     : uncontrolledDensity;
+  const quickFilter = isQuickFilterControlled
+    ? controlledQuickFilter
+    : uncontrolledQuickFilter;
+  const columnVisibility = isVisibilityControlled
+    ? controlledVisibility
+    : uncontrolledVisibility;
+
+  const visibleColumns = React.useMemo(
+    () => getVisibleColumns(columns, columnVisibility),
+    [columns, columnVisibility],
+  );
 
   const densityCell = DENSITY_CELL_CLASS[density];
   const densityHeader = DENSITY_HEADER_CLASS[density];
@@ -214,7 +270,7 @@ export function DataTable<T>({
   });
 
   const resize = useColumnResize({
-    columns,
+    columns: visibleColumns,
     enabled: resizable,
     columnWidths,
     defaultColumnWidths,
@@ -230,10 +286,22 @@ export function DataTable<T>({
         filters,
         density,
         columnWidths: resize.widths,
+        columnVisibility,
+        quickFilter,
         ...next,
       });
     },
-    [density, filters, onStateChange, page, pageSize, resize.widths, sort],
+    [
+      columnVisibility,
+      density,
+      filters,
+      onStateChange,
+      page,
+      pageSize,
+      quickFilter,
+      resize.widths,
+      sort,
+    ],
   );
 
   React.useEffect(() => {
@@ -243,11 +311,30 @@ export function DataTable<T>({
 
   const processedData = React.useMemo(() => {
     if (isServer) return data;
-    const filtered = enableFiltering
-      ? data.filter((row) => matchesFilters(row, filters))
-      : data;
-    return sortRows(filtered, sort);
-  }, [data, enableFiltering, filters, isServer, sort]);
+
+    let rows = data;
+
+    if (enableFiltering) {
+      rows = rows.filter((row) => matchesFilters(row, filters));
+    }
+
+    if (enableQuickFilter && quickFilter.trim()) {
+      rows = rows.filter((row) =>
+        matchesQuickFilter(row, quickFilter, visibleColumns),
+      );
+    }
+
+    return sortRows(rows, sort);
+  }, [
+    data,
+    enableFiltering,
+    enableQuickFilter,
+    filters,
+    isServer,
+    quickFilter,
+    sort,
+    visibleColumns,
+  ]);
 
   const totalItems = isServer
     ? (totalRows ?? data.length)
@@ -279,7 +366,7 @@ export function DataTable<T>({
   const allPageSelected = selection.isAllSelected(pageIds);
   const somePageSelected = selection.isSomeSelected(pageIds);
   const colSpan =
-    columns.length +
+    visibleColumns.length +
     (selectable ? 1 : 0) +
     (sn ? 1 : 0) +
     (showActions ? 1 : 0);
@@ -289,7 +376,7 @@ export function DataTable<T>({
   const tableMinWidth = React.useMemo(() => {
     if (minTableWidth) return minTableWidth;
     if (!resizable) return undefined;
-    const dataWidth = columns.reduce(
+    const dataWidth = visibleColumns.reduce(
       (sum, column) => sum + resize.getWidth(column.key, column),
       0,
     );
@@ -298,7 +385,15 @@ export function DataTable<T>({
       (sn ? SN_COLUMN_WIDTH : 0) +
       (showActions ? 40 : 0);
     return `${dataWidth + extras}px`;
-  }, [columns, minTableWidth, resizable, resize, selectable, showActions, sn]);
+  }, [
+    minTableWidth,
+    resizable,
+    resize,
+    selectable,
+    showActions,
+    sn,
+    visibleColumns,
+  ]);
 
   const handlePageChange = (nextPage: number) => {
     setPage(nextPage);
@@ -335,6 +430,19 @@ export function DataTable<T>({
     emitState({ density: next });
   };
 
+  const handleQuickFilterChange = (next: string) => {
+    if (!isQuickFilterControlled) setUncontrolledQuickFilter(next);
+    onQuickFilterChange?.(next);
+    setPage(1);
+    emitState({ quickFilter: next, page: 1 });
+  };
+
+  const handleVisibilityChange = (next: DataTableColumnVisibility) => {
+    if (!isVisibilityControlled) setUncontrolledVisibility(next);
+    onColumnVisibilityChange?.(next);
+    emitState({ columnVisibility: next });
+  };
+
   const handleSelectAll = (checked: boolean | "indeterminate") => {
     if (checked === true) {
       selection.selectAll(
@@ -353,6 +461,7 @@ export function DataTable<T>({
       data-density={density}
       data-radius={radius}
       data-mode={mode}
+      data-sticky-header={stickyHeaderEnabled ? "true" : "false"}
       data-resizable={resizable ? "true" : "false"}
       style={style}
       className={cn(
@@ -367,25 +476,47 @@ export function DataTable<T>({
         <div
           data-slot="data-table-toolbar"
           className={cn(
-            "flex flex-wrap items-center justify-between gap-3 border-b border-black/[0.04] px-3 py-2.5 dark:border-white/[0.06]",
+            "flex flex-wrap items-center gap-2 border-b border-black/[0.04] px-3 py-2.5 dark:border-white/[0.06]",
             classNames?.toolbar,
           )}
         >
-          <div className="min-w-0 flex-1">{toolbar}</div>
-          {showDensityControl ? (
-            <DensityControl
-              value={density}
-              onChange={handleDensityChange}
+          {enableQuickFilter ? (
+            <QuickFilter
+              value={quickFilter}
+              onChange={handleQuickFilterChange}
+              placeholder={quickFilterPlaceholder}
               radiusClass={radiusClass}
-              className={classNames?.densityControl}
+              className={classNames?.quickFilter}
             />
           ) : null}
+
+          <div className="min-w-0 flex-1">{toolbar}</div>
+
+          <div className="ml-auto flex flex-wrap items-center gap-2">
+            {showColumnSelector ? (
+              <ColumnVisibilityMenu
+                columns={columns}
+                visibility={columnVisibility}
+                onVisibilityChange={handleVisibilityChange}
+                radiusClass={radiusClass}
+                className={classNames?.columnSelector}
+              />
+            ) : null}
+            {showDensityControl ? (
+              <DensityControl
+                value={density}
+                onChange={handleDensityChange}
+                radiusClass={radiusClass}
+                className={classNames?.densityControl}
+              />
+            ) : null}
+          </div>
         </div>
       ) : null}
 
       {showFilterBar ? (
         <FilterBar
-          columns={columns}
+          columns={visibleColumns}
           filters={filters}
           onFiltersChange={handleFiltersChange}
           className={classNames?.filterBar}
@@ -396,7 +527,7 @@ export function DataTable<T>({
       <div
         data-slot="data-table-scroll"
         className="relative w-full overflow-auto overscroll-x-contain"
-        style={maxHeight ? { maxHeight } : undefined}
+        style={resolvedMaxHeight ? { maxHeight: resolvedMaxHeight } : undefined}
       >
         {loading ? (
           <div
@@ -412,13 +543,16 @@ export function DataTable<T>({
         <Table
           className={cn(
             "min-w-full",
-            (resizable || columns.some((c) => c.width || c.maxWidth)) &&
+            (resizable ||
+              visibleColumns.some((c) => c.width || c.maxWidth)) &&
               "table-fixed",
             classNames?.table,
           )}
           style={tableMinWidth ? { minWidth: tableMinWidth } : undefined}
         >
-          {resizable || columns.some((c) => c.width || c.minWidth) || sn ? (
+          {resizable ||
+          visibleColumns.some((c) => c.width || c.minWidth) ||
+          sn ? (
             <colgroup>
               {selectable ? <col style={{ width: 40 }} /> : null}
               {sn ? (
@@ -430,7 +564,7 @@ export function DataTable<T>({
                   }}
                 />
               ) : null}
-              {columns.map((column) => {
+              {visibleColumns.map((column) => {
                 const width = resizable
                   ? resize.getWidth(column.key, column)
                   : column.width;
@@ -451,8 +585,8 @@ export function DataTable<T>({
 
           <TableHeader
             className={cn(
-              stickyHeader &&
-                "sticky top-0 z-20 bg-card/95 backdrop-blur-md supports-[backdrop-filter]:bg-card/80",
+              stickyHeaderEnabled &&
+                "sticky top-0 z-20 border-b border-black/[0.06] bg-card shadow-[0_1px_0_0_rgba(0,0,0,0.04)] dark:border-white/[0.08]",
               classNames?.header,
             )}
           >
@@ -490,7 +624,7 @@ export function DataTable<T>({
                 <SnHeader label={snHeader} className={classNames?.headerCell} />
               ) : null}
 
-              {columns.map((column, columnIndex) => {
+              {visibleColumns.map((column, columnIndex) => {
                 const sortIndex = sort.findIndex(
                   (item) => item.key === column.key,
                 );
@@ -719,7 +853,7 @@ export function DataTable<T>({
                       />
                     ) : null}
 
-                    {columns.map((column, columnIndex) => {
+                    {visibleColumns.map((column, columnIndex) => {
                       const rawValue = getCellValue(row, column.key);
                       const textValue =
                         rawValue == null ? "" : String(rawValue);

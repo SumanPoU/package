@@ -12,6 +12,9 @@ export type DataTableFilters = Record<string, string>;
 
 export type DataTableColumnWidths = Record<string, number>;
 
+/** `false` hides the column; missing key or `true` means visible. */
+export type DataTableColumnVisibility = Record<string, boolean>;
+
 export type DataTableMode = "client" | "server";
 
 export type DataTableRadius = "none" | "xs" | "sm" | "md";
@@ -25,6 +28,8 @@ export type DataTableState = {
   filters: DataTableFilters;
   density: DataTableDensity;
   columnWidths: DataTableColumnWidths;
+  columnVisibility: DataTableColumnVisibility;
+  quickFilter: string;
 };
 
 export type DataTableColumn<T> = {
@@ -72,6 +77,8 @@ export type DataTableClassNames = {
   filterBar?: string;
   toolbar?: string;
   densityControl?: string;
+  quickFilter?: string;
+  columnSelector?: string;
 };
 
 /**
@@ -101,8 +108,13 @@ export type DataTableProps<T> = {
   /** Header label for the SN column. */
   snHeader?: string;
 
-  // Sticky (all off by default — no sticky rows/columns unless enabled)
+  /**
+   * Stick column headers while scrolling the table body (MUI DataGrid–style).
+   * Requires a scroll container — when enabled without `maxHeight`, defaults to `28rem`.
+   */
   stickyHeader?: boolean;
+  /** @deprecated Prefer `stickyHeader`. Alias kept for clarity (“sticky heading”). */
+  stickyHeading?: boolean;
   stickyFirstColumn?: boolean;
 
   // Layout
@@ -117,11 +129,25 @@ export type DataTableProps<T> = {
   defaultSort?: DataTableSort[];
   onSortChange?: (sort: DataTableSort[]) => void;
 
-  // Filtering (off by default)
+  // Column filtering (per-column filter bar, off by default)
   enableFiltering?: boolean;
   filters?: DataTableFilters;
   defaultFilters?: DataTableFilters;
   onFiltersChange?: (filters: DataTableFilters) => void;
+
+  // Quick filter (global search across visible columns)
+  enableQuickFilter?: boolean;
+  quickFilter?: string;
+  defaultQuickFilter?: string;
+  onQuickFilterChange?: (value: string) => void;
+  quickFilterPlaceholder?: string;
+
+  // Column visibility
+  columnVisibility?: DataTableColumnVisibility;
+  defaultColumnVisibility?: DataTableColumnVisibility;
+  onColumnVisibilityChange?: (visibility: DataTableColumnVisibility) => void;
+  /** Show Columns menu in the toolbar. */
+  showColumnSelector?: boolean;
 
   // Column resize (off by default)
   resizable?: boolean;
@@ -224,6 +250,20 @@ export function shouldTruncateColumn(column: {
 }): boolean {
   if (column.wrap) return false;
   return column.truncate !== false;
+}
+
+export function isColumnVisible(
+  visibility: DataTableColumnVisibility,
+  key: string,
+): boolean {
+  return visibility[key] !== false;
+}
+
+export function getVisibleColumns<T>(
+  columns: DataTableColumn<T>[],
+  visibility: DataTableColumnVisibility,
+): DataTableColumn<T>[] {
+  return columns.filter((column) => isColumnVisible(visibility, column.key));
 }
 
 export function normalizeSort(

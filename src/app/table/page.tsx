@@ -107,8 +107,7 @@ export default function TableDemoPage() {
         <header className="flex flex-col gap-1.5">
           <h1 className="text-2xl font-semibold tracking-tight">Employees</h1>
           <p className="text-sm text-muted-foreground">
-            {SAMPLE_DATA.length} people · auto SN on by default (no{" "}
-            <code className="text-foreground">sn</code> field in data)
+            Phase 1: auto SN, sticky header, quick search, column visibility
             {selectedIds.length > 0
               ? ` · ${selectedIds.length} selected`
               : null}
@@ -120,7 +119,11 @@ export default function TableDemoPage() {
           columns={COLUMNS}
           pageSize={10}
           selectable
+          sn
+          stickyHeader
           resizable
+          enableQuickFilter
+          showColumnSelector
           showDensityControl
           showPagination
           enableMultiSort
@@ -152,11 +155,11 @@ export default function TableDemoPage() {
       <section className="flex flex-col gap-6">
         <header className="flex flex-col gap-1.5">
           <h2 className="text-lg font-semibold tracking-tight">
-            Without SN column
+            Without SN / without sticky header
           </h2>
           <p className="text-sm text-muted-foreground">
-            Same data with <code className="text-foreground">sn={"{false}"}</code>{" "}
-            — no serial column, no empty gap.
+            <code className="text-foreground">sn={"{false}"}</code> and no{" "}
+            <code className="text-foreground">stickyHeader</code>
           </p>
         </header>
 

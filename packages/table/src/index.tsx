@@ -3,12 +3,15 @@ export {
   DENSITY_OPTIONS,
   cycleMultiSort,
   getColumnSizeStyle,
+  getVisibleColumns,
+  isColumnVisible,
   normalizeSort,
   shouldTruncateColumn,
 } from "./data-table";
 export type {
   DataTableClassNames,
   DataTableColumn,
+  DataTableColumnVisibility,
   DataTableColumnWidths,
   DataTableDensity,
   DataTableFilters,
@@ -25,6 +28,12 @@ export type { DensityControlProps } from "./density-control";
 
 export { CellContent } from "./cell-content";
 export type { CellContentProps } from "./cell-content";
+
+export { ColumnVisibilityMenu } from "./column-visibility-menu";
+export type { ColumnVisibilityMenuProps } from "./column-visibility-menu";
+
+export { QuickFilter } from "./quick-filter";
+export type { QuickFilterProps } from "./quick-filter";
 
 export {
   SN_COLUMN_WIDTH,

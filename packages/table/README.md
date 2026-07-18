@@ -41,15 +41,25 @@ export function UsersTable() {
 | --- | --- | --- |
 | Auto serial number (SN) | `sn` | `true` |
 | SN header label | `snHeader` | `"SN"` |
+| Sticky header (heading) | `stickyHeader` | `false` |
+| Quick filter (global search) | `enableQuickFilter` | `false` |
+| Column selector menu | `showColumnSelector` | `false` |
 | Checkbox selection | `selectable` | `false` |
-| Sticky header | `stickyHeader` | `false` |
 | Sticky first column | `stickyFirstColumn` | `false` |
-| Filtering | `enableFiltering` | `false` |
+| Per-column filter bar | `enableFiltering` | `false` |
 | Column resize | `resizable` | `false` |
 | Density control UI | `showDensityControl` | `false` |
 | Pagination | `showPagination` | `true` |
 | Multi-sort | `enableMultiSort` | `true` |
 | Radius | `radius` | `'xs'` |
+
+### Sticky header
+
+```tsx
+<DataTable stickyHeader maxHeight="28rem" data={rows} columns={columns} />
+```
+
+When `stickyHeader` is on and `maxHeight` is omitted, the table uses `28rem` so the header can stick inside the scroll container. Alias: `stickyHeading` (same behavior).
 
 ### Notable default: Auto SN is on
 
@@ -60,14 +70,33 @@ By default every table shows an **SN** column (1, 2, 3…). You do **not** put `
 Page 2 with `pageSize={10}` shows `11, 12, 13…`. Opt out with `sn={false}`.
 
 ```tsx
-{/* Default — SN column visible */}
 <DataTable data={rows} columns={columns} />
-
-{/* Hide SN */}
 <DataTable sn={false} data={rows} columns={columns} />
-
-{/* Custom header */}
 <DataTable sn snHeader="#" data={rows} columns={columns} />
+```
+
+### Quick filter + column visibility (Phase 1)
+
+```tsx
+<DataTable
+  enableQuickFilter
+  showColumnSelector
+  stickyHeader
+  data={rows}
+  columns={columns}
+/>
+```
+
+Controlled visibility (MUI-style model — `false` hides):
+
+```tsx
+<DataTable
+  showColumnSelector
+  columnVisibility={{ email: false }}
+  onColumnVisibilityChange={setVisibility}
+  data={rows}
+  columns={columns}
+/>
 ```
 
 Density options live in the package (`DENSITY_OPTIONS` + `DensityControl`). Enable with `showDensityControl`.

@@ -157,7 +157,7 @@ export default function TableDemoPage() {
         <header className="flex flex-col gap-1.5">
           <h1 className="text-2xl font-semibold tracking-tight">Employees</h1>
           <p className="text-sm text-muted-foreground">
-            Phase 4: double-click a cell to edit · Enter saves · Esc cancels
+            Export · keyboard arrows / Enter to edit · Phase 4 cell edit
             {selectedIds.length > 0
               ? ` · ${selectedIds.length} selected`
               : null}
@@ -197,6 +197,10 @@ export default function TableDemoPage() {
           showColumnSelector
           showDensityControl
           showFilterBuilder
+          showExport
+          exportFilename="employees.csv"
+          exportScope="filtered"
+          enableKeyboardNavigation
           showPagination
           enableMultiSort
           showRowBorders

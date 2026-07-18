@@ -202,6 +202,7 @@ export type DataTableClassNames = {
   densityControl?: string;
   quickFilter?: string;
   columnSelector?: string;
+  export?: string;
 };
 
 /**
@@ -403,6 +404,27 @@ export type DataTableProps<T> = {
     row: T;
     value: unknown;
   }) => boolean;
+
+  /**
+   * Phase 5 — show Export menu (CSV download / copy).
+   */
+  showExport?: boolean;
+  /** Download filename. Defaults to `"table-export.csv"`. */
+  exportFilename?: string;
+  /**
+   * Which rows to export.
+   * `filtered` = current sorted/filtered set (client) or current `data` (server).
+   * `page` = current page only.
+   * `selected` = selected rows only.
+   */
+  exportScope?: "filtered" | "page" | "selected";
+  onExported?: (format: "csv" | "clipboard") => void;
+
+  /**
+   * Phase 6 — arrow-key cell focus navigation.
+   * Enter starts edit when `editable` is on.
+   */
+  enableKeyboardNavigation?: boolean;
 
   /** Extra toolbar content (rendered beside built-in density control when enabled). */
   toolbar?: React.ReactNode;

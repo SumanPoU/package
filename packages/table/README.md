@@ -183,6 +183,34 @@ const [sort, setSort] = useState<DataTableSort[]>([
 - Per-column: `editable`, `editType`, `editOptions`, `renderEditCell`
 - `editAllColumns` makes every column editable unless `editable: false`
 
+## Phase 5: CSV export
+
+```tsx
+<DataTable
+  showExport
+  exportFilename="employees.csv"
+  exportScope="filtered" // "filtered" | "page" | "selected"
+  onExported={(format) => console.log(format)} // "csv" | "clipboard"
+  data={rows}
+  columns={columns}
+/>
+```
+
+Toolbar **Export** menu: download CSV or copy CSV to clipboard. Scope uses visible columns; `filtered` exports the current sorted/filtered set (or current `data` in server mode).
+
+## Phase 6: keyboard navigation
+
+```tsx
+<DataTable
+  enableKeyboardNavigation
+  editable // optional — Enter starts edit
+  data={rows}
+  columns={columns}
+/>
+```
+
+Arrow keys move focus; Home / End (and Ctrl+Home / Ctrl+End) jump; Enter starts edit when `editable` is on. Navigation is skipped while an editor is open.
+
 ## Phase 3: virtualization
 
 ```tsx
@@ -441,6 +469,9 @@ export function ServerUsersTable() {
 | `TablePagination` | Standalone pagination control |
 | `FilterBar` | Standalone filter bar |
 | `RowActionsPopover` | Floating row-actions menu |
+| `ExportMenu` | Standalone CSV export menu |
+| `buildCsv` / `downloadTextFile` / `copyTextToClipboard` / `rowsToCsvMatrix` | Export helpers |
+| `useTableKeyboard` | Cell focus / arrow-key navigation hook |
 | `useTableSelection` | Controllable selection hook |
 | `Table`, `TableHeader`, `TableBody`, `TableHead`, `TableRow`, `TableCell`, `TableCaption` | Table primitives |
 | `Checkbox`, `Button`, `Select` (+ parts) | Supporting primitives |

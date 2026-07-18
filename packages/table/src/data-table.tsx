@@ -70,6 +70,9 @@ import { useTableEditing } from "./use-table-editing";
 import { useTableSelection } from "./use-table-selection";
 import { useTableVirtualization } from "./use-table-virtualization";
 import { ColumnHeaderMenu } from "./column-header-menu";
+import { ExportMenu } from "./export-menu";
+import { rowsToCsvMatrix } from "./export-utils";
+import { useTableKeyboard } from "./use-table-keyboard";
 
 export type {
   DataTableActionsDisplay,
@@ -274,6 +277,11 @@ export function DataTable<T>({
   onCellEditStart,
   onCellEditStop,
   isCellEditable,
+  showExport = false,
+  exportFilename = "table-export.csv",
+  exportScope = "filtered",
+  onExported,
+  enableKeyboardNavigation = false,
   toolbar,
 }: DataTableProps<T>) {
   const resolvedMode = paginationMode ?? mode;
@@ -308,6 +316,7 @@ export function DataTable<T>({
     showColumnSelector ||
     enableQuickFilter ||
     showFilterBuilder ||
+    showExport ||
     toolbar != null;
 
   const [page, setPage] = React.useState(1);
@@ -630,6 +639,72 @@ export function DataTable<T>({
         rowIndexOnPage,
       }));
 
+  const keyboard = useTableKeyboard({
+    enabled: enableKeyboardNavigation && pageRows.length > 0,
+    rowCount: pageRows.length,
+    colCount: visibleColumns.length,
+    editable,
+    isEditing:
+      editing.editingCell != null || editing.editingRowId != null,
+    onStartEdit: ({ rowIndex, colIndex }) => {
+      const item = pageRows[rowIndex];
+      const column = visibleColumns[colIndex];
+      if (!item || !column || !isColumnEditable(column)) return;
+      const value = getCellValue(item.row, column.key);
+      const params = {
+        id: item.id,
+        field: column.key,
+        row: item.row,
+        value,
+      };
+      if (editMode === "row") editing.startRowEdit(params);
+      else editing.startCellEdit(params);
+    },
+  });
+
+  const getExportCsv = React.useCallback(() => {
+    const exportColumns = visibleColumns.map((column) => ({
+      key: column.key,
+      header: column.header,
+    }));
+
+    let exportRows: T[] = [];
+    if (exportScope === "page") {
+      exportRows = pageRows.map((item) => item.row);
+    } else if (exportScope === "selected") {
+      const selected = new Set(selection.selectedIds);
+      const source = isServer ? data : processedData;
+      exportRows = source
+        .map((row, index) => ({
+          row: editing.getDisplayRow(row, getRowId(row, index)),
+          id: getRowId(row, index),
+        }))
+        .filter((item) => selected.has(item.id))
+        .map((item) => item.row);
+    } else {
+      const source = isServer ? data : processedData;
+      exportRows = source.map((row, index) =>
+        editing.getDisplayRow(row, getRowId(row, index)),
+      );
+    }
+
+    return rowsToCsvMatrix({
+      columns: exportColumns,
+      rows: exportRows,
+      getValue: getCellValue,
+    });
+  }, [
+    data,
+    editing,
+    exportScope,
+    getRowId,
+    isServer,
+    pageRows,
+    processedData,
+    selection.selectedIds,
+    visibleColumns,
+  ]);
+
   const colSpan =
     visibleColumns.length +
     (selectable ? 1 : 0) +
@@ -850,6 +925,15 @@ export function DataTable<T>({
                 activeCount={appliedAdvancedFilterCount}
                 radiusClass={radiusClass}
                 className={classNames?.filterBuilder}
+              />
+            ) : null}
+            {showExport ? (
+              <ExportMenu
+                getCsv={getExportCsv}
+                filename={exportFilename}
+                radiusClass={radiusClass}
+                className={classNames?.export}
+                onExported={onExported}
               />
             ) : null}
             {showColumnSelector ? (
@@ -1361,10 +1445,14 @@ export function DataTable<T>({
                         editing.draft[column.key] !== undefined
                           ? editing.draft[column.key]
                           : rawValue;
+                      const keyboardProps = enableKeyboardNavigation
+                        ? keyboard.getCellProps(rowIndexOnPage, columnIndex)
+                        : null;
 
                       return (
                         <TableCell
                           key={column.key}
+                          data-table-cell={`${rowIndexOnPage}:${columnIndex}`}
                           className={cn(
                             "overflow-hidden bg-card",
                             densityCell,
@@ -1379,6 +1467,8 @@ export function DataTable<T>({
                             isSelected && "bg-muted/40",
                             canEdit && "cursor-text",
                             cellEditing && "bg-muted/30",
+                            enableKeyboardNavigation &&
+                              "outline-none focus-visible:ring-2 focus-visible:ring-ring/40 data-[focused=true]:ring-2 data-[focused=true]:ring-ring/50",
                             column.className,
                             classNames?.cell,
                           )}
@@ -1391,6 +1481,7 @@ export function DataTable<T>({
                               ? { right: pinnedRight }
                               : null),
                           }}
+                          {...keyboardProps}
                           onDoubleClick={(event) => {
                             if (!canEdit) return;
                             event.stopPropagation();

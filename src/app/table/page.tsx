@@ -7,6 +7,8 @@ import {
   type DataTableSort,
 } from "@ss-components/table";
 
+import employees from "./employees.json";
+
 type Employee = {
   id: string;
   name: string;
@@ -18,110 +20,7 @@ type Employee = {
   joined: string;
 };
 
-const FIRST_NAMES = [
-  "Ada",
-  "Alan",
-  "Grace",
-  "Katherine",
-  "Linus",
-  "Margaret",
-  "Donald",
-  "Barbara",
-  "Tim",
-  "Radia",
-  "Guido",
-  "Bjarne",
-  "Ken",
-  "Dennis",
-  "Sophie",
-  "James",
-  "Brendan",
-  "Anders",
-  "Leslie",
-  "Edsger",
-];
-
-const LAST_NAMES = [
-  "Lovelace",
-  "Turing",
-  "Hopper",
-  "Johnson",
-  "Torvalds",
-  "Hamilton",
-  "Knuth",
-  "Liskov",
-  "Berners-Lee",
-  "Perlman",
-  "van Rossum",
-  "Stroustrup",
-  "Thompson",
-  "Ritchie",
-  "Wilson",
-  "Gosling",
-  "Eich",
-  "Hejlsberg",
-  "Lamport",
-  "Dijkstra",
-];
-
-const DEPARTMENTS = [
-  "Engineering",
-  "Design",
-  "Product",
-  "Marketing",
-  "Sales",
-  "Support",
-  "Finance",
-  "People",
-];
-
-const ROLES = [
-  "Engineer",
-  "Senior Engineer",
-  "Designer",
-  "Product Manager",
-  "Analyst",
-  "Lead",
-  "Director",
-  "Specialist",
-];
-
-const STATUSES: Employee["status"][] = ["Active", "Away", "Offline"];
-
-const LOCATIONS = [
-  "San Francisco",
-  "New York",
-  "London",
-  "Berlin",
-  "Tokyo",
-  "Toronto",
-  "Sydney",
-  "Remote",
-];
-
-function buildEmployees(count: number): Employee[] {
-  return Array.from({ length: count }, (_, index) => {
-    const first = FIRST_NAMES[index % FIRST_NAMES.length];
-    const last = LAST_NAMES[Math.floor(index / FIRST_NAMES.length) % LAST_NAMES.length];
-    const id = String(index + 1);
-    const year = 2016 + (index % 10);
-    const month = String((index % 12) + 1).padStart(2, "0");
-    const day = String((index % 28) + 1).padStart(2, "0");
-
-    return {
-      id,
-      name: `${first} ${last}`,
-      email: `${first.toLowerCase()}.${last.toLowerCase()}${id}@example.com`,
-      department: DEPARTMENTS[index % DEPARTMENTS.length],
-      role: ROLES[index % ROLES.length],
-      status: STATUSES[index % STATUSES.length],
-      location: LOCATIONS[index % LOCATIONS.length],
-      joined: `${year}-${month}-${day}`,
-    };
-  });
-}
-
-const SAMPLE_DATA = buildEmployees(120);
+const SAMPLE_DATA = employees as Employee[];
 
 const COLUMNS: DataTableColumn<Employee>[] = [
   { key: "name", header: "Name", sortable: true },
@@ -163,8 +62,9 @@ export default function TableDemoPage() {
         <p className="text-sm text-muted-foreground">@ss-components/table</p>
         <h1 className="text-3xl font-semibold tracking-tight">DataTable demo</h1>
         <p className="max-w-2xl text-muted-foreground">
-          {SAMPLE_DATA.length} sample employees with pagination, selection,
-          sticky header, sorting, and responsive columns.
+          {SAMPLE_DATA.length} sample employees from{" "}
+          <code className="text-foreground">employees.json</code> — pagination,
+          selection, sticky header, sorting, and responsive columns.
         </p>
         <p className="text-sm text-muted-foreground">
           Selected:{" "}

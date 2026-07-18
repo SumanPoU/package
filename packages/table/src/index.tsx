@@ -95,6 +95,20 @@ export type { RowActionsProps } from "./row-actions";
 export { RowActionsPopover } from "./row-actions-popover";
 export type { RowActionsPopoverProps } from "./row-actions-popover";
 
+export { EditableCell } from "./editable-cell";
+export type { EditableCellProps } from "./editable-cell";
+
+export { useTableEditing } from "./use-table-editing";
+export type {
+  DataTableCellParams,
+  DataTableEditMode,
+  DataTableEditStopParams,
+  DataTableEditType,
+  DataTableEditingCell,
+  UseTableEditingOptions,
+  UseTableEditingReturn,
+} from "./use-table-editing";
+
 export { useTableSelection } from "./use-table-selection";
 export type {
   UseTableSelectionOptions,

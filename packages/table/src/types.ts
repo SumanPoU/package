@@ -166,6 +166,21 @@ export type DataTableColumn<T> = {
   filterMin?: number;
   filterMax?: number;
   filterStep?: number;
+  /** Phase 4 — allow inline editing for this column when table `editable` is on. */
+  editable?: boolean;
+  /** Editor control type. Defaults to `"text"`. */
+  editType?: "text" | "number" | "select" | "boolean" | "textarea";
+  /** Options for `editType: "select"`. */
+  editOptions?: string[];
+  /** Custom edit control. */
+  renderEditCell?: (helpers: {
+    value: unknown;
+    row: T;
+    field: string;
+    setValue: (value: unknown) => void;
+    commit: (reason?: "enter" | "blur" | "tab") => void;
+    cancel: () => void;
+  }) => React.ReactNode;
   cell?: (row: T, index: number) => React.ReactNode;
   className?: string;
   headerClassName?: string;
@@ -357,6 +372,37 @@ export type DataTableProps<T> = {
   virtualRowHeight?: number;
   /** Extra rows rendered outside the viewport. Defaults to `8`. */
   virtualOverscan?: number;
+
+  /**
+   * Phase 4 — enable cell / row editing.
+   * Columns still need `editable: true` (unless `editAllColumns` is set).
+   */
+  editable?: boolean;
+  /** `cell` edits one field; `row` drafts the whole row until save. Defaults to `"cell"`. */
+  editMode?: "cell" | "row";
+  /** When true, every data column is editable unless `column.editable === false`. */
+  editAllColumns?: boolean;
+  processRowUpdate?: (newRow: T, oldRow: T) => T | Promise<T>;
+  onProcessRowUpdateError?: (error: unknown) => void;
+  onCellEditStart?: (params: {
+    id: string;
+    field: string;
+    row: T;
+    value: unknown;
+  }) => void;
+  onCellEditStop?: (params: {
+    id: string;
+    field: string;
+    row: T;
+    value: unknown;
+    reason: "enter" | "blur" | "escape" | "tab" | "rowSave" | "rowCancel";
+  }) => void;
+  isCellEditable?: (params: {
+    id: string;
+    field: string;
+    row: T;
+    value: unknown;
+  }) => boolean;
 
   /** Extra toolbar content (rendered beside built-in density control when enabled). */
   toolbar?: React.ReactNode;

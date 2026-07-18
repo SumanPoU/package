@@ -153,6 +153,36 @@ const [sort, setSort] = useState<DataTableSort[]>([
 />
 ```
 
+## Phase 4: cell / row editing
+
+```tsx
+<DataTable
+  editable
+  editMode="cell" // or "row"
+  processRowUpdate={(newRow, oldRow) => {
+    // persist, then return the committed row
+    return newRow;
+  }}
+  onProcessRowUpdateError={(error) => console.error(error)}
+  columns={[
+    { key: "name", header: "Name", editable: true, editType: "text" },
+    {
+      key: "status",
+      header: "Status",
+      editable: true,
+      editType: "select",
+      editOptions: ["Active", "Away"],
+    },
+  ]}
+  data={rows}
+/>
+```
+
+- **Cell mode** — double-click a cell; Enter / blur saves; Esc cancels
+- **Row mode** — double-click starts row edit; ✓ saves, ✕ cancels
+- Per-column: `editable`, `editType`, `editOptions`, `renderEditCell`
+- `editAllColumns` makes every column editable unless `editable: false`
+
 ## Phase 3: virtualization
 
 ```tsx

@@ -4,7 +4,6 @@ import { useState } from "react";
 import {
   DataTable,
   type DataTableColumn,
-  type DataTableDensity,
   type DataTableSort,
 } from "@ss-components/table";
 
@@ -24,14 +23,45 @@ type Employee = {
 const SAMPLE_DATA = employees as Employee[];
 
 const COLUMNS: DataTableColumn<Employee>[] = [
-  { key: "name", header: "Name", sortable: true },
-  { key: "email", header: "Email", hideBelow: "md", wrap: true },
-  { key: "department", header: "Department", sortable: true },
-  { key: "role", header: "Role", sortable: true, hideBelow: "sm" },
+  {
+    key: "name",
+    header: "Name",
+    sortable: true,
+    minWidth: 120,
+    maxWidth: 220,
+    truncate: true,
+  },
+  {
+    key: "email",
+    header: "Email",
+    hideBelow: "md",
+    minWidth: 140,
+    maxWidth: 260,
+    truncate: true,
+  },
+  {
+    key: "department",
+    header: "Department",
+    sortable: true,
+    minWidth: 110,
+    maxWidth: 180,
+    truncate: true,
+  },
+  {
+    key: "role",
+    header: "Role",
+    sortable: true,
+    hideBelow: "sm",
+    minWidth: 110,
+    maxWidth: 180,
+    truncate: true,
+  },
   {
     key: "status",
     header: "Status",
     sortable: true,
+    minWidth: 96,
+    maxWidth: 120,
     cell: (row) => (
       <span
         className={
@@ -46,34 +76,38 @@ const COLUMNS: DataTableColumn<Employee>[] = [
       </span>
     ),
   },
-  { key: "location", header: "Location", hideBelow: "lg" },
-  { key: "joined", header: "Joined", sortable: true, hideBelow: "md" },
-];
-
-const DENSITY_OPTIONS: { value: DataTableDensity; label: string }[] = [
-  { value: "compact", label: "Compact" },
-  { value: "comfortable", label: "Comfortable" },
-  { value: "spacious", label: "Spacious" },
+  {
+    key: "location",
+    header: "Location",
+    hideBelow: "lg",
+    minWidth: 110,
+    maxWidth: 160,
+    truncate: true,
+  },
+  {
+    key: "joined",
+    header: "Joined",
+    sortable: true,
+    hideBelow: "md",
+    minWidth: 100,
+    maxWidth: 120,
+  },
 ];
 
 export default function TableDemoPage() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [density, setDensity] = useState<DataTableDensity>("comfortable");
   const [sort, setSort] = useState<DataTableSort[]>([
     { key: "department", direction: "asc" },
     { key: "name", direction: "asc" },
   ]);
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-12 sm:px-6">
+    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-10 sm:px-6">
       <header className="flex flex-col gap-1.5">
         <h1 className="text-2xl font-semibold tracking-tight">Employees</h1>
         <p className="text-sm text-muted-foreground">
           {SAMPLE_DATA.length} people
           {selectedIds.length > 0 ? ` · ${selectedIds.length} selected` : null}
-          {sort.length > 0
-            ? ` · sorted by ${sort.map((s) => s.key).join(", ")}`
-            : null}
         </p>
       </header>
 
@@ -82,45 +116,16 @@ export default function TableDemoPage() {
         columns={COLUMNS}
         pageSize={10}
         selectable
-        stickyHeader
-        stickyFirstColumn
+        resizable
+        showDensityControl
+        showPagination
+        enableMultiSort
         radius="xs"
-        density={density}
         maxHeight="28rem"
-        minTableWidth="48rem"
         selectedIds={selectedIds}
         onSelectionChange={setSelectedIds}
         sort={sort}
         onSortChange={setSort}
-        toolbar={
-          <div className="flex w-full flex-wrap items-center justify-between gap-3">
-            <p className="text-xs text-muted-foreground">
-              Click column headers to multi-sort · scroll horizontally on small
-              screens
-            </p>
-            <div
-              className="inline-flex rounded-xs bg-muted p-0.5"
-              role="group"
-              aria-label="Table density"
-            >
-              {DENSITY_OPTIONS.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  onClick={() => setDensity(option.value)}
-                  aria-pressed={density === option.value}
-                  className={
-                    density === option.value
-                      ? "rounded-xs bg-background px-2.5 py-1 text-xs font-medium text-foreground shadow-sm"
-                      : "rounded-xs px-2.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground"
-                  }
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        }
         renderRowActions={(row) => (
           <div className="flex flex-col">
             <button

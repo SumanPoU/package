@@ -35,7 +35,49 @@ export function UsersTable() {
 }
 ```
 
-## Multi-column sorting
+## Feature defaults (all opt-in)
+
+| Feature | Prop | Default |
+| --- | --- | --- |
+| Checkbox selection | `selectable` | `false` |
+| Sticky header | `stickyHeader` | `false` |
+| Sticky first column | `stickyFirstColumn` | `false` |
+| Filtering | `enableFiltering` | `false` |
+| Column resize | `resizable` | `false` |
+| Density control UI | `showDensityControl` | `false` |
+| Pagination | `showPagination` | `true` |
+| Multi-sort | `enableMultiSort` | `true` |
+| Radius | `radius` | `'xs'` |
+
+Density options live in the package (`DENSITY_OPTIONS` + `DensityControl`). Enable with `showDensityControl`.
+
+## Column resize
+
+```tsx
+<DataTable
+  resizable
+  data={rows}
+  columns={[
+    { key: "name", header: "Name", minWidth: 120 },
+    { key: "email", header: "Email", minWidth: 160 },
+  ]}
+/>
+```
+
+Drag the right edge of a header to resize. Double-click resets. Arrow keys work when the handle is focused.
+
+## Density (built into the package)
+
+```tsx
+<DataTable showDensityControl data={rows} columns={columns} />
+```
+
+Or use the control yourself:
+
+```tsx
+import { DensityControl, DENSITY_OPTIONS } from "@ss-components/table";
+```
+
 
 Click headers to stack sorts (priority badges appear when more than one is active). Click again to flip direction, click a third time to remove that column from the sort list.
 

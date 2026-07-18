@@ -1,7 +1,15 @@
-export { DataTable, cycleMultiSort, normalizeSort } from "./data-table";
+export {
+  DataTable,
+  DENSITY_OPTIONS,
+  cycleMultiSort,
+  getColumnSizeStyle,
+  normalizeSort,
+  shouldTruncateColumn,
+} from "./data-table";
 export type {
   DataTableClassNames,
   DataTableColumn,
+  DataTableColumnWidths,
   DataTableDensity,
   DataTableFilters,
   DataTableMode,
@@ -11,6 +19,12 @@ export type {
   DataTableState,
   SortDirection,
 } from "./types";
+
+export { DensityControl } from "./density-control";
+export type { DensityControlProps } from "./density-control";
+
+export { CellContent } from "./cell-content";
+export type { CellContentProps } from "./cell-content";
 
 export { TablePagination } from "./table-pagination";
 export type { TablePaginationProps } from "./table-pagination";
@@ -26,6 +40,12 @@ export type {
   UseTableSelectionOptions,
   UseTableSelectionReturn,
 } from "./use-table-selection";
+
+export { useColumnResize } from "./use-column-resize";
+export type {
+  UseColumnResizeOptions,
+  UseColumnResizeReturn,
+} from "./use-column-resize";
 
 export {
   Table,

@@ -16,6 +16,7 @@ export type {
   DataTableRowAction,
   DataTableSort,
   DataTableState,
+  FilterCondition,
   SortDirection,
 } from "./data-table";
 
@@ -65,6 +66,25 @@ export type { SnCellProps, SnHeaderProps } from "./sn-column";
 
 export { TablePagination } from "./table-pagination";
 export type { TablePaginationProps } from "./table-pagination";
+
+export { FilterBuilder } from "./filter-builder/filter-builder";
+export type { FilterBuilderProps } from "./filter-builder/types";
+export { FilterBuilderMenu } from "./filter-builder";
+export type { FilterBuilderMenuProps } from "./filter-builder";
+export {
+  FILTER_OPERATORS,
+  conditionsToSearchParams,
+  makeFilterCondition,
+  matchesFilterConditions,
+  toFilterBuilderColumns,
+} from "./filter-builder/types";
+export type {
+  FilterBuilderApplyPayload,
+  FilterBuilderColumn,
+  FilterColumnType,
+  FilterLogic,
+  FilterOperatorValue,
+} from "./filter-builder/types";
 
 export { FilterBar } from "./filter-bar";
 export type { FilterBarProps } from "./filter-bar";

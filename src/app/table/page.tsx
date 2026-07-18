@@ -28,6 +28,8 @@ const COLUMNS: DataTableColumn<Employee>[] = [
     key: "name",
     header: "Name",
     sortable: true,
+    filterable: true,
+    filterType: "string",
     minWidth: 120,
     maxWidth: 220,
     truncate: true,
@@ -35,6 +37,8 @@ const COLUMNS: DataTableColumn<Employee>[] = [
   {
     key: "email",
     header: "Email",
+    filterable: true,
+    filterType: "email",
     hideBelow: "md",
     minWidth: 140,
     maxWidth: 260,
@@ -44,6 +48,18 @@ const COLUMNS: DataTableColumn<Employee>[] = [
     key: "department",
     header: "Department",
     sortable: true,
+    filterable: true,
+    filterType: "enum",
+    filterOptions: [
+      "Engineering",
+      "Design",
+      "Product",
+      "Marketing",
+      "Sales",
+      "Support",
+      "Finance",
+      "People",
+    ],
     minWidth: 110,
     maxWidth: 180,
     truncate: true,
@@ -52,6 +68,8 @@ const COLUMNS: DataTableColumn<Employee>[] = [
     key: "role",
     header: "Role",
     sortable: true,
+    filterable: true,
+    filterType: "string",
     hideBelow: "sm",
     minWidth: 110,
     maxWidth: 180,
@@ -61,6 +79,9 @@ const COLUMNS: DataTableColumn<Employee>[] = [
     key: "status",
     header: "Status",
     sortable: true,
+    filterable: true,
+    filterType: "enum",
+    filterOptions: ["Active", "Away", "Offline"],
     minWidth: 96,
     maxWidth: 120,
     cell: (row) => (
@@ -80,6 +101,8 @@ const COLUMNS: DataTableColumn<Employee>[] = [
   {
     key: "location",
     header: "Location",
+    filterable: true,
+    filterType: "string",
     hideBelow: "lg",
     minWidth: 110,
     maxWidth: 160,
@@ -89,6 +112,8 @@ const COLUMNS: DataTableColumn<Employee>[] = [
     key: "joined",
     header: "Joined",
     sortable: true,
+    filterable: true,
+    filterType: "string",
     hideBelow: "md",
     minWidth: 100,
     maxWidth: 120,
@@ -108,7 +133,7 @@ export default function TableDemoPage() {
         <header className="flex flex-col gap-1.5">
           <h1 className="text-2xl font-semibold tracking-tight">Employees</h1>
           <p className="text-sm text-muted-foreground">
-            Menu actions (⋯ only) · client pagination
+            Menu actions (⋯ only) · filter builder · client pagination
             {selectedIds.length > 0
               ? ` · ${selectedIds.length} selected`
               : null}
@@ -137,6 +162,7 @@ export default function TableDemoPage() {
           enableQuickFilter
           showColumnSelector
           showDensityControl
+          showFilterBuilder
           showPagination
           enableMultiSort
           showRowBorders
@@ -149,7 +175,7 @@ export default function TableDemoPage() {
           onSortChange={setSort}
           actionsDisplay="menu"
           actionsOptions={{
-            permissions: ["employees:view", "employees:edit", "employees:delete"],
+            // permissions: ["employees:view", "employees:edit", "employees:delete"],
             sticky: true,
           }}
           actions={[

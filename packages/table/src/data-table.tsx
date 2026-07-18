@@ -1,8 +1,15 @@
 "use client";
 
 import * as React from "react";
-import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon } from "lucide-react";
+import {
+  ArrowDownIcon,
+  ArrowUpDownIcon,
+  ArrowUpIcon,
+  CheckIcon,
+  XIcon,
+} from "lucide-react";
 
+import { Button } from "./components/ui/button";
 import { Checkbox } from "./components/ui/checkbox";
 import {
   Table,
@@ -15,6 +22,7 @@ import {
 import { DensityControl } from "./density-control";
 import { CellContent } from "./cell-content";
 import { ColumnVisibilityMenu } from "./column-visibility-menu";
+import { EditableCell } from "./editable-cell";
 import { FilterBar } from "./filter-bar";
 import { FilterBuilderMenu } from "./filter-builder";
 import {
@@ -46,6 +54,7 @@ import {
   resolvePinnedSide,
   resolveRowActions,
   shouldTruncateColumn,
+  type DataTableColumn,
   type DataTableColumnVisibility,
   type DataTableDensity,
   type DataTableFilters,
@@ -57,6 +66,7 @@ import {
   type SortDirection,
 } from "./types";
 import { useColumnResize } from "./use-column-resize";
+import { useTableEditing } from "./use-table-editing";
 import { useTableSelection } from "./use-table-selection";
 import { useTableVirtualization } from "./use-table-virtualization";
 import { ColumnHeaderMenu } from "./column-header-menu";
@@ -256,6 +266,14 @@ export function DataTable<T>({
   enableVirtualization = false,
   virtualRowHeight,
   virtualOverscan = 8,
+  editable = false,
+  editMode = "cell",
+  editAllColumns = false,
+  processRowUpdate,
+  onProcessRowUpdateError,
+  onCellEditStart,
+  onCellEditStop,
+  isCellEditable,
   toolbar,
 }: DataTableProps<T>) {
   const resolvedMode = paginationMode ?? mode;
@@ -264,8 +282,11 @@ export function DataTable<T>({
   const resolvedActionsDisplay =
     actionsDisplay ?? actionsOptions?.display ?? "menu";
   const actionsSticky = actionsOptions?.sticky ?? true;
+  const showRowEditControls = editable && editMode === "row";
   const showActions =
-    actions != null || typeof renderRowActions === "function";
+    actions != null ||
+    typeof renderRowActions === "function" ||
+    showRowEditControls;
   const actionsColumnWidth =
     !showActions
       ? 0
@@ -393,6 +414,25 @@ export function DataTable<T>({
     defaultSelectedIds,
     onSelectionChange,
   });
+
+  const editing = useTableEditing<T>({
+    editMode,
+    getRowId,
+    processRowUpdate,
+    onProcessRowUpdateError,
+    onCellEditStart,
+    onCellEditStop,
+    isCellEditable,
+  });
+
+  const isColumnEditable = React.useCallback(
+    (column: DataTableColumn<T>) => {
+      if (!editable) return false;
+      if (editAllColumns) return column.editable !== false;
+      return column.editable === true;
+    },
+    [editAllColumns, editable],
+  );
 
   const resize = useColumnResize({
     columns: visibleColumns,
@@ -534,20 +574,36 @@ export function DataTable<T>({
 
   const pageRows = React.useMemo(() => {
     if (isServer) {
-      return data.map((row, index) => ({
-        row,
-        index,
-        id: getRowId(row, index),
-      }));
+      return data.map((row, index) => {
+        const id = getRowId(row, index);
+        return {
+          row: editing.getDisplayRow(row, id),
+          index,
+          id,
+        };
+      });
     }
 
     const start = (page - 1) * pageSize;
-    return processedData.slice(start, start + pageSize).map((row, index) => ({
-      row,
-      index: start + index,
-      id: getRowId(row, start + index),
-    }));
-  }, [data, getRowId, isServer, page, pageSize, processedData]);
+    return processedData.slice(start, start + pageSize).map((row, index) => {
+      const absoluteIndex = start + index;
+      const id = getRowId(row, absoluteIndex);
+      return {
+        row: editing.getDisplayRow(row, id),
+        index: absoluteIndex,
+        id,
+      };
+    });
+  }, [
+    data,
+    editing.getDisplayRow,
+    editing.rowOverrides,
+    getRowId,
+    isServer,
+    page,
+    pageSize,
+    processedData,
+  ]);
 
   const pageIds = pageRows.map((item) => item.id);
   const allPageSelected = selection.isAllSelected(pageIds);
@@ -1296,6 +1352,15 @@ export function DataTable<T>({
                         pinnedSide === "right"
                           ? getPinnedRightOffset(column.key)
                           : undefined;
+                      const canEdit = isColumnEditable(column);
+                      const cellEditing = editing.isEditingCell(
+                        id,
+                        column.key,
+                      );
+                      const editValue =
+                        editing.draft[column.key] !== undefined
+                          ? editing.draft[column.key]
+                          : rawValue;
 
                       return (
                         <TableCell
@@ -1312,6 +1377,8 @@ export function DataTable<T>({
                             isFirstRightPin &&
                               "shadow-[-1px_0_0_0_rgba(0,0,0,0.08)] dark:shadow-[-1px_0_0_0_rgba(255,255,255,0.1)]",
                             isSelected && "bg-muted/40",
+                            canEdit && "cursor-text",
+                            cellEditing && "bg-muted/30",
                             column.className,
                             classNames?.cell,
                           )}
@@ -1324,16 +1391,61 @@ export function DataTable<T>({
                               ? { right: pinnedRight }
                               : null),
                           }}
-                        >
-                          <CellContent
-                            wrap={column.wrap}
-                            truncate={truncate}
-                            title={
-                              truncate && !column.cell ? textValue : undefined
+                          onDoubleClick={(event) => {
+                            if (!canEdit) return;
+                            event.stopPropagation();
+                            const params = {
+                              id,
+                              field: column.key,
+                              row,
+                              value: rawValue,
+                            };
+                            if (editMode === "row") {
+                              editing.startRowEdit(params);
+                            } else {
+                              editing.startCellEdit(params);
                             }
-                          >
-                            {content}
-                          </CellContent>
+                          }}
+                        >
+                          {cellEditing ? (
+                            <EditableCell
+                              value={editValue}
+                              editType={column.editType}
+                              editOptions={column.editOptions}
+                              radiusClass={radiusClass}
+                              aria-label={`Edit ${column.header}`}
+                              onChange={(next) =>
+                                editing.setDraftValue(column.key, next)
+                              }
+                              onCommit={(reason) => {
+                                if (editMode === "row") return;
+                                void editing.commitCellEdit(reason);
+                              }}
+                              onCancel={() => editing.cancelEdit("escape")}
+                              renderEditCell={
+                                column.renderEditCell
+                                  ? (helpers) =>
+                                      column.renderEditCell!({
+                                        ...helpers,
+                                        row,
+                                        field: column.key,
+                                      })
+                                  : undefined
+                              }
+                            />
+                          ) : (
+                            <CellContent
+                              wrap={column.wrap}
+                              truncate={truncate}
+                              title={
+                                truncate && !column.cell
+                                  ? textValue
+                                  : undefined
+                              }
+                            >
+                              {content}
+                            </CellContent>
+                          )}
                         </TableCell>
                       );
                     })}
@@ -1350,39 +1462,88 @@ export function DataTable<T>({
                           classNames?.cell,
                         )}
                         style={{
-                          width: actionsColumnWidth,
-                          minWidth: actionsColumnWidth,
+                          width: Math.max(
+                            actionsColumnWidth,
+                            showRowEditControls && editing.isEditingRow(id)
+                              ? 88
+                              : actionsColumnWidth,
+                          ),
+                          minWidth: Math.max(
+                            actionsColumnWidth,
+                            showRowEditControls && editing.isEditingRow(id)
+                              ? 88
+                              : actionsColumnWidth,
+                          ),
                         }}
                       >
-                        {actions ? (
-                          <RowActions
-                            row={row}
-                            actions={resolveRowActions(actions, row, {
-                              permissions: actionsOptions?.permissions,
-                              canAccess: actionsOptions?.canAccess,
-                            })}
-                            display={resolvedActionsDisplay}
-                            placement={popoverPlacement}
-                            offsetDistance={popoverOffset}
-                            radiusClass={radiusClass}
-                            menuAriaLabel={
-                              actionsOptions?.menuAriaLabel ??
-                              `Actions for row ${id}`
-                            }
-                          />
-                        ) : renderRowActions ? (
-                          <RowActions
-                            row={row}
-                            actions={[]}
-                            display="menu"
-                            placement={popoverPlacement}
-                            offsetDistance={popoverOffset}
-                            radiusClass={radiusClass}
-                            menuAriaLabel={`Actions for row ${id}`}
-                          >
-                            {renderRowActions(row)}
-                          </RowActions>
-                        ) : null}
+                        <div className="flex items-center justify-end gap-0.5">
+                          {showRowEditControls && editing.isEditingRow(id) ? (
+                            <>
+                              <Button
+                                type="button"
+                                size="icon-xs"
+                                variant="ghost"
+                                aria-label="Save row"
+                                className={cn(
+                                  "text-emerald-600 hover:bg-emerald-500/10 hover:text-emerald-700",
+                                  radiusClass,
+                                )}
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  void editing.commitRowEdit();
+                                }}
+                              >
+                                <CheckIcon className="size-3.5" />
+                              </Button>
+                              <Button
+                                type="button"
+                                size="icon-xs"
+                                variant="ghost"
+                                aria-label="Cancel edit"
+                                className={cn(
+                                  "text-muted-foreground hover:bg-destructive/10 hover:text-destructive",
+                                  radiusClass,
+                                )}
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  editing.cancelEdit("rowCancel");
+                                }}
+                              >
+                                <XIcon className="size-3.5" />
+                              </Button>
+                            </>
+                          ) : null}
+
+                          {actions ? (
+                            <RowActions
+                              row={row}
+                              actions={resolveRowActions(actions, row, {
+                                permissions: actionsOptions?.permissions,
+                                canAccess: actionsOptions?.canAccess,
+                              })}
+                              display={resolvedActionsDisplay}
+                              placement={popoverPlacement}
+                              offsetDistance={popoverOffset}
+                              radiusClass={radiusClass}
+                              menuAriaLabel={
+                                actionsOptions?.menuAriaLabel ??
+                                `Actions for row ${id}`
+                              }
+                            />
+                          ) : renderRowActions ? (
+                            <RowActions
+                              row={row}
+                              actions={[]}
+                              display="menu"
+                              placement={popoverPlacement}
+                              offsetDistance={popoverOffset}
+                              radiusClass={radiusClass}
+                              menuAriaLabel={`Actions for row ${id}`}
+                            >
+                              {renderRowActions(row)}
+                            </RowActions>
+                          ) : null}
+                        </div>
                       </TableCell>
                     ) : null}
                   </TableRow>

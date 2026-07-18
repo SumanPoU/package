@@ -21,13 +21,15 @@ type Employee = {
   joined: string;
 };
 
-const SAMPLE_DATA = employees as Employee[];
+const INITIAL_DATA = employees as Employee[];
 
 const COLUMNS: DataTableColumn<Employee>[] = [
   {
     key: "name",
     header: "Name",
     sortable: true,
+    editable: true,
+    editType: "text",
     filterable: true,
     filterType: "string",
     minWidth: 120,
@@ -37,6 +39,8 @@ const COLUMNS: DataTableColumn<Employee>[] = [
   {
     key: "email",
     header: "Email",
+    editable: true,
+    editType: "text",
     filterable: true,
     filterType: "email",
     hideBelow: "md",
@@ -48,6 +52,18 @@ const COLUMNS: DataTableColumn<Employee>[] = [
     key: "department",
     header: "Department",
     sortable: true,
+    editable: true,
+    editType: "select",
+    editOptions: [
+      "Engineering",
+      "Design",
+      "Product",
+      "Marketing",
+      "Sales",
+      "Support",
+      "Finance",
+      "People",
+    ],
     filterable: true,
     filterType: "enum",
     filterOptions: [
@@ -68,6 +84,8 @@ const COLUMNS: DataTableColumn<Employee>[] = [
     key: "role",
     header: "Role",
     sortable: true,
+    editable: true,
+    editType: "text",
     filterable: true,
     filterType: "string",
     hideBelow: "sm",
@@ -79,6 +97,9 @@ const COLUMNS: DataTableColumn<Employee>[] = [
     key: "status",
     header: "Status",
     sortable: true,
+    editable: true,
+    editType: "select",
+    editOptions: ["Active", "Away", "Offline"],
     filterable: true,
     filterType: "enum",
     filterOptions: ["Active", "Away", "Offline"],
@@ -101,6 +122,8 @@ const COLUMNS: DataTableColumn<Employee>[] = [
   {
     key: "location",
     header: "Location",
+    editable: true,
+    editType: "text",
     filterable: true,
     filterType: "string",
     hideBelow: "lg",
@@ -121,6 +144,7 @@ const COLUMNS: DataTableColumn<Employee>[] = [
 ];
 
 export default function TableDemoPage() {
+  const [rows, setRows] = useState(INITIAL_DATA);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [sort, setSort] = useState<DataTableSort[]>([
     { key: "department", direction: "asc" },
@@ -133,7 +157,7 @@ export default function TableDemoPage() {
         <header className="flex flex-col gap-1.5">
           <h1 className="text-2xl font-semibold tracking-tight">Employees</h1>
           <p className="text-sm text-muted-foreground">
-            Menu actions · filters · virtualization · client pagination
+            Phase 4: double-click a cell to edit · Enter saves · Esc cancels
             {selectedIds.length > 0
               ? ` · ${selectedIds.length} selected`
               : null}
@@ -141,7 +165,7 @@ export default function TableDemoPage() {
         </header>
 
         <DataTable
-          data={SAMPLE_DATA}
+          data={rows}
           columns={COLUMNS}
           paginationMode="client"
           pageSize={25}
@@ -157,6 +181,14 @@ export default function TableDemoPage() {
           sn
           stickyHeader
           enableVirtualization
+          editable
+          editMode="cell"
+          processRowUpdate={(newRow) => {
+            setRows((prev) =>
+              prev.map((row) => (row.id === newRow.id ? newRow : row)),
+            );
+            return newRow;
+          }}
           maxHeight="28rem"
           resizable
           reorderable
@@ -170,29 +202,23 @@ export default function TableDemoPage() {
           showRowBorders
           showColumnBorders={false}
           radius="xs"
-          maxHeight="28rem"
           selectedIds={selectedIds}
           onSelectionChange={setSelectedIds}
           sort={sort}
           onSortChange={setSort}
           actionsDisplay="menu"
-          actionsOptions={{
-            // permissions: ["employees:view", "employees:edit", "employees:delete"],
-            sticky: true,
-          }}
+          actionsOptions={{ sticky: true }}
           actions={[
             {
               id: "view",
               label: "View",
               icon: <EyeIcon className="size-3.5" />,
-              permission: "employees:view",
               onClick: (row) => console.log("view", row.id),
             },
             {
               id: "edit",
               label: "Edit",
               icon: <PencilIcon className="size-3.5" />,
-              permission: "employees:edit",
               show: (row) => row.status !== "Offline",
               onClick: (row) => console.log("edit", row.id),
             },
@@ -201,7 +227,6 @@ export default function TableDemoPage() {
               label: "Delete",
               icon: <Trash2Icon className="size-3.5" />,
               variant: "destructive",
-              permission: "employees:delete",
               show: (row) => row.status === "Offline",
               onClick: (row) => console.log("delete", row.id),
             },
@@ -212,44 +237,31 @@ export default function TableDemoPage() {
       <section className="flex flex-col gap-6">
         <header className="flex flex-col gap-1.5">
           <h2 className="text-lg font-semibold tracking-tight">
-            Icon-only actions
+            Row edit mode
           </h2>
           <p className="text-sm text-muted-foreground">
-            <code className="text-foreground">actionsDisplay=&quot;icons&quot;</code>
-            {" "}
-            — no ⋯ menu
+            <code className="text-foreground">editMode=&quot;row&quot;</code>
+            {" — "}
+            double-click, edit multiple fields, then ✓ / ✕
           </p>
         </header>
 
         <DataTable
-          data={SAMPLE_DATA.slice(0, 8)}
+          data={rows.slice(0, 8)}
           columns={COLUMNS}
           paginationMode="client"
           pageSize={8}
           showPagination={false}
           sn={false}
+          editable
+          editMode="row"
+          processRowUpdate={(newRow) => {
+            setRows((prev) =>
+              prev.map((row) => (row.id === newRow.id ? newRow : row)),
+            );
+            return newRow;
+          }}
           radius="xs"
-          actionsDisplay="icons"
-          actions={[
-            {
-              label: "View",
-              icon: <EyeIcon className="size-3.5" />,
-              onClick: (row) => console.log("view", row.id),
-            },
-            {
-              label: "Edit",
-              icon: <PencilIcon className="size-3.5" />,
-              show: (row) => row.status !== "Offline",
-              onClick: (row) => console.log("edit", row.id),
-            },
-            {
-              label: "Delete",
-              icon: <Trash2Icon className="size-3.5" />,
-              variant: "destructive",
-              show: (row) => row.status === "Offline",
-              onClick: (row) => console.log("delete", row.id),
-            },
-          ]}
         />
       </section>
     </main>

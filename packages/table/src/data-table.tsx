@@ -18,7 +18,7 @@ import { ColumnVisibilityMenu } from "./column-visibility-menu";
 import { FilterBar } from "./filter-bar";
 import { cn } from "./lib/utils";
 import { QuickFilter } from "./quick-filter";
-import { RowActionsPopover } from "./row-actions-popover";
+import { RowActions } from "./row-actions";
 import {
   SN_COLUMN_WIDTH,
   SnCell,
@@ -31,22 +31,32 @@ import {
   DENSITY_HEADER_CLASS,
   HIDE_BELOW_CLASS,
   RADIUS_CLASS,
+  applyPinOrder,
   cycleMultiSort,
   getColumnSizeStyle,
   getVisibleColumns,
+  isColumnVisible,
   normalizeSort,
+  orderColumns,
+  resolvePinnedSide,
+  resolveRowActions,
   shouldTruncateColumn,
   type DataTableColumnVisibility,
   type DataTableDensity,
   type DataTableFilters,
+  type DataTablePinnedColumns,
   type DataTableProps,
   type DataTableSort,
   type DataTableState,
+  type SortDirection,
 } from "./types";
 import { useColumnResize } from "./use-column-resize";
 import { useTableSelection } from "./use-table-selection";
+import { ColumnHeaderMenu } from "./column-header-menu";
 
 export type {
+  DataTableActionsDisplay,
+  DataTableActionsOptions,
   DataTableClassNames,
   DataTableColumn,
   DataTableColumnVisibility,
@@ -54,8 +64,12 @@ export type {
   DataTableDensity,
   DataTableFilters,
   DataTableMode,
+  DataTablePaginationMode,
+  DataTablePaginationOptions,
+  DataTablePinnedColumns,
   DataTableProps,
   DataTableRadius,
+  DataTableRowAction,
   DataTableSort,
   DataTableState,
   SortDirection,
@@ -63,12 +77,20 @@ export type {
 
 export {
   DENSITY_OPTIONS,
+  applyPinOrder,
   cycleMultiSort,
   getColumnSizeStyle,
   getVisibleColumns,
+  hasActionPermission,
   isColumnVisible,
+  isRowActionDisabled,
+  isRowActionVisible,
   normalizeSort,
+  orderColumns,
+  resolvePinnedSide,
+  resolveRowActions,
   shouldTruncateColumn,
+  splitRowActionsByDisplay,
 } from "./types";
 
 function matchesQuickFilter<T>(
@@ -151,6 +173,8 @@ export function DataTable<T>({
   showPagination = true,
   pageSize: pageSizeProp = 10,
   pageSizeOptions,
+  paginationMode,
+  paginationOptions,
   selectable = false,
   sn = true,
   snHeader = "SN",
@@ -181,12 +205,20 @@ export function DataTable<T>({
   defaultColumnVisibility = {},
   onColumnVisibilityChange,
   showColumnSelector = false,
+  reorderable = false,
+  columnOrder: controlledOrder,
+  defaultColumnOrder = [],
+  onColumnOrderChange,
+  pinnedColumns: controlledPinned,
+  defaultPinnedColumns = {},
+  onPinnedColumnsChange,
+  showColumnMenu = false,
   resizable = false,
   columnWidths,
   defaultColumnWidths,
   onColumnWidthsChange,
   density: controlledDensity,
-  defaultDensity = "comfortable",
+  defaultDensity = "compact",
   onDensityChange,
   showDensityControl = false,
   activeRowId = null,
@@ -202,13 +234,33 @@ export function DataTable<T>({
   onStateChange,
   popoverOffset = 8,
   popoverPlacement = "bottom-start",
+  actions,
+  actionsDisplay,
+  actionsOptions,
   renderRowActions,
+  showRowBorders = true,
+  showColumnBorders = false,
   toolbar,
 }: DataTableProps<T>) {
-  const isServer = mode === "server";
+  const resolvedMode = paginationMode ?? mode;
+  const isServer = resolvedMode === "server";
   const radiusClass = RADIUS_CLASS[radius];
-  const showActions = typeof renderRowActions === "function";
+  const resolvedActionsDisplay =
+    actionsDisplay ?? actionsOptions?.display ?? "menu";
+  const actionsSticky = actionsOptions?.sticky ?? true;
+  const showActions =
+    actions != null || typeof renderRowActions === "function";
+  const actionsColumnWidth =
+    !showActions
+      ? 0
+      : typeof renderRowActions === "function" && actions == null
+        ? 40
+        : resolvedActionsDisplay === "icons"
+          ? 108
+          : 40;
   const stickyHeaderEnabled = stickyHeader || stickyHeading;
+  const resolvedPageSizeOptions =
+    paginationOptions?.pageSizeOptions ?? pageSizeOptions;
   const resolvedMaxHeight =
     maxHeight ?? (stickyHeaderEnabled ? "28rem" : undefined);
   const showFilterBar =
@@ -232,12 +284,19 @@ export function DataTable<T>({
     React.useState(defaultQuickFilter);
   const [uncontrolledVisibility, setUncontrolledVisibility] =
     React.useState<DataTableColumnVisibility>(defaultColumnVisibility);
+  const [uncontrolledOrder, setUncontrolledOrder] =
+    React.useState<string[]>(defaultColumnOrder);
+  const [uncontrolledPinned, setUncontrolledPinned] =
+    React.useState<DataTablePinnedColumns>(defaultPinnedColumns);
+  const [draggingKey, setDraggingKey] = React.useState<string | null>(null);
 
   const isSortControlled = controlledSort !== undefined;
   const isFiltersControlled = controlledFilters !== undefined;
   const isDensityControlled = controlledDensity !== undefined;
   const isQuickFilterControlled = controlledQuickFilter !== undefined;
   const isVisibilityControlled = controlledVisibility !== undefined;
+  const isOrderControlled = controlledOrder !== undefined;
+  const isPinnedControlled = controlledPinned !== undefined;
 
   const sort = isSortControlled
     ? normalizeSort(controlledSort)
@@ -254,11 +313,50 @@ export function DataTable<T>({
   const columnVisibility = isVisibilityControlled
     ? controlledVisibility
     : uncontrolledVisibility;
+  const columnOrder = isOrderControlled ? controlledOrder : uncontrolledOrder;
+  const pinnedColumns = isPinnedControlled
+    ? controlledPinned
+    : uncontrolledPinned;
 
-  const visibleColumns = React.useMemo(
-    () => getVisibleColumns(columns, columnVisibility),
-    [columns, columnVisibility],
-  );
+  const visibleColumns = React.useMemo(() => {
+    const ordered = orderColumns(columns, columnOrder);
+    const visible = getVisibleColumns(ordered, columnVisibility);
+    return applyPinOrder(visible, pinnedColumns);
+  }, [columnOrder, columnVisibility, columns, pinnedColumns]);
+
+  const leftPinnedKeys = React.useMemo(() => {
+    const keys: string[] = [];
+    for (const column of visibleColumns) {
+      const side = resolvePinnedSide(
+        column.key,
+        pinnedColumns,
+        column.pinned ?? (column.sticky ? "left" : undefined),
+      );
+      if (side === "left") keys.push(column.key);
+    }
+    return keys;
+  }, [pinnedColumns, visibleColumns]);
+
+  const rightPinnedKeys = React.useMemo(() => {
+    const keys: string[] = [];
+    for (const column of visibleColumns) {
+      const side = resolvePinnedSide(
+        column.key,
+        pinnedColumns,
+        column.pinned ?? (column.sticky ? "left" : undefined),
+      );
+      if (side === "right") keys.push(column.key);
+    }
+    return keys;
+  }, [pinnedColumns, visibleColumns]);
+
+  const rowBorderClass = showRowBorders
+    ? "border-b border-black/[0.06] dark:border-white/[0.08]"
+    : "border-b-0";
+  const columnBorderClass = showColumnBorders
+    ? "border-r border-black/[0.06] dark:border-white/[0.08]"
+    : "border-r-0";
+  const cellBorderClass = cn(rowBorderClass, columnBorderClass);
 
   const densityCell = DENSITY_CELL_CLASS[density];
   const densityHeader = DENSITY_HEADER_CLASS[density];
@@ -277,6 +375,54 @@ export function DataTable<T>({
     onColumnWidthsChange,
   });
 
+  const getColumnWidthPx = React.useCallback(
+    (column: (typeof visibleColumns)[number]) =>
+      resizable
+        ? resize.getWidth(column.key, column)
+        : (column.width ?? column.minWidth ?? 160),
+    [resizable, resize],
+  );
+
+  const getPinnedLeftOffset = React.useCallback(
+    (key: string) => {
+      let left = selectable ? 40 : 0;
+      left += sn ? SN_COLUMN_WIDTH : 0;
+      for (const pinnedKey of leftPinnedKeys) {
+        if (pinnedKey === key) return left;
+        const column = visibleColumns.find((item) => item.key === pinnedKey);
+        left += column ? getColumnWidthPx(column) : 160;
+      }
+      return left;
+    },
+    [
+      getColumnWidthPx,
+      leftPinnedKeys,
+      selectable,
+      sn,
+      visibleColumns,
+    ],
+  );
+
+  const getPinnedRightOffset = React.useCallback(
+    (key: string) => {
+      let right = showActions ? actionsColumnWidth : 0;
+      for (let i = rightPinnedKeys.length - 1; i >= 0; i -= 1) {
+        const pinnedKey = rightPinnedKeys[i]!;
+        if (pinnedKey === key) return right;
+        const column = visibleColumns.find((item) => item.key === pinnedKey);
+        right += column ? getColumnWidthPx(column) : 160;
+      }
+      return right;
+    },
+    [
+      actionsColumnWidth,
+      getColumnWidthPx,
+      rightPinnedKeys,
+      showActions,
+      visibleColumns,
+    ],
+  );
+
   const emitState = React.useCallback(
     (next: Partial<DataTableState>) => {
       onStateChange?.({
@@ -287,17 +433,21 @@ export function DataTable<T>({
         density,
         columnWidths: resize.widths,
         columnVisibility,
+        columnOrder,
+        pinnedColumns,
         quickFilter,
         ...next,
       });
     },
     [
+      columnOrder,
       columnVisibility,
       density,
       filters,
       onStateChange,
       page,
       pageSize,
+      pinnedColumns,
       quickFilter,
       resize.widths,
       sort,
@@ -383,9 +533,10 @@ export function DataTable<T>({
     const extras =
       (selectable ? 40 : 0) +
       (sn ? SN_COLUMN_WIDTH : 0) +
-      (showActions ? 40 : 0);
+      (showActions ? actionsColumnWidth : 0);
     return `${dataWidth + extras}px`;
   }, [
+    actionsColumnWidth,
     minTableWidth,
     resizable,
     resize,
@@ -443,6 +594,61 @@ export function DataTable<T>({
     emitState({ columnVisibility: next });
   };
 
+  const handleOrderChange = (next: string[]) => {
+    if (!isOrderControlled) setUncontrolledOrder(next);
+    onColumnOrderChange?.(next);
+    emitState({ columnOrder: next });
+  };
+
+  const handlePinnedChange = (next: DataTablePinnedColumns) => {
+    if (!isPinnedControlled) setUncontrolledPinned(next);
+    onPinnedColumnsChange?.(next);
+    emitState({ pinnedColumns: next });
+  };
+
+  const handleHeaderSort = (key: string, direction: SortDirection | null) => {
+    let resolved: DataTableSort[];
+    if (direction == null) {
+      resolved = sort.filter((item) => item.key !== key);
+    } else if (enableMultiSort) {
+      const without = sort.filter((item) => item.key !== key);
+      resolved = [...without, { key, direction }];
+    } else {
+      resolved = [{ key, direction }];
+    }
+    if (!isSortControlled) setUncontrolledSort(resolved);
+    onSortChange?.(resolved);
+    setPage(1);
+    emitState({ sort: resolved, page: 1 });
+  };
+
+  const handlePinColumn = (key: string, side: "left" | "right" | null) => {
+    const left = (pinnedColumns.left ?? []).filter((item) => item !== key);
+    const right = (pinnedColumns.right ?? []).filter((item) => item !== key);
+    if (side === "left") left.push(key);
+    if (side === "right") right.push(key);
+    handlePinnedChange({ left, right });
+  };
+
+  const handleHideColumn = (key: string) => {
+    handleVisibilityChange({ ...columnVisibility, [key]: false });
+  };
+
+  const handleDropReorder = (targetKey: string) => {
+    if (!reorderable || !draggingKey || draggingKey === targetKey) return;
+    const currentOrder =
+      columnOrder.length > 0
+        ? [...columnOrder]
+        : columns.map((column) => column.key);
+    const from = currentOrder.indexOf(draggingKey);
+    const to = currentOrder.indexOf(targetKey);
+    if (from < 0 || to < 0) return;
+    currentOrder.splice(from, 1);
+    currentOrder.splice(to, 0, draggingKey);
+    handleOrderChange(currentOrder);
+    setDraggingKey(null);
+  };
+
   const handleSelectAll = (checked: boolean | "indeterminate") => {
     if (checked === true) {
       selection.selectAll(
@@ -460,12 +666,12 @@ export function DataTable<T>({
       data-slot="data-table"
       data-density={density}
       data-radius={radius}
-      data-mode={mode}
+      data-mode={resolvedMode}
       data-sticky-header={stickyHeaderEnabled ? "true" : "false"}
       data-resizable={resizable ? "true" : "false"}
       style={style}
       className={cn(
-        "w-full overflow-hidden bg-card text-card-foreground shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.04)] ring-1 ring-black/[0.06] dark:shadow-[0_1px_2px_rgba(0,0,0,0.4)] dark:ring-white/10",
+        "w-full overflow-hidden bg-card text-card-foreground shadow-[0_1px_3px_rgba(0,0,0,0.06)] ring-1 ring-black/[0.04] dark:shadow-[0_1px_3px_rgba(0,0,0,0.35)] dark:ring-white/8",
         radiusClass,
         resize.isResizing && "select-none",
         classNames?.root,
@@ -476,7 +682,7 @@ export function DataTable<T>({
         <div
           data-slot="data-table-toolbar"
           className={cn(
-            "flex flex-wrap items-center gap-2 border-b border-black/[0.04] px-3 py-2.5 dark:border-white/[0.06]",
+            "flex flex-wrap items-center gap-1.5 border-b border-black/[0.04] px-3 py-2 dark:border-white/[0.06]",
             classNames?.toolbar,
           )}
         >
@@ -492,7 +698,7 @@ export function DataTable<T>({
 
           <div className="min-w-0 flex-1">{toolbar}</div>
 
-          <div className="ml-auto flex flex-wrap items-center gap-2">
+          <div className="ml-auto flex flex-wrap items-center gap-1.5">
             {showColumnSelector ? (
               <ColumnVisibilityMenu
                 columns={columns}
@@ -526,7 +732,7 @@ export function DataTable<T>({
 
       <div
         data-slot="data-table-scroll"
-        className="relative w-full overflow-auto overscroll-x-contain"
+        className="data-table-thin-scroll relative w-full overflow-auto overscroll-x-contain [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-black/15 dark:[&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-track]:bg-transparent"
         style={resolvedMaxHeight ? { maxHeight: resolvedMaxHeight } : undefined}
       >
         {loading ? (
@@ -579,30 +785,31 @@ export function DataTable<T>({
                   />
                 );
               })}
-              {showActions ? <col style={{ width: 40 }} /> : null}
+              {showActions ? (
+                <col style={{ width: actionsColumnWidth }} />
+              ) : null}
             </colgroup>
           ) : null}
 
           <TableHeader
             className={cn(
               stickyHeaderEnabled &&
-                "sticky top-0 z-20 border-b border-black/[0.06] bg-card shadow-[0_1px_0_0_rgba(0,0,0,0.04)] dark:border-white/[0.08]",
+                "sticky top-0 z-20 bg-card shadow-[0_1px_0_0_rgba(0,0,0,0.04)] dark:shadow-[0_1px_0_0_rgba(255,255,255,0.06)]",
               classNames?.header,
             )}
           >
             <TableRow
               data-state="header"
-              className={cn(
-                "hover:bg-transparent border-black/[0.06] dark:border-white/[0.08]",
-                classNames?.headerRow,
-              )}
+              className={cn("hover:bg-transparent", classNames?.headerRow)}
             >
               {selectable ? (
                 <TableHead
                   className={cn(
                     "w-10 bg-card",
                     densityHeader,
-                    stickyFirstColumn && "sticky left-0 z-30",
+                    cellBorderClass,
+                    (stickyFirstColumn || leftPinnedKeys.length > 0) &&
+                      "sticky left-0 z-40",
                     classNames?.headerCell,
                   )}
                 >
@@ -621,7 +828,20 @@ export function DataTable<T>({
               ) : null}
 
               {sn ? (
-                <SnHeader label={snHeader} className={classNames?.headerCell} />
+                <SnHeader
+                  label={snHeader}
+                  className={cn(
+                    cellBorderClass,
+                    (stickyFirstColumn || leftPinnedKeys.length > 0) &&
+                      "sticky z-40",
+                    classNames?.headerCell,
+                  )}
+                  style={
+                    stickyFirstColumn || leftPinnedKeys.length > 0
+                      ? { left: selectable ? 40 : 0 }
+                      : undefined
+                  }
+                />
               ) : null}
 
               {visibleColumns.map((column, columnIndex) => {
@@ -629,8 +849,14 @@ export function DataTable<T>({
                   (item) => item.key === column.key,
                 );
                 const sortRule = sortIndex >= 0 ? sort[sortIndex] : undefined;
+                const pinnedSide = resolvePinnedSide(
+                  column.key,
+                  pinnedColumns,
+                  column.pinned ?? (column.sticky ? "left" : undefined),
+                );
                 const isSticky =
-                  Boolean(column.sticky) ||
+                  pinnedSide === "left" ||
+                  pinnedSide === "right" ||
                   (stickyFirstColumn && columnIndex === 0);
                 const canResize =
                   resizable && column.resizable !== false;
@@ -639,24 +865,53 @@ export function DataTable<T>({
                   : undefined;
                 const sizeStyle = getColumnSizeStyle(column, resizedWidth);
                 const truncate = shouldTruncateColumn(column);
+                const isLastLeftPin =
+                  pinnedSide === "left" &&
+                  leftPinnedKeys[leftPinnedKeys.length - 1] === column.key;
+                const isFirstRightPin =
+                  pinnedSide === "right" &&
+                  rightPinnedKeys[0] === column.key;
+                const pinnedLeft =
+                  pinnedSide === "left"
+                    ? getPinnedLeftOffset(column.key)
+                    : stickyFirstColumn && columnIndex === 0
+                      ? firstStickyLeft
+                      : undefined;
+                const pinnedRight =
+                  pinnedSide === "right"
+                    ? getPinnedRightOffset(column.key)
+                    : undefined;
 
                 return (
                   <TableHead
                     key={column.key}
+                    draggable={reorderable}
+                    onDragStart={() => setDraggingKey(column.key)}
+                    onDragOver={(event) => {
+                      if (!reorderable) return;
+                      event.preventDefault();
+                    }}
+                    onDrop={() => handleDropReorder(column.key)}
+                    onDragEnd={() => setDraggingKey(null)}
                     className={cn(
                       "relative overflow-hidden bg-card",
                       densityHeader,
+                      cellBorderClass,
                       column.hideBelow && HIDE_BELOW_CLASS[column.hideBelow],
-                      isSticky &&
-                        "sticky z-30 shadow-[1px_0_0_0_rgba(0,0,0,0.04)]",
+                      isSticky && "sticky z-30",
+                      isLastLeftPin &&
+                        "shadow-[1px_0_0_0_rgba(0,0,0,0.08)] dark:shadow-[1px_0_0_0_rgba(255,255,255,0.1)]",
+                      isFirstRightPin &&
+                        "shadow-[-1px_0_0_0_rgba(0,0,0,0.08)] dark:shadow-[-1px_0_0_0_rgba(255,255,255,0.1)]",
+                      draggingKey === column.key && "opacity-50",
+                      reorderable && "cursor-grab active:cursor-grabbing",
                       column.headerClassName,
                       classNames?.headerCell,
                     )}
                     style={{
                       ...sizeStyle,
-                      ...(isSticky && stickyFirstColumn && columnIndex === 0
-                        ? { left: firstStickyLeft }
-                        : null),
+                      ...(pinnedLeft != null ? { left: pinnedLeft } : null),
+                      ...(pinnedRight != null ? { right: pinnedRight } : null),
                     }}
                     aria-sort={
                       column.sortable
@@ -670,7 +925,7 @@ export function DataTable<T>({
                   >
                     <div
                       className={cn(
-                        "flex min-w-0 items-center gap-1.5",
+                        "flex min-w-0 items-center gap-1",
                         canResize && "pr-2",
                       )}
                     >
@@ -719,6 +974,22 @@ export function DataTable<T>({
                           {column.header}
                         </CellContent>
                       )}
+
+                      {showColumnMenu ? (
+                        <ColumnHeaderMenu
+                          columnKey={column.key}
+                          header={column.header}
+                          sortable={column.sortable}
+                          sortRule={sortRule}
+                          pinned={pinnedSide}
+                          radiusClass={radiusClass}
+                          onSort={(direction) =>
+                            handleHeaderSort(column.key, direction)
+                          }
+                          onHide={() => handleHideColumn(column.key)}
+                          onPin={(side) => handlePinColumn(column.key, side)}
+                        />
+                      ) : null}
                     </div>
 
                     {canResize ? (
@@ -727,7 +998,7 @@ export function DataTable<T>({
                         aria-orientation="vertical"
                         aria-label={`Resize ${column.header} column`}
                         tabIndex={0}
-                        className="absolute top-0 right-0 z-40 flex h-full w-3 cursor-col-resize touch-none select-none items-center justify-center"
+                        className="group/resize absolute top-0 right-0 z-40 flex h-full w-2.5 cursor-col-resize touch-none select-none items-center justify-center"
                         onMouseDown={(event) =>
                           resize.beginResize(column.key, event, {
                             minWidth: column.minWidth,
@@ -767,7 +1038,7 @@ export function DataTable<T>({
                           );
                         }}
                       >
-                        <span className="h-4 w-px bg-border opacity-0 transition-opacity group-hover/table:opacity-100 hover:!opacity-100 [.relative:hover_&]:opacity-100" />
+                        <span className="h-3.5 w-px bg-transparent group-hover/resize:bg-foreground/20 group-focus-visible/resize:bg-foreground/30" />
                       </div>
                     ) : null}
                   </TableHead>
@@ -777,10 +1048,17 @@ export function DataTable<T>({
               {showActions ? (
                 <TableHead
                   className={cn(
-                    "w-10 bg-card",
+                    "bg-card",
                     densityHeader,
+                    cellBorderClass,
+                    actionsSticky &&
+                      "sticky right-0 z-30 shadow-[-1px_0_0_0_rgba(0,0,0,0.06)] dark:shadow-[-1px_0_0_0_rgba(255,255,255,0.08)]",
                     classNames?.headerCell,
                   )}
+                  style={{
+                    width: actionsColumnWidth,
+                    minWidth: actionsColumnWidth,
+                  }}
                 >
                   <span className="sr-only">Actions</span>
                 </TableHead>
@@ -829,8 +1107,10 @@ export function DataTable<T>({
                         className={cn(
                           "bg-card",
                           densityCell,
-                          stickyFirstColumn && "sticky left-0 z-10",
-                          isSelected && "bg-muted/60",
+                          cellBorderClass,
+                          (stickyFirstColumn || leftPinnedKeys.length > 0) &&
+                            "sticky left-0 z-20",
+                          isSelected && "bg-muted/40",
                           classNames?.cell,
                         )}
                       >
@@ -847,9 +1127,17 @@ export function DataTable<T>({
                       <SnCell
                         value={getSerialNumber(page, pageSize, rowIndexOnPage)}
                         className={cn(
-                          isSelected && "bg-muted/60",
+                          cellBorderClass,
+                          (stickyFirstColumn || leftPinnedKeys.length > 0) &&
+                            "sticky z-20",
+                          isSelected && "bg-muted/40",
                           classNames?.cell,
                         )}
+                        style={
+                          stickyFirstColumn || leftPinnedKeys.length > 0
+                            ? { left: selectable ? 40 : 0 }
+                            : undefined
+                        }
                       />
                     ) : null}
 
@@ -860,8 +1148,14 @@ export function DataTable<T>({
                       const content = column.cell
                         ? column.cell(row, index)
                         : textValue;
+                      const pinnedSide = resolvePinnedSide(
+                        column.key,
+                        pinnedColumns,
+                        column.pinned ?? (column.sticky ? "left" : undefined),
+                      );
                       const isSticky =
-                        Boolean(column.sticky) ||
+                        pinnedSide === "left" ||
+                        pinnedSide === "right" ||
                         (stickyFirstColumn && columnIndex === 0);
                       const resizedWidth = resizable
                         ? resize.getWidth(column.key, column)
@@ -871,6 +1165,23 @@ export function DataTable<T>({
                         resizedWidth,
                       );
                       const truncate = shouldTruncateColumn(column);
+                      const isLastLeftPin =
+                        pinnedSide === "left" &&
+                        leftPinnedKeys[leftPinnedKeys.length - 1] ===
+                          column.key;
+                      const isFirstRightPin =
+                        pinnedSide === "right" &&
+                        rightPinnedKeys[0] === column.key;
+                      const pinnedLeft =
+                        pinnedSide === "left"
+                          ? getPinnedLeftOffset(column.key)
+                          : stickyFirstColumn && columnIndex === 0
+                            ? firstStickyLeft
+                            : undefined;
+                      const pinnedRight =
+                        pinnedSide === "right"
+                          ? getPinnedRightOffset(column.key)
+                          : undefined;
 
                       return (
                         <TableCell
@@ -878,20 +1189,25 @@ export function DataTable<T>({
                           className={cn(
                             "overflow-hidden bg-card",
                             densityCell,
+                            cellBorderClass,
                             column.hideBelow &&
                               HIDE_BELOW_CLASS[column.hideBelow],
-                            isSticky &&
-                              "sticky z-10 shadow-[1px_0_0_0_rgba(0,0,0,0.04)]",
-                            isSelected && "bg-muted/60",
+                            isSticky && "sticky z-10",
+                            isLastLeftPin &&
+                              "shadow-[1px_0_0_0_rgba(0,0,0,0.08)] dark:shadow-[1px_0_0_0_rgba(255,255,255,0.1)]",
+                            isFirstRightPin &&
+                              "shadow-[-1px_0_0_0_rgba(0,0,0,0.08)] dark:shadow-[-1px_0_0_0_rgba(255,255,255,0.1)]",
+                            isSelected && "bg-muted/40",
                             column.className,
                             classNames?.cell,
                           )}
                           style={{
                             ...sizeStyle,
-                            ...(isSticky &&
-                            stickyFirstColumn &&
-                            columnIndex === 0
-                              ? { left: firstStickyLeft }
+                            ...(pinnedLeft != null
+                              ? { left: pinnedLeft }
+                              : null),
+                            ...(pinnedRight != null
+                              ? { right: pinnedRight }
                               : null),
                           }}
                         >
@@ -910,16 +1226,49 @@ export function DataTable<T>({
 
                     {showActions ? (
                       <TableCell
-                        className={cn("bg-card", densityCell, classNames?.cell)}
+                        className={cn(
+                          "bg-card",
+                          densityCell,
+                          cellBorderClass,
+                          actionsSticky &&
+                            "sticky right-0 z-20 shadow-[-1px_0_0_0_rgba(0,0,0,0.06)] dark:shadow-[-1px_0_0_0_rgba(255,255,255,0.08)]",
+                          isSelected && "bg-muted/40",
+                          classNames?.cell,
+                        )}
+                        style={{
+                          width: actionsColumnWidth,
+                          minWidth: actionsColumnWidth,
+                        }}
                       >
-                        <RowActionsPopover
-                          placement={popoverPlacement}
-                          offsetDistance={popoverOffset}
-                          radiusClass={radiusClass}
-                          aria-label={`Actions for row ${id}`}
-                        >
-                          {renderRowActions(row)}
-                        </RowActionsPopover>
+                        {actions ? (
+                          <RowActions
+                            row={row}
+                            actions={resolveRowActions(actions, row, {
+                              permissions: actionsOptions?.permissions,
+                              canAccess: actionsOptions?.canAccess,
+                            })}
+                            display={resolvedActionsDisplay}
+                            placement={popoverPlacement}
+                            offsetDistance={popoverOffset}
+                            radiusClass={radiusClass}
+                            menuAriaLabel={
+                              actionsOptions?.menuAriaLabel ??
+                              `Actions for row ${id}`
+                            }
+                          />
+                        ) : renderRowActions ? (
+                          <RowActions
+                            row={row}
+                            actions={[]}
+                            display="menu"
+                            placement={popoverPlacement}
+                            offsetDistance={popoverOffset}
+                            radiusClass={radiusClass}
+                            menuAriaLabel={`Actions for row ${id}`}
+                          >
+                            {renderRowActions(row)}
+                          </RowActions>
+                        ) : null}
                       </TableCell>
                     ) : null}
                   </TableRow>
@@ -938,7 +1287,8 @@ export function DataTable<T>({
           totalItems={totalItems}
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
-          pageSizeOptions={pageSizeOptions}
+          pageSizeOptions={resolvedPageSizeOptions}
+          options={paginationOptions}
           className={classNames?.pagination}
           radiusClass={radiusClass}
         />

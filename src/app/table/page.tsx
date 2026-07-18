@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { EyeIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import {
   DataTable,
   type DataTableColumn,
@@ -107,7 +108,7 @@ export default function TableDemoPage() {
         <header className="flex flex-col gap-1.5">
           <h1 className="text-2xl font-semibold tracking-tight">Employees</h1>
           <p className="text-sm text-muted-foreground">
-            Phase 1: auto SN, sticky header, quick search, column visibility
+            Menu actions (⋯ only) · client pagination
             {selectedIds.length > 0
               ? ` · ${selectedIds.length} selected`
               : null}
@@ -117,59 +118,110 @@ export default function TableDemoPage() {
         <DataTable
           data={SAMPLE_DATA}
           columns={COLUMNS}
+          paginationMode="client"
           pageSize={10}
+          paginationOptions={{
+            pageSizeOptions: [5, 10, 20, 50],
+            showPageSizeOptions: true,
+            showPageNumbers: true,
+            maxVisiblePages: 3,
+            showTotal: true,
+            rowsLabel: "Rows",
+          }}
           selectable
           sn
           stickyHeader
           resizable
+          reorderable
+          showColumnMenu
           enableQuickFilter
           showColumnSelector
           showDensityControl
           showPagination
           enableMultiSort
+          showRowBorders
+          showColumnBorders={false}
           radius="xs"
           maxHeight="28rem"
           selectedIds={selectedIds}
           onSelectionChange={setSelectedIds}
           sort={sort}
           onSortChange={setSort}
-          renderRowActions={(row) => (
-            <div className="flex flex-col">
-              <button
-                type="button"
-                className="px-2 py-1.5 text-left text-sm hover:bg-muted"
-              >
-                Edit {row.name}
-              </button>
-              <button
-                type="button"
-                className="px-2 py-1.5 text-left text-sm text-destructive hover:bg-muted"
-              >
-                Delete
-              </button>
-            </div>
-          )}
+          actionsDisplay="menu"
+          actionsOptions={{
+            permissions: ["employees:view", "employees:edit", "employees:delete"],
+            sticky: true,
+          }}
+          actions={[
+            {
+              id: "view",
+              label: "View",
+              icon: <EyeIcon className="size-3.5" />,
+              permission: "employees:view",
+              onClick: (row) => console.log("view", row.id),
+            },
+            {
+              id: "edit",
+              label: "Edit",
+              icon: <PencilIcon className="size-3.5" />,
+              permission: "employees:edit",
+              show: (row) => row.status !== "Offline",
+              onClick: (row) => console.log("edit", row.id),
+            },
+            {
+              id: "delete",
+              label: "Delete",
+              icon: <Trash2Icon className="size-3.5" />,
+              variant: "destructive",
+              permission: "employees:delete",
+              show: (row) => row.status === "Offline",
+              onClick: (row) => console.log("delete", row.id),
+            },
+          ]}
         />
       </section>
 
       <section className="flex flex-col gap-6">
         <header className="flex flex-col gap-1.5">
           <h2 className="text-lg font-semibold tracking-tight">
-            Without SN / without sticky header
+            Icon-only actions
           </h2>
           <p className="text-sm text-muted-foreground">
-            <code className="text-foreground">sn={"{false}"}</code> and no{" "}
-            <code className="text-foreground">stickyHeader</code>
+            <code className="text-foreground">actionsDisplay=&quot;icons&quot;</code>
+            {" "}
+            — no ⋯ menu
           </p>
         </header>
 
         <DataTable
-          sn={false}
           data={SAMPLE_DATA.slice(0, 8)}
           columns={COLUMNS}
+          paginationMode="client"
           pageSize={8}
           showPagination={false}
+          sn={false}
           radius="xs"
+          actionsDisplay="icons"
+          actions={[
+            {
+              label: "View",
+              icon: <EyeIcon className="size-3.5" />,
+              onClick: (row) => console.log("view", row.id),
+            },
+            {
+              label: "Edit",
+              icon: <PencilIcon className="size-3.5" />,
+              show: (row) => row.status !== "Offline",
+              onClick: (row) => console.log("edit", row.id),
+            },
+            {
+              label: "Delete",
+              icon: <Trash2Icon className="size-3.5" />,
+              variant: "destructive",
+              show: (row) => row.status === "Offline",
+              onClick: (row) => console.log("delete", row.id),
+            },
+          ]}
         />
       </section>
     </main>

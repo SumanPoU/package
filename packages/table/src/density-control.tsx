@@ -1,7 +1,15 @@
 "use client";
 
-import { DENSITY_OPTIONS, type DataTableDensity } from "./types";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./components/ui/select";
 import { cn } from "./lib/utils";
+import { toolbarSelectTriggerClass } from "./toolbar-control";
+import { DENSITY_OPTIONS, type DataTableDensity } from "./types";
 
 export type DensityControlProps = {
   value: DataTableDensity;
@@ -9,6 +17,8 @@ export type DensityControlProps = {
   options?: typeof DENSITY_OPTIONS;
   className?: string;
   radiusClass?: string;
+  /** Popper offset from the trigger (px). */
+  sideOffset?: number;
 };
 
 export function DensityControl({
@@ -17,35 +27,42 @@ export function DensityControl({
   options = DENSITY_OPTIONS,
   className,
   radiusClass = "rounded-xs",
+  sideOffset = 8,
 }: DensityControlProps) {
   return (
-    <div
-      data-slot="data-table-density-control"
-      className={cn("inline-flex bg-muted p-0.5", radiusClass, className)}
-      role="group"
-      aria-label="Table density"
+    <Select
+      value={value}
+      onValueChange={(next) => onChange(next as DataTableDensity)}
     >
-      {options.map((option) => {
-        const active = value === option.value;
-        return (
-          <button
+      <SelectTrigger
+        size="sm"
+        aria-label="Table density"
+        data-slot="data-table-density-control"
+        className={cn(
+          toolbarSelectTriggerClass,
+          "min-w-[6.5rem] data-[size=sm]:h-7",
+          radiusClass,
+          className,
+        )}
+      >
+        <SelectValue placeholder="Density" />
+      </SelectTrigger>
+      <SelectContent
+        position="popper"
+        sideOffset={sideOffset}
+        align="end"
+        className={cn("min-w-[8.5rem] text-xs", radiusClass)}
+      >
+        {options.map((option) => (
+          <SelectItem
             key={option.value}
-            type="button"
-            onClick={() => onChange(option.value)}
-            aria-pressed={active}
-            data-state={active ? "on" : "off"}
-            className={cn(
-              "px-2.5 py-1 text-xs font-medium transition-colors",
-              radiusClass,
-              active
-                ? "bg-background text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground",
-            )}
+            value={option.value}
+            className="text-xs"
           >
             {option.label}
-          </button>
-        );
-      })}
-    </div>
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }

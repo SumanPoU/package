@@ -1,6 +1,6 @@
 {
   "name": "@itzsa/nepali-input",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Nepali (Unicode / Preeti) transliterating Input and Textarea for React",
   "license": "MIT",
   "sideEffects": [

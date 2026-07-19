@@ -104,7 +104,7 @@ Defaults set for Nepali UX: `lang="ne"`, `spellCheck={false}`, input `autoComple
 
 ## Docs
 
-Open **`http://localhost:3000/nepali-input`** for installation, live examples
+**https://itzsa.acharya-suman.com.np/nepali-input** — installation, live examples
 (Unicode / Preeti), props API, and styling notes.
 
 ## License

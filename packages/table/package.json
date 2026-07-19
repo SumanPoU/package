@@ -1,6 +1,6 @@
 {
   "name": "@itzsa/table",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Composable DataTable built on shadcn Table primitives",
   "license": "MIT",
   "sideEffects": [

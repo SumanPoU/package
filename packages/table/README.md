@@ -37,9 +37,11 @@ export function UsersTable() {
 }
 ```
 
-## Demo / docs app (`/table`)
+## Demo / docs
 
-Open **`http://localhost:3000/table`** for the full documentation site: installation, getting started, live examples, and props API.
+Full documentation (install, examples, props API):
+
+**https://itzsa.acharya-suman.com.np/table**
 
 ```
 src/app/table/

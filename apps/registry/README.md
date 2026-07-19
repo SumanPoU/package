@@ -24,17 +24,15 @@ This:
 ## Install (consumers)
 
 ```bash
-pnpm dlx shadcn@latest add http://localhost:3000/r/data-table.json
-# production:
-pnpm dlx shadcn@latest add https://<your-docs-domain>/r/data-table.json
+pnpm dlx shadcn@latest add https://itzsa.acharya-suman.com.np/r/data-table.json
 ```
 
-Or add a namespace to the consumer `components.json` (after deploy):
+Or add a namespace to the consumer `components.json`:
 
 ```json
 {
   "registries": {
-    "@itzsa": "https://<your-docs-domain>/r/{name}.json"
+    "@itzsa": "https://itzsa.acharya-suman.com.np/r/{name}.json"
   }
 }
 ```

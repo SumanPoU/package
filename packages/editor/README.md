@@ -83,6 +83,10 @@ settings={{
 
 Flat props (`onUpload`, `maxLength`, `nepali`, …) still work and merge with `settings`.
 
+## Docs
+
+**https://itzsa.acharya-suman.com.np/editor** — install, live demo, security notes, and props.
+
 ## Security
 
 - No base64 image inserts; data URLs are rejected on ingress

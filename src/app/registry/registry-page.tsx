@@ -20,8 +20,8 @@ const ITEMS = [
     title: "Editor",
     npm: "@itzsa/editor",
     description:
-      "Placeholder until packages/editor ships. Prefer npm once published; registry item is a stub.",
-    status: "stub" as const,
+      "TipTap rich text editor with Nepali input — synced from @itzsa/editor.",
+    status: "ready" as const,
   },
 ] as const;
 
@@ -30,7 +30,7 @@ function installUrl(origin: string, name: string) {
 }
 
 export function RegistryPage() {
-  const [origin, setOrigin] = useState("http://localhost:3000");
+  const [origin, setOrigin] = useState("https://itzsa.acharya-suman.com.np");
 
   useEffect(() => {
     setOrigin(window.location.origin);

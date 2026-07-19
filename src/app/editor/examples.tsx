@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   RichTextEditor,
+  type EditorUploadHandler,
   type RichTextEditorHandle,
 } from "@itzsa/editor";
 import type { NepaliInputMode } from "@itzsa/nepali-input";
@@ -16,12 +17,29 @@ const MODES: Array<{ id: NepaliInputMode | false; label: string }> = [
   { id: "preeti", label: "Preeti" },
 ];
 
+/** Demo uploader — replace with your CDN/API in production. */
+const demoUpload: EditorUploadHandler = async (file, { signal, onProgress }) => {
+  // Simulate progress while "uploading"
+  for (let i = 1; i <= 5; i++) {
+    if (signal.aborted) throw new DOMException("Aborted", "AbortError");
+    await new Promise((r) => setTimeout(r, 80));
+    onProgress({ ratio: i / 5 });
+  }
+  // Return a durable https URL (never data:/base64)
+  const seed = encodeURIComponent(file.name.slice(0, 24) || "img");
+  return `https://picsum.photos/seed/${seed}/800/450`;
+};
+
 export function EditorDemo() {
   const ref = useRef<RichTextEditorHandle>(null);
   const [html, setHtml] = useState(
     "<p>Start writing — try the toolbar, or switch Nepali mode below.</p>",
   );
   const [nepali, setNepali] = useState<NepaliInputMode | false>("unicode");
+
+  const onUpload = useCallback<EditorUploadHandler>((file, ctx) => {
+    return demoUpload(file, ctx);
+  }, []);
 
   return (
     <div className="flex flex-col gap-3">
@@ -62,11 +80,18 @@ export function EditorDemo() {
         compact
         minHeight="280px"
         maxLength={8000}
-        allowBase64
+        onUpload={onUpload}
+        settings={{
+          media: {
+            maxImageBytes: 5 * 1024 * 1024,
+            maxVideoBytes: 50 * 1024 * 1024,
+          },
+        }}
         placeholder="Start writing…"
       />
       <p className={cn("font-mono text-[11px] text-tertiary")}>
-        {html.length} chars HTML · use Clear / Focus via ref API
+        Uploads use <code className="text-primary">onUpload</code> → https URL
+        (no base64)
       </p>
     </div>
   );

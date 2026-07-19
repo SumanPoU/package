@@ -15,6 +15,9 @@ export type Theme = "light" | "dark";
 
 const STORAGE_KEY = "itzsa-theme";
 
+/** Must match `<html className="… dark">` default in root layout for SSR. */
+const SSR_THEME: Theme = "dark";
+
 type ThemeContextValue = {
   theme: Theme;
   setTheme: (theme: Theme) => void;
@@ -25,7 +28,7 @@ type ThemeContextValue = {
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 function readDomTheme(): Theme {
-  if (typeof document === "undefined") return "dark";
+  if (typeof document === "undefined") return SSR_THEME;
   return document.documentElement.classList.contains("light")
     ? "light"
     : "dark";
@@ -50,10 +53,6 @@ function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-/**
- * Instant theme swap + lightweight L→R teal scan (no View Transition snapshot).
- * VT was capturing the whole page (heavy on /table) and felt like a load.
- */
 function runThemeScan() {
   if (prefersReducedMotion()) return;
 
@@ -65,24 +64,24 @@ function runThemeScan() {
   beam.setAttribute("aria-hidden", "true");
   document.body.appendChild(beam);
 
-  // Next frame so the browser paints the beam before animating
   requestAnimationFrame(() => {
     beam.classList.add("theme-scan-beam--run");
   });
 
   const done = () => beam.remove();
   beam.addEventListener("animationend", done, { once: true });
-  // Safety if animationend is skipped
   window.setTimeout(done, 500);
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>(readDomTheme);
+  // Fixed SSR initial state — never read localStorage/DOM during render
+  const [theme, setThemeState] = useState<Theme>(SSR_THEME);
   const [ready, setReady] = useState(false);
   const busy = useRef(false);
 
   useEffect(() => {
-    setThemeState(readDomTheme());
+    const next = readDomTheme();
+    setThemeState(next);
     setReady(true);
   }, []);
 
@@ -100,7 +99,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     persistTheme(next);
     runThemeScan();
 
-    // Unlock quickly so rapid toggles stay responsive
     window.setTimeout(() => {
       busy.current = false;
     }, 320);

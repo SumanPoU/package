@@ -46,9 +46,8 @@ export function RegistryPage() {
           Registry
         </h1>
         <p className="max-w-xl text-base text-secondary">
-          Copy-paste installs via the{" "}
-          <span className="pkg">shadcn</span> CLI. npm remains the primary path
-          for versioning — use{" "}
+          Copy-paste installs via the <span className="pkg">shadcn</span> CLI.
+          npm remains the primary path for versioning — use{" "}
           <code className="font-mono text-primary">pnpm add @itzsa/table</code>{" "}
           when you want semver and a normal package dependency.
         </p>
@@ -89,7 +88,7 @@ export function RegistryPage() {
                   {item.title}
                 </h3>
                 <span className="font-mono text-[12px] text-tertiary">
-                  {item.status === "stub" ? "stub" : "synced"}
+                  {item.status === "ready" ? "synced" : item.status}
                 </span>
               </div>
               <p className="text-sm text-secondary">{item.description}</p>
@@ -127,7 +126,9 @@ export function RegistryPage() {
             shadcn add @itzsa/data-table
           </code>
           . That step is manual for the maintainer — see{" "}
-          <code className="font-mono text-primary">apps/registry/README.md</code>
+          <code className="font-mono text-primary">
+            apps/registry/README.md
+          </code>
           .
         </p>
       </section>

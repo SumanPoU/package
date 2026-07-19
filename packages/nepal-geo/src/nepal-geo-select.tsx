@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import type {
   GeoLevel,
   Locale,
@@ -12,13 +11,13 @@ import {
   getDistrictById,
   getDistricts,
   getLocalLevelById,
-  getLocalLevelTypeById,
   getLocalLevels,
-  getProvinceById,
+  getLocalLevelTypeById,
   getProvinces,
   getWards,
   sortByName,
 } from "@itzsa/nepal-geo-data";
+import * as React from "react";
 
 import { GeoSelect } from "./geo-select";
 import type { NepalGeoClassNames, NepalGeoVars } from "./styling";
@@ -113,8 +112,7 @@ export function NepalGeoSelect({
         id: l.id,
         nameEn: l.nameEn,
         nameNe: l.nameNe,
-        meta:
-          showLocalType && type ? displayName(type, locale) : undefined,
+        meta: showLocalType && type ? displayName(type, locale) : undefined,
       };
     });
   }, [level, provinceId, districtId, localId, typeKeys, locale, showLocalType]);
@@ -204,15 +202,11 @@ export function NepalGeoSelect({
 }
 
 /** Convenience aliases */
-export function NepalProvinceSelect(
-  props: Omit<NepalGeoSelectProps, "level">,
-) {
+export function NepalProvinceSelect(props: Omit<NepalGeoSelectProps, "level">) {
   return <NepalGeoSelect level="province" {...props} />;
 }
 
-export function NepalDistrictSelect(
-  props: Omit<NepalGeoSelectProps, "level">,
-) {
+export function NepalDistrictSelect(props: Omit<NepalGeoSelectProps, "level">) {
   return <NepalGeoSelect level="district" {...props} />;
 }
 
@@ -225,8 +219,8 @@ export function NepalWardSelect(props: Omit<NepalGeoSelectProps, "level">) {
 }
 
 export {
-  getProvinceById,
   getDistrictById,
   getLocalLevelById,
+  getProvinceById,
   getWardById,
 } from "@itzsa/nepal-geo-data";

@@ -1,8 +1,4 @@
-import {
-  BS_MAX_YEAR,
-  BS_MIN_YEAR,
-  isValidBsDate,
-} from "./convert";
+import { BS_MAX_YEAR, BS_MIN_YEAR, isValidBsDate } from "./convert";
 import type { DateParts } from "./types";
 
 export type ValidationResult =

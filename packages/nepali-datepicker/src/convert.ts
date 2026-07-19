@@ -26,16 +26,20 @@ function assertMonth(month: number): void {
 export function getDaysInBsMonth(year: number, month: number): number {
   assertYear(year);
   assertMonth(month);
-  return BS_MONTH_DAYS[year]![month - 1]!;
+  return BS_MONTH_DAYS[year]?.[month - 1]!;
 }
 
 /** Total days in a BS year. */
 export function getDaysInBsYear(year: number): number {
   assertYear(year);
-  return BS_MONTH_DAYS[year]!.reduce((sum, d) => sum + d, 0);
+  return BS_MONTH_DAYS[year]?.reduce((sum, d) => sum + d, 0);
 }
 
-export function isValidBsDate(year: number, month: number, day: number): boolean {
+export function isValidBsDate(
+  year: number,
+  month: number,
+  day: number,
+): boolean {
   if (
     !Number.isInteger(year) ||
     !Number.isInteger(month) ||
@@ -205,9 +209,7 @@ export function addBsMonths(
 export function diffBsDays(a: DateParts, b: DateParts): number {
   const adA = bsToAd(a.year, a.month, a.day);
   const adB = bsToAd(b.year, b.month, b.day);
-  return Math.round(
-    (utcMsFromParts(adB) - utcMsFromParts(adA)) / MS_PER_DAY,
-  );
+  return Math.round((utcMsFromParts(adB) - utcMsFromParts(adA)) / MS_PER_DAY);
 }
 
 /** Add (or subtract) days on the BS calendar via AD civil arithmetic. */

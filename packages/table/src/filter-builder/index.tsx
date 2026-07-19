@@ -1,10 +1,8 @@
 "use client";
 
-import * as React from "react";
-import { SlidersHorizontalIcon } from "lucide-react";
 import {
-  FloatingPortal,
   autoUpdate,
+  FloatingPortal,
   flip,
   offset,
   shift,
@@ -14,16 +12,18 @@ import {
   useInteractions,
   useRole,
 } from "@floating-ui/react";
+import { SlidersHorizontalIcon } from "lucide-react";
+import * as React from "react";
 
 import { cn } from "../lib/utils";
 import { useDataTableLocale } from "../locale-text";
 import { toolbarSelectTriggerClass } from "../toolbar-control";
 import { FilterBuilder } from "./filter-builder";
 import {
-  makeFilterCondition,
   type FilterBuilderApplyPayload,
   type FilterBuilderColumn,
   type FilterCondition,
+  makeFilterCondition,
 } from "./types";
 
 export type FilterBuilderMenuProps = {

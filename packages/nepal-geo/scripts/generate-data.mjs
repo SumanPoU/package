@@ -9,12 +9,6 @@ const repo = path.join(root, "..", "..");
 const srcData = path.join(repo, "packages", "nepal-geo-data", "src", "data");
 const tmp = path.join(repo, "tmp-geo");
 
-function parseTsArray(file) {
-  const src = fs.readFileSync(path.join(srcData, file), "utf8");
-  const json = src.replace(/^[\s\S]*?= /, "").replace(/ as const;?\s*$/, "");
-  return JSON.parse(json);
-}
-
 function loadJson(name) {
   return JSON.parse(fs.readFileSync(path.join(tmp, name), "utf8"));
 }
@@ -123,7 +117,7 @@ const localLevels = localsRaw.map((l) => {
   const n = norm(l.name);
   let wards = null;
   const candidates = csvRows.filter((r) => norm(r.district) === norm(d.nameEn));
-  let hit =
+  const hit =
     candidates.find((r) => norm(r.name) === n) ||
     candidates.find(
       (r) => norm(r.name).includes(n) || n.includes(norm(r.name)),

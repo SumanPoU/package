@@ -19,13 +19,13 @@ import {
   DocsShell,
   PropsTable,
 } from "./docs-ui";
-import { DOC_NAV } from "./nav";
 import {
   FullFeaturedExample,
   LocaleExample,
   RowEditExample,
   TreeExample,
 } from "./examples";
+import { DOC_NAV } from "./nav";
 
 const CSS_CODE = `@import "tailwindcss";
 @source "../node_modules/@itzsa/table";
@@ -86,8 +86,8 @@ export function DocsContent() {
           </h1>
           <p className="max-w-2xl text-base leading-relaxed text-secondary">
             Composable DataTable for React — pagination, selection, sorting,
-            filters, editing, export, tree data, and keyboard navigation.
-            Built on shadcn-style primitives; features are opt-in via props.
+            filters, editing, export, tree data, and keyboard navigation. Built
+            on shadcn-style primitives; features are opt-in via props.
           </p>
           <div className="flex flex-wrap gap-2 pt-1 text-xs text-secondary">
             <span className="pkg rounded-md border-[0.5px] border-border bg-card px-2 py-1 text-[12px]">
@@ -102,10 +102,7 @@ export function DocsContent() {
           </div>
         </header>
 
-        <nav
-          aria-label="Jump to"
-          className="flex flex-wrap gap-2 lg:hidden"
-        >
+        <nav aria-label="Jump to" className="flex flex-wrap gap-2 lg:hidden">
           {DOC_NAV.filter((n) => !n.indent).map((item) => (
             <a
               key={item.id}
@@ -129,8 +126,8 @@ export function DocsContent() {
           <CodeBlock language="css" code={CSS_CODE} />
           <Callout title="Peers">
             Peer deps: <code className="font-mono text-primary">react</code> and{" "}
-            <code className="font-mono text-primary">react-dom</code> ^18 or ^19.
-            Import styles once at the app root.
+            <code className="font-mono text-primary">react-dom</code> ^18 or
+            ^19. Import styles once at the app root.
           </Callout>
         </DocSection>
 
@@ -314,8 +311,7 @@ export function DocsContent() {
             <code className="font-mono text-accent">classNames.*</code> (via{" "}
             <code className="font-mono text-primary">tailwind-merge</code>) →{" "}
             <code className="font-mono text-accent">styles.*</code> inline.
-            Column{" "}
-            <code className="font-mono text-accent">className</code> /{" "}
+            Column <code className="font-mono text-accent">className</code> /{" "}
             <code className="font-mono text-accent">headerClassName</code> apply
             on that column’s cells.
           </Callout>

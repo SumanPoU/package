@@ -31,8 +31,7 @@ export const GEO_SELECT_PROPS: PropRow[] = [
   {
     name: "districtId",
     type: "number | null | undefined",
-    description:
-      "Scope local levels. null = wait for parent; omit = list all.",
+    description: "Scope local levels. null = wait for parent; omit = list all.",
   },
   {
     name: "localId",
@@ -95,8 +94,7 @@ export const LOCATION_SELECT_PROPS: PropRow[] = [
   {
     name: "value",
     type: "NepalLocationValue",
-    description:
-      "{ provinceId?, districtId?, localId?, wardId?, wardNumber? }",
+    description: "{ provinceId?, districtId?, localId?, wardId?, wardNumber? }",
   },
   {
     name: "defaultValue",
@@ -110,7 +108,7 @@ export const LOCATION_SELECT_PROPS: PropRow[] = [
   },
   {
     name: "levels",
-    type: 'GeoLevel[]',
+    type: "GeoLevel[]",
     default: '["province","district","local","ward"]',
     description: "Which steps to show, in order.",
   },
@@ -157,7 +155,8 @@ export const DATA_HELPER_ROWS: PropRow[] = [
   {
     name: "getProvinces / getDistricts / getLocalLevels",
     type: "() => readonly T[]",
-    description: "List entities; districts/locals accept an optional parent id.",
+    description:
+      "List entities; districts/locals accept an optional parent id.",
   },
   {
     name: "getLocalLevels(id, { typeKeys })",

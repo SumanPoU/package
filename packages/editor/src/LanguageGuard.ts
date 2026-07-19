@@ -1,5 +1,5 @@
-import { Extension } from '@tiptap/core';
-import { Plugin, PluginKey } from '@tiptap/pm/state';
+import { Extension } from "@tiptap/core";
+import { Plugin, PluginKey } from "@tiptap/pm/state";
 
 // ─── Unicode helpers ──────────────────────────────────────────────────────────
 
@@ -12,8 +12,8 @@ import { Plugin, PluginKey } from '@tiptap/pm/state';
  *
  * Shared characters (digits, punctuation, whitespace) are never blocked.
  */
-function hasForbidden(text: string, language: 'en' | 'ne'): boolean {
-  if (language === 'en') {
+function hasForbidden(text: string, language: "en" | "ne"): boolean {
+  if (language === "en") {
     return /[\u0900-\u097F\u1CD0-\u1CFF\uA8E0-\uA8FF]/.test(text);
   }
   // 'ne': block plain Latin letters; leave digits/punctuation/symbols alone
@@ -23,11 +23,11 @@ function hasForbidden(text: string, language: 'en' | 'ne'): boolean {
 /**
  * Strips forbidden characters from pasted text so the valid portion still lands.
  */
-function stripForbidden(text: string, language: 'en' | 'ne'): string {
-  if (language === 'en') {
-    return text.replace(/[\u0900-\u097F\u1CD0-\u1CFF\uA8E0-\uA8FF]/g, '');
+function stripForbidden(text: string, language: "en" | "ne"): string {
+  if (language === "en") {
+    return text.replace(/[\u0900-\u097F\u1CD0-\u1CFF\uA8E0-\uA8FF]/g, "");
   }
-  return text.replace(/[A-Za-z]/g, '');
+  return text.replace(/[A-Za-z]/g, "");
 }
 
 // ─── Extension ────────────────────────────────────────────────────────────────
@@ -39,23 +39,23 @@ export interface LanguageGuardOptions {
    *   nepali truthy  → 'ne'
    *   nepali falsy   → 'en'
    */
-  language: 'en' | 'ne';
+  language: "en" | "ne";
 
   /**
    * Fired whenever input is blocked/stripped.
    * Use it to show a transient warning in the editor UI.
    */
-  onBlocked?: (reason: 'keystroke' | 'paste') => void;
+  onBlocked?: (reason: "keystroke" | "paste") => void;
 }
 
-const pluginKey = new PluginKey('languageGuard');
+const pluginKey = new PluginKey("languageGuard");
 
 export const LanguageGuard = Extension.create<LanguageGuardOptions>({
-  name: 'languageGuard',
+  name: "languageGuard",
 
   addOptions() {
     return {
-      language: 'en',
+      language: "en",
       onBlocked: undefined,
     };
   },
@@ -76,7 +76,7 @@ export const LanguageGuard = Extension.create<LanguageGuardOptions>({
             if (event.ctrlKey || event.metaKey || event.altKey) return false;
 
             if (hasForbidden(event.key, language)) {
-              onBlocked?.('keystroke');
+              onBlocked?.("keystroke");
               return true; // consumed — keystroke is dropped
             }
             return false;
@@ -87,7 +87,7 @@ export const LanguageGuard = Extension.create<LanguageGuardOptions>({
             const clipboard = event.clipboardData;
             if (!clipboard) return false;
 
-            const rawText = clipboard.getData('text/plain');
+            const rawText = clipboard.getData("text/plain");
             if (!hasForbidden(rawText, language)) return false; // clean, let TipTap handle
 
             event.preventDefault();
@@ -98,7 +98,7 @@ export const LanguageGuard = Extension.create<LanguageGuardOptions>({
               dispatch(state.tr.insertText(clean));
             }
 
-            onBlocked?.('paste');
+            onBlocked?.("paste");
             return true;
           },
         },

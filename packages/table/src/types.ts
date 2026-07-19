@@ -1,5 +1,5 @@
-import type * as React from "react";
 import type { Placement } from "@floating-ui/react";
+import type * as React from "react";
 
 import type { FilterCondition } from "./filter-builder/types";
 import type { DataTableLocaleText } from "./locale-text";
@@ -381,9 +381,7 @@ export type DataTableProps<T> = {
    * Declarative row actions — rendered as a ⋯ menu and/or icon buttons
    * depending on `actionsDisplay` / `actionsOptions`.
    */
-  actions?:
-    | DataTableRowAction<T>[]
-    | ((row: T) => DataTableRowAction<T>[]);
+  actions?: DataTableRowAction<T>[] | ((row: T) => DataTableRowAction<T>[]);
   /**
    * `menu` | `icons`. Shorthand for `actionsOptions.display`.
    * Defaults to `"menu"`. Never mixes both in one table.
@@ -492,10 +490,7 @@ export type DataTableProps<T> = {
    * Master-detail — expandable panel under a row.
    * When set, an expand column is shown. Virtualization is disabled.
    */
-  getDetailPanelContent?: (params: {
-    id: string;
-    row: T;
-  }) => React.ReactNode;
+  getDetailPanelContent?: (params: { id: string; row: T }) => React.ReactNode;
   detailPanelExpandedRowIds?: string[];
   defaultDetailPanelExpandedRowIds?: string[];
   onDetailPanelExpandedRowIdsChange?: (ids: string[]) => void;
@@ -760,7 +755,10 @@ export function hasActionPermission<T>(
 export function splitRowActionsByDisplay<T>(
   actions: DataTableRowAction<T>[],
   display: DataTableActionsDisplay = "menu",
-): { iconActions: DataTableRowAction<T>[]; menuActions: DataTableRowAction<T>[] } {
+): {
+  iconActions: DataTableRowAction<T>[];
+  menuActions: DataTableRowAction<T>[];
+} {
   if (display === "icons") {
     return { iconActions: actions, menuActions: [] };
   }

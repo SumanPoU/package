@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, type FC } from "react";
+import { type FC, useEffect, useRef, useState } from "react";
 
 import { COLORS } from "./constants";
 
@@ -20,7 +20,8 @@ export const ColorPicker: FC<ColorPickerProps> = ({
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      if (ref.current && !ref.current.contains(e.target as Node))
+        setOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
@@ -40,7 +41,8 @@ export const ColorPicker: FC<ColorPickerProps> = ({
         <span
           className="h-[3px] w-4 rounded-full"
           style={{
-            background: currentColor ?? (isText ? "var(--editor-fg)" : "#fef08a"),
+            background:
+              currentColor ?? (isText ? "var(--editor-fg)" : "#fef08a"),
           }}
         />
       </button>
@@ -61,7 +63,8 @@ export const ColorPicker: FC<ColorPickerProps> = ({
                 className="size-[22px] rounded-md border border-transparent transition-transform hover:scale-110"
                 style={{
                   background: c,
-                  borderColor: c === "#ffffff" ? "var(--editor-border)" : "transparent",
+                  borderColor:
+                    c === "#ffffff" ? "var(--editor-border)" : "transparent",
                   outline:
                     currentColor === c
                       ? "2px solid var(--editor-accent)"

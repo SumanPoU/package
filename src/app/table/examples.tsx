@@ -1,18 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { EyeIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import {
   DataTable,
   type DataTableLocaleText,
   type DataTableSort,
 } from "@itzsa/table";
+import { EyeIcon, PencilIcon, Trash2Icon } from "lucide-react";
+import { useState } from "react";
 
-import {
-  EMPLOYEE_COLUMNS,
-  LOCALE_COLUMNS,
-  ORG_TREE_COLUMNS,
-} from "./columns";
+import { EMPLOYEE_COLUMNS, LOCALE_COLUMNS, ORG_TREE_COLUMNS } from "./columns";
 import employeesData from "./data/employees.json";
 import localeSampleData from "./data/locale-sample.json";
 import orgTreeData from "./data/org-tree.json";
@@ -40,9 +36,7 @@ export function FullFeaturedExample() {
   return (
     <div className="flex flex-col gap-2">
       {selectedIds.length > 0 ? (
-        <p className="text-xs text-secondary">
-          {selectedIds.length} selected
-        </p>
+        <p className="text-xs text-secondary">{selectedIds.length} selected</p>
       ) : null}
       <DataTable
         data={rows}

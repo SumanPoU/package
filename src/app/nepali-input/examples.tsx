@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import {
   NepaliInput,
+  type NepaliInputMode,
   NepaliTextarea,
   toNepali,
-  type NepaliInputMode,
 } from "@itzsa/nepali-input";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -78,8 +78,7 @@ export function PreetiExample() {
         />
       </div>
       <p className="text-sm text-secondary">
-        Output:{" "}
-        <span className="text-base text-primary">{value || "—"}</span>
+        Output: <span className="text-base text-primary">{value || "—"}</span>
       </p>
     </div>
   );

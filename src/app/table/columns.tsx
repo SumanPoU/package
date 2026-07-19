@@ -4,9 +4,9 @@ import type { DataTableColumn } from "@itzsa/table";
 
 import {
   DEPARTMENT_OPTIONS,
-  STATUS_OPTIONS,
   type Employee,
   type OrgNode,
+  STATUS_OPTIONS,
 } from "./types";
 
 function StatusBadge({ status }: { status: Employee["status"] }) {

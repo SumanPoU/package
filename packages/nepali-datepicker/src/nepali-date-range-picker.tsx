@@ -3,14 +3,11 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 
+import { CalendarMonth, createIsDisabledDay } from "./calendar-panel";
 import {
-  CalendarMonth,
-  createIsDisabledDay,
-} from "./calendar-panel";
-import {
+  addBsMonths,
   BS_MAX_YEAR,
   BS_MIN_YEAR,
-  addBsMonths,
   clampBsDate,
   compareDateParts,
   diffBsDays,
@@ -81,9 +78,7 @@ function inInclusiveRange(
   from: DateParts,
   to: DateParts,
 ): boolean {
-  return (
-    compareDateParts(day, from) >= 0 && compareDateParts(day, to) <= 0
-  );
+  return compareDateParts(day, from) >= 0 && compareDateParts(day, to) <= 0;
 }
 
 export function NepaliDateRangePicker({
@@ -158,13 +153,11 @@ export function NepaliDateRangePicker({
 
   React.useEffect(() => {
     if (!open) return;
-    const base =
-      fromParts ??
-      clampBsDate(today, minParts, maxParts);
+    const base = fromParts ?? clampBsDate(today, minParts, maxParts);
     setLeftView({ year: base.year, month: base.month });
     setAnchor(fromParts && !toParts ? fromParts : null);
     setHover(null);
-  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [open, fromParts, maxParts, minParts, toParts, today]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const close = React.useCallback(() => setOpen(false), []);
   useDismissOnOutside(open, close, [rootRef, popoverRef]);
@@ -182,8 +175,7 @@ export function NepaliDateRangePicker({
     [minYear, maxYear, minParts, maxParts],
   );
 
-  const previewTo =
-    anchor && hover ? orderedRange(anchor, hover) : null;
+  const previewTo = anchor && hover ? orderedRange(anchor, hover) : null;
 
   const getModifiers = (parts: DateParts) => {
     const start = fromParts;
@@ -339,7 +331,13 @@ export function NepaliDateRangePicker({
               </button>
             </div>
 
-            <div className={cn("itzsa-ndp-range-months", dual && "is-dual", classNames?.rangeMonths)}>
+            <div
+              className={cn(
+                "itzsa-ndp-range-months",
+                dual && "is-dual",
+                classNames?.rangeMonths,
+              )}
+            >
               <CalendarMonth
                 year={leftView.year}
                 month={leftView.month}

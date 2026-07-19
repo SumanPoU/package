@@ -9,7 +9,8 @@ export const PICKER_PROPS: PropRow[] = [
   {
     name: "value",
     type: "string",
-    description: "Controlled BS date as ASCII YYYY-MM-DD. Empty string = no selection.",
+    description:
+      "Controlled BS date as ASCII YYYY-MM-DD. Empty string = no selection.",
   },
   {
     name: "defaultValue",
@@ -20,7 +21,7 @@ export const PICKER_PROPS: PropRow[] = [
   {
     name: "onChange",
     type: "(value: string) => void",
-    description: "Fires with canonical YYYY-MM-DD (or \"\" when cleared).",
+    description: 'Fires with canonical YYYY-MM-DD (or "" when cleared).',
   },
   {
     name: "onSelect",

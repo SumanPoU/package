@@ -16,7 +16,8 @@ export const INPUT_PROPS: PropRow[] = [
     name: "enabled",
     type: "boolean",
     default: "true",
-    description: "When false, behaves like a plain <input> (no transliteration).",
+    description:
+      "When false, behaves like a plain <input> (no transliteration).",
   },
   {
     name: "value / defaultValue",
@@ -26,7 +27,8 @@ export const INPUT_PROPS: PropRow[] = [
   {
     name: "onChange",
     type: "(e) => void",
-    description: "Fires with e.target.value already mapped to Nepali when enabled.",
+    description:
+      "Fires with e.target.value already mapped to Nepali when enabled.",
   },
   {
     name: "className",
@@ -80,7 +82,8 @@ export const HELPER_API: PropRow[] = [
   {
     name: "toNepali(value, mode?)",
     type: "(string, mode?) => string",
-    description: "Transliterate a full string. Non-ASCII (existing Devanagari) is preserved.",
+    description:
+      "Transliterate a full string. Non-ASCII (existing Devanagari) is preserved.",
   },
   {
     name: "mapChar(ch, mode?)",
@@ -90,7 +93,8 @@ export const HELPER_API: PropRow[] = [
   {
     name: "mapCaretIndex(value, caret, mode?)",
     type: "(string, number, mode?) => number",
-    description: "Caret index after mapping (used internally for cursor stability).",
+    description:
+      "Caret index after mapping (used internally for cursor stability).",
   },
   {
     name: "unicodeMappings / preetiMappings",

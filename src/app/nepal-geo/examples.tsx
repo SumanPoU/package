@@ -1,23 +1,23 @@
 "use client";
 
-import { useState } from "react";
 import {
-  GEO_META,
-  NepalDistrictSelect,
-  NepalGeoSelect,
-  NepalLocalSelect,
-  NepalLocationSelect,
-  NepalProvinceSelect,
-  NepalWardSelect,
   formatLocationValue,
+  GEO_META,
   getDistricts,
   getMetropolitanCities,
   getMunicipalities,
   getProvinces,
   getRuralMunicipalities,
   getWards,
+  NepalDistrictSelect,
+  NepalGeoSelect,
+  NepalLocalSelect,
+  NepalLocationSelect,
   type NepalLocationValue,
+  NepalProvinceSelect,
+  NepalWardSelect,
 } from "@itzsa/nepal-geo";
+import { useState } from "react";
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -192,9 +192,8 @@ export function LocaleExample() {
       />
       <p className="text-[12px] text-secondary">
         Dataset: {GEO_META.counts.provinces} provinces ·{" "}
-        {GEO_META.counts.districts} districts ·{" "}
-        {GEO_META.counts.localLevels} local levels ·{" "}
-        {GEO_META.counts.wards} wards
+        {GEO_META.counts.districts} districts · {GEO_META.counts.localLevels}{" "}
+        local levels · {GEO_META.counts.wards} wards
       </p>
       <p className="text-[12px] text-tertiary">
         Sample: {getProvinces().length} / {getDistricts().length} loaded

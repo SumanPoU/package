@@ -85,51 +85,50 @@ export function useTableKeyboard({
   );
 
   const onKeyDownFor = React.useCallback(
-    (rowIndex: number, colIndex: number) =>
-      (event: React.KeyboardEvent) => {
-        if (!enabled || isEditing) return;
+    (rowIndex: number, colIndex: number) => (event: React.KeyboardEvent) => {
+      if (!enabled || isEditing) return;
 
-        switch (event.key) {
-          case "ArrowUp":
+      switch (event.key) {
+        case "ArrowUp":
+          event.preventDefault();
+          move(-1, 0);
+          break;
+        case "ArrowDown":
+          event.preventDefault();
+          move(1, 0);
+          break;
+        case "ArrowLeft":
+          event.preventDefault();
+          move(0, -1);
+          break;
+        case "ArrowRight":
+          event.preventDefault();
+          move(0, 1);
+          break;
+        case "Home":
+          event.preventDefault();
+          setFocusedCell({
+            rowIndex: event.ctrlKey ? 0 : rowIndex,
+            colIndex: 0,
+          });
+          break;
+        case "End":
+          event.preventDefault();
+          setFocusedCell({
+            rowIndex: event.ctrlKey ? Math.max(rowCount - 1, 0) : rowIndex,
+            colIndex: Math.max(colCount - 1, 0),
+          });
+          break;
+        case "Enter":
+          if (editable) {
             event.preventDefault();
-            move(-1, 0);
-            break;
-          case "ArrowDown":
-            event.preventDefault();
-            move(1, 0);
-            break;
-          case "ArrowLeft":
-            event.preventDefault();
-            move(0, -1);
-            break;
-          case "ArrowRight":
-            event.preventDefault();
-            move(0, 1);
-            break;
-          case "Home":
-            event.preventDefault();
-            setFocusedCell({
-              rowIndex: event.ctrlKey ? 0 : rowIndex,
-              colIndex: 0,
-            });
-            break;
-          case "End":
-            event.preventDefault();
-            setFocusedCell({
-              rowIndex: event.ctrlKey ? Math.max(rowCount - 1, 0) : rowIndex,
-              colIndex: Math.max(colCount - 1, 0),
-            });
-            break;
-          case "Enter":
-            if (editable) {
-              event.preventDefault();
-              onStartEdit?.({ rowIndex, colIndex });
-            }
-            break;
-          default:
-            break;
-        }
-      },
+            onStartEdit?.({ rowIndex, colIndex });
+          }
+          break;
+        default:
+          break;
+      }
+    },
     [colCount, editable, enabled, isEditing, move, onStartEdit, rowCount],
   );
 

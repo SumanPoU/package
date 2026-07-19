@@ -59,6 +59,10 @@
     "textarea",
     "transliteration"
   ],
+  "homepage": "https://itzsa.acharya-suman.com.np/nepali-input",
+  "bugs": {
+    "url": "https://github.com/SumanPoU/package/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/SumanPoU/package.git",

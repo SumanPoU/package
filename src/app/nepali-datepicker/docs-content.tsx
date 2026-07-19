@@ -157,8 +157,8 @@ export function DocsContent() {
           <CodeBlock language="css" code={CSS} />
           <Callout title="Peers">
             Peer deps: <code className="font-mono text-primary">react</code> and{" "}
-            <code className="font-mono text-primary">react-dom</code> ^18 or ^19.
-            Load a Devanagari font for Nepali labels.
+            <code className="font-mono text-primary">react-dom</code> ^18 or
+            ^19. Load a Devanagari font for Nepali labels.
           </Callout>
         </DocSection>
 
@@ -186,10 +186,10 @@ export function DocsContent() {
         >
           <CodeBlock code={VALIDATE_CODE} />
           <Callout title="What we validate">
-            Integer year/month/day, year in 2000–2100, month 1–12, day within that
-            month’s length. Incomplete typed strings fail{" "}
-            <code className="font-mono text-primary">isCompleteBsDate</code> until
-            the user finishes a real calendar day.
+            Integer year/month/day, year in 2000–2100, month 1–12, day within
+            that month’s length. Incomplete typed strings fail{" "}
+            <code className="font-mono text-primary">isCompleteBsDate</code>{" "}
+            until the user finishes a real calendar day.
           </Callout>
         </DocSection>
 
@@ -338,7 +338,10 @@ const bs = adToBs(ad.year, ad.month, ad.day);`}
               title="Helpers"
               description="Tree-shakeable utilities from the same package entry."
             >
-              <PropsTable caption="Conversion, format & validation" rows={HELPER_API} />
+              <PropsTable
+                caption="Conversion, format & validation"
+                rows={HELPER_API}
+              />
             </DocSection>
           </div>
         </DocSection>
@@ -358,8 +361,8 @@ const bs = adToBs(ad.year, ad.month, ad.day);`}
 }`}
           />
           <p className="text-sm text-secondary">
-            <code className="font-mono text-primary">vars</code> maps to the same
-            CSS variables at runtime.{" "}
+            <code className="font-mono text-primary">vars</code> maps to the
+            same CSS variables at runtime.{" "}
             <code className="font-mono text-primary">classNames</code> targets
             root, field, input, trigger, popover (and range-specific keys on the
             range picker).

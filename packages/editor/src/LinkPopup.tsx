@@ -1,9 +1,8 @@
-import { useState, useRef, useEffect, useCallback, type FC } from "react";
 import type { Editor } from "@tiptap/react";
 import { Check, Trash2 } from "lucide-react";
-
-import { validateLinkHref } from "./security";
+import { type FC, useCallback, useEffect, useRef, useState } from "react";
 import type { EditorLocaleText } from "./locale";
+import { validateLinkHref } from "./security";
 
 interface LinkPopupProps {
   editor: Editor;
@@ -68,7 +67,6 @@ export const LinkPopup: FC<LinkPopupProps> = ({ editor, onClose, locale }) => {
     >
       <div className="flex items-center gap-2">
         <input
-          autoFocus
           type="url"
           placeholder={locale.linkPlaceholder}
           value={url}
@@ -102,7 +100,10 @@ export const LinkPopup: FC<LinkPopupProps> = ({ editor, onClose, locale }) => {
         )}
       </div>
       {error && (
-        <p className="px-1 text-[11px] text-[var(--editor-danger)]" role="alert">
+        <p
+          className="px-1 text-[11px] text-[var(--editor-danger)]"
+          role="alert"
+        >
           {error}
         </p>
       )}

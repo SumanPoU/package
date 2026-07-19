@@ -1,16 +1,15 @@
 "use client";
 
+import type { Locale, NamedEntity } from "@itzsa/nepal-geo-data";
+import { displayName } from "@itzsa/nepal-geo-data";
 import * as React from "react";
 import { createPortal } from "react-dom";
-
 import { cn } from "./lib/utils";
 import {
   mergeGeoStyle,
   type NepalGeoClassNames,
   type NepalGeoVars,
 } from "./styling";
-import type { Locale, NamedEntity } from "@itzsa/nepal-geo-data";
-import { displayName } from "@itzsa/nepal-geo-data";
 
 function ChevronDown({ className }: { className?: string }) {
   return (
@@ -196,8 +195,7 @@ export function GeoSelect({
             <div className="itzsa-geo-options">
               {filtered.length === 0 ? (
                 <p className={cn("itzsa-geo-empty", classNames?.empty)}>
-                  {emptyLabel ??
-                    (locale === "ne" ? "केही भेटिएन" : "No results")}
+                  {emptyLabel ?? (locale === "ne" ? "केही भेटिएन" : "No results")}
                 </p>
               ) : (
                 filtered.map((opt) => {

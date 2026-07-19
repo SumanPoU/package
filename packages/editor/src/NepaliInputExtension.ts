@@ -1,22 +1,22 @@
-import { Extension } from '@tiptap/core';
-import { Plugin } from '@tiptap/pm/state';
 import {
   type NepaliInputMode,
-  unicodeMappings,
   preetiMappings,
-} from '@itzsa/nepali-input';
+  unicodeMappings,
+} from "@itzsa/nepali-input";
+import { Extension } from "@tiptap/core";
+import { Plugin } from "@tiptap/pm/state";
 
 function getMapped(key: string, mode: NepaliInputMode): string | null {
   if (key.length !== 1) return null;
   const code = key.charCodeAt(0);
   if (code < 32 || code > 126) return null;
-  const map = mode === 'preeti' ? preetiMappings : unicodeMappings;
+  const map = mode === "preeti" ? preetiMappings : unicodeMappings;
   return map[code - 32] ?? null;
 }
 
-export const createNepaliInputExtension = (mode: NepaliInputMode = 'unicode') =>
+export const createNepaliInputExtension = (mode: NepaliInputMode = "unicode") =>
   Extension.create({
-    name: 'nepaliInput',
+    name: "nepaliInput",
 
     addOptions() {
       return { mode };

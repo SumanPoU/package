@@ -21,10 +21,7 @@ function getMap(mode: NepaliInputMode): readonly string[] {
  * Returns the original character when it is outside the printable ASCII range
  * or when the map has no entry.
  */
-export function mapChar(
-  ch: string,
-  mode: NepaliInputMode = "unicode",
-): string {
+export function mapChar(ch: string, mode: NepaliInputMode = "unicode"): string {
   if (!ch) return ch;
   const code = ch.codePointAt(0);
   if (code === undefined) return ch;

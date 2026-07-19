@@ -16,7 +16,8 @@
   --ndp-ring: color-mix(in oklab, var(--ndp-accent) 40%, transparent);
   --ndp-radius: 10px;
   /* English (default): Outfit. Nepali UI: Devanagari via [data-locale="ne"]. */
-  --ndp-font: var(--font-outfit, "Outfit"), ui-sans-serif, system-ui, sans-serif;
+  --ndp-font:
+    var(--font-outfit, "Outfit"), ui-sans-serif, system-ui, sans-serif;
   position: relative;
   width: 100%;
   font-family: var(--ndp-font);
@@ -25,10 +26,9 @@
 
 .itzsa-ndp[data-locale="ne"],
 .itzsa-ndp-popover[data-locale="ne"] {
-  --ndp-font: var(
-    --itzsa-nepali-font,
-    "Noto Sans Devanagari"
-  ), var(--font-outfit, "Outfit"), ui-sans-serif, system-ui, sans-serif;
+  --ndp-font:
+    var(--itzsa-nepali-font, "Noto Sans Devanagari"),
+    var(--font-outfit, "Outfit"), ui-sans-serif, system-ui, sans-serif;
 }
 
 .dark .itzsa-ndp,
@@ -65,7 +65,9 @@
   line-height: 1.25;
   outline: none;
   cursor: pointer;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .itzsa-ndp-input::placeholder {
@@ -119,7 +121,8 @@
   --ndp-accent-fg: #04342c;
   --ndp-ring: color-mix(in oklab, var(--ndp-accent) 40%, transparent);
   --ndp-radius: 10px;
-  --ndp-font: var(--font-outfit, "Outfit"), ui-sans-serif, system-ui, sans-serif;
+  --ndp-font:
+    var(--font-outfit, "Outfit"), ui-sans-serif, system-ui, sans-serif;
   box-sizing: border-box;
   padding: 0.75rem;
   border: 1px solid var(--ndp-border);
@@ -394,7 +397,10 @@
   font-size: 0.875rem;
   text-align: left;
   cursor: pointer;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
 }
 
 .itzsa-ndp-range-trigger:hover:not(:disabled) {
@@ -473,7 +479,7 @@
   }
 
   .itzsa-ndp-popover-range.is-dual {
-    width: min(320px, calc(100vw - 16px)) !important;
+    width: min(320px, calc(100vw - 16px));
   }
 }
 

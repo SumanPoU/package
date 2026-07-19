@@ -1,29 +1,24 @@
+import type { NepaliInputMode } from "@itzsa/nepali-input";
+import type { Extensions } from "@tiptap/core";
+import { EditorContent } from "@tiptap/react";
+import { CircleAlert } from "lucide-react";
 import {
   forwardRef,
-  useState,
   useCallback,
-  useRef,
   useEffect,
   useImperativeHandle,
   useMemo,
+  useRef,
+  useState,
 } from "react";
-import { EditorContent } from "@tiptap/react";
-import type { NepaliInputMode } from "@itzsa/nepali-input";
-import type { Extensions } from "@tiptap/core";
-import { CircleAlert } from "lucide-react";
-
-import { cn } from "./lib/utils";
-import { useEditorConfig } from "./useEditorConfig";
 import { EditorToolbar } from "./EditorToolbar";
-import { StatusBar } from "./StatusBar";
-import { MediaModal } from "./MediaModal";
-import { TableModal } from "./TableModal";
+import { cn } from "./lib/utils";
 import { mergeLocale } from "./locale";
+import { MediaModal } from "./MediaModal";
+import { StatusBar } from "./StatusBar";
 import { sanitizeHtml, validateMediaInsert } from "./security";
-import {
-  resolveEditorSettings,
-  type EditorSettings,
-} from "./settings";
+import { type EditorSettings, resolveEditorSettings } from "./settings";
+import { TableModal } from "./TableModal";
 import {
   DEFAULT_TOOLBAR_FEATURES,
   type EditorClassNames,
@@ -32,6 +27,7 @@ import {
   type RichTextEditorHandle,
 } from "./types";
 import type { EditorUploadHandler } from "./upload";
+import { useEditorConfig } from "./useEditorConfig";
 
 export type { RichTextEditorHandle } from "./types";
 
@@ -413,9 +409,7 @@ export const RichTextEditor = forwardRef<
             className="itzsa-editor-flash flex items-center gap-2 border-b px-4 py-2 text-xs font-medium"
           >
             <CircleAlert className="size-4 shrink-0" />
-            {resolved.nepali
-              ? locale.languageBlockNe
-              : locale.languageBlockEn}
+            {resolved.nepali ? locale.languageBlockNe : locale.languageBlockEn}
           </div>
         )}
 
@@ -429,7 +423,9 @@ export const RichTextEditor = forwardRef<
         )}
 
         {htmlMode ? (
-          <div className={cn("flex flex-1 flex-col", rootClassNames?.htmlPanel)}>
+          <div
+            className={cn("flex flex-1 flex-col", rootClassNames?.htmlPanel)}
+          >
             <div className="itzsa-editor-html-bar flex items-center justify-between border-b px-4 py-2 font-mono text-xs">
               <span>{locale.htmlBanner}</span>
               <button

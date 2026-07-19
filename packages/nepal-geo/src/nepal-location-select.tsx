@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import type {
   GeoLevel,
   Locale,
@@ -15,6 +14,7 @@ import {
   getProvinceById,
   getWardById,
 } from "@itzsa/nepal-geo-data";
+import * as React from "react";
 
 import { cn } from "./lib/utils";
 import { NepalGeoSelect } from "./nepal-geo-select";
@@ -53,12 +53,7 @@ export type NepalLocationSelectProps = {
   orientation?: "vertical" | "horizontal";
 };
 
-const DEFAULT_LEVELS: GeoLevel[] = [
-  "province",
-  "district",
-  "local",
-  "ward",
-];
+const DEFAULT_LEVELS: GeoLevel[] = ["province", "district", "local", "ward"];
 
 export function NepalLocationSelect({
   value: valueProp,
@@ -114,8 +109,7 @@ export function NepalLocationSelect({
 
   const setLocal = (localId: number | null) => {
     const local = localId != null ? getLocalLevelById(localId) : null;
-    const district =
-      local != null ? getDistrictById(local.districtId) : null;
+    const district = local != null ? getDistrictById(local.districtId) : null;
     commit({
       provinceId: district?.provinceId ?? value.provinceId ?? null,
       districtId: local?.districtId ?? value.districtId ?? null,
@@ -136,8 +130,7 @@ export function NepalLocationSelect({
     }
     const { localId, number } = decodeWardId(wardId);
     const local = getLocalLevelById(localId);
-    const district =
-      local != null ? getDistrictById(local.districtId) : null;
+    const district = local != null ? getDistrictById(local.districtId) : null;
     commit({
       provinceId: district?.provinceId ?? value.provinceId ?? null,
       districtId: local?.districtId ?? value.districtId ?? null,

@@ -13,7 +13,8 @@
   --geo-ring: color-mix(in oklab, var(--geo-accent) 40%, transparent);
   --geo-radius: 10px;
   /* English (default): Outfit. Nepali: Devanagari via [data-locale="ne"]. */
-  --geo-font: var(--font-outfit, "Outfit"), ui-sans-serif, system-ui, sans-serif;
+  --geo-font:
+    var(--font-outfit, "Outfit"), ui-sans-serif, system-ui, sans-serif;
   position: relative;
   width: 100%;
   font-family: var(--geo-font);
@@ -22,10 +23,9 @@
 
 .itzsa-geo[data-locale="ne"],
 .itzsa-geo-popover[data-locale="ne"] {
-  --geo-font: var(
-    --itzsa-nepali-font,
-    "Noto Sans Devanagari"
-  ), var(--font-outfit, "Outfit"), ui-sans-serif, system-ui, sans-serif;
+  --geo-font:
+    var(--itzsa-nepali-font, "Noto Sans Devanagari"),
+    var(--font-outfit, "Outfit"), ui-sans-serif, system-ui, sans-serif;
 }
 
 .dark .itzsa-geo,
@@ -56,7 +56,9 @@
   font-size: 0.875rem;
   text-align: left;
   cursor: pointer;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .itzsa-geo-trigger:hover:not(:disabled) {
@@ -99,7 +101,8 @@
   --geo-surface: #f7f6f2;
   --geo-accent: #1d9e75;
   --geo-radius: 10px;
-  --geo-font: var(--font-outfit, "Outfit"), ui-sans-serif, system-ui, sans-serif;
+  --geo-font:
+    var(--font-outfit, "Outfit"), ui-sans-serif, system-ui, sans-serif;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;

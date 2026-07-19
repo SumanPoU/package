@@ -60,7 +60,8 @@ export const EDITOR_PROPS: PropRow[] = [
     name: "nepali",
     type: '"unicode" | "preeti" | false',
     default: "false",
-    description: "Enable Nepali transliteration input (requires @itzsa/nepali-input).",
+    description:
+      "Enable Nepali transliteration input (requires @itzsa/nepali-input).",
   },
   {
     name: "maxLength",
@@ -94,7 +95,8 @@ export const EDITOR_PROPS: PropRow[] = [
     name: "sanitize",
     type: "boolean",
     default: "true",
-    description: "Sanitize HTML on value, paste, setContent, and HTML mode apply.",
+    description:
+      "Sanitize HTML on value, paste, setContent, and HTML mode apply.",
   },
   {
     name: "immediatelyRender",
@@ -111,7 +113,8 @@ export const EDITOR_PROPS: PropRow[] = [
   {
     name: "maxUploadBytes",
     type: "number",
-    description: "Deprecated — use settings.media.maxImageBytes / maxVideoBytes.",
+    description:
+      "Deprecated — use settings.media.maxImageBytes / maxVideoBytes.",
   },
   {
     name: "toolbar",
@@ -395,7 +398,8 @@ export const SECURITY_HELPERS: PropRow[] = [
   {
     name: "sanitizeUrl / validateLinkHref",
     type: "URL helpers",
-    description: "Allowlist http(s) and relative URLs; block javascript: / data:.",
+    description:
+      "Allowlist http(s) and relative URLs; block javascript: / data:.",
   },
   {
     name: "sanitizeCssLength",

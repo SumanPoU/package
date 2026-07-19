@@ -9,7 +9,12 @@ const SAFE_URL_PROTOCOLS = new Set(["http:", "https:", "mailto:", "tel:"]);
 const CSS_LENGTH_RE = /^\d+(\.\d+)?(px|%|em|rem)$/i;
 
 /** Allowed text-transform values. */
-const TEXT_TRANSFORMS = new Set(["uppercase", "lowercase", "capitalize", "none"]);
+const TEXT_TRANSFORMS = new Set([
+  "uppercase",
+  "lowercase",
+  "capitalize",
+  "none",
+]);
 
 /** Max base64 payload when explicitly allowed (512 KB). */
 export const DEFAULT_MAX_BASE64_BYTES = 512 * 1024;
@@ -80,7 +85,8 @@ const TAG_ATTRS: Record<string, Set<string>> = {
 /** Allowed CSS properties on inline style (strict). */
 const STYLE_PROPS: Record<string, (v: string) => boolean> = {
   "font-size": (v) => CSS_LENGTH_RE.test(v.trim()),
-  "font-family": (v) => /^[\w\s,"'-]+$/i.test(v.trim()) && !/[;{}]|expression|url\s*\(/i.test(v),
+  "font-family": (v) =>
+    /^[\w\s,"'-]+$/i.test(v.trim()) && !/[;{}]|expression|url\s*\(/i.test(v),
   color: (v) =>
     /^(#[0-9a-f]{3,8}|rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)|rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*[\d.]+\s*\)|[a-z]+)$/i.test(
       v.trim(),
@@ -157,14 +163,18 @@ export function sanitizeUrl(
 }
 
 /** Normalize and validate CSS length for width/height/font-size. */
-export function sanitizeCssLength(raw: string | null | undefined): string | null {
+export function sanitizeCssLength(
+  raw: string | null | undefined,
+): string | null {
   if (!raw) return null;
   const v = raw.trim();
   if (!CSS_LENGTH_RE.test(v)) return null;
   return v;
 }
 
-export function sanitizeTextTransform(raw: string | null | undefined): string | null {
+export function sanitizeTextTransform(
+  raw: string | null | undefined,
+): string | null {
   if (!raw) return null;
   const v = raw.trim().toLowerCase();
   return TEXT_TRANSFORMS.has(v) ? v : null;
@@ -229,7 +239,9 @@ function sanitizeElement(el: Element, urlOpts: SanitizeUrlOptions): void {
     }
 
     if (name === "width" || name === "height") {
-      const safe = sanitizeCssLength(attr.value) ?? (/^\d+$/.test(attr.value.trim()) ? attr.value.trim() : null);
+      const safe =
+        sanitizeCssLength(attr.value) ??
+        (/^\d+$/.test(attr.value.trim()) ? attr.value.trim() : null);
       if (!safe) el.removeAttribute(attr.name);
       else el.setAttribute(name, safe);
     }
@@ -240,7 +252,11 @@ function sanitizeElement(el: Element, urlOpts: SanitizeUrlOptions): void {
       else el.setAttribute("style", safe);
     }
 
-    if (name === "target" && attr.value !== "_blank" && attr.value !== "_self") {
+    if (
+      name === "target" &&
+      attr.value !== "_blank" &&
+      attr.value !== "_self"
+    ) {
       el.removeAttribute("target");
     }
   }
@@ -327,7 +343,10 @@ export function validateMediaInsert(options: {
     };
   }
   if (kind === "video" && safe.startsWith("data:")) {
-    return { ok: false, error: "Video data URLs are not allowed. Use an https:// URL." };
+    return {
+      ok: false,
+      error: "Video data URLs are not allowed. Use an https:// URL.",
+    };
   }
   const safeWidth = width ? sanitizeCssLength(width) : undefined;
   if (width && !safeWidth) {
@@ -336,14 +355,20 @@ export function validateMediaInsert(options: {
   return { ok: true, src: safe, width: safeWidth ?? undefined };
 }
 
-export function validateLinkHref(raw: string): { ok: true; href: string } | { ok: false; error: string } {
+export function validateLinkHref(
+  raw: string,
+): { ok: true; href: string } | { ok: false; error: string } {
   const trimmed = raw.trim();
   if (!trimmed) return { ok: false, error: "Enter a URL." };
-  const safe = sanitizeUrl(trimmed, { allowDataImage: false, allowRelative: true });
+  const safe = sanitizeUrl(trimmed, {
+    allowDataImage: false,
+    allowRelative: true,
+  });
   if (!safe) {
     return {
       ok: false,
-      error: "Invalid URL. Use https://, http://, mailto:, tel:, or a path starting with /.",
+      error:
+        "Invalid URL. Use https://, http://, mailto:, tel:, or a path starting with /.",
     };
   }
   return { ok: true, href: safe };

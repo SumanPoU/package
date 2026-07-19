@@ -14,16 +14,23 @@
     "typecheck:packages": "pnpm --filter @itzsa/table --filter @itzsa/nepali-input --filter @itzsa/editor --filter @itzsa/nepali-datepicker --filter @itzsa/nepal-geo-data --filter @itzsa/nepal-geo run typecheck",
     "start": "next start",
     "lint": "biome check",
-    "format": "biome format --write"
+    "format": "biome format --write",
+    "prepare": "husky",
+    "commit": "cz"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
-    "@itzsa/table": "workspace:*",
-    "@itzsa/nepali-input": "workspace:*",
     "@itzsa/editor": "workspace:*",
-    "@itzsa/nepali-datepicker": "workspace:*",
     "@itzsa/nepal-geo": "workspace:*",
     "@itzsa/nepal-geo-data": "workspace:*",
+    "@itzsa/nepali-datepicker": "workspace:*",
+    "@itzsa/nepali-input": "workspace:*",
+    "@itzsa/table": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.525.0",
@@ -37,11 +44,16 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "commitizen": "^4.3.2",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^9.1.7",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

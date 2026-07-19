@@ -3,16 +3,16 @@
 import * as React from "react";
 
 import {
+  addBsMonths,
   BS_MAX_YEAR,
   BS_MIN_YEAR,
-  addBsMonths,
   compareDateParts,
   getBsWeekday,
   getDaysInBsMonth,
   todayBs,
 } from "./convert";
-import { getMonthName, getWeekdayNames, localizeDigits } from "./locale";
 import { cn } from "./lib/utils";
+import { getMonthName, getWeekdayNames, localizeDigits } from "./locale";
 import { Chevron } from "./popover-utils";
 import type { DateParts, Locale } from "./types";
 
@@ -388,8 +388,10 @@ export function createIsDisabledDay(opts: {
 }) {
   return (parts: DateParts) => {
     if (parts.year < opts.minYear || parts.year > opts.maxYear) return true;
-    if (opts.minParts && compareDateParts(parts, opts.minParts) < 0) return true;
-    if (opts.maxParts && compareDateParts(parts, opts.maxParts) > 0) return true;
+    if (opts.minParts && compareDateParts(parts, opts.minParts) < 0)
+      return true;
+    if (opts.maxParts && compareDateParts(parts, opts.maxParts) > 0)
+      return true;
     return false;
   };
 }

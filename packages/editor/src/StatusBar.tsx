@@ -1,5 +1,5 @@
-import { useEditorState, type Editor } from "@tiptap/react";
 import type { NepaliInputMode } from "@itzsa/nepali-input";
+import { type Editor, useEditorState } from "@tiptap/react";
 
 import { cn } from "./lib/utils";
 import type { EditorLocaleText } from "./locale";

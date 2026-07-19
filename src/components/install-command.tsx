@@ -115,11 +115,11 @@ export function InstallCommand({
   defaultManager = "pnpm",
   className,
 }: InstallCommandProps) {
-  const pkgKey = Array.isArray(packages) ? packages.join("\0") : packages;
+  const _pkgKey = Array.isArray(packages) ? packages.join("\0") : packages;
   const list = useMemo(
     () => (Array.isArray(packages) ? packages : [packages]),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [pkgKey],
+    [packages],
   );
   const [manager, setManager] = useState<PackageManager>(defaultManager);
   const [copied, setCopied] = useState(false);

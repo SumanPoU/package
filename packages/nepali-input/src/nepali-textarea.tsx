@@ -1,9 +1,8 @@
 "use client";
 
 import * as React from "react";
-
-import type { NepaliInputMode } from "./mappings";
 import { cn, mergeRefs } from "./lib/utils";
+import type { NepaliInputMode } from "./mappings";
 import {
   createNepaliChangeHandler,
   useNepaliCaretRestore,

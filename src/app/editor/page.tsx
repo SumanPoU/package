@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import type { CSSProperties } from "react";
 import { Noto_Sans_Devanagari } from "next/font/google";
+import type { CSSProperties } from "react";
+
+import { buildMetadata } from "@/lib/seo";
 
 import { DocsContent } from "./docs-content";
 
@@ -11,11 +13,14 @@ const notoDevanagari = Noto_Sans_Devanagari({
   variable: "--font-noto-devanagari",
 });
 
-export const metadata: Metadata = {
-  title: "@itzsa/editor — Documentation",
+export const metadata: Metadata = buildMetadata({
+  title: "@itzsa/editor — Rich Text Editor",
   description:
-    "TipTap rich text editor with Nepali Unicode/Preeti input — install, demo, and props.",
-};
+    "TipTap rich text editor with Nepali Unicode/Preeti, media uploads, sanitization, toolbar, and full props tables.",
+  path: "/editor",
+  packageName: "@itzsa/editor",
+  keywords: ["tiptap", "rich text", "wysiwyg", "nepali editor", "html editor"],
+});
 
 export default function EditorDocsPage() {
   return (

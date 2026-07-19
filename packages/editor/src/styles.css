@@ -151,12 +151,24 @@
   margin-bottom: 0.5rem;
 }
 
-.itzsa-editor .ProseMirror h1 { font-size: 2rem; }
-.itzsa-editor .ProseMirror h2 { font-size: 1.625rem; }
-.itzsa-editor .ProseMirror h3 { font-size: 1.375rem; }
-.itzsa-editor .ProseMirror h4 { font-size: 1.2rem; }
-.itzsa-editor .ProseMirror h5 { font-size: 1.05rem; }
-.itzsa-editor .ProseMirror h6 { font-size: 1rem; }
+.itzsa-editor .ProseMirror h1 {
+  font-size: 2rem;
+}
+.itzsa-editor .ProseMirror h2 {
+  font-size: 1.625rem;
+}
+.itzsa-editor .ProseMirror h3 {
+  font-size: 1.375rem;
+}
+.itzsa-editor .ProseMirror h4 {
+  font-size: 1.2rem;
+}
+.itzsa-editor .ProseMirror h5 {
+  font-size: 1.05rem;
+}
+.itzsa-editor .ProseMirror h6 {
+  font-size: 1rem;
+}
 
 .itzsa-editor .ProseMirror p {
   font-size: 1rem;
@@ -217,13 +229,22 @@
   flex-shrink: 0;
   cursor: pointer;
 }
-.itzsa-editor .ProseMirror ul[data-type="taskList"] li > label input[type="checkbox"] {
+.itzsa-editor
+  .ProseMirror
+  ul[data-type="taskList"]
+  li
+  > label
+  input[type="checkbox"] {
   width: 15px;
   height: 15px;
   cursor: pointer;
   accent-color: var(--editor-accent);
 }
-.itzsa-editor .ProseMirror ul[data-type="taskList"] li[data-checked="true"] > div {
+.itzsa-editor
+  .ProseMirror
+  ul[data-type="taskList"]
+  li[data-checked="true"]
+  > div {
   text-decoration: line-through;
   color: var(--editor-muted-fg);
 }

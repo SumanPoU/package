@@ -1,17 +1,12 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
 import Link from "next/link";
+import { type ReactNode, useCallback, useEffect, useState } from "react";
 
 import { CodeBlock } from "@/components/code-block";
 import { cn } from "@/lib/utils";
 import type { PropRow } from "./api-reference";
-import { DOC_NAV, RIGHT_TOC, type NavItem } from "./nav";
+import { DOC_NAV, type NavItem, RIGHT_TOC } from "./nav";
 
 export { CodeBlock };
 export type { PropRow };
@@ -107,7 +102,7 @@ function parentSectionId(activeId: string): string {
   const idx = DOC_NAV.findIndex((n) => n.id === activeId);
   if (idx < 0) return activeId;
   for (let i = idx; i >= 0; i--) {
-    if (!DOC_NAV[i]?.indent) return DOC_NAV[i]!.id;
+    if (!DOC_NAV[i]?.indent) return DOC_NAV[i]?.id;
   }
   return activeId;
 }

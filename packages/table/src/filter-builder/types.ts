@@ -174,7 +174,10 @@ export const FILTER_INPUT_PLACEHOLDER: Partial<
 let filterConditionSeq = 0;
 
 export function createFilterConditionId(): string {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+  if (
+    typeof crypto !== "undefined" &&
+    typeof crypto.randomUUID === "function"
+  ) {
     return `fc-${crypto.randomUUID()}`;
   }
   filterConditionSeq += 1;
@@ -196,7 +199,7 @@ export function makeFilterCondition(
   return {
     id: createFilterConditionId(),
     column: columns[0]?.value ?? "",
-    operator: FILTER_OPERATORS[0]!.value,
+    operator: FILTER_OPERATORS[0]?.value,
     value: "",
     logic,
   };
@@ -297,14 +300,13 @@ export function matchesFilterConditions<T>(
   for (let i = 1; i < conditions.length; i += 1) {
     const condition = conditions[i]!;
     const matched = matchFilterCondition(row, condition, getValue);
-    result =
-      condition.logic === "AND" ? result && matched : result || matched;
+    result = condition.logic === "AND" ? result && matched : result || matched;
   }
   return result;
 }
 
 /** Map DataTable columns → filter-builder columns (filterable only). */
-export function toFilterBuilderColumns<T>(
+export function toFilterBuilderColumns<_T>(
   columns: Array<{
     key: string;
     header: string;
@@ -351,9 +353,9 @@ function normalizeFilterColumnType(raw: string): FilterColumnType {
     "enum",
     "multi",
   ];
-  return (allowed.includes(raw as FilterColumnType)
-    ? raw
-    : "string") as FilterColumnType;
+  return (
+    allowed.includes(raw as FilterColumnType) ? raw : "string"
+  ) as FilterColumnType;
 }
 
 export type { React as FilterBuilderReact };

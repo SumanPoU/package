@@ -37,7 +37,10 @@ export function SiteNav() {
   return (
     <header className="site-header sticky top-0 z-40 border-b-[0.5px] border-border bg-page/95 backdrop-blur-sm">
       <div className="mx-auto flex h-12 w-full max-w-[88rem] items-center gap-4 px-4 sm:gap-6 sm:px-6">
-        <Link href="/" className="flex shrink-0 items-center gap-2.5 no-underline">
+        <Link
+          href="/"
+          className="flex shrink-0 items-center gap-2.5 no-underline"
+        >
           <span
             aria-hidden
             className="flex size-6 items-center justify-center rounded-[6px] bg-accent font-mono text-[11px] font-medium text-accent-fg"
@@ -56,16 +59,15 @@ export function SiteNav() {
             const active =
               link.href === "/"
                 ? pathname === "/"
-                : pathname === link.href || pathname.startsWith(`${link.href}/`);
+                : pathname === link.href ||
+                  pathname.startsWith(`${link.href}/`);
             return (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
                   "shrink-0 rounded-md px-2.5 py-1.5 text-[13px] transition-colors",
-                  active
-                    ? "text-accent"
-                    : "text-secondary hover:text-primary",
+                  active ? "text-accent" : "text-secondary hover:text-primary",
                 )}
               >
                 {link.label}

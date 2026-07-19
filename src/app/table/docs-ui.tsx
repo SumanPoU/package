@@ -8,11 +8,13 @@ import {
 } from "react";
 import Link from "next/link";
 
+import { CodeBlock } from "@/components/code-block";
 import { cn } from "@/lib/utils";
 import { DOC_NAV, RIGHT_TOC, type NavItem } from "./nav";
 
 export type { PropRow } from "./api-types";
 export type { NavItem };
+export { CodeBlock };
 
 export function useActiveSection(ids: string[]) {
   const [activeId, setActiveId] = useState(ids[0] ?? "");
@@ -47,7 +49,6 @@ export function useActiveSection(ids: string[]) {
           }
         }
 
-        // Prefer the last section above the midpoint when nothing intersects well
         if (bestRatio < 0.05) {
           const mid = window.innerHeight * 0.28;
           let fallback = ids[0] ?? "";
@@ -90,20 +91,22 @@ function NavLink({
       className={cn(
         "group relative block rounded-sm transition-colors",
         size === "toc"
-          ? "border-l border-border/80 py-1.5 pl-3 text-[13px] leading-snug"
+          ? "border-l-[0.5px] border-border py-1.5 pl-3 text-[13px] leading-snug"
           : "px-2.5 py-1.5 text-sm",
-        item.indent && size === "default" && "ml-2 border-l border-transparent pl-3 text-[13px]",
+        item.indent &&
+          size === "default" &&
+          "ml-2 border-l-[0.5px] border-transparent pl-3 text-[13px]",
         active
           ? size === "toc"
-            ? "border-l-[2.5px] border-l-[oklch(0.42_0.06_165)] font-medium text-foreground"
-            : "bg-[oklch(0.42_0.06_165_/0.08)] font-medium text-foreground"
-          : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
+            ? "border-l-2 border-l-accent text-accent"
+            : "text-accent"
+          : "text-secondary hover:text-primary",
       )}
     >
       {size === "default" && active ? (
         <span
           aria-hidden
-          className="absolute top-1.5 bottom-1.5 left-0 w-[2.5px] rounded-full bg-[oklch(0.42_0.06_165)]"
+          className="absolute top-1.5 bottom-1.5 left-0 w-[2px] rounded-full bg-accent"
         />
       ) : null}
       {item.label}
@@ -125,17 +128,15 @@ export function DocSidebar({
     >
       <Link
         href="/"
-        className="mb-5 text-[11px] font-medium tracking-[0.16em] text-muted-foreground uppercase transition-colors hover:text-foreground"
+        className="mb-5 text-[11px] font-medium tracking-[0.16em] text-secondary uppercase transition-colors hover:text-primary"
       >
-        ← @itzsa
+        ← itzsa
       </Link>
       <div className="mb-4 flex flex-col gap-0.5 px-2.5">
-        <p className="text-[15px] font-semibold tracking-tight text-foreground">
+        <p className="text-[15px] font-medium tracking-tight text-primary">
           table
         </p>
-        <p className="font-mono text-[11px] text-muted-foreground">
-          @itzsa/table
-        </p>
+        <p className="pkg text-[11px]">@itzsa/table</p>
       </div>
       {DOC_NAV.map((item) => (
         <NavLink key={item.id} item={item} active={activeId === item.id} />
@@ -177,7 +178,7 @@ export function DocToc({
 
   return (
     <nav aria-label="On this page" className={cn("flex flex-col", className)}>
-      <p className="mb-3 text-[11px] font-medium tracking-[0.14em] text-muted-foreground uppercase">
+      <p className="mb-3 text-[11px] font-medium tracking-[0.14em] text-tertiary uppercase">
         On this page
       </p>
       <div className="flex flex-col">
@@ -191,8 +192,8 @@ export function DocToc({
         ))}
       </div>
       {sectionChildren.length > 0 ? (
-        <div className="mt-4 flex flex-col border-t border-border/60 pt-3">
-          <p className="mb-2 text-[11px] text-muted-foreground">In section</p>
+        <div className="mt-4 flex flex-col border-t-[0.5px] border-border pt-3">
+          <p className="mb-2 text-[11px] text-tertiary">In section</p>
           {sectionChildren.map((item) => (
             <NavLink
               key={item.id}
@@ -216,24 +217,20 @@ export function DocsShell({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div className="docs-shell min-h-full">
-      <div
-        aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1200px_600px_at_10%_-10%,oklch(0.94_0.02_165/_0.55),transparent_55%),radial-gradient(900px_500px_at_90%_0%,oklch(0.96_0.015_85/_0.4),transparent_50%),linear-gradient(180deg,oklch(0.985_0.004_95)_0%,oklch(0.972_0.006_95)_100%)] dark:bg-none dark:bg-background"
-      />
+    <div className="docs-shell min-h-full bg-page">
       <div className="mx-auto flex w-full max-w-[88rem] gap-8 px-4 py-10 sm:px-6 lg:gap-10 xl:gap-12">
-        <aside className="sticky top-8 hidden h-[calc(100vh-4rem)] w-52 shrink-0 overflow-y-auto lg:block xl:w-56">
+        <aside className="sticky top-20 hidden h-[calc(100vh-6rem)] w-52 shrink-0 overflow-y-auto lg:block xl:w-56">
           <DocSidebar activeId={activeId} />
         </aside>
 
         <main className="min-w-0 flex-1 pb-24">{children}</main>
 
-        <aside className="sticky top-8 hidden h-[calc(100vh-4rem)] w-44 shrink-0 overflow-y-auto xl:block">
+        <aside className="sticky top-20 hidden h-[calc(100vh-6rem)] w-44 shrink-0 overflow-y-auto xl:block">
           <DocToc activeId={activeId} />
           <button
             type="button"
             onClick={scrollToTop}
-            className="mt-6 text-left text-[12px] text-muted-foreground transition-colors hover:text-foreground"
+            className="mt-6 text-left text-[12px] text-secondary transition-colors hover:text-primary"
           >
             ↑ Back to top
           </button>
@@ -258,54 +255,37 @@ export function DocSection({
 }) {
   const Heading = level === 2 ? "h2" : "h3";
   return (
-    <section id={id} className="scroll-mt-24 flex flex-col gap-4">
+    <section id={id} className="scroll-mt-28 flex flex-col gap-4">
       <header
         className={cn(
           "flex flex-col gap-1.5",
-          level === 2 && "border-b border-border/70 pb-3",
+          level === 2 && "border-b-[0.5px] border-border pb-3",
         )}
       >
         <Heading
           className={cn(
-            "font-semibold tracking-tight text-foreground",
+            "font-medium tracking-tight text-primary",
             level === 2 ? "text-xl sm:text-[1.35rem]" : "text-[15px]",
           )}
         >
           <a
             href={`#${id}`}
-            className="group inline-flex items-baseline gap-1.5 no-underline hover:underline hover:decoration-border"
+            className="group inline-flex items-baseline gap-1.5 no-underline hover:text-accent"
           >
             {title}
-            <span className="text-muted-foreground/0 transition-colors group-hover:text-muted-foreground/70">
+            <span className="text-tertiary opacity-0 transition-opacity group-hover:opacity-100">
               #
             </span>
           </a>
         </Heading>
         {description ? (
-          <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
+          <p className="max-w-2xl text-sm leading-relaxed text-secondary">
             {description}
           </p>
         ) : null}
       </header>
       {children}
     </section>
-  );
-}
-
-export function CodeBlock({
-  code,
-  language = "tsx",
-}: {
-  code: string;
-  language?: string;
-}) {
-  return (
-    <pre
-      data-language={language}
-      className="data-table-thin-scroll overflow-x-auto rounded-md border border-border/80 bg-[oklch(0.22_0.015_165)] p-4 text-[12.5px] leading-relaxed text-[oklch(0.93_0.01_95)] shadow-[inset_0_1px_0_oklch(1_0_0/0.06)] dark:bg-muted/40 dark:text-foreground"
-    >
-      <code className="font-mono whitespace-pre">{code.trim()}</code>
-    </pre>
   );
 }
 
@@ -317,25 +297,25 @@ export function PropsTable({
   caption?: string;
 }) {
   return (
-    <div className="data-table-thin-scroll overflow-x-auto rounded-md border border-border/80 bg-card/60 shadow-[0_1px_0_oklch(0_0_0/0.03)]">
+    <div className="data-table-thin-scroll overflow-x-auto rounded-md border-[0.5px] border-border bg-card">
       {caption ? (
-        <p className="border-b border-border/70 bg-muted/30 px-3 py-2 text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
+        <p className="border-b-[0.5px] border-border px-3 py-2 font-mono text-[11px] tracking-wide text-tertiary uppercase">
           {caption}
         </p>
       ) : null}
       <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
         <thead>
-          <tr className="border-b border-border bg-muted/35">
-            <th className="px-3 py-2.5 text-[12px] font-semibold text-foreground">
+          <tr className="border-b-[0.5px] border-border">
+            <th className="px-3 py-2.5 text-[12px] font-medium text-primary">
               Prop
             </th>
-            <th className="px-3 py-2.5 text-[12px] font-semibold text-foreground">
+            <th className="px-3 py-2.5 text-[12px] font-medium text-primary">
               Type
             </th>
-            <th className="px-3 py-2.5 text-[12px] font-semibold text-foreground">
+            <th className="px-3 py-2.5 text-[12px] font-medium text-primary">
               Default
             </th>
-            <th className="px-3 py-2.5 text-[12px] font-semibold text-foreground">
+            <th className="px-3 py-2.5 text-[12px] font-medium text-primary">
               Description
             </th>
           </tr>
@@ -344,18 +324,18 @@ export function PropsTable({
           {rows.map((row) => (
             <tr
               key={row.name}
-              className="border-b border-border/60 last:border-0 even:bg-muted/15"
+              className="border-b-[0.5px] border-border last:border-0"
             >
-              <td className="px-3 py-2.5 align-top font-mono text-[12.5px] font-medium text-foreground">
+              <td className="px-3 py-2.5 align-top font-mono text-[12.5px] text-accent">
                 {row.name}
               </td>
-              <td className="max-w-[14rem] px-3 py-2.5 align-top font-mono text-[11.5px] leading-snug break-all text-muted-foreground">
+              <td className="max-w-[14rem] px-3 py-2.5 align-top font-mono text-[11.5px] leading-snug break-all text-secondary">
                 {row.type}
               </td>
-              <td className="px-3 py-2.5 align-top font-mono text-[12px] whitespace-nowrap text-muted-foreground">
+              <td className="px-3 py-2.5 align-top font-mono text-[12px] whitespace-nowrap text-tertiary">
                 {row.default ?? "—"}
               </td>
-              <td className="px-3 py-2.5 align-top text-[13px] leading-relaxed text-muted-foreground">
+              <td className="px-3 py-2.5 align-top text-[13px] leading-relaxed text-secondary">
                 {row.description}
               </td>
             </tr>
@@ -374,9 +354,9 @@ export function Callout({
   title?: string;
 }) {
   return (
-    <div className="rounded-md border border-[oklch(0.42_0.06_165_/0.25)] bg-[oklch(0.42_0.06_165_/0.06)] px-3.5 py-3 text-sm leading-relaxed text-muted-foreground">
+    <div className="rounded-md border-[0.5px] border-border bg-card px-3.5 py-3 text-sm leading-relaxed text-secondary">
       {title ? (
-        <p className="mb-1 text-[12px] font-semibold tracking-wide text-foreground uppercase">
+        <p className="mb-1 text-[12px] font-medium tracking-wide text-primary uppercase">
           {title}
         </p>
       ) : null}

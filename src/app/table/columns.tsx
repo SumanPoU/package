@@ -14,10 +14,10 @@ function StatusBadge({ status }: { status: Employee["status"] }) {
     <span
       className={
         status === "Active"
-          ? "inline-flex items-center rounded-xs bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-400"
+          ? "inline-flex items-center rounded-xs border-[0.5px] border-accent/40 bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent"
           : status === "Away"
-            ? "inline-flex items-center rounded-xs bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-400"
-            : "inline-flex items-center rounded-xs bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground"
+            ? "inline-flex items-center rounded-xs border-[0.5px] border-border bg-card px-2 py-0.5 text-xs font-medium text-secondary"
+            : "inline-flex items-center rounded-xs border-[0.5px] border-border bg-card px-2 py-0.5 text-xs font-medium text-tertiary"
       }
     >
       {status}

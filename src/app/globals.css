@@ -2,75 +2,108 @@
 @source "../../packages/table/src";
 @import "../../packages/table/src/styles.css";
 
+/*
+  itzsa brand — dark default. Edit values here to re-theme the docs site.
+  Tailwind v4: tokens live in @theme (no separate tailwind.config required).
+*/
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --accent: #1d9e75;
+  --accent-fg: #04342c;
+  --bg-page: #0b0b0b;
+  --bg-card: #161615;
+  --border-color: #2c2c2a;
+  --text-primary: #f1efe8;
+  --text-secondary: #888780;
+  --text-tertiary: #5f5e5a;
+
+  /* Component aliases (table package + shadcn primitives) */
+  --background: var(--bg-page);
+  --foreground: var(--text-primary);
+  --card: var(--bg-card);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-card);
+  --popover-foreground: var(--text-primary);
+  --muted: var(--bg-card);
+  --muted-foreground: var(--text-secondary);
+  --border: var(--border-color);
+  --input: var(--border-color);
+  --ring: var(--accent);
+  /* Fills that used to be “primary” in shadcn → brand accent */
+  --primary: var(--accent);
+  --primary-foreground: var(--accent-fg);
+  --secondary: var(--bg-card);
+  --secondary-foreground: var(--text-primary);
+  --accent-foreground: var(--accent-fg);
+  /* No second bright color — map “destructive” into tertiary */
+  --destructive: var(--text-tertiary);
 }
 
 @theme inline {
+  /* Brand tokens (prompt names) */
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-page: var(--bg-page);
+  --color-card: var(--bg-card);
+  --color-border: var(--border-color);
+  /* text-primary / text-secondary / text-tertiary */
+  --color-primary: var(--text-primary);
+  --color-secondary: var(--text-secondary);
+  --color-tertiary: var(--text-tertiary);
+
+  /* shadcn-compatible aliases */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
-  --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Filled controls: use bg-accent (or bg-primary-fill) — not bg-primary */
+  --color-primary-fill: var(--accent);
+  --color-primary-foreground: var(--accent-fg);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.145 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.145 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.985 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-  }
+html {
+  color-scheme: dark;
+  background: var(--bg-page);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+:where(p, li, td, th, dd, dt) :where(code):not(pre code) {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  color: var(--text-primary);
+}
+
+:where(.pkg) {
+  font-family: var(--font-mono);
+  color: var(--accent);
 }

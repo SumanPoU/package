@@ -78,27 +78,27 @@ export function DocsContent() {
       <div className="flex flex-col gap-14">
         <header
           id="introduction"
-          className="scroll-mt-24 flex flex-col gap-3 border-b border-border/80 pb-8"
+          className="scroll-mt-28 flex flex-col gap-3 border-b-[0.5px] border-border pb-8"
         >
-          <p className="text-[11px] font-medium tracking-[0.16em] text-muted-foreground uppercase">
-            Documentation · @itzsa
+          <p className="text-[11px] font-medium tracking-[0.16em] text-secondary uppercase">
+            Documentation · itzsa
           </p>
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+          <h1 className="text-3xl font-medium tracking-tight text-primary sm:text-4xl">
             table
           </h1>
-          <p className="max-w-2xl text-base leading-relaxed text-muted-foreground">
+          <p className="max-w-2xl text-base leading-relaxed text-secondary">
             Composable DataTable for React — pagination, selection, sorting,
             filters, editing, export, tree data, and keyboard navigation.
             Built on shadcn-style primitives; features are opt-in via props.
           </p>
-          <div className="flex flex-wrap gap-2 pt-1 text-xs text-muted-foreground">
-            <span className="rounded-sm border border-border/80 bg-card/80 px-2 py-1 font-mono shadow-sm">
-              npm i @itzsa/table
+          <div className="flex flex-wrap gap-2 pt-1 text-xs text-secondary">
+            <span className="pkg rounded-md border-[0.5px] border-border bg-card px-2 py-1 text-[12px]">
+              @itzsa/table
             </span>
-            <span className="rounded-sm border border-border/80 bg-card/80 px-2 py-1">
+            <span className="rounded-md border-[0.5px] border-border bg-card px-2 py-1">
               React 18 / 19
             </span>
-            <span className="rounded-sm border border-border/80 bg-card/80 px-2 py-1">
+            <span className="rounded-md border-[0.5px] border-border bg-card px-2 py-1">
               Tailwind v4
             </span>
           </div>
@@ -112,7 +112,7 @@ export function DocsContent() {
             <a
               key={item.id}
               href={`#${item.id}`}
-              className="rounded-sm border border-border/80 bg-card/80 px-2.5 py-1 text-xs text-muted-foreground hover:text-foreground"
+              className="rounded-md border-[0.5px] border-border bg-card px-2.5 py-1 text-xs text-secondary hover:text-accent"
             >
               {item.label}
             </a>
@@ -124,14 +124,16 @@ export function DocsContent() {
           title="Installation"
           description="Add the package, then wire Tailwind so utility classes inside the table are generated."
         >
+          <CodeBlock language="bash" showPrompt code="pnpm add @itzsa/table" />
+          <p className="text-sm text-secondary">Also works with npm / yarn:</p>
           <CodeBlock language="bash" code={INSTALL_CODE} />
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-secondary">
             In your global CSS (Tailwind v4):
           </p>
           <CodeBlock language="css" code={CSS_CODE} />
           <Callout title="Peers">
-            Peer deps: <code className="text-foreground">react</code> and{" "}
-            <code className="text-foreground">react-dom</code> ^18 or ^19.
+            Peer deps: <code className="font-mono text-primary">react</code> and{" "}
+            <code className="font-mono text-primary">react-dom</code> ^18 or ^19.
             Import styles once at the app root.
           </Callout>
         </DocSection>
@@ -144,11 +146,11 @@ export function DocsContent() {
           <CodeBlock code={STARTER_CODE} />
           <Callout title="Opt-in by default">
             Almost every behavioral feature is{" "}
-            <strong className="text-foreground">off by default</strong> except
-            SN and pagination. Turn on what you need with props like{" "}
-            <code className="text-foreground">selectable</code>,{" "}
-            <code className="text-foreground">editable</code>,{" "}
-            <code className="text-foreground">showExport</code>.
+            <strong className="font-medium text-primary">off by default</strong>{" "}
+            except SN and pagination. Turn on what you need with props like{" "}
+            <code className="font-mono text-accent">selectable</code>,{" "}
+            <code className="font-mono text-accent">editable</code>,{" "}
+            <code className="font-mono text-accent">showExport</code>.
           </Callout>
         </DocSection>
 
@@ -313,12 +315,13 @@ export function DocsContent() {
           <CodeBlock code={STYLING_CODE} />
           <Callout title="Merge order">
             Internal classes →{" "}
-            <code className="text-foreground">classNames.*</code> (via{" "}
-            <code className="text-foreground">tailwind-merge</code>) →{" "}
-            <code className="text-foreground">styles.*</code> inline. Column{" "}
-            <code className="text-foreground">className</code> /{" "}
-            <code className="text-foreground">headerClassName</code> apply on
-            that column’s cells.
+            <code className="font-mono text-accent">classNames.*</code> (via{" "}
+            <code className="font-mono text-primary">tailwind-merge</code>) →{" "}
+            <code className="font-mono text-accent">styles.*</code> inline.
+            Column{" "}
+            <code className="font-mono text-accent">className</code> /{" "}
+            <code className="font-mono text-accent">headerClassName</code> apply
+            on that column’s cells.
           </Callout>
         </DocSection>
 

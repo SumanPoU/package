@@ -37,48 +37,19 @@ export function UsersTable() {
 }
 ```
 
-## Demo app (`/table`)
+## Demo / docs app (`/table`)
 
-The Next.js showcase lives in [`src/app/table`](../../src/app/table). Row data and serializable props are split into JSON so each demo type stays easy to tweak:
+Open **`http://localhost:3000/table`** for the full documentation site: installation, getting started, live examples, and props API.
 
 ```
 src/app/table/
-  page.tsx                 # wires demos + handlers (edit, actions, detail panel)
-  columns.tsx              # column defs (incl. status cell renderer)
-  types.ts                 # Employee / OrgNode types
-  data/
-    employees.json         # 100 employees — full-featured grid
-    row-edit.json          # 8 curated rows — row edit mode
-    locale-sample.json     # 5 rows — localeText demo
-    org-tree.json          # org hierarchy with `path[]` — tree data
-  props/
-    demos.json             # titles + DataTable props per demo section
+  page.tsx                 # docs page (install, API, examples)
+  docs-ui.tsx              # nav, code blocks, props tables
+  examples.tsx             # live DataTable demos
+  columns.tsx / types.ts
+  data/                    # JSON datasets per example
+  props/demos.json         # serializable demo props
 ```
-
-| Demo | Data file | Props key in `demos.json` |
-| --- | --- | --- |
-| Full features (edit, export, detail, filters…) | `data/employees.json` | `fullFeatures` |
-| Row edit mode | `data/row-edit.json` | `rowEdit` |
-| Tree data | `data/org-tree.json` | `tree` |
-| Locale override | `data/locale-sample.json` | `locale` |
-
-Handlers that cannot live in JSON (`processRowUpdate`, `getDetailPanelContent`, `getTreeDataPath`, `actions`) stay in `page.tsx`.
-
-### Tree row shape
-
-```json
-{
-  "id": "eng-plat-ben",
-  "name": "Ben Ortiz",
-  "role": "Staff Engineer",
-  "email": "ben.ortiz@example.com",
-  "location": "Austin",
-  "status": "Active",
-  "path": ["Engineering", "Platform", "Ben Ortiz"]
-}
-```
-
-Pass `path` through `getTreeDataPath={(row) => row.path}`.
 
 ## Styling (MUI-like slots)
 

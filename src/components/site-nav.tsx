@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
@@ -14,7 +15,7 @@ export function SiteNav() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-40 border-b-[0.5px] border-border bg-page/95 backdrop-blur-sm">
+    <header className="site-header sticky top-0 z-40 border-b-[0.5px] border-border bg-page/95 backdrop-blur-sm">
       <div className="mx-auto flex h-12 w-full max-w-[88rem] items-center gap-6 px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2.5 no-underline">
           <span
@@ -27,7 +28,7 @@ export function SiteNav() {
             itzsa
           </span>
         </Link>
-        <nav aria-label="Site" className="flex items-center gap-1">
+        <nav aria-label="Site" className="flex flex-1 items-center gap-1">
           {LINKS.map((link) => {
             const active =
               link.href === "/"
@@ -49,6 +50,7 @@ export function SiteNav() {
             );
           })}
         </nav>
+        <ThemeToggle />
       </div>
     </header>
   );

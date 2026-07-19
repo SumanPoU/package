@@ -16,8 +16,9 @@ export default function Home() {
         <p className="max-w-xl text-base text-secondary">
           Documentation and demos for packages under{" "}
           <code className="font-mono text-primary">packages/</code> — including{" "}
-          <span className="pkg">@itzsa/table</span> and{" "}
-          <span className="pkg">@itzsa/nepali-input</span>.
+          <span className="pkg">@itzsa/table</span>,{" "}
+          <span className="pkg">@itzsa/nepali-input</span>, and{" "}
+          <span className="pkg">@itzsa/editor</span>.
         </p>
       </div>
 
@@ -27,6 +28,9 @@ export default function Home() {
         </Button>
         <Button variant="outline" asChild>
           <Link href="/nepali-input">Nepali input</Link>
+        </Button>
+        <Button variant="outline" asChild>
+          <Link href="/editor">Editor</Link>
         </Button>
         <Button variant="outline" asChild>
           <Link href="/registry">Registry</Link>
@@ -48,6 +52,14 @@ export default function Home() {
             language="bash"
             showPrompt
             code="pnpm add @itzsa/nepali-input"
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <p className="text-[13px] text-secondary">Install editor</p>
+          <CodeBlock
+            language="bash"
+            showPrompt
+            code="pnpm add @itzsa/editor @itzsa/nepali-input"
           />
         </div>
       </div>

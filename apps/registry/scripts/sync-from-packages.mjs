@@ -277,7 +277,7 @@ function writeRegistryJson(tableFiles, editorFiles) {
         type: "registry:component",
         title: "Editor",
         description:
-          "Rich text / block editor. Placeholder until packages/editor exists — prefer npm @itzsa/editor when published.",
+          "TipTap rich text editor with Nepali Unicode/Preeti input and language guard. Source synced from @itzsa/editor.",
         registryDependencies: [],
         dependencies: readEditorDeps(),
         files: editorFiles,

@@ -33,6 +33,23 @@ import { EditableNepaliDatePicker, isCompleteBsDate } from "@itzsa/nepali-datepi
 
 Digits are auto-masked to `YYYY-MM-DD`. Use `isCompleteBsDate(value)` before submit.
 
+### Date & time
+
+```tsx
+import { NepaliDateTimePicker } from "@itzsa/nepali-datepicker";
+
+<NepaliDateTimePicker
+  value={dateTime}
+  onChange={setDateTime}
+  placeholder="मिति र समय"
+  minDateTime="2080-01-01 00:00"
+  maxDateTime="2090-12-30 23:59"
+  minuteStep={5}
+/>
+```
+
+Canonical value: `YYYY-MM-DD HH:mm` (optional seconds with `withSeconds`).
+
 ### Date range
 
 ```tsx

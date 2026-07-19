@@ -4,7 +4,7 @@ import {
   BS_MIN_YEAR,
   BS_MONTH_DAYS,
 } from "./calendar-data";
-import type { DateParts } from "./types";
+import type { DateParts, DateTimeParts } from "./types";
 
 const MS_PER_DAY = 86_400_000;
 
@@ -148,6 +148,18 @@ export function adToBs(year: number, month: number, day: number): DateParts {
 export function todayBs(): DateParts {
   const now = new Date();
   return adToBs(now.getFullYear(), now.getMonth() + 1, now.getDate());
+}
+
+/** Today + current local clock as BS datetime. */
+export function todayBsDateTime(): DateTimeParts {
+  const now = new Date();
+  const date = adToBs(now.getFullYear(), now.getMonth() + 1, now.getDate());
+  return {
+    ...date,
+    hour: now.getHours(),
+    minute: now.getMinutes(),
+    second: now.getSeconds(),
+  };
 }
 
 /** Weekday for a BS date: 0 = Sunday … 6 = Saturday (UTC civil). */

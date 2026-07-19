@@ -12,6 +12,7 @@ export const DOC_NAV: NavItem[] = [
   { id: "examples", label: "Examples" },
   { id: "example-basic", label: "Basic picker", indent: true },
   { id: "example-editable", label: "Editable input", indent: true },
+  { id: "example-datetime", label: "Date & time", indent: true },
   { id: "example-range", label: "Date range", indent: true },
   { id: "example-styled", label: "Custom styling", indent: true },
   { id: "example-locale", label: "Locale", indent: true },
@@ -20,9 +21,9 @@ export const DOC_NAV: NavItem[] = [
   { id: "props", label: "Props API" },
   { id: "props-picker", label: "NepaliDatePicker", indent: true },
   { id: "props-editable", label: "EditableNepaliDatePicker", indent: true },
+  { id: "props-datetime", label: "NepaliDateTimePicker", indent: true },
   { id: "props-range", label: "NepaliDateRangePicker", indent: true },
   { id: "props-helpers", label: "Helpers", indent: true },
   { id: "styling", label: "Styling & fonts" },
 ];
-
 export const RIGHT_TOC = DOC_NAV.filter((item) => !item.indent);

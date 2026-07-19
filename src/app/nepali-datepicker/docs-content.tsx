@@ -3,6 +3,7 @@
 import { InstallCommand } from "@/components/install-command";
 
 import {
+  DATETIME_PROPS,
   EDITABLE_PROPS,
   HELPER_API,
   PICKER_PROPS,
@@ -18,6 +19,7 @@ import {
 import {
   BasicExample,
   BoundsExample,
+  DateTimeExample,
   EditableExample,
   HelpersExample,
   LocaleExample,
@@ -38,24 +40,29 @@ const STARTER = `import { useState } from "react";
 import {
   EditableNepaliDatePicker,
   NepaliDatePicker,
+  NepaliDateTimePicker,
   NepaliDateRangePicker,
   isCompleteBsDate,
-  validateBsDate,
 } from "@itzsa/nepali-datepicker";
 import "@itzsa/nepali-datepicker/styles.css";
 
 export function DateFields() {
   const [date, setDate] = useState("");
   const [typed, setTyped] = useState("");
+  const [dateTime, setDateTime] = useState("");
   const [range, setRange] = useState<{ from?: string; to?: string }>({});
 
   return (
     <>
       <NepaliDatePicker value={date} onChange={setDate} locale="ne" />
       <EditableNepaliDatePicker value={typed} onChange={setTyped} />
+      <NepaliDateTimePicker
+        value={dateTime}
+        onChange={setDateTime}
+        minDateTime="2080-01-01 00:00"
+        maxDateTime="2090-12-30 23:59"
+      />
       <NepaliDateRangePicker value={range} onChange={setRange} />
-      {/* before submit: */}
-      {isCompleteBsDate(typed) ? "ok" : "incomplete"}
     </>
   );
 }`;
@@ -120,7 +127,7 @@ export function DocsContent() {
               @itzsa/nepali-datepicker
             </span>
             <span className="rounded-md border-[0.5px] border-border bg-card px-2 py-1">
-              single · editable · range
+              single · editable · datetime · range
             </span>
             <span className="rounded-md border-[0.5px] border-border bg-card px-2 py-1">
               BS 2000–2100
@@ -211,6 +218,15 @@ export function DocsContent() {
             </DocSection>
 
             <DocSection
+              id="example-datetime"
+              level={3}
+              title="Date & time"
+              description="Pick a BS date plus hour/minute. Use minDateTime / maxDateTime for bounds."
+            >
+              <DateTimeExample />
+            </DocSection>
+
+            <DocSection
               id="example-range"
               level={3}
               title="Date range"
@@ -289,6 +305,18 @@ const bs = adToBs(ad.year, ad.month, ad.day);`}
               <PropsTable
                 caption="EditableNepaliDatePickerProps"
                 rows={EDITABLE_PROPS}
+              />
+            </DocSection>
+
+            <DocSection
+              id="props-datetime"
+              level={3}
+              title="NepaliDateTimePicker"
+              description="Value is YYYY-MM-DD HH:mm. Confirm applies date + time together."
+            >
+              <PropsTable
+                caption="NepaliDateTimePickerProps"
+                rows={DATETIME_PROPS}
               />
             </DocSection>
 

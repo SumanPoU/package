@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "editor",
+  "title": "Editor",
+  "description": "Rich text / block editor. Placeholder until packages/editor exists — prefer npm @itzsa/editor when published.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "registry/itzsa/editor/editor.tsx",
+      "content": "/**\n * REGISTRY NOTE — placeholder\n * ---------------------------------------------------------------------------\n * `packages/editor` is not in this monorepo yet. This file exists so the\n * registry item builds. When @itzsa/editor is added, `sync-from-packages.mjs`\n * will copy real sources from packages/editor/src and overwrite this stub.\n *\n * Do not treat this stub as a production editor.\n */\n\"use client\";\n\nexport type EditorProps = {\n  className?: string;\n  placeholder?: string;\n};\n\nexport function Editor({ className, placeholder = \"Editor coming soon…\" }: EditorProps) {\n  return (\n    <div\n      className={className}\n      data-itzsa-editor-stub=\"\"\n      style={{\n        border: \"1px dashed currentColor\",\n        borderRadius: 8,\n        opacity: 0.6,\n        padding: 16,\n        fontFamily: \"ui-monospace, monospace\",\n        fontSize: 13,\n      }}\n    >\n      {placeholder}\n    </div>\n  );\n}\n",
+      "type": "registry:component",
+      "target": "components/itzsa/editor/editor.tsx"
+    }
+  ],
+  "type": "registry:component"
+}

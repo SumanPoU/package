@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "apps/*"
   ],
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "pnpm run build:registry && next build",
+    "build:registry": "pnpm --filter registry run registry:build",
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write"

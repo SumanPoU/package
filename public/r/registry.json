@@ -1,0 +1,220 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "itzsa",
+  "homepage": "https://itzsa.dev",
+  "items": [
+    {
+      "name": "data-table",
+      "type": "registry:component",
+      "title": "Data table",
+      "description": "Composable data table with sorting, pagination, filtering, row selection, editing, export, tree/detail panels, and server/client modes. Source synced from @itzsa/table.",
+      "registryDependencies": [],
+      "dependencies": [
+        "@floating-ui/react",
+        "@tanstack/react-virtual",
+        "class-variance-authority",
+        "clsx",
+        "lucide-react",
+        "radix-ui",
+        "tailwind-merge"
+      ],
+      "files": [
+        {
+          "path": "registry/itzsa/data-table/cell-content.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/cell-content.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/column-header-menu.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/column-header-menu.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/column-visibility-menu.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/column-visibility-menu.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/components/ui/button.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/components/ui/button.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/components/ui/checkbox.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/components/ui/checkbox.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/components/ui/select.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/components/ui/select.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/components/ui/table.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/components/ui/table.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/data-table.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/data-table.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/density-control.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/density-control.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/detail-panel.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/detail-panel.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/editable-cell.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/editable-cell.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/export-menu.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/export-menu.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/export-utils.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/export-utils.ts"
+        },
+        {
+          "path": "registry/itzsa/data-table/filter-bar.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/filter-bar.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/filter-builder/column-select.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/filter-builder/column-select.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/filter-builder/filter-builder.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/filter-builder/filter-builder.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/filter-builder/index.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/filter-builder/index.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/filter-builder/smart-value-input.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/filter-builder/smart-value-input.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/filter-builder/types.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/filter-builder/types.ts"
+        },
+        {
+          "path": "registry/itzsa/data-table/index.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/index.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "components/itzsa/data-table/lib/utils.ts"
+        },
+        {
+          "path": "registry/itzsa/data-table/locale-text.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/locale-text.ts"
+        },
+        {
+          "path": "registry/itzsa/data-table/quick-filter.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/quick-filter.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/row-actions-popover.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/row-actions-popover.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/row-actions.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/row-actions.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/sn-column.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/sn-column.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/styles.css",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/styles.css"
+        },
+        {
+          "path": "registry/itzsa/data-table/table-pagination.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/table-pagination.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/toolbar-control.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/toolbar-control.tsx"
+        },
+        {
+          "path": "registry/itzsa/data-table/tree-data.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/tree-data.ts"
+        },
+        {
+          "path": "registry/itzsa/data-table/types.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/data-table/types.ts"
+        },
+        {
+          "path": "registry/itzsa/data-table/use-column-resize.ts",
+          "type": "registry:hook",
+          "target": "components/itzsa/data-table/use-column-resize.ts"
+        },
+        {
+          "path": "registry/itzsa/data-table/use-table-editing.ts",
+          "type": "registry:hook",
+          "target": "components/itzsa/data-table/use-table-editing.ts"
+        },
+        {
+          "path": "registry/itzsa/data-table/use-table-keyboard.ts",
+          "type": "registry:hook",
+          "target": "components/itzsa/data-table/use-table-keyboard.ts"
+        },
+        {
+          "path": "registry/itzsa/data-table/use-table-selection.ts",
+          "type": "registry:hook",
+          "target": "components/itzsa/data-table/use-table-selection.ts"
+        },
+        {
+          "path": "registry/itzsa/data-table/use-table-virtualization.ts",
+          "type": "registry:hook",
+          "target": "components/itzsa/data-table/use-table-virtualization.ts"
+        }
+      ]
+    },
+    {
+      "name": "editor",
+      "type": "registry:component",
+      "title": "Editor",
+      "description": "Rich text / block editor. Placeholder until packages/editor exists — prefer npm @itzsa/editor when published.",
+      "registryDependencies": [],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/itzsa/editor/editor.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/editor.tsx"
+        }
+      ]
+    }
+  ]
+}

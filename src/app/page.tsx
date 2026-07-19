@@ -26,13 +26,7 @@ export default function Home() {
           <Link href="/table">Open table docs</Link>
         </Button>
         <Button variant="outline" asChild>
-          <a
-            href="https://www.npmjs.com/package/@itzsa/table"
-            target="_blank"
-            rel="noreferrer"
-          >
-            View on npm
-          </a>
+          <Link href="/registry">shadcn registry</Link>
         </Button>
       </div>
 

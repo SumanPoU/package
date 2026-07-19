@@ -85,7 +85,7 @@ Flat props (`onUpload`, `maxLength`, `nepali`, …) still work and merge with `s
 
 ## Docs
 
-**https://itzsa.acharya-suman.com.np/editor** — install, live demo, security notes, and props.
+**https://itzsa.acharya-suman.com.np/editor** — install, live demo, security notes, and full props tables.
 
 ## Security
 

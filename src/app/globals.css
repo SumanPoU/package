@@ -3,10 +3,41 @@
 @import "../../packages/table/src/styles.css";
 
 /*
-  itzsa brand — dark default. Edit values here to re-theme the docs site.
-  Tailwind v4: tokens live in @theme (no separate tailwind.config required).
+  itzsa brand — light + dark.
+  Edit :root (light) and .dark values to re-theme.
 */
-:root {
+:root,
+.light {
+  --accent: #1d9e75;
+  --accent-fg: #04342c;
+  --bg-page: #f7f6f2;
+  --bg-card: #ffffff;
+  --border-color: #e4e2db;
+  --text-primary: #1a1915;
+  --text-secondary: #6f6e68;
+  --text-tertiary: #9b9a93;
+
+  --background: var(--bg-page);
+  --foreground: var(--text-primary);
+  --card: var(--bg-card);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-card);
+  --popover-foreground: var(--text-primary);
+  --muted: #efeee9;
+  --muted-foreground: var(--text-secondary);
+  --border: var(--border-color);
+  --input: var(--border-color);
+  --ring: var(--accent);
+  --primary: var(--accent);
+  --primary-foreground: var(--accent-fg);
+  --secondary: var(--muted);
+  --secondary-foreground: var(--text-primary);
+  --accent-foreground: var(--accent-fg);
+  --destructive: var(--text-tertiary);
+  color-scheme: light;
+}
+
+.dark {
   --accent: #1d9e75;
   --accent-fg: #04342c;
   --bg-page: #0b0b0b;
@@ -16,7 +47,6 @@
   --text-secondary: #888780;
   --text-tertiary: #5f5e5a;
 
-  /* Component aliases (table package + shadcn primitives) */
   --background: var(--bg-page);
   --foreground: var(--text-primary);
   --card: var(--bg-card);
@@ -28,29 +58,25 @@
   --border: var(--border-color);
   --input: var(--border-color);
   --ring: var(--accent);
-  /* Fills that used to be “primary” in shadcn → brand accent */
   --primary: var(--accent);
   --primary-foreground: var(--accent-fg);
   --secondary: var(--bg-card);
   --secondary-foreground: var(--text-primary);
   --accent-foreground: var(--accent-fg);
-  /* No second bright color — map “destructive” into tertiary */
   --destructive: var(--text-tertiary);
+  color-scheme: dark;
 }
 
 @theme inline {
-  /* Brand tokens (prompt names) */
   --color-accent: var(--accent);
   --color-accent-fg: var(--accent-fg);
   --color-page: var(--bg-page);
   --color-card: var(--bg-card);
   --color-border: var(--border-color);
-  /* text-primary / text-secondary / text-tertiary */
   --color-primary: var(--text-primary);
   --color-secondary: var(--text-secondary);
   --color-tertiary: var(--text-tertiary);
 
-  /* shadcn-compatible aliases */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card-foreground: var(--card-foreground);
@@ -62,7 +88,6 @@
   --color-destructive: var(--destructive);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  /* Filled controls: use bg-accent (or bg-primary-fill) — not bg-primary */
   --color-primary-fill: var(--accent);
   --color-primary-foreground: var(--accent-fg);
 
@@ -75,7 +100,6 @@
 }
 
 html {
-  color-scheme: dark;
   background: var(--bg-page);
 }
 
@@ -106,4 +130,61 @@ h6 {
 :where(.pkg) {
   font-family: var(--font-mono);
   color: var(--accent);
+}
+
+/* Smooth color ease when tokens swap (no full-page snapshot) */
+@media (prefers-reduced-motion: no-preference) {
+  html,
+  body {
+    transition:
+      background-color 0.28s ease,
+      color 0.28s ease;
+  }
+
+  .site-header {
+    transition:
+      background-color 0.28s ease,
+      border-color 0.28s ease,
+      color 0.28s ease;
+  }
+}
+
+/* Teal scan beam — GPU transform only, L→R */
+.theme-scan-beam {
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99999;
+  width: 2px;
+  height: 100vh;
+  margin: 0;
+  background: var(--accent);
+  opacity: 0;
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+  box-shadow:
+    0 0 8px 1px var(--accent),
+    0 0 20px 4px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.theme-scan-beam--run {
+  animation: theme-scan-beam-move 0.38s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes theme-scan-beam-move {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(100vw, 0, 0);
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-scan-beam {
+    display: none;
+  }
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 
 import { SiteNav } from "@/components/site-nav";
+import { ThemeProvider } from "@/components/theme-provider";
 
 import "./globals.css";
 
@@ -22,6 +23,9 @@ export const metadata: Metadata = {
   description: "Documentation and demos for @itzsa packages",
 };
 
+/** Runs before paint to avoid theme flash. */
+const themeInitScript = `(function(){try{var k='itzsa-theme';var t=localStorage.getItem(k);if(t!=='light'&&t!=='dark'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}var r=document.documentElement;r.classList.remove('light','dark');r.classList.add(t);r.style.colorScheme=t}catch(e){document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark'}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,11 +35,16 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${jetbrainsMono.variable} dark h-full antialiased`}
-      style={{ colorScheme: "dark" }}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="flex min-h-full flex-col bg-page font-sans text-primary">
-        <SiteNav />
-        <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+        <ThemeProvider>
+          <SiteNav />
+          <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+        </ThemeProvider>
       </body>
     </html>
   );

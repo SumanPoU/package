@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
-  transpilePackages: ["@itzsa/table"],
+  transpilePackages: ["@itzsa/table", "@itzsa/nepali-input"],
   // Monorepo includes apps/registry; pin Turbopack root so Next resolves from here.
   turbopack: {
     root: path.join(__dirname),

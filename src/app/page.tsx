@@ -69,7 +69,7 @@ export default function Home() {
         }}
       />
 
-      <section className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-6 pt-16 pb-12 sm:pt-24 sm:pb-16">
+      <section className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-6 pt-8 pb-6 sm:gap-6 sm:pt-12 sm:pb-10">
         <div className="home-hero-in flex flex-col gap-5">
           <p className="text-[11px] font-medium tracking-[0.18em] text-secondary uppercase">
             Component library
@@ -147,7 +147,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-3xl px-6 pb-10">
+      <section className="mx-auto w-full max-w-3xl px-6 pb-8">
         <h2 className="mb-4 text-[11px] font-medium tracking-[0.16em] text-tertiary uppercase">
           Packages
         </h2>
@@ -171,7 +171,7 @@ export default function Home() {
         </ul>
       </section>
 
-      <section className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-6 pb-20">
+      <section className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-6 pb-12">
         <h2 className="text-[11px] font-medium tracking-[0.16em] text-tertiary uppercase">
           Install
         </h2>

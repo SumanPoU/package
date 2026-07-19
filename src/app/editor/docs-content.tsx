@@ -82,10 +82,10 @@ const SETTINGS_EXAMPLE = `settings={{
 export function DocsContent() {
   return (
     <DocsShell>
-      <div className="flex flex-col gap-14">
+      <div className="flex flex-col gap-8 sm:gap-14">
         <header
           id="introduction"
-          className="scroll-mt-28 flex flex-col gap-3 border-b-[0.5px] border-border pb-8"
+          className="scroll-mt-28 flex flex-col gap-3 border-b-[0.5px] border-border pb-6 sm:pb-8"
         >
           <p className="text-[11px] font-medium tracking-[0.16em] text-secondary uppercase">
             Documentation · itzsa

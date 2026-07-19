@@ -150,8 +150,7 @@ export function DocsContent() {
           description="Files are never inlined as base64."
         >
           <p className="text-sm leading-relaxed text-secondary">
-            Pass{" "}
-            <code className="font-mono text-primary">onUpload</code> or{" "}
+            Pass <code className="font-mono text-primary">onUpload</code> or{" "}
             <code className="font-mono text-primary">
               settings.media.onUpload
             </code>{" "}
@@ -222,10 +221,7 @@ export function DocsContent() {
               title="RichTextEditor"
               description="Top-level component props. Flat props merge with settings."
             >
-              <PropsTable
-                caption="RichTextEditorProps"
-                rows={EDITOR_PROPS}
-              />
+              <PropsTable caption="RichTextEditorProps" rows={EDITOR_PROPS} />
             </DocSection>
 
             <DocSection
@@ -246,10 +242,7 @@ export function DocsContent() {
               title="Class names"
               description="Slot class names for chrome regions."
             >
-              <PropsTable
-                caption="EditorClassNames"
-                rows={CLASSNAMES_PROPS}
-              />
+              <PropsTable caption="EditorClassNames" rows={CLASSNAMES_PROPS} />
             </DocSection>
 
             <DocSection
@@ -258,10 +251,7 @@ export function DocsContent() {
               title="Ref handle"
               description="Imperative API via ref."
             >
-              <PropsTable
-                caption="RichTextEditorHandle"
-                rows={HANDLE_PROPS}
-              />
+              <PropsTable caption="RichTextEditorHandle" rows={HANDLE_PROPS} />
             </DocSection>
           </div>
         </DocSection>

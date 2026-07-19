@@ -1,32 +1,31 @@
-import { useMemo, useRef } from "react";
-import { useEditor, type Editor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Image from "@tiptap/extension-image";
-import { Table } from "@tiptap/extension-table";
-import { TableRow } from "@tiptap/extension-table-row";
-import { TableCell } from "@tiptap/extension-table-cell";
-import { TableHeader } from "@tiptap/extension-table-header";
-import { TaskList } from "@tiptap/extension-task-list";
-import { TaskItem } from "@tiptap/extension-task-item";
-import TextAlign from "@tiptap/extension-text-align";
-import Placeholder from "@tiptap/extension-placeholder";
+import type { NepaliInputMode } from "@itzsa/nepali-input";
+import { Extension, type Extensions } from "@tiptap/core";
 import CharacterCount from "@tiptap/extension-character-count";
-import { TextStyleKit } from "@tiptap/extension-text-style";
 import Highlight from "@tiptap/extension-highlight";
+import Image from "@tiptap/extension-image";
+import Placeholder from "@tiptap/extension-placeholder";
 import Subscript from "@tiptap/extension-subscript";
 import Superscript from "@tiptap/extension-superscript";
-import { Extension, type Extensions } from "@tiptap/core";
-import type { NepaliInputMode } from "@itzsa/nepali-input";
-
-import { createNepaliInputExtension } from "./NepaliInputExtension";
+import { Table } from "@tiptap/extension-table";
+import { TableCell } from "@tiptap/extension-table-cell";
+import { TableHeader } from "@tiptap/extension-table-header";
+import { TableRow } from "@tiptap/extension-table-row";
+import { TaskItem } from "@tiptap/extension-task-item";
+import { TaskList } from "@tiptap/extension-task-list";
+import TextAlign from "@tiptap/extension-text-align";
+import { TextStyleKit } from "@tiptap/extension-text-style";
+import { type Editor, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import { useMemo, useRef } from "react";
 import { LanguageGuard } from "./LanguageGuard";
-import { Video } from "./video-extension";
+import { createNepaliInputExtension } from "./NepaliInputExtension";
 import {
   sanitizeCssLength,
   sanitizeHtml,
   sanitizeTextTransform,
   sanitizeUrl,
 } from "./security";
+import { Video } from "./video-extension";
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
@@ -228,7 +227,10 @@ export function useEditorConfig({
   extraRef.current = extraExtensions;
 
   const safeContent = sanitize
-    ? sanitizeHtml(content, { allowDataImage: allowBase64, preserveEmpty: true })
+    ? sanitizeHtml(content, {
+        allowDataImage: allowBase64,
+        preserveEmpty: true,
+      })
     : content;
 
   const extensions = useMemo(() => {

@@ -14,11 +14,7 @@ import type {
   Province,
   Ward,
 } from "./types";
-import {
-  decodeWardId,
-  displayName,
-  encodeWardId,
-} from "./types";
+import { decodeWardId, displayName, encodeWardId } from "./types";
 
 export {
   GEO_META,

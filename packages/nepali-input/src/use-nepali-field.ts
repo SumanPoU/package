@@ -1,7 +1,6 @@
 import * as React from "react";
-
-import { mapCaretIndex, toNepali } from "./to-nepali";
 import type { NepaliInputMode } from "./mappings";
+import { mapCaretIndex, toNepali } from "./to-nepali";
 
 type TextLike = HTMLInputElement | HTMLTextAreaElement;
 
@@ -71,8 +70,8 @@ export function createNepaliChangeHandler<T extends TextLike>(
  */
 export function useNepaliCaretRestore<T extends TextLike>(
   ref: React.RefObject<T | null>,
-  value: string | number | readonly string[] | undefined,
-  mode: NepaliInputMode,
+  _value: string | number | readonly string[] | undefined,
+  _mode: NepaliInputMode,
   enabled: boolean,
 ) {
   const caretRef = React.useRef<CaretPos | null>(null);
@@ -92,16 +91,13 @@ export function useNepaliCaretRestore<T extends TextLike>(
     const caret = caretRef.current;
     if (!el || !caret) return;
     try {
-      if (
-        el.selectionStart !== caret.start ||
-        el.selectionEnd !== caret.end
-      ) {
+      if (el.selectionStart !== caret.start || el.selectionEnd !== caret.end) {
         el.setSelectionRange(caret.start, caret.end);
       }
     } catch {
       /* ignore */
     }
-  }, [value, mode, enabled, ref]);
+  }, [enabled, ref]);
 
   return { caretRef, captureCaret };
 }

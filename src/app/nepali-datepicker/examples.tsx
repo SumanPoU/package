@@ -1,23 +1,23 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import {
+  addBsDays,
+  adToBs,
+  type BsDateRange,
+  bsToAd,
   EditableNepaliDatePicker,
+  formatBsLabel,
+  isCompleteBsDate,
   NepaliDatePicker,
   NepaliDateRangePicker,
   NepaliDateTimePicker,
-  addBsDays,
-  adToBs,
-  bsToAd,
-  formatBsLabel,
-  isCompleteBsDate,
   parseDateString,
-  todayBs,
-  todayBsDateTime,
   toDateString,
   toDateTimeString,
-  type BsDateRange,
+  todayBs,
+  todayBsDateTime,
 } from "@itzsa/nepali-datepicker";
+import { useMemo, useState } from "react";
 
 function FieldLabel({
   children,
@@ -85,9 +85,7 @@ export function EditableExample() {
 }
 
 export function DateTimeExample() {
-  const [value, setValue] = useState(() =>
-    toDateTimeString(todayBsDateTime()),
-  );
+  const [value, setValue] = useState(() => toDateTimeString(todayBsDateTime()));
 
   return (
     <div className="flex flex-col gap-4 rounded-md border-[0.5px] border-border bg-card p-4">
@@ -108,9 +106,8 @@ export function DateTimeExample() {
         value: <span className="text-primary">{value || "—"}</span>
       </p>
       <p className="text-[12px] text-secondary">
-        Bounds:{" "}
-        <code className="font-mono text-primary">2080-01-01 00:00</code> →{" "}
-        <code className="font-mono text-primary">2090-12-30 23:59</code>
+        Bounds: <code className="font-mono text-primary">2080-01-01 00:00</code>{" "}
+        → <code className="font-mono text-primary">2090-12-30 23:59</code>
       </p>
     </div>
   );
@@ -242,14 +239,8 @@ export function StyledExample() {
 
 export function HelpersExample() {
   const today = useMemo(() => todayBs(), []);
-  const ad = useMemo(
-    () => bsToAd(today.year, today.month, today.day),
-    [today],
-  );
-  const roundTrip = useMemo(
-    () => adToBs(ad.year, ad.month, ad.day),
-    [ad],
-  );
+  const ad = useMemo(() => bsToAd(today.year, today.month, today.day), [today]);
+  const roundTrip = useMemo(() => adToBs(ad.year, ad.month, ad.day), [ad]);
 
   return (
     <div className="flex flex-col gap-3 rounded-md border-[0.5px] border-border bg-card p-4 font-mono text-[13px]">

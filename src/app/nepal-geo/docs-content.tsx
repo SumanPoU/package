@@ -162,8 +162,11 @@ export function DocsContent() {
             <code className="font-mono text-primary">provinceId</code>,{" "}
             <code className="font-mono text-primary">districtId</code>,{" "}
             <code className="font-mono text-primary">localId</code>,{" "}
-            <code className="font-mono text-primary">wardId</code>). Ward ids are{" "}
-            <code className="font-mono text-primary">localId * 1000 + number</code>
+            <code className="font-mono text-primary">wardId</code>). Ward ids
+            are{" "}
+            <code className="font-mono text-primary">
+              localId * 1000 + number
+            </code>
             .
           </Callout>
 

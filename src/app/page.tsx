@@ -198,7 +198,9 @@ export default function Home() {
           </div>
           <div className="flex flex-col gap-2">
             <p className="text-[13px] text-secondary">Editor</p>
-            <InstallCommand packages={["@itzsa/editor", "@itzsa/nepali-input"]} />
+            <InstallCommand
+              packages={["@itzsa/editor", "@itzsa/nepali-input"]}
+            />
           </div>
         </div>
       </section>

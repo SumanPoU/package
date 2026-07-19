@@ -1,12 +1,12 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
 import {
-  RichTextEditor,
   type EditorUploadHandler,
+  RichTextEditor,
   type RichTextEditorHandle,
 } from "@itzsa/editor";
 import type { NepaliInputMode } from "@itzsa/nepali-input";
+import { useCallback, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -18,7 +18,10 @@ const MODES: Array<{ id: NepaliInputMode | false; label: string }> = [
 ];
 
 /** Demo uploader — replace with your CDN/API in production. */
-const demoUpload: EditorUploadHandler = async (file, { signal, onProgress }) => {
+const demoUpload: EditorUploadHandler = async (
+  file,
+  { signal, onProgress },
+) => {
   // Simulate progress while "uploading"
   for (let i = 1; i <= 5; i++) {
     if (signal.aborted) throw new DOMException("Aborted", "AbortError");

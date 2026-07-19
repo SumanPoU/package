@@ -1,465 +1,465 @@
 /** 77 districts of Nepal. */
 export const DISTRICTS = [
   {
-    "id": 1,
-    "provinceId": 4,
-    "nameEn": "Kaski",
-    "nameNe": "कास्की"
+    id: 1,
+    provinceId: 4,
+    nameEn: "Kaski",
+    nameNe: "कास्की",
   },
   {
-    "id": 2,
-    "provinceId": 3,
-    "nameEn": "Chitwan",
-    "nameNe": "चितवन"
+    id: 2,
+    provinceId: 3,
+    nameEn: "Chitwan",
+    nameNe: "चितवन",
   },
   {
-    "id": 3,
-    "provinceId": 2,
-    "nameEn": "Parsa",
-    "nameNe": "पर्सा"
+    id: 3,
+    provinceId: 2,
+    nameEn: "Parsa",
+    nameNe: "पर्सा",
   },
   {
-    "id": 4,
-    "provinceId": 1,
-    "nameEn": "Morang",
-    "nameNe": "मोरङ"
+    id: 4,
+    provinceId: 1,
+    nameEn: "Morang",
+    nameNe: "मोरङ",
   },
   {
-    "id": 5,
-    "provinceId": 3,
-    "nameEn": "Kathmandu",
-    "nameNe": "काठमाडौं"
+    id: 5,
+    provinceId: 3,
+    nameEn: "Kathmandu",
+    nameNe: "काठमाडौं",
   },
   {
-    "id": 6,
-    "provinceId": 3,
-    "nameEn": "Lalitpur",
-    "nameNe": "ललितपुर"
+    id: 6,
+    provinceId: 3,
+    nameEn: "Lalitpur",
+    nameNe: "ललितपुर",
   },
   {
-    "id": 7,
-    "provinceId": 5,
-    "nameEn": "Dang",
-    "nameNe": "दाङ"
+    id: 7,
+    provinceId: 5,
+    nameEn: "Dang",
+    nameNe: "दाङ",
   },
   {
-    "id": 8,
-    "provinceId": 2,
-    "nameEn": "Bara",
-    "nameNe": "बारा"
+    id: 8,
+    provinceId: 2,
+    nameEn: "Bara",
+    nameNe: "बारा",
   },
   {
-    "id": 9,
-    "provinceId": 7,
-    "nameEn": "Kailali",
-    "nameNe": "कैलाली"
+    id: 9,
+    provinceId: 7,
+    nameEn: "Kailali",
+    nameNe: "कैलाली",
   },
   {
-    "id": 10,
-    "provinceId": 3,
-    "nameEn": "Makwanpur",
-    "nameNe": "मकवानपुर"
+    id: 10,
+    provinceId: 3,
+    nameEn: "Makwanpur",
+    nameNe: "मकवानपुर",
   },
   {
-    "id": 11,
-    "provinceId": 1,
-    "nameEn": "Sunsari",
-    "nameNe": "सुनसरी"
+    id: 11,
+    provinceId: 1,
+    nameEn: "Sunsari",
+    nameNe: "सुनसरी",
   },
   {
-    "id": 12,
-    "provinceId": 5,
-    "nameEn": "Rupandehi",
-    "nameNe": "रुपन्देही"
+    id: 12,
+    provinceId: 5,
+    nameEn: "Rupandehi",
+    nameNe: "रुपन्देही",
   },
   {
-    "id": 13,
-    "provinceId": 6,
-    "nameEn": "Humla",
-    "nameNe": "हुम्ला"
+    id: 13,
+    provinceId: 6,
+    nameEn: "Humla",
+    nameNe: "हुम्ला",
   },
   {
-    "id": 14,
-    "provinceId": 5,
-    "nameEn": "Banke",
-    "nameNe": "बाँके"
+    id: 14,
+    provinceId: 5,
+    nameEn: "Banke",
+    nameNe: "बाँके",
   },
   {
-    "id": 15,
-    "provinceId": 1,
-    "nameEn": "Taplejung",
-    "nameNe": "ताप्लेजुङ"
+    id: 15,
+    provinceId: 1,
+    nameEn: "Taplejung",
+    nameNe: "ताप्लेजुङ",
   },
   {
-    "id": 16,
-    "provinceId": 1,
-    "nameEn": "Sankhuwasabha",
-    "nameNe": "संखुवासभा"
+    id: 16,
+    provinceId: 1,
+    nameEn: "Sankhuwasabha",
+    nameNe: "संखुवासभा",
   },
   {
-    "id": 17,
-    "provinceId": 1,
-    "nameEn": "Solukhumbu",
-    "nameNe": "सोलुखुम्बु"
+    id: 17,
+    provinceId: 1,
+    nameEn: "Solukhumbu",
+    nameNe: "सोलुखुम्बु",
   },
   {
-    "id": 18,
-    "provinceId": 1,
-    "nameEn": "Okhaldhunga",
-    "nameNe": "ओखलढुङ्गा"
+    id: 18,
+    provinceId: 1,
+    nameEn: "Okhaldhunga",
+    nameNe: "ओखलढुङ्गा",
   },
   {
-    "id": 19,
-    "provinceId": 1,
-    "nameEn": "Khotang",
-    "nameNe": "खोटाङ"
+    id: 19,
+    provinceId: 1,
+    nameEn: "Khotang",
+    nameNe: "खोटाङ",
   },
   {
-    "id": 20,
-    "provinceId": 1,
-    "nameEn": "Bhojpur",
-    "nameNe": "भोजपुर"
+    id: 20,
+    provinceId: 1,
+    nameEn: "Bhojpur",
+    nameNe: "भोजपुर",
   },
   {
-    "id": 21,
-    "provinceId": 1,
-    "nameEn": "Dhankuta",
-    "nameNe": "धनकुटा"
+    id: 21,
+    provinceId: 1,
+    nameEn: "Dhankuta",
+    nameNe: "धनकुटा",
   },
   {
-    "id": 22,
-    "provinceId": 1,
-    "nameEn": "Terhathum",
-    "nameNe": "तेह्रथुम"
+    id: 22,
+    provinceId: 1,
+    nameEn: "Terhathum",
+    nameNe: "तेह्रथुम",
   },
   {
-    "id": 23,
-    "provinceId": 1,
-    "nameEn": "Pachthar",
-    "nameNe": "पाँचथर"
+    id: 23,
+    provinceId: 1,
+    nameEn: "Pachthar",
+    nameNe: "पाँचथर",
   },
   {
-    "id": 24,
-    "provinceId": 1,
-    "nameEn": "Ilam",
-    "nameNe": "इलाम"
+    id: 24,
+    provinceId: 1,
+    nameEn: "Ilam",
+    nameNe: "इलाम",
   },
   {
-    "id": 25,
-    "provinceId": 1,
-    "nameEn": "Jhapa",
-    "nameNe": "झापा"
+    id: 25,
+    provinceId: 1,
+    nameEn: "Jhapa",
+    nameNe: "झापा",
   },
   {
-    "id": 26,
-    "provinceId": 1,
-    "nameEn": "Udayapur",
-    "nameNe": "उदयपुर"
+    id: 26,
+    provinceId: 1,
+    nameEn: "Udayapur",
+    nameNe: "उदयपुर",
   },
   {
-    "id": 27,
-    "provinceId": 2,
-    "nameEn": "Saptari",
-    "nameNe": "सप्तरी"
+    id: 27,
+    provinceId: 2,
+    nameEn: "Saptari",
+    nameNe: "सप्तरी",
   },
   {
-    "id": 28,
-    "provinceId": 2,
-    "nameEn": "Siraha",
-    "nameNe": "सिराहा"
+    id: 28,
+    provinceId: 2,
+    nameEn: "Siraha",
+    nameNe: "सिराहा",
   },
   {
-    "id": 29,
-    "provinceId": 2,
-    "nameEn": "Dhanusha",
-    "nameNe": "धनुषा"
+    id: 29,
+    provinceId: 2,
+    nameEn: "Dhanusha",
+    nameNe: "धनुषा",
   },
   {
-    "id": 30,
-    "provinceId": 2,
-    "nameEn": "Mahottari",
-    "nameNe": "महोत्तरी"
+    id: 30,
+    provinceId: 2,
+    nameEn: "Mahottari",
+    nameNe: "महोत्तरी",
   },
   {
-    "id": 31,
-    "provinceId": 2,
-    "nameEn": "Sarlahi",
-    "nameNe": "सर्लाही"
+    id: 31,
+    provinceId: 2,
+    nameEn: "Sarlahi",
+    nameNe: "सर्लाही",
   },
   {
-    "id": 32,
-    "provinceId": 2,
-    "nameEn": "Rautahat",
-    "nameNe": "रौतहट"
+    id: 32,
+    provinceId: 2,
+    nameEn: "Rautahat",
+    nameNe: "रौतहट",
   },
   {
-    "id": 33,
-    "provinceId": 3,
-    "nameEn": "Dolakha",
-    "nameNe": "दोलखा"
+    id: 33,
+    provinceId: 3,
+    nameEn: "Dolakha",
+    nameNe: "दोलखा",
   },
   {
-    "id": 34,
-    "provinceId": 3,
-    "nameEn": "Sindhupalchok",
-    "nameNe": "सिन्धुपाल्चोक"
+    id: 34,
+    provinceId: 3,
+    nameEn: "Sindhupalchok",
+    nameNe: "सिन्धुपाल्चोक",
   },
   {
-    "id": 35,
-    "provinceId": 3,
-    "nameEn": "Dhading",
-    "nameNe": "धादिङ"
+    id: 35,
+    provinceId: 3,
+    nameEn: "Dhading",
+    nameNe: "धादिङ",
   },
   {
-    "id": 36,
-    "provinceId": 3,
-    "nameEn": "Nuwakot",
-    "nameNe": "नुवाकोट"
+    id: 36,
+    provinceId: 3,
+    nameEn: "Nuwakot",
+    nameNe: "नुवाकोट",
   },
   {
-    "id": 37,
-    "provinceId": 3,
-    "nameEn": "Bhaktapur",
-    "nameNe": "भक्तपुर"
+    id: 37,
+    provinceId: 3,
+    nameEn: "Bhaktapur",
+    nameNe: "भक्तपुर",
   },
   {
-    "id": 38,
-    "provinceId": 3,
-    "nameEn": "Kavrepalanchok",
-    "nameNe": "काभ्रेपलाञ्चोक"
+    id: 38,
+    provinceId: 3,
+    nameEn: "Kavrepalanchok",
+    nameNe: "काभ्रेपलाञ्चोक",
   },
   {
-    "id": 39,
-    "provinceId": 3,
-    "nameEn": "Ramechhap",
-    "nameNe": "रामेछाप"
+    id: 39,
+    provinceId: 3,
+    nameEn: "Ramechhap",
+    nameNe: "रामेछाप",
   },
   {
-    "id": 40,
-    "provinceId": 3,
-    "nameEn": "Sindhuli",
-    "nameNe": "सिन्धुली"
+    id: 40,
+    provinceId: 3,
+    nameEn: "Sindhuli",
+    nameNe: "सिन्धुली",
   },
   {
-    "id": 41,
-    "provinceId": 4,
-    "nameEn": "Gorkha",
-    "nameNe": "गोरखा"
+    id: 41,
+    provinceId: 4,
+    nameEn: "Gorkha",
+    nameNe: "गोरखा",
   },
   {
-    "id": 42,
-    "provinceId": 4,
-    "nameEn": "Myagdi",
-    "nameNe": "म्याग्दी"
+    id: 42,
+    provinceId: 4,
+    nameEn: "Myagdi",
+    nameNe: "म्याग्दी",
   },
   {
-    "id": 43,
-    "provinceId": 4,
-    "nameEn": "Lamjung",
-    "nameNe": "लमजुङ"
+    id: 43,
+    provinceId: 4,
+    nameEn: "Lamjung",
+    nameNe: "लमजुङ",
   },
   {
-    "id": 44,
-    "provinceId": 4,
-    "nameEn": "Tanahu",
-    "nameNe": "तनहुँ"
+    id: 44,
+    provinceId: 4,
+    nameEn: "Tanahu",
+    nameNe: "तनहुँ",
   },
   {
-    "id": 45,
-    "provinceId": 4,
-    "nameEn": "Nawalparari East",
-    "nameNe": "नवलपरासी पूर्व"
+    id: 45,
+    provinceId: 4,
+    nameEn: "Nawalparari East",
+    nameNe: "नवलपरासी पूर्व",
   },
   {
-    "id": 46,
-    "provinceId": 4,
-    "nameEn": "Syangja",
-    "nameNe": "स्याङ्जा"
+    id: 46,
+    provinceId: 4,
+    nameEn: "Syangja",
+    nameNe: "स्याङ्जा",
   },
   {
-    "id": 47,
-    "provinceId": 4,
-    "nameEn": "Parbat",
-    "nameNe": "पर्वत"
+    id: 47,
+    provinceId: 4,
+    nameEn: "Parbat",
+    nameNe: "पर्वत",
   },
   {
-    "id": 48,
-    "provinceId": 4,
-    "nameEn": "Baglung",
-    "nameNe": "बागलुङ"
+    id: 48,
+    provinceId: 4,
+    nameEn: "Baglung",
+    nameNe: "बागलुङ",
   },
   {
-    "id": 49,
-    "provinceId": 5,
-    "nameEn": "Rolpa",
-    "nameNe": "रोल्पा"
+    id: 49,
+    provinceId: 5,
+    nameEn: "Rolpa",
+    nameNe: "रोल्पा",
   },
   {
-    "id": 50,
-    "provinceId": 5,
-    "nameEn": "Pyuthan",
-    "nameNe": "प्युठान"
+    id: 50,
+    provinceId: 5,
+    nameEn: "Pyuthan",
+    nameNe: "प्युठान",
   },
   {
-    "id": 51,
-    "provinceId": 5,
-    "nameEn": "Gulmi",
-    "nameNe": "गुल्मी"
+    id: 51,
+    provinceId: 5,
+    nameEn: "Gulmi",
+    nameNe: "गुल्मी",
   },
   {
-    "id": 52,
-    "provinceId": 5,
-    "nameEn": "Arghakhanchi",
-    "nameNe": "अर्घाखाँची"
+    id: 52,
+    provinceId: 5,
+    nameEn: "Arghakhanchi",
+    nameNe: "अर्घाखाँची",
   },
   {
-    "id": 53,
-    "provinceId": 5,
-    "nameEn": "Palpa",
-    "nameNe": "पाल्पा"
+    id: 53,
+    provinceId: 5,
+    nameEn: "Palpa",
+    nameNe: "पाल्पा",
   },
   {
-    "id": 54,
-    "provinceId": 5,
-    "nameEn": "Nawalparasi West",
-    "nameNe": "नवलपरासी पश्चिम"
+    id: 54,
+    provinceId: 5,
+    nameEn: "Nawalparasi West",
+    nameNe: "नवलपरासी पश्चिम",
   },
   {
-    "id": 55,
-    "provinceId": 5,
-    "nameEn": "Kapilbastu",
-    "nameNe": "कपिलवस्तु"
+    id: 55,
+    provinceId: 5,
+    nameEn: "Kapilbastu",
+    nameNe: "कपिलवस्तु",
   },
   {
-    "id": 56,
-    "provinceId": 5,
-    "nameEn": "Bardiya",
-    "nameNe": "बर्दिया"
+    id: 56,
+    provinceId: 5,
+    nameEn: "Bardiya",
+    nameNe: "बर्दिया",
   },
   {
-    "id": 57,
-    "provinceId": 6,
-    "nameEn": "Dolpa",
-    "nameNe": "डोल्पा"
+    id: 57,
+    provinceId: 6,
+    nameEn: "Dolpa",
+    nameNe: "डोल्पा",
   },
   {
-    "id": 58,
-    "provinceId": 6,
-    "nameEn": "Mugu",
-    "nameNe": "मुगु"
+    id: 58,
+    provinceId: 6,
+    nameEn: "Mugu",
+    nameNe: "मुगु",
   },
   {
-    "id": 59,
-    "provinceId": 6,
-    "nameEn": "Jumla",
-    "nameNe": "जुम्ला"
+    id: 59,
+    provinceId: 6,
+    nameEn: "Jumla",
+    nameNe: "जुम्ला",
   },
   {
-    "id": 60,
-    "provinceId": 6,
-    "nameEn": "Kalikot",
-    "nameNe": "कालिकोट"
+    id: 60,
+    provinceId: 6,
+    nameEn: "Kalikot",
+    nameNe: "कालिकोट",
   },
   {
-    "id": 61,
-    "provinceId": 6,
-    "nameEn": "Dailekh",
-    "nameNe": "दैलेख"
+    id: 61,
+    provinceId: 6,
+    nameEn: "Dailekh",
+    nameNe: "दैलेख",
   },
   {
-    "id": 62,
-    "provinceId": 6,
-    "nameEn": "Jajarkot",
-    "nameNe": "जाजरकोट"
+    id: 62,
+    provinceId: 6,
+    nameEn: "Jajarkot",
+    nameNe: "जाजरकोट",
   },
   {
-    "id": 63,
-    "provinceId": 6,
-    "nameEn": "Rukum West",
-    "nameNe": "रुकुम पश्चिम"
+    id: 63,
+    provinceId: 6,
+    nameEn: "Rukum West",
+    nameNe: "रुकुम पश्चिम",
   },
   {
-    "id": 64,
-    "provinceId": 6,
-    "nameEn": "Salyan",
-    "nameNe": "सल्यान"
+    id: 64,
+    provinceId: 6,
+    nameEn: "Salyan",
+    nameNe: "सल्यान",
   },
   {
-    "id": 65,
-    "provinceId": 6,
-    "nameEn": "Surkhet",
-    "nameNe": "सुर्खेत"
+    id: 65,
+    provinceId: 6,
+    nameEn: "Surkhet",
+    nameNe: "सुर्खेत",
   },
   {
-    "id": 66,
-    "provinceId": 7,
-    "nameEn": "Bajura",
-    "nameNe": "बाजुरा"
+    id: 66,
+    provinceId: 7,
+    nameEn: "Bajura",
+    nameNe: "बाजुरा",
   },
   {
-    "id": 67,
-    "provinceId": 7,
-    "nameEn": "Bajhang",
-    "nameNe": "बझाङ"
+    id: 67,
+    provinceId: 7,
+    nameEn: "Bajhang",
+    nameNe: "बझाङ",
   },
   {
-    "id": 68,
-    "provinceId": 7,
-    "nameEn": "Darchula",
-    "nameNe": "दार्चुला"
+    id: 68,
+    provinceId: 7,
+    nameEn: "Darchula",
+    nameNe: "दार्चुला",
   },
   {
-    "id": 69,
-    "provinceId": 7,
-    "nameEn": "Baitadi",
-    "nameNe": "बैतडी"
+    id: 69,
+    provinceId: 7,
+    nameEn: "Baitadi",
+    nameNe: "बैतडी",
   },
   {
-    "id": 70,
-    "provinceId": 7,
-    "nameEn": "Dadeldhura",
-    "nameNe": "डडेलधुरा"
+    id: 70,
+    provinceId: 7,
+    nameEn: "Dadeldhura",
+    nameNe: "डडेलधुरा",
   },
   {
-    "id": 71,
-    "provinceId": 7,
-    "nameEn": "Doti",
-    "nameNe": "डोटी"
+    id: 71,
+    provinceId: 7,
+    nameEn: "Doti",
+    nameNe: "डोटी",
   },
   {
-    "id": 72,
-    "provinceId": 7,
-    "nameEn": "Achham",
-    "nameNe": "अछाम"
+    id: 72,
+    provinceId: 7,
+    nameEn: "Achham",
+    nameNe: "अछाम",
   },
   {
-    "id": 73,
-    "provinceId": 7,
-    "nameEn": "Kanchanpur",
-    "nameNe": "कञ्चनपुर"
+    id: 73,
+    provinceId: 7,
+    nameEn: "Kanchanpur",
+    nameNe: "कञ्चनपुर",
   },
   {
-    "id": 74,
-    "provinceId": 3,
-    "nameEn": "Rasuwa",
-    "nameNe": "रसुवा"
+    id: 74,
+    provinceId: 3,
+    nameEn: "Rasuwa",
+    nameNe: "रसुवा",
   },
   {
-    "id": 75,
-    "provinceId": 4,
-    "nameEn": "Manang",
-    "nameNe": "मनाङ"
+    id: 75,
+    provinceId: 4,
+    nameEn: "Manang",
+    nameNe: "मनाङ",
   },
   {
-    "id": 76,
-    "provinceId": 4,
-    "nameEn": "Mustang",
-    "nameNe": "मुस्ताङ"
+    id: 76,
+    provinceId: 4,
+    nameEn: "Mustang",
+    nameNe: "मुस्ताङ",
   },
   {
-    "id": 77,
-    "provinceId": 5,
-    "nameEn": "Rukum East",
-    "nameNe": "रुकुम पूर्व"
-  }
+    id: 77,
+    provinceId: 5,
+    nameEn: "Rukum East",
+    nameNe: "रुकुम पूर्व",
+  },
 ] as const;

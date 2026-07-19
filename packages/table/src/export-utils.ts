@@ -48,7 +48,9 @@ export function downloadTextFile(
   if (typeof document === "undefined") return;
 
   // Prevent path traversal / odd filenames in download attribute
-  const safeName = filename.replace(/[<>:"/\\|?*\u0000-\u001f]/g, "_").slice(0, 180) || "export.csv";
+  const safeName =
+    filename.replace(/[<>:"/\\|?*\u0000-\u001f]/g, "_").slice(0, 180) ||
+    "export.csv";
 
   const blob = new Blob([content], { type: mimeType });
   const url = URL.createObjectURL(blob);

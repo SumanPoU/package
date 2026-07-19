@@ -1,12 +1,12 @@
-import type { Extensions } from "@tiptap/core";
 import type { NepaliInputMode } from "@itzsa/nepali-input";
+import type { Extensions } from "@tiptap/core";
 
 import type { EditorLocaleText } from "./locale";
 import type { EditorClassNames, EditorToolbarFeatures } from "./types";
 import {
-  resolveMediaSettings,
   type EditorMediaSettings,
   type ResolvedMediaSettings,
+  resolveMediaSettings,
 } from "./upload";
 
 /**
@@ -83,9 +83,7 @@ export function resolveEditorSettings(
     ...s.media,
     onUpload: s.media?.onUpload ?? flat.onUpload ?? s.onUpload,
     maxImageBytes:
-      s.media?.maxImageBytes ??
-      flat.maxUploadBytes ??
-      s.maxUploadBytes,
+      s.media?.maxImageBytes ?? flat.maxUploadBytes ?? s.maxUploadBytes,
     maxVideoBytes: s.media?.maxVideoBytes,
   });
 

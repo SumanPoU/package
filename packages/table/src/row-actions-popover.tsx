@@ -1,27 +1,24 @@
 "use client";
 
-import * as React from "react";
 import {
-  FloatingPortal,
   autoUpdate,
+  FloatingPortal,
   flip,
   offset,
+  type Placement,
   shift,
   useClick,
   useDismiss,
   useFloating,
   useInteractions,
   useRole,
-  type Placement,
 } from "@floating-ui/react";
 import { MoreHorizontalIcon } from "lucide-react";
+import * as React from "react";
 
 import { Button } from "./components/ui/button";
 import { cn } from "./lib/utils";
-import {
-  isRowActionDisabled,
-  type DataTableRowAction,
-} from "./types";
+import { type DataTableRowAction, isRowActionDisabled } from "./types";
 
 export type RowActionsPopoverProps<T = unknown> = {
   /** Declarative actions for this row. */
@@ -106,7 +103,7 @@ export function RowActionsPopover<T>({
             })}
           >
             {hasActions && row !== undefined
-              ? actions!.map((action, index) => {
+              ? actions?.map((action, index) => {
                   const disabled = isRowActionDisabled(action, row);
                   return (
                     <button

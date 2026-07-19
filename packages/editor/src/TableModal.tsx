@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, type FC } from "react";
-import { X, Table } from "lucide-react";
+import { Table, X } from "lucide-react";
+import { type FC, useEffect, useRef, useState } from "react";
 
 import type { EditorLocaleText } from "./locale";
 
@@ -112,7 +112,12 @@ export const TableModal: FC<TableModalProps> = ({
                 max={20}
                 value={rows}
                 onChange={(e) =>
-                  setRows(Math.max(1, Math.min(20, parseInt(e.target.value, 10) || 1)))
+                  setRows(
+                    Math.max(
+                      1,
+                      Math.min(20, parseInt(e.target.value, 10) || 1),
+                    ),
+                  )
                 }
                 className="h-9 w-full rounded-lg border border-[var(--editor-border)] bg-[var(--editor-surface)] px-3 text-sm outline-none focus:border-[var(--editor-accent)]"
               />
@@ -127,7 +132,12 @@ export const TableModal: FC<TableModalProps> = ({
                 max={20}
                 value={cols}
                 onChange={(e) =>
-                  setCols(Math.max(1, Math.min(20, parseInt(e.target.value, 10) || 1)))
+                  setCols(
+                    Math.max(
+                      1,
+                      Math.min(20, parseInt(e.target.value, 10) || 1),
+                    ),
+                  )
                 }
                 className="h-9 w-full rounded-lg border border-[var(--editor-border)] bg-[var(--editor-surface)] px-3 text-sm outline-none focus:border-[var(--editor-accent)]"
               />

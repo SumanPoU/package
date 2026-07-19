@@ -3,16 +3,8 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 
-import {
-  createIsDisabledDay,
-  SingleCalendarPanel,
-} from "./calendar-panel";
-import {
-  BS_MAX_YEAR,
-  BS_MIN_YEAR,
-  clampBsDate,
-  todayBs,
-} from "./convert";
+import { createIsDisabledDay, SingleCalendarPanel } from "./calendar-panel";
+import { BS_MAX_YEAR, BS_MIN_YEAR, clampBsDate, todayBs } from "./convert";
 import { formatBsLabel, parseDateString, toDateString } from "./format";
 import { cn } from "./lib/utils";
 import {
@@ -159,7 +151,7 @@ export const NepaliDatePicker = React.forwardRef<
     if (!open) return;
     const next = selected ?? (todayIfEmpty ? today : initialView);
     setView({ year: next.year, month: next.month });
-  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [open, initialView, selected, today, todayIfEmpty]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const close = React.useCallback(() => setOpen(false), []);
   useDismissOnOutside(open, close, [rootRef, popoverRef]);

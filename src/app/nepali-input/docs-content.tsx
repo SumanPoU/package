@@ -1,10 +1,7 @@
 "use client";
 
-import {
-  HELPER_API,
-  INPUT_PROPS,
-  TEXTAREA_PROPS,
-} from "./api-reference";
+import { InstallCommand } from "@/components/install-command";
+import { HELPER_API, INPUT_PROPS, TEXTAREA_PROPS } from "./api-reference";
 import {
   Callout,
   CodeBlock,
@@ -19,7 +16,6 @@ import {
   UnicodeExample,
 } from "./examples";
 import { DOC_NAV } from "./nav";
-import { InstallCommand } from "@/components/install-command";
 
 const CSS = `@import "tailwindcss";
 @source "../node_modules/@itzsa/nepali-input";
@@ -71,7 +67,8 @@ export function DocsContent() {
           <p className="max-w-2xl text-base leading-relaxed text-secondary">
             React Input and Textarea that transliterate Latin keystrokes to
             Nepali Devanagari using Unicode or Preeti layouts. Drop-in fields
-            with stable caret, controlled/uncontrolled support, and pure helpers.
+            with stable caret, controlled/uncontrolled support, and pure
+            helpers.
           </p>
           <div className="flex flex-wrap gap-2 pt-1 text-xs text-secondary">
             <span className="pkg rounded-md border-[0.5px] border-border bg-card px-2 py-1 text-[12px]">
@@ -108,7 +105,8 @@ export function DocsContent() {
           <CodeBlock language="css" code={CSS} />
           <Callout title="Peers">
             Peer deps: <code className="font-mono text-primary">react</code> and{" "}
-            <code className="font-mono text-primary">react-dom</code> ^18 or ^19.
+            <code className="font-mono text-primary">react-dom</code> ^18 or
+            ^19.
           </Callout>
         </DocSection>
 
@@ -217,16 +215,16 @@ toNepali("s", "preeti"); // → क`}
 />`}
           />
           <Callout title="Font">
-            Import{" "}
-            <code className="font-mono text-accent">styles.css</code> and set{" "}
+            Import <code className="font-mono text-accent">styles.css</code> and
+            set{" "}
             <code className="font-mono text-accent">--itzsa-nepali-font</code>,
             or load Noto Sans Devanagari via{" "}
             <code className="font-mono text-primary">next/font/google</code>.
             Without a Devanagari font, some conjuncts may render poorly.
           </Callout>
           <Callout title="Caret & robustness">
-            Multi-glyph Preeti keys keep the caret stable. Existing Devanagari is
-            never re-mapped. Paste goes through the same path. Use{" "}
+            Multi-glyph Preeti keys keep the caret stable. Existing Devanagari
+            is never re-mapped. Paste goes through the same path. Use{" "}
             <code className="font-mono text-accent">enabled={"{false}"}</code>{" "}
             for temporary Latin-only entry.
           </Callout>

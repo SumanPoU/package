@@ -3,16 +3,8 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 
-import {
-  createIsDisabledDay,
-  SingleCalendarPanel,
-} from "./calendar-panel";
-import {
-  BS_MAX_YEAR,
-  BS_MIN_YEAR,
-  todayBs,
-  todayBsDateTime,
-} from "./convert";
+import { createIsDisabledDay, SingleCalendarPanel } from "./calendar-panel";
+import { BS_MAX_YEAR, BS_MIN_YEAR, todayBs, todayBsDateTime } from "./convert";
 import {
   clampDateTime,
   compareDateTimeParts,
@@ -107,7 +99,7 @@ function TimeColumn({
     if (!root) return;
     const el = root.querySelector<HTMLElement>("[data-selected]");
     el?.scrollIntoView({ block: "center" });
-  }, [selected]);
+  }, []);
 
   return (
     <div className="itzsa-ndp-time-col">
@@ -207,7 +199,8 @@ export const NepaliDateTimePicker = React.forwardRef<
   const [open, setOpen] = React.useState(false);
   const [draft, setDraft] = React.useState<DateTimeParts>(() =>
     clampDateTime(
-      selected ?? (todayIfEmpty ? nowDt : { ...nowDt, hour: 0, minute: 0, second: 0 }),
+      selected ??
+        (todayIfEmpty ? nowDt : { ...nowDt, hour: 0, minute: 0, second: 0 }),
       minBound,
       maxBound,
     ),
@@ -249,7 +242,16 @@ export const NepaliDateTimePicker = React.forwardRef<
     );
     setDraft(next);
     setView({ year: next.year, month: next.month });
-  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [
+    open,
+    maxBound,
+    minBound,
+    minuteStep,
+    nowDt,
+    selected,
+    todayIfEmpty,
+    withSeconds,
+  ]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const close = React.useCallback(() => setOpen(false), []);
   useDismissOnOutside(open, close, [rootRef, popoverRef]);
@@ -263,7 +265,15 @@ export const NepaliDateTimePicker = React.forwardRef<
       onSelect?.(str);
       if (closeOnSelect) setOpen(false);
     },
-    [minBound, maxBound, withSeconds, isControlled, onChange, onSelect, closeOnSelect],
+    [
+      minBound,
+      maxBound,
+      withSeconds,
+      isControlled,
+      onChange,
+      onSelect,
+      closeOnSelect,
+    ],
   );
 
   const minParts = minBound ? dateTimeToDateParts(minBound) : null;
@@ -385,9 +395,7 @@ export const NepaliDateTimePicker = React.forwardRef<
                     selected={draft.hour}
                     locale={locale}
                     disabledValues={disabledHours}
-                    onPick={(hour) =>
-                      setDraftClamped({ ...draft, hour })
-                    }
+                    onPick={(hour) => setDraftClamped({ ...draft, hour })}
                   />
                   <TimeColumn
                     label={locale === "ne" ? "मिनेट" : "Min"}
@@ -395,9 +403,7 @@ export const NepaliDateTimePicker = React.forwardRef<
                     selected={snapMinute(draft.minute, minuteStep)}
                     locale={locale}
                     disabledValues={disabledMinutes}
-                    onPick={(minute) =>
-                      setDraftClamped({ ...draft, minute })
-                    }
+                    onPick={(minute) => setDraftClamped({ ...draft, minute })}
                   />
                   {withSeconds ? (
                     <TimeColumn
@@ -405,9 +411,7 @@ export const NepaliDateTimePicker = React.forwardRef<
                       values={seconds}
                       selected={draft.second ?? 0}
                       locale={locale}
-                      onPick={(second) =>
-                        setDraftClamped({ ...draft, second })
-                      }
+                      onPick={(second) => setDraftClamped({ ...draft, second })}
                     />
                   ) : null}
                 </div>
@@ -466,7 +470,11 @@ export const NepaliDateTimePicker = React.forwardRef<
   return (
     <div
       ref={rootRef}
-      className={cn("itzsa-ndp itzsa-ndp-datetime", className, classNames?.root)}
+      className={cn(
+        "itzsa-ndp itzsa-ndp-datetime",
+        className,
+        classNames?.root,
+      )}
       style={rootStyle}
       data-locale={locale}
       data-disabled={disabled ? "" : undefined}

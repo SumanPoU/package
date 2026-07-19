@@ -56,7 +56,10 @@ export function dateTimeToDateParts(dt: DateTimeParts): DateParts {
   return { year: dt.year, month: dt.month, day: dt.day };
 }
 
-export function compareDateTimeParts(a: DateTimeParts, b: DateTimeParts): number {
+export function compareDateTimeParts(
+  a: DateTimeParts,
+  b: DateTimeParts,
+): number {
   if (a.year !== b.year) return a.year < b.year ? -1 : 1;
   if (a.month !== b.month) return a.month < b.month ? -1 : 1;
   if (a.day !== b.day) return a.day < b.day ? -1 : 1;

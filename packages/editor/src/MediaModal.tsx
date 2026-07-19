@@ -1,23 +1,22 @@
+import { ImageIcon, Upload, Video, X } from "lucide-react";
 import {
-  useState,
-  useRef,
-  useEffect,
-  useMemo,
   type FC,
   type FormEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from "react";
-import { ImageIcon, Video, X, Upload } from "lucide-react";
-
-import { sanitizeUrl } from "./security";
+import { cn } from "./lib/utils";
 import type { EditorLocaleText } from "./locale";
+import { sanitizeUrl } from "./security";
 import {
   acceptAttr,
-  formatBytes,
-  validateUploadFile,
   type EditorMediaKind,
+  formatBytes,
   type ResolvedMediaSettings,
+  validateUploadFile,
 } from "./upload";
-import { cn } from "./lib/utils";
 
 interface MediaModalProps {
   type: EditorMediaKind;
@@ -171,7 +170,11 @@ export const MediaModal: FC<MediaModalProps> = ({
         <div className="flex shrink-0 items-center justify-between gap-3 border-b border-[var(--editor-border)] px-5 py-3.5">
           <div className="flex min-w-0 items-center gap-2.5">
             <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[var(--editor-surface)] text-[var(--editor-muted)]">
-              {isImage ? <ImageIcon size={15} strokeWidth={1.75} /> : <Video size={15} strokeWidth={1.75} />}
+              {isImage ? (
+                <ImageIcon size={15} strokeWidth={1.75} />
+              ) : (
+                <Video size={15} strokeWidth={1.75} />
+              )}
             </div>
             <h2
               id="itzsa-media-modal-title"
@@ -190,10 +193,7 @@ export const MediaModal: FC<MediaModalProps> = ({
           </button>
         </div>
 
-        <form
-          onSubmit={handleInsert}
-          className="flex min-h-0 flex-1 flex-col"
-        >
+        <form onSubmit={handleInsert} className="flex min-h-0 flex-1 flex-col">
           <div className="space-y-4 overflow-y-auto px-5 py-4">
             {media.allowUrlInsert && (
               <>

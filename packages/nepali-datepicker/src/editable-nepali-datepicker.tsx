@@ -3,21 +3,9 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 
-import {
-  createIsDisabledDay,
-  SingleCalendarPanel,
-} from "./calendar-panel";
-import {
-  BS_MAX_YEAR,
-  BS_MIN_YEAR,
-  clampBsDate,
-  todayBs,
-} from "./convert";
-import {
-  formatTypedBsDate,
-  parseDateString,
-  toDateString,
-} from "./format";
+import { createIsDisabledDay, SingleCalendarPanel } from "./calendar-panel";
+import { BS_MAX_YEAR, BS_MIN_YEAR, clampBsDate, todayBs } from "./convert";
+import { formatTypedBsDate, parseDateString, toDateString } from "./format";
 import { cn, mergeRefs } from "./lib/utils";
 import {
   CalendarIcon,
@@ -125,10 +113,12 @@ export const EditableNepaliDatePicker = React.forwardRef<
   const today = React.useMemo(() => todayBs(), []);
 
   const [open, setOpen] = React.useState(false);
-  const [view, setView] = React.useState<{ year: number; month: number }>(() => {
-    const t = todayBs();
-    return { year: t.year, month: t.month };
-  });
+  const [view, setView] = React.useState<{ year: number; month: number }>(
+    () => {
+      const t = todayBs();
+      return { year: t.year, month: t.month };
+    },
+  );
 
   const rootRef = React.useRef<HTMLDivElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -153,7 +143,7 @@ export const EditableNepaliDatePicker = React.forwardRef<
     if (!open) return;
     const next = selected ?? clampBsDate(today, minParts, maxParts);
     setView({ year: next.year, month: next.month });
-  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [open, maxParts, minParts, selected, today]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const close = React.useCallback(() => setOpen(false), []);
   useDismissOnOutside(open, close, [rootRef, popoverRef]);

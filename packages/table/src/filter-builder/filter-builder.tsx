@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import {
   CheckIcon,
   PlusIcon,
@@ -8,6 +7,7 @@ import {
   Trash2Icon,
   XIcon,
 } from "lucide-react";
+import * as React from "react";
 
 import { Button } from "../components/ui/button";
 import {
@@ -21,17 +21,16 @@ import { cn } from "../lib/utils";
 import { FilterColumnSelect } from "./column-select";
 import { SmartValueInput } from "./smart-value-input";
 import type {
-  FilterBuilderProps,
   FilterBuilderApplyPayload,
-  FilterBuilderColumn,
+  FilterBuilderProps,
   FilterCondition,
   FilterLogic,
   FilterOperatorValue,
 } from "./types";
 import {
+  conditionsToSearchParams,
   FILTER_OPERATORS,
   FILTER_TYPE_META,
-  conditionsToSearchParams,
   getFilterColumnDef,
   makeFilterCondition,
   valueInputRequired,
@@ -132,7 +131,11 @@ export function FilterBuilder({
   const rows = isControlled ? value! : uncontrolled;
 
   const setRows = React.useCallback(
-    (next: FilterCondition[] | ((prev: FilterCondition[]) => FilterCondition[])) => {
+    (
+      next:
+        | FilterCondition[]
+        | ((prev: FilterCondition[]) => FilterCondition[]),
+    ) => {
       const resolved = typeof next === "function" ? next(rows) : next;
       if (!isControlled) setUncontrolled(resolved);
       onChange?.(resolved);
@@ -166,8 +169,9 @@ export function FilterBuilder({
           className,
         )}
       >
-        No filterable columns. Set <code className="text-foreground">filterable</code>{" "}
-        on a column to enable filters.
+        No filterable columns. Set{" "}
+        <code className="text-foreground">filterable</code> on a column to
+        enable filters.
       </div>
     );
   }
@@ -236,9 +240,7 @@ export function FilterBuilder({
       <div className="flex items-center justify-between gap-2 border-b border-black/[0.05] bg-muted/20 px-3.5 py-2.5 dark:border-white/[0.07]">
         <div className="flex items-center gap-2">
           <SlidersHorizontalIcon className="size-3.5 text-muted-foreground" />
-          <span className="text-xs font-semibold tracking-wide">
-            {title}
-          </span>
+          <span className="text-xs font-semibold tracking-wide">{title}</span>
           <span
             className={cn(
               "bg-muted px-1.5 py-0.5 text-[10px] tabular-nums text-muted-foreground",
@@ -258,11 +260,9 @@ export function FilterBuilder({
           const colDef = getFilterColumnDef(columns, row.column);
           if (!colDef) return null;
           const meta = FILTER_TYPE_META[colDef.type];
-          const isWide =
-            colDef.type === "multi" || colDef.type === "textarea";
+          const isWide = colDef.type === "multi" || colDef.type === "textarea";
           const needsValue = valueInputRequired(colDef.type);
-          const hasError =
-            submitted && needsValue && row.value.trim() === "";
+          const hasError = submitted && needsValue && row.value.trim() === "";
           const isFirst = index === 0;
           const isSingle = rows.length === 1;
 
@@ -323,9 +323,7 @@ export function FilterBuilder({
                     ) : null}
                     <OperatorSelect
                       value={row.operator}
-                      onChange={(next) =>
-                        updateRow(row.id, { operator: next })
-                      }
+                      onChange={(next) => updateRow(row.id, { operator: next })}
                       radiusClass={radiusClass}
                     />
                   </div>
@@ -420,7 +418,10 @@ export function FilterBuilder({
             size="xs"
             variant="ghost"
             onClick={clear}
-            className={cn("h-8 gap-1.5 px-2.5 text-xs text-muted-foreground", radiusClass)}
+            className={cn(
+              "h-8 gap-1.5 px-2.5 text-xs text-muted-foreground",
+              radiusClass,
+            )}
           >
             <Trash2Icon className="size-3.5" />
             Clear

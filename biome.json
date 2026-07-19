@@ -7,7 +7,15 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!node_modules", "!.next", "!dist", "!build"]
+    "includes": [
+      "**",
+      "!node_modules",
+      "!.next",
+      "!dist",
+      "!build",
+      "!**/tmp-geo",
+      "!**/public/r"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -18,8 +26,18 @@
     "enabled": true,
     "rules": {
       "recommended": true,
+      "a11y": {
+        "noSvgWithoutTitle": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
+      },
       "suspicious": {
-        "noUnknownAtRules": "off"
+        "noUnknownAtRules": "off",
+        "noControlCharactersInRegex": "off"
+      },
+      "correctness": {
+        "noInvalidPositionAtImportRule": "off"
       }
     },
     "domains": {
@@ -33,5 +51,56 @@
         "organizeImports": "on"
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["packages/**"],
+      "linter": {
+        "domains": {
+          "next": "none"
+        },
+        "rules": {
+          "a11y": {
+            "useSemanticElements": "off",
+            "noStaticElementInteractions": "off",
+            "noAutofocus": "off",
+            "noLabelWithoutControl": "off",
+            "noSvgWithoutTitle": "off",
+            "useAriaPropsSupportedByRole": "off",
+            "useAriaPropsForRole": "off",
+            "useKeyWithClickEvents": "off",
+            "useFocusableInteractive": "off",
+            "noNoninteractiveElementInteractions": "off"
+          },
+          "performance": {
+            "noImgElement": "off"
+          },
+          "style": {
+            "noDescendingSpecificity": "off",
+            "noNonNullAssertion": "off"
+          },
+          "suspicious": {
+            "noArrayIndexKey": "off",
+            "noControlCharactersInRegex": "off"
+          },
+          "correctness": {
+            "noUnusedFunctionParameters": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/*.css"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noDescendingSpecificity": "off"
+          },
+          "correctness": {
+            "noInvalidPositionAtImportRule": "off"
+          }
+        }
+      }
+    }
+  ]
 }

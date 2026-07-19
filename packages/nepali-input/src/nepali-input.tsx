@@ -52,6 +52,16 @@ export const NepaliInput = React.forwardRef<HTMLInputElement, NepaliInputProps>(
     },
     forwardedRef,
   ) {
+    // Transliteration only makes sense on text-like fields
+    const resolvedType =
+      type === "text" ||
+      type === "search" ||
+      type === "url" ||
+      type === "tel" ||
+      type === undefined
+        ? (type ?? "text")
+        : "text";
+
     const localRef = React.useRef<HTMLInputElement>(null);
     const setRefs = mergeRefs(forwardedRef, localRef);
     const { caretRef, captureCaret } = useNepaliCaretRestore(
@@ -68,7 +78,7 @@ export const NepaliInput = React.forwardRef<HTMLInputElement, NepaliInputProps>(
 
     return (
       <input
-        type={type}
+        type={resolvedType}
         data-slot="nepali-input"
         data-nepali-mode={mode}
         data-nepali-enabled={enabled ? "true" : "false"}

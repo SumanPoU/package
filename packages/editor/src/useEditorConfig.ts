@@ -242,6 +242,11 @@ export function useEditorConfig({
           autolink: true,
           defaultProtocol: "https",
           protocols: ["http", "https", "mailto", "tel"],
+          isAllowedUri: (url) =>
+            sanitizeUrl(url, {
+              allowDataImage: false,
+              allowRelative: true,
+            }) !== null,
           HTMLAttributes: {
             rel: "noopener noreferrer nofollow",
             target: "_blank",
@@ -283,6 +288,8 @@ export function useEditorConfig({
     return list;
   }, [nepali, placeholder, maxLength, allowBase64]);
 
+  const safeMinHeight = sanitizeCssLength(minHeight) ?? "480px";
+
   return useEditor(
     {
       extensions,
@@ -292,7 +299,7 @@ export function useEditorConfig({
       editorProps: {
         attributes: {
           class: "itzsa-editor-prose outline-none w-full focus:outline-none",
-          style: `min-height: ${minHeight}`,
+          style: `min-height: ${safeMinHeight}`,
           spellcheck: "true",
         },
         transformPastedHTML(html) {
@@ -302,6 +309,6 @@ export function useEditorConfig({
         },
       },
     },
-    [nepali, maxLength, allowBase64, placeholder, immediatelyRender],
+    [nepali, maxLength, allowBase64, placeholder, immediatelyRender, sanitize],
   );
 }

@@ -57,7 +57,7 @@ const ALLOWED_TAGS = new Set([
   "div",
 ]);
 
-const GLOBAL_ATTRS = new Set(["class"]);
+const GLOBAL_ATTRS = new Set<string>();
 
 const TAG_ATTRS: Record<string, Set<string>> = {
   a: new Set(["href", "target", "rel", "title"]),
@@ -280,8 +280,8 @@ export function sanitizeHtml(
   if (!trimmed) return options.preserveEmpty ? "" : "";
 
   if (typeof DOMParser === "undefined") {
-    // SSR / Node — strip tags naively as last resort (editor is client-only)
-    return trimmed.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, "");
+    // Editor is client-only — never half-sanitize on the server.
+    return "";
   }
 
   const doc = new DOMParser().parseFromString(trimmed, "text/html");

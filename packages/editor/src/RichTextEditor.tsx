@@ -214,15 +214,17 @@ export const RichTextEditor = forwardRef<
   });
 
   const applyContent = useCallback(
-    (html: string, emitUpdate: boolean) => {
-      if (!editor) return;
+    (html: string, emitUpdate: boolean): string => {
+      if (!editor) return "";
       const next = resolved.sanitize
         ? sanitizeHtml(html, {
             allowDataImage: false,
             preserveEmpty: true,
           })
         : html;
-      editor.commands.setContent(next || "", { emitUpdate });
+      const normalized = next || "";
+      editor.commands.setContent(normalized, { emitUpdate });
+      return editor.isEmpty ? "" : editor.getHTML();
     },
     [editor, resolved.sanitize],
   );
@@ -231,8 +233,7 @@ export const RichTextEditor = forwardRef<
   useEffect(() => {
     if (!editor) return;
     if (value !== lastPushed.current && value !== editor.getHTML()) {
-      applyContent(value, false);
-      lastPushed.current = value;
+      lastPushed.current = applyContent(value, false);
     }
   }, [editor, value, applyContent]);
 
@@ -277,8 +278,7 @@ export const RichTextEditor = forwardRef<
       getJSON: () => (editor?.getJSON() as Record<string, unknown>) ?? {},
       getText: () => editor?.getText() ?? "",
       setContent: (html, options) => {
-        applyContent(html, options?.emitUpdate ?? true);
-        lastPushed.current = html;
+        lastPushed.current = applyContent(html, options?.emitUpdate ?? true);
       },
       clear: () => {
         editor?.commands.clearContent(true);
@@ -298,8 +298,7 @@ export const RichTextEditor = forwardRef<
       setHtmlMode(true);
     } else {
       const html = htmlRef.current?.value ?? "";
-      applyContent(html, true);
-      lastPushed.current = editor.isEmpty ? "" : editor.getHTML();
+      lastPushed.current = applyContent(html, true);
       setHtmlMode(false);
     }
   }, [editor, htmlMode, resolved.allowHtmlMode, applyContent]);

@@ -1,6 +1,12 @@
-/** Escape a CSV field (RFC-style quotes). */
+/** Escape a CSV field (RFC-style quotes) and neutralize spreadsheet formulas. */
 export function escapeCsvValue(value: unknown): string {
-  const text = value == null ? "" : String(value);
+  let text = value == null ? "" : String(value);
+
+  // Prevent CSV / Excel formula injection (=, +, -, @, tab, CR)
+  if (/^[=+\-@\t\r]/.test(text)) {
+    text = `'${text}`;
+  }
+
   if (/[",\n\r]/.test(text)) {
     return `"${text.replace(/"/g, '""')}"`;
   }
@@ -40,11 +46,15 @@ export function downloadTextFile(
   mimeType = "text/csv;charset=utf-8",
 ) {
   if (typeof document === "undefined") return;
+
+  // Prevent path traversal / odd filenames in download attribute
+  const safeName = filename.replace(/[<>:"/\\|?*\u0000-\u001f]/g, "_").slice(0, 180) || "export.csv";
+
   const blob = new Blob([content], { type: mimeType });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = filename;
+  anchor.download = safeName;
   anchor.rel = "noopener";
   document.body.appendChild(anchor);
   anchor.click();

@@ -2,6 +2,7 @@ import {
   useState,
   useRef,
   useEffect,
+  useMemo,
   type FC,
   type FormEvent,
 } from "react";
@@ -56,6 +57,16 @@ export const MediaModal: FC<MediaModalProps> = ({
   const canUpload = typeof media.onUpload === "function";
   const maxBytes = isImage ? media.maxImageBytes : media.maxVideoBytes;
   const accept = isImage ? media.acceptImage : media.acceptVideo;
+
+  /** Only bind sanitized URLs to <img> — never raw typed input. */
+  const safePreviewSrc = useMemo(() => {
+    const candidate = preview || url;
+    if (!candidate.trim()) return null;
+    return sanitizeUrl(candidate, {
+      allowDataImage: false,
+      allowRelative: true,
+    });
+  }, [preview, url]);
 
   useEffect(() => {
     const prev = document.activeElement as HTMLElement | null;
@@ -140,6 +151,7 @@ export const MediaModal: FC<MediaModalProps> = ({
   };
 
   const src = preview || url;
+  const canInsert = Boolean(src?.trim()) && (!!preview || media.allowUrlInsert);
   const title = isImage ? locale.mediaImageTitle : locale.mediaVideoTitle;
 
   return (
@@ -295,10 +307,10 @@ export const MediaModal: FC<MediaModalProps> = ({
               />
             </div>
 
-            {isImage && src && !src.startsWith("data:") && (
+            {isImage && safePreviewSrc && (
               <div className="overflow-hidden rounded-xl border border-[var(--editor-border)] bg-[var(--editor-surface)] p-2">
                 <img
-                  src={src}
+                  src={safePreviewSrc}
                   alt=""
                   className="mx-auto max-h-[140px] rounded-lg object-contain"
                   style={{ width }}
@@ -352,7 +364,7 @@ export const MediaModal: FC<MediaModalProps> = ({
             </button>
             <button
               type="submit"
-              disabled={!src || uploading}
+              disabled={!canInsert || uploading}
               className="itzsa-editor-btn-primary h-9 rounded-lg px-4 text-[13px] font-medium"
             >
               {locale.insert}

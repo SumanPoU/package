@@ -7,7 +7,19 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
-  external: ["react", "react-dom", "react/jsx-runtime"],
+  treeshake: true,
+  minify: false,
+  external: [
+    "react",
+    "react-dom",
+    "react/jsx-runtime",
+    "lucide-react",
+    "@radix-ui/react-slot",
+    "@radix-ui/react-checkbox",
+    "@radix-ui/react-select",
+    "@floating-ui/react",
+    "@tanstack/react-virtual",
+  ],
   esbuildOptions(options) {
     options.banner = {
       js: '"use client";',

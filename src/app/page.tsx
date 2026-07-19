@@ -14,29 +14,42 @@ export default function Home() {
           itzsa
         </h1>
         <p className="max-w-xl text-base text-secondary">
-          Local documentation and demos for packages under{" "}
-          <code className="font-mono text-primary">packages/</code>. Start with
-          the table package — installable as{" "}
-          <span className="pkg">@itzsa/table</span>.
+          Documentation and demos for packages under{" "}
+          <code className="font-mono text-primary">packages/</code> — including{" "}
+          <span className="pkg">@itzsa/table</span> and{" "}
+          <span className="pkg">@itzsa/nepali-input</span>.
         </p>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
         <Button variant="primary" asChild>
-          <Link href="/table">Open table docs</Link>
+          <Link href="/table">Table docs</Link>
         </Button>
         <Button variant="outline" asChild>
-          <Link href="/registry">shadcn registry</Link>
+          <Link href="/nepali-input">Nepali input</Link>
+        </Button>
+        <Button variant="outline" asChild>
+          <Link href="/registry">Registry</Link>
         </Button>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <p className="text-[13px] text-secondary">Install</p>
-        <CodeBlock
-          language="bash"
-          showPrompt
-          code="pnpm add @itzsa/table"
-        />
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <p className="text-[13px] text-secondary">Install table</p>
+          <CodeBlock
+            language="bash"
+            showPrompt
+            code="pnpm add @itzsa/table"
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <p className="text-[13px] text-secondary">Install nepali-input</p>
+          <CodeBlock
+            language="bash"
+            showPrompt
+            code="pnpm add @itzsa/nepali-input"
+          />
+        </div>
       </div>
     </main>
   );

@@ -1,0 +1,19 @@
+/**
+ * Optional styles for @itzsa/nepali-input.
+ * Import once: `import "@itzsa/nepali-input/styles.css"`
+ *
+ * Load a Devanagari-capable font in your app (e.g. Noto Sans Devanagari via
+ * next/font/google) and set `--itzsa-nepali-font` or rely on the fallback stack.
+ */
+.itzsa-nepali-field {
+  font-family: var(
+    --itzsa-nepali-font,
+    "Noto Sans Devanagari",
+    "Noto Sans",
+    ui-sans-serif,
+    system-ui,
+    sans-serif
+  );
+  font-feature-settings: "kern" 1;
+  line-height: 1.5;
+}

@@ -136,7 +136,7 @@ export function DocsShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="docs-shell min-h-full bg-page">
-      <div className="mx-auto flex w-full max-w-[88rem] gap-8 px-4 py-10 sm:px-6 lg:gap-10 xl:gap-12">
+      <div className="mx-auto flex w-full max-w-[88rem] gap-4 px-4 py-6 sm:px-6 sm:py-8 lg:gap-8 lg:py-10 xl:gap-10">
         <aside className="sticky top-20 hidden h-[calc(100vh-6rem)] w-52 shrink-0 overflow-y-auto lg:block xl:w-56">
           <nav aria-label="Documentation" className="flex flex-col gap-0.5">
             <Link
@@ -161,7 +161,7 @@ export function DocsShell({ children }: { children: ReactNode }) {
           </nav>
         </aside>
 
-        <main className="min-w-0 flex-1 pb-24">{children}</main>
+        <main className="min-w-0 flex-1 pb-12 sm:pb-24">{children}</main>
 
         <aside className="sticky top-20 hidden h-[calc(100vh-6rem)] w-44 shrink-0 overflow-y-auto xl:block">
           <nav aria-label="On this page" className="flex flex-col">

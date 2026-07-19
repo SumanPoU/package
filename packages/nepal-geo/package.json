@@ -1,6 +1,6 @@
 {
   "name": "@itzsa/nepal-geo",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Nepal provinces, districts, local levels & wards — React selects + data helpers",
   "license": "MIT",
   "sideEffects": [

@@ -25,6 +25,11 @@ import {
   useFloatingPopover,
   usePortalReady,
 } from "./popover-utils";
+import {
+  mergePickerStyle,
+  type NepaliDatePickerClassNames,
+  type NepaliDatePickerVars,
+} from "./styling";
 import type { DateParts, Locale } from "./types";
 
 export type EditableNepaliDatePickerProps = {
@@ -52,6 +57,10 @@ export type EditableNepaliDatePickerProps = {
   className?: string;
   inputClassName?: string;
   popoverClassName?: string;
+  classNames?: NepaliDatePickerClassNames;
+  vars?: NepaliDatePickerVars;
+  style?: React.CSSProperties;
+  popoverStyle?: React.CSSProperties;
   "aria-label"?: string;
   "aria-labelledby"?: string;
 };
@@ -85,12 +94,18 @@ export const EditableNepaliDatePicker = React.forwardRef<
     className,
     inputClassName,
     popoverClassName,
+    classNames,
+    vars,
+    style,
+    popoverStyle,
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledBy,
   },
   forwardedRef,
 ) {
   const isControlled = valueProp !== undefined;
+  const rootStyle = mergePickerStyle(vars, style);
+  const panelStyle = mergePickerStyle(vars, popoverStyle);
   const [uncontrolled, setUncontrolled] = React.useState(defaultValue);
   const value = isControlled ? (valueProp ?? "") : uncontrolled;
 
@@ -185,13 +200,18 @@ export const EditableNepaliDatePicker = React.forwardRef<
       ? createPortal(
           <div
             ref={popoverRef}
-            className={cn("itzsa-ndp-popover", popoverClassName)}
+            className={cn(
+              "itzsa-ndp-popover",
+              popoverClassName,
+              classNames?.popover,
+            )}
             style={{
               position: "fixed",
               top: pos.top,
               left: pos.left,
               width: pos.width,
               zIndex: 50,
+              ...panelStyle,
             }}
             role="dialog"
             aria-modal="false"
@@ -226,11 +246,16 @@ export const EditableNepaliDatePicker = React.forwardRef<
   return (
     <div
       ref={rootRef}
-      className={cn("itzsa-ndp itzsa-ndp-editable", className)}
+      className={cn(
+        "itzsa-ndp itzsa-ndp-editable",
+        className,
+        classNames?.root,
+      )}
+      style={rootStyle}
       data-disabled={disabled ? "" : undefined}
       data-open={open ? "" : undefined}
     >
-      <div className="itzsa-ndp-field">
+      <div className={cn("itzsa-ndp-field", classNames?.field)}>
         <input
           ref={mergeRefs(forwardedRef, inputRef)}
           id={id}
@@ -247,7 +272,11 @@ export const EditableNepaliDatePicker = React.forwardRef<
           aria-labelledby={ariaLabelledBy}
           aria-expanded={open}
           aria-haspopup="dialog"
-          className={cn("itzsa-ndp-input itzsa-ndp-input-editable", inputClassName)}
+          className={cn(
+            "itzsa-ndp-input itzsa-ndp-input-editable",
+            inputClassName,
+            classNames?.input,
+          )}
           onChange={readOnly ? undefined : handleType}
           onKeyDown={(e) => {
             if (disabled || readOnly) return;
@@ -259,7 +288,7 @@ export const EditableNepaliDatePicker = React.forwardRef<
         />
         <button
           type="button"
-          className="itzsa-ndp-trigger"
+          className={cn("itzsa-ndp-trigger", classNames?.trigger)}
           tabIndex={-1}
           disabled={disabled || readOnly}
           aria-label="Open calendar"

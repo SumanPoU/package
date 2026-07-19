@@ -21,6 +21,11 @@ import {
   useFloatingPopover,
   usePortalReady,
 } from "./popover-utils";
+import {
+  mergePickerStyle,
+  type NepaliDatePickerClassNames,
+  type NepaliDatePickerVars,
+} from "./styling";
 import type { DateParts, Locale } from "./types";
 
 export type NepaliDatePickerProps = {
@@ -56,6 +61,14 @@ export type NepaliDatePickerProps = {
   className?: string;
   inputClassName?: string;
   popoverClassName?: string;
+  /** Per-part class overrides (merged with defaults). */
+  classNames?: NepaliDatePickerClassNames;
+  /** Theme tokens as CSS variables (`accent`, `border`, `radius`, …). */
+  vars?: NepaliDatePickerVars;
+  /** Inline styles on the root (merged with `vars`). */
+  style?: React.CSSProperties;
+  /** Inline styles on the popover panel. */
+  popoverStyle?: React.CSSProperties;
   "aria-label"?: string;
   "aria-labelledby"?: string;
 };
@@ -91,12 +104,18 @@ export const NepaliDatePicker = React.forwardRef<
     className,
     inputClassName,
     popoverClassName,
+    classNames,
+    vars,
+    style,
+    popoverStyle,
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledBy,
   },
   forwardedRef,
 ) {
   const displayLocale = valueLocale ?? locale;
+  const rootStyle = mergePickerStyle(vars, style);
+  const panelStyle = mergePickerStyle(vars, popoverStyle);
   const isControlled = valueProp !== undefined;
   const [uncontrolled, setUncontrolled] = React.useState(defaultValue);
   const value = isControlled ? (valueProp ?? "") : uncontrolled;
@@ -173,13 +192,18 @@ export const NepaliDatePicker = React.forwardRef<
       ? createPortal(
           <div
             ref={popoverRef}
-            className={cn("itzsa-ndp-popover", popoverClassName)}
+            className={cn(
+              "itzsa-ndp-popover",
+              popoverClassName,
+              classNames?.popover,
+            )}
             style={{
               position: "fixed",
               top: pos.top,
               left: pos.left,
               width: pos.width,
               zIndex: 50,
+              ...panelStyle,
             }}
             role="dialog"
             aria-modal="false"
@@ -214,11 +238,12 @@ export const NepaliDatePicker = React.forwardRef<
   return (
     <div
       ref={rootRef}
-      className={cn("itzsa-ndp", className)}
+      className={cn("itzsa-ndp", className, classNames?.root)}
+      style={rootStyle}
       data-disabled={disabled ? "" : undefined}
       data-open={open ? "" : undefined}
     >
-      <div className="itzsa-ndp-field">
+      <div className={cn("itzsa-ndp-field", classNames?.field)}>
         <input
           ref={inputRef}
           id={id}
@@ -235,7 +260,7 @@ export const NepaliDatePicker = React.forwardRef<
           aria-labelledby={ariaLabelledBy}
           aria-expanded={open}
           aria-haspopup="dialog"
-          className={cn("itzsa-ndp-input", inputClassName)}
+          className={cn("itzsa-ndp-input", inputClassName, classNames?.input)}
           onClick={() => {
             if (!disabled && !readOnly) setOpen(true);
           }}
@@ -252,7 +277,7 @@ export const NepaliDatePicker = React.forwardRef<
         />
         <button
           type="button"
-          className="itzsa-ndp-trigger"
+          className={cn("itzsa-ndp-trigger", classNames?.trigger)}
           tabIndex={-1}
           disabled={disabled || readOnly}
           aria-label="Open calendar"

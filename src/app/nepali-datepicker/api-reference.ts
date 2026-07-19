@@ -72,6 +72,23 @@ export const PICKER_PROPS: PropRow[] = [
     type: "string",
     description: "Style hooks for root, input, and popover.",
   },
+  {
+    name: "classNames",
+    type: "NepaliDatePickerClassNames",
+    description:
+      "Per-part classes: root, field, input, trigger, popover, day, footer.",
+  },
+  {
+    name: "vars",
+    type: "NepaliDatePickerVars",
+    description:
+      "Theme tokens: accent, background, border, surface, radius, font, …",
+  },
+  {
+    name: "style / popoverStyle",
+    type: "CSSProperties",
+    description: "Inline styles merged with vars on root / popover.",
+  },
 ];
 
 export const EDITABLE_PROPS: PropRow[] = [
@@ -102,6 +119,11 @@ export const EDITABLE_PROPS: PropRow[] = [
     type: "string",
     default: "'YYYY-MM-DD'",
     description: "Shown when the field is empty.",
+  },
+  {
+    name: "classNames / vars / style",
+    type: "…",
+    description: "Same styling API as NepaliDatePicker.",
   },
 ];
 
@@ -139,6 +161,12 @@ export const RANGE_PROPS: PropRow[] = [
     default: "true",
     description: "Close after both ends are chosen.",
   },
+  {
+    name: "classNames / vars / style",
+    type: "…",
+    description:
+      "Styling API plus rangeTrigger, rangeLabel, rangeMonths in classNames.",
+  },
 ];
 
 export const HELPER_API: PropRow[] = [
@@ -171,6 +199,17 @@ export const HELPER_API: PropRow[] = [
     name: "diffBsDays / addBsDays",
     type: "…",
     description: "Day arithmetic across the BS calendar.",
+  },
+  {
+    name: "validateBsDate / assertValidBsDate",
+    type: "ValidationResult | void",
+    description:
+      "Soft or hard validation (year/month/day range + calendar-valid).",
+  },
+  {
+    name: "isValidBsDate / isCompleteBsDate",
+    type: "boolean",
+    description: "Quick checks for parts or YYYY-MM-DD strings.",
   },
   {
     name: "formatBsLabel(parts, locale)",

@@ -147,7 +147,7 @@ export function DocsShell({ children }: { children: ReactNode }) {
             </Link>
             <div className="mb-4 flex flex-col gap-0.5 px-2.5">
               <p className="text-[15px] font-medium tracking-tight text-primary">
-                nepali-input
+                Nepali Input
               </p>
               <p className="pkg text-[11px]">@itzsa/nepali-input</p>
             </div>

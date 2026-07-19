@@ -82,7 +82,7 @@ export function DocsContent() {
             Documentation · itzsa
           </p>
           <h1 className="text-3xl font-medium tracking-tight text-primary sm:text-4xl">
-            table
+            Table
           </h1>
           <p className="max-w-2xl text-base leading-relaxed text-secondary">
             Composable DataTable for React — pagination, selection, sorting,

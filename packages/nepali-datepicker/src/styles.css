@@ -15,18 +15,20 @@
   --ndp-accent-fg: #04342c;
   --ndp-ring: color-mix(in oklab, var(--ndp-accent) 40%, transparent);
   --ndp-radius: 10px;
-  --ndp-font: var(
-    --itzsa-nepali-font,
-    "Noto Sans Devanagari",
-    "Noto Sans",
-    ui-sans-serif,
-    system-ui,
-    sans-serif
-  );
+  /* English (default): Outfit. Nepali UI: Devanagari via [data-locale="ne"]. */
+  --ndp-font: var(--font-outfit, "Outfit"), ui-sans-serif, system-ui, sans-serif;
   position: relative;
   width: 100%;
   font-family: var(--ndp-font);
   color: var(--ndp-fg);
+}
+
+.itzsa-ndp[data-locale="ne"],
+.itzsa-ndp-popover[data-locale="ne"] {
+  --ndp-font: var(
+    --itzsa-nepali-font,
+    "Noto Sans Devanagari"
+  ), var(--font-outfit, "Outfit"), ui-sans-serif, system-ui, sans-serif;
 }
 
 .dark .itzsa-ndp,
@@ -117,14 +119,7 @@
   --ndp-accent-fg: #04342c;
   --ndp-ring: color-mix(in oklab, var(--ndp-accent) 40%, transparent);
   --ndp-radius: 10px;
-  --ndp-font: var(
-    --itzsa-nepali-font,
-    "Noto Sans Devanagari",
-    "Noto Sans",
-    ui-sans-serif,
-    system-ui,
-    sans-serif
-  );
+  --ndp-font: var(--font-outfit, "Outfit"), ui-sans-serif, system-ui, sans-serif;
   box-sizing: border-box;
   padding: 0.75rem;
   border: 1px solid var(--ndp-border);

@@ -205,6 +205,7 @@ export const EditableNepaliDatePicker = React.forwardRef<
               popoverClassName,
               classNames?.popover,
             )}
+            data-locale={locale}
             style={{
               position: "fixed",
               top: pos.top,
@@ -252,6 +253,7 @@ export const EditableNepaliDatePicker = React.forwardRef<
         classNames?.root,
       )}
       style={rootStyle}
+      data-locale={locale}
       data-disabled={disabled ? "" : undefined}
       data-open={open ? "" : undefined}
     >

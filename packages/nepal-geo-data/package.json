@@ -1,6 +1,6 @@
 {
   "name": "@itzsa/nepal-geo-data",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Nepal administrative geography data only — provinces, districts, local levels, wards (no React)",
   "license": "MIT",
   "sideEffects": false,

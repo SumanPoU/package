@@ -1,6 +1,6 @@
 {
   "name": "@itzsa/editor",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Company-standard TipTap rich text editor with Nepali input, language lock, and hardened sanitization",
   "license": "MIT",
   "sideEffects": [

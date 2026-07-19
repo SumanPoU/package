@@ -1,6 +1,6 @@
 {
   "name": "@itzsa/nepali-datepicker",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Nepali (Bikram Sambat) date, datetime, and range pickers for React",
   "license": "MIT",
   "sideEffects": [

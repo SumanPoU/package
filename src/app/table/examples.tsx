@@ -40,7 +40,7 @@ export function FullFeaturedExample() {
   return (
     <div className="flex flex-col gap-2">
       {selectedIds.length > 0 ? (
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-secondary">
           {selectedIds.length} selected
         </p>
       ) : null}
@@ -63,9 +63,9 @@ export function FullFeaturedExample() {
           return newRow;
         }}
         getDetailPanelContent={({ row }) => (
-          <div className="flex flex-col gap-1 px-2 py-2 text-sm text-muted-foreground">
+          <div className="flex flex-col gap-1 px-2 py-2 text-sm text-secondary">
             <p>
-              <span className="font-medium text-foreground">{row.name}</span>
+              <span className="font-medium text-primary">{row.name}</span>
               {" · "}
               {row.role} in {row.department}
             </p>

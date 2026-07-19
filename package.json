@@ -9,9 +9,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "pnpm run build:packages && pnpm run build:registry && next build",
-    "build:packages": "pnpm --filter @itzsa/table --filter @itzsa/nepali-input --filter @itzsa/editor run build",
+    "build:packages": "pnpm --filter @itzsa/table --filter @itzsa/nepali-input --filter @itzsa/editor --filter @itzsa/nepali-datepicker run build",
     "build:registry": "pnpm --filter registry run registry:build",
-    "typecheck:packages": "pnpm --filter @itzsa/table --filter @itzsa/nepali-input --filter @itzsa/editor run typecheck",
+    "typecheck:packages": "pnpm --filter @itzsa/table --filter @itzsa/nepali-input --filter @itzsa/editor --filter @itzsa/nepali-datepicker run typecheck",
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write"
@@ -21,6 +21,7 @@
     "@itzsa/table": "workspace:*",
     "@itzsa/nepali-input": "workspace:*",
     "@itzsa/editor": "workspace:*",
+    "@itzsa/nepali-datepicker": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.525.0",

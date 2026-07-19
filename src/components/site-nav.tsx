@@ -10,6 +10,7 @@ const LINKS = [
   { href: "/", label: "Home" },
   { href: "/table", label: "table" },
   { href: "/nepali-input", label: "nepali-input" },
+  { href: "/nepali-datepicker", label: "datepicker" },
   { href: "/editor", label: "editor" },
   { href: "/registry", label: "registry" },
 ] as const;

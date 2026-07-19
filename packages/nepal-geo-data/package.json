@@ -1,0 +1,52 @@
+{
+  "name": "@itzsa/nepal-geo-data",
+  "version": "0.1.0",
+  "description": "Nepal administrative geography data only — provinces, districts, local levels, wards (no React)",
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "generate:data": "node ../nepal-geo/scripts/generate-data.mjs",
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "dev": "tsup --watch",
+    "prepublishOnly": "pnpm run typecheck && pnpm run build"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.0",
+    "typescript": "^5"
+  },
+  "keywords": [
+    "nepal",
+    "province",
+    "district",
+    "municipality",
+    "metropolitan",
+    "ward",
+    "local-level",
+    "geography",
+    "data"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SumanPoU/package.git",
+    "directory": "packages/nepal-geo-data"
+  }
+}

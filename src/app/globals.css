@@ -2,9 +2,11 @@
 @source "../../packages/table/src";
 @source "../../packages/nepali-input/src";
 @source "../../packages/editor/src";
+@source "../../packages/nepali-datepicker/src";
 @import "../../packages/table/src/styles.css";
 @import "../../packages/nepali-input/src/styles.css";
 @import "../../packages/editor/src/styles.css";
+@import "../../packages/nepali-datepicker/src/styles.css";
 
 /*
   itzsa brand — light + dark.

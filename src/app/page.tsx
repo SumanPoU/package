@@ -17,7 +17,8 @@ export default function Home() {
           Documentation and demos for packages under{" "}
           <code className="font-mono text-primary">packages/</code> — including{" "}
           <span className="pkg">@itzsa/table</span>,{" "}
-          <span className="pkg">@itzsa/nepali-input</span>, and{" "}
+          <span className="pkg">@itzsa/nepali-input</span>,{" "}
+          <span className="pkg">@itzsa/nepali-datepicker</span>, and{" "}
           <span className="pkg">@itzsa/editor</span>.
         </p>
       </div>
@@ -28,6 +29,9 @@ export default function Home() {
         </Button>
         <Button variant="outline" asChild>
           <Link href="/nepali-input">Nepali input</Link>
+        </Button>
+        <Button variant="outline" asChild>
+          <Link href="/nepali-datepicker">Datepicker</Link>
         </Button>
         <Button variant="outline" asChild>
           <Link href="/editor">Editor</Link>
@@ -52,6 +56,14 @@ export default function Home() {
             language="bash"
             showPrompt
             code="pnpm add @itzsa/nepali-input"
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <p className="text-[13px] text-secondary">Install nepali-datepicker</p>
+          <CodeBlock
+            language="bash"
+            showPrompt
+            code="pnpm add @itzsa/nepali-datepicker"
           />
         </div>
         <div className="flex flex-col gap-2">

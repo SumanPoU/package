@@ -1,0 +1,523 @@
+/**
+ * Optional styles for @itzsa/nepali-datepicker.
+ * Import once: `import "@itzsa/nepali-datepicker/styles.css"`
+ *
+ * Uses brand tokens; override via CSS variables on `.itzsa-ndp` or `:root`.
+ */
+
+.itzsa-ndp {
+  --ndp-bg: #ffffff;
+  --ndp-fg: #1a1915;
+  --ndp-muted: #6f6e68;
+  --ndp-border: #e4e2db;
+  --ndp-surface: #f7f6f2;
+  --ndp-accent: #1d9e75;
+  --ndp-accent-fg: #04342c;
+  --ndp-ring: color-mix(in oklab, var(--ndp-accent) 40%, transparent);
+  --ndp-radius: 10px;
+  --ndp-font: var(
+    --itzsa-nepali-font,
+    "Noto Sans Devanagari",
+    "Noto Sans",
+    ui-sans-serif,
+    system-ui,
+    sans-serif
+  );
+  position: relative;
+  width: 100%;
+  font-family: var(--ndp-font);
+  color: var(--ndp-fg);
+}
+
+.dark .itzsa-ndp,
+.itzsa-ndp[data-theme="dark"],
+.dark .itzsa-ndp-popover,
+.itzsa-ndp-popover[data-theme="dark"] {
+  --ndp-bg: #161615;
+  --ndp-fg: #f1efe8;
+  --ndp-muted: #888780;
+  --ndp-border: #2c2c2a;
+  --ndp-surface: #1c1c1a;
+  --ndp-accent: #1d9e75;
+  --ndp-accent-fg: #04342c;
+}
+
+.itzsa-ndp-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.itzsa-ndp-input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 2rem;
+  min-width: 0;
+  padding: 0.25rem 2rem 0.25rem 0.625rem;
+  border: 1px solid var(--ndp-border);
+  border-radius: var(--ndp-radius);
+  background: transparent;
+  color: var(--ndp-fg);
+  font: inherit;
+  font-size: 0.875rem;
+  line-height: 1.25;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.itzsa-ndp-input::placeholder {
+  color: var(--ndp-muted);
+}
+
+.itzsa-ndp-input:focus-visible {
+  border-color: var(--ndp-accent);
+  box-shadow: 0 0 0 3px var(--ndp-ring);
+}
+
+.itzsa-ndp[data-disabled] .itzsa-ndp-input,
+.itzsa-ndp-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: color-mix(in oklab, var(--ndp-surface) 80%, transparent);
+}
+
+.itzsa-ndp-trigger {
+  position: absolute;
+  right: 0.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 0;
+  border-radius: calc(var(--ndp-radius) - 2px);
+  background: transparent;
+  color: var(--ndp-muted);
+  cursor: pointer;
+}
+
+.itzsa-ndp-trigger:hover:not(:disabled) {
+  color: var(--ndp-fg);
+  background: var(--ndp-surface);
+}
+
+.itzsa-ndp-trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.itzsa-ndp-popover {
+  --ndp-bg: #ffffff;
+  --ndp-fg: #1a1915;
+  --ndp-muted: #6f6e68;
+  --ndp-border: #e4e2db;
+  --ndp-surface: #f7f6f2;
+  --ndp-accent: #1d9e75;
+  --ndp-accent-fg: #04342c;
+  --ndp-ring: color-mix(in oklab, var(--ndp-accent) 40%, transparent);
+  --ndp-radius: 10px;
+  --ndp-font: var(
+    --itzsa-nepali-font,
+    "Noto Sans Devanagari",
+    "Noto Sans",
+    ui-sans-serif,
+    system-ui,
+    sans-serif
+  );
+  box-sizing: border-box;
+  padding: 0.75rem;
+  border: 1px solid var(--ndp-border);
+  border-radius: calc(var(--ndp-radius) + 2px);
+  background: var(--ndp-bg);
+  color: var(--ndp-fg);
+  font-family: var(--ndp-font);
+  box-shadow:
+    0 10px 30px color-mix(in oklab, #000 12%, transparent),
+    0 1px 2px color-mix(in oklab, #000 6%, transparent);
+  animation: itzsa-ndp-in 120ms ease-out;
+}
+
+@keyframes itzsa-ndp-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.itzsa-ndp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  margin-bottom: 0.65rem;
+}
+
+.itzsa-ndp-header-title {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.itzsa-ndp-title-btn,
+.itzsa-ndp-title-static {
+  border: 0;
+  background: transparent;
+  color: var(--ndp-fg);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.itzsa-ndp-title-btn:hover {
+  background: var(--ndp-surface);
+}
+
+.itzsa-ndp-title-static {
+  cursor: default;
+}
+
+.itzsa-ndp-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ndp-muted);
+  cursor: pointer;
+}
+
+.itzsa-ndp-nav-btn:hover:not(:disabled) {
+  color: var(--ndp-fg);
+  background: var(--ndp-surface);
+}
+
+.itzsa-ndp-nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.itzsa-ndp-weekdays,
+.itzsa-ndp-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.2rem;
+}
+
+.itzsa-ndp-weekday {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.75rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--ndp-muted);
+}
+
+.itzsa-ndp-day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ndp-fg);
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.itzsa-ndp-day.is-empty {
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.itzsa-ndp-day:hover:not(:disabled):not(.is-selected) {
+  background: var(--ndp-surface);
+}
+
+.itzsa-ndp-day.is-today:not(.is-selected) {
+  box-shadow: inset 0 0 0 1px var(--ndp-accent);
+}
+
+.itzsa-ndp-day.is-selected {
+  background: var(--ndp-accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.itzsa-ndp-day.is-disabled,
+.itzsa-ndp-day:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.itzsa-ndp-grid-months,
+.itzsa-ndp-year-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.35rem;
+}
+
+.itzsa-ndp-grid-years {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.itzsa-ndp-year-list {
+  flex: 1;
+}
+
+.itzsa-ndp-year-shift {
+  margin-top: 0.35rem;
+}
+
+.itzsa-ndp-chip {
+  height: 2.25rem;
+  border: 0;
+  border-radius: 8px;
+  background: var(--ndp-surface);
+  color: var(--ndp-fg);
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.itzsa-ndp-chip:hover {
+  outline: 1px solid var(--ndp-border);
+}
+
+.itzsa-ndp-chip.is-active {
+  background: var(--ndp-accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.itzsa-ndp-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.65rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--ndp-border);
+}
+
+.itzsa-ndp-footer-btn {
+  border: 0;
+  background: transparent;
+  color: var(--ndp-accent);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 0.25rem 0.4rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.itzsa-ndp-footer-btn:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--ndp-accent) 12%, transparent);
+}
+
+.itzsa-ndp-footer-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.itzsa-ndp-nav-spacer {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+}
+
+.itzsa-ndp-input-editable {
+  cursor: text;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.itzsa-ndp-day.is-in-range,
+.itzsa-ndp-day.is-range-preview {
+  border-radius: 0;
+  background: color-mix(in oklab, var(--ndp-accent) 14%, transparent);
+}
+
+.itzsa-ndp-day.is-range-start,
+.itzsa-ndp-day.is-range-end,
+.itzsa-ndp-day.is-selected.is-range-start,
+.itzsa-ndp-day.is-selected.is-range-end {
+  background: var(--ndp-accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.itzsa-ndp-day.is-range-start {
+  border-radius: 8px 0 0 8px;
+}
+
+.itzsa-ndp-day.is-range-end {
+  border-radius: 0 8px 8px 0;
+}
+
+.itzsa-ndp-day.is-range-start.is-range-end {
+  border-radius: 8px;
+}
+
+.itzsa-ndp-day.is-in-range:hover:not(:disabled),
+.itzsa-ndp-day.is-range-preview:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--ndp-accent) 22%, transparent);
+}
+
+.itzsa-ndp-range-trigger {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--ndp-border);
+  border-radius: var(--ndp-radius);
+  background: transparent;
+  color: var(--ndp-fg);
+  font: inherit;
+  font-size: 0.875rem;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.itzsa-ndp-range-trigger:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--ndp-surface) 80%, transparent);
+}
+
+.itzsa-ndp-range-trigger:focus-visible {
+  border-color: var(--ndp-accent);
+  box-shadow: 0 0 0 3px var(--ndp-ring);
+  outline: none;
+}
+
+.itzsa-ndp-range-trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.itzsa-ndp-range-trigger-icon {
+  flex-shrink: 0;
+  color: var(--ndp-muted);
+}
+
+.itzsa-ndp-range-trigger-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itzsa-ndp-range-trigger-label.is-placeholder {
+  color: var(--ndp-muted);
+}
+
+.itzsa-ndp-range-trigger-chevron {
+  flex-shrink: 0;
+  color: var(--ndp-muted);
+  opacity: 0.7;
+}
+
+.itzsa-ndp-popover-range.is-dual {
+  padding: 0.85rem;
+}
+
+.itzsa-ndp-range-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.itzsa-ndp-range-hint {
+  margin: 0;
+  flex: 1;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ndp-muted);
+  letter-spacing: 0.02em;
+}
+
+.itzsa-ndp-range-months {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.itzsa-ndp-range-months.is-dual {
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .itzsa-ndp-range-months.is-dual {
+    grid-template-columns: 1fr;
+  }
+
+  .itzsa-ndp-popover-range.is-dual {
+    width: min(320px, calc(100vw - 16px)) !important;
+  }
+}
+
+.itzsa-ndp-range-footer {
+  align-items: center;
+}
+
+.itzsa-ndp-range-meta {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--ndp-muted);
+}
+
+.itzsa-ndp-range-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.itzsa-ndp-footer-btn.is-primary {
+  background: var(--ndp-accent);
+  color: #fff;
+  padding: 0.35rem 0.7rem;
+}
+
+.itzsa-ndp-footer-btn.is-primary:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--ndp-accent) 88%, #000);
+}
+
+.itzsa-ndp-month + .itzsa-ndp-month {
+  border-left: 1px solid var(--ndp-border);
+  padding-left: 1rem;
+}
+
+@media (max-width: 640px) {
+  .itzsa-ndp-month + .itzsa-ndp-month {
+    border-left: 0;
+    border-top: 1px solid var(--ndp-border);
+    padding-left: 0;
+    padding-top: 0.75rem;
+  }
+}

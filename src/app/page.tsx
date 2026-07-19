@@ -18,7 +18,9 @@ export default function Home() {
           <code className="font-mono text-primary">packages/</code> — including{" "}
           <span className="pkg">@itzsa/table</span>,{" "}
           <span className="pkg">@itzsa/nepali-input</span>,{" "}
-          <span className="pkg">@itzsa/nepali-datepicker</span>, and{" "}
+          <span className="pkg">@itzsa/nepali-datepicker</span>,{" "}
+          <span className="pkg">@itzsa/nepal-geo</span>{" "}
+          (<span className="pkg">@itzsa/nepal-geo-data</span>), and{" "}
           <span className="pkg">@itzsa/editor</span>.
         </p>
       </div>
@@ -32,6 +34,9 @@ export default function Home() {
         </Button>
         <Button variant="outline" asChild>
           <Link href="/nepali-datepicker">Datepicker</Link>
+        </Button>
+        <Button variant="outline" asChild>
+          <Link href="/nepal-geo">Nepal geo</Link>
         </Button>
         <Button variant="outline" asChild>
           <Link href="/editor">Editor</Link>
@@ -53,6 +58,14 @@ export default function Home() {
         <div className="flex flex-col gap-2">
           <p className="text-[13px] text-secondary">Install nepali-datepicker</p>
           <InstallCommand packages="@itzsa/nepali-datepicker" />
+        </div>
+        <div className="flex flex-col gap-2">
+          <p className="text-[13px] text-secondary">Install nepal-geo</p>
+          <InstallCommand packages="@itzsa/nepal-geo" />
+        </div>
+        <div className="flex flex-col gap-2">
+          <p className="text-[13px] text-secondary">Install nepal-geo-data</p>
+          <InstallCommand packages="@itzsa/nepal-geo-data" />
         </div>
         <div className="flex flex-col gap-2">
           <p className="text-[13px] text-secondary">Install editor</p>

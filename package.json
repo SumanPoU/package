@@ -9,9 +9,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "pnpm run build:packages && pnpm run build:registry && next build",
-    "build:packages": "pnpm --filter @itzsa/table --filter @itzsa/nepali-input --filter @itzsa/editor --filter @itzsa/nepali-datepicker run build",
+    "build:packages": "pnpm --filter @itzsa/table --filter @itzsa/nepali-input --filter @itzsa/editor --filter @itzsa/nepali-datepicker --filter @itzsa/nepal-geo-data --filter @itzsa/nepal-geo run build",
     "build:registry": "pnpm --filter registry run registry:build",
-    "typecheck:packages": "pnpm --filter @itzsa/table --filter @itzsa/nepali-input --filter @itzsa/editor --filter @itzsa/nepali-datepicker run typecheck",
+    "typecheck:packages": "pnpm --filter @itzsa/table --filter @itzsa/nepali-input --filter @itzsa/editor --filter @itzsa/nepali-datepicker --filter @itzsa/nepal-geo-data --filter @itzsa/nepal-geo run typecheck",
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write"
@@ -22,6 +22,8 @@
     "@itzsa/nepali-input": "workspace:*",
     "@itzsa/editor": "workspace:*",
     "@itzsa/nepali-datepicker": "workspace:*",
+    "@itzsa/nepal-geo": "workspace:*",
+    "@itzsa/nepal-geo-data": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.525.0",

@@ -1,0 +1,6036 @@
+[
+  {
+    "province_id": 1,
+    "province_name_en": "Koshi Province",
+    "province_name_np": "कोशी प्रदेश",
+    "capital_en": "Biratnagar",
+    "capital_np": "विराटनगर",
+    "total_districts": 14,
+    "districts": [
+      {
+        "district_name_en": "Bhojpur",
+        "district_name_np": "भोजपुर जिल्ला",
+        "headquarters": "Bhojpur",
+        "total_local_levels": 9,
+        "total_wards": 81,
+        "local_levels": [
+          {
+            "name_en": "Arun",
+            "name_np": "अरुण",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Aamchok",
+            "name_np": "आमचोक",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Temkemaiyung",
+            "name_np": "टेम्केमैयुङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Pauwadungma",
+            "name_np": "पौवादुङमा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Bhojpur",
+            "name_np": "भोजपुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Ramprasadrai",
+            "name_np": "रामप्रसादराई",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Shadananda",
+            "name_np": "षडानन्द",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Salpasilichho",
+            "name_np": "साल्पासिलिछो",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Hatuwagadhi",
+            "name_np": "हतुवागढी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          }
+        ]
+      },
+      {
+        "district_name_en": "Dhankuta",
+        "district_name_np": "धनकुटा जिल्ला",
+        "headquarters": "Dhankuta",
+        "total_local_levels": 7,
+        "total_wards": 60,
+        "local_levels": [
+          {
+            "name_en": "Chaubise",
+            "name_np": "चौबिसे",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Chhathar Jorpati",
+            "name_np": "छथर जोरपाटी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Dhankuta",
+            "name_np": "धनकुटा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Pakhribas",
+            "name_np": "पाख्रीबास",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Mahalaxmi",
+            "name_np": "महालक्ष्मी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Sahidbhumi",
+            "name_np": "सहिदभूमि",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Sangurigadhi",
+            "name_np": "साँगुरीगढी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 10
+          }
+        ]
+      },
+      {
+        "district_name_en": "Ilam",
+        "district_name_np": "इलाम जिल्ला",
+        "headquarters": "Ilam",
+        "total_local_levels": 10,
+        "total_wards": 81,
+        "local_levels": [
+          {
+            "name_en": "Ilam",
+            "name_np": "ईलाम",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Chulachuli",
+            "name_np": "चुलाचुली",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Deumai",
+            "name_np": "देउमाई",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Phakphokthum",
+            "name_np": "फाकफोकथुम",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Mai",
+            "name_np": "माई",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Maijogmai",
+            "name_np": "माईजोगमाई",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Mangsebung",
+            "name_np": "माङसेबुङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Rong",
+            "name_np": "रोङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Sandakpur",
+            "name_np": "सन्दकपुर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Suryodaya",
+            "name_np": "सूर्योदय",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          }
+        ]
+      },
+      {
+        "district_name_en": "Jhapa",
+        "district_name_np": "झापा जिल्ला",
+        "headquarters": "Chandragadhi (Bhadrapur)",
+        "total_local_levels": 15,
+        "total_wards": 131,
+        "local_levels": [
+          {
+            "name_en": "Arjundhara",
+            "name_np": "अर्जुनधारा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Kachankawal",
+            "name_np": "कचनकवल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Kanakai",
+            "name_np": "कनकाई",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Kamal",
+            "name_np": "कमल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Gauradaha",
+            "name_np": "गौरादह",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Gauriganj",
+            "name_np": "गौरीगञ्ज",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Jhapa",
+            "name_np": "झापा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Damak",
+            "name_np": "दमक",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Bahradashi",
+            "name_np": "बाह्रदशी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Birtamode",
+            "name_np": "बिर्तामोड",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Buddhashanti",
+            "name_np": "बुद्धशान्ति",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Bhadrapur",
+            "name_np": "भद्रपुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Mechinagar",
+            "name_np": "मेचीनगर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 15
+          },
+          {
+            "name_en": "Shivasatakshi",
+            "name_np": "शिवसताक्षी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Haldibari",
+            "name_np": "हल्दीबारी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          }
+        ]
+      },
+      {
+        "district_name_en": "Khotang",
+        "district_name_np": "खोटाङ जिल्ला",
+        "headquarters": "Diktel",
+        "total_local_levels": 10,
+        "total_wards": 79,
+        "local_levels": [
+          {
+            "name_en": "Aiselukharka",
+            "name_np": "ऐसेलुखर्क",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Kepilasgadhi",
+            "name_np": "केपिलासगढी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Khotehang",
+            "name_np": "खोटेहाङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Jantedhunga",
+            "name_np": "जन्तेढुङ्गा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Diktel Rupakot Majhuwagadhi",
+            "name_np": "दिक्तेल रुपाकोट मझुवागढी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 15
+          },
+          {
+            "name_en": "Diprung Chuichumma",
+            "name_np": "दिप्रुङ चुइचुम्मा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Barahapokhari",
+            "name_np": "बराहपोखरी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Rawa Besi",
+            "name_np": "रावा बेसी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Sakela",
+            "name_np": "साकेला",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Halesituwachung",
+            "name_np": "हलेसीतुवाचुङ",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          }
+        ]
+      },
+      {
+        "district_name_en": "Morang",
+        "district_name_np": "मोरङ जिल्ला",
+        "headquarters": "Biratnagar",
+        "total_local_levels": 17,
+        "total_wards": 159,
+        "local_levels": [
+          {
+            "name_en": "Urlabari",
+            "name_np": "उर्लाबारी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Katahari",
+            "name_np": "कटहरी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Kanepokhari",
+            "name_np": "कानेपोखरी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Kerabari",
+            "name_np": "केराबारी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Gramthan",
+            "name_np": "ग्रामथान",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Jahada",
+            "name_np": "जहदा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Dhanpalthan",
+            "name_np": "धनपालथान",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Pathari Shanishchare",
+            "name_np": "पथरी शनिश्चरे",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Budhiganga",
+            "name_np": "बुढीगंगा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Belbari",
+            "name_np": "बेलवारी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Miklajung",
+            "name_np": "मिक्लाजुङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Rangeli",
+            "name_np": "रंगेली",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Ratuwamai",
+            "name_np": "रतुवामाई",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Letang",
+            "name_np": "लेटाङ",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Biratnagar",
+            "name_np": "विराटनगर",
+            "type_en": "Metropolitan City",
+            "type_np": "महानगरपालिका",
+            "wards": 19
+          },
+          {
+            "name_en": "Sunawarshi",
+            "name_np": "सुनवर्षी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Sundarharaincha",
+            "name_np": "सुन्दरहरैंचा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          }
+        ]
+      },
+      {
+        "district_name_en": "Okhaldhunga",
+        "district_name_np": "ओखलढुङ्गा जिल्ला",
+        "headquarters": "Okhaldhunga (Siddhicharan)",
+        "total_local_levels": 8,
+        "total_wards": 75,
+        "local_levels": [
+          {
+            "name_en": "Khijidemba",
+            "name_np": "खिजीदेम्वा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Champadevi",
+            "name_np": "चम्पादेवी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Chishankhugadhi",
+            "name_np": "चिशंखुगढी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Manebhanjyang",
+            "name_np": "मानेभञ्ज्याङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Molung",
+            "name_np": "मोलुङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Likhu",
+            "name_np": "लिखु",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Siddhicharan",
+            "name_np": "सिद्धिचरण",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Sunkoshi",
+            "name_np": "सुनकोशी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 10
+          }
+        ]
+      },
+      {
+        "district_name_en": "Panchthar",
+        "district_name_np": "पाँचथर जिल्ला",
+        "headquarters": "Phidim",
+        "total_local_levels": 8,
+        "total_wards": 60,
+        "local_levels": [
+          {
+            "name_en": "Kummayak",
+            "name_np": "कुम्मायक",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Tumbewa",
+            "name_np": "तुम्बेवा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Phalelung",
+            "name_np": "फालेलुङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Phalgunanda",
+            "name_np": "फाल्गुनन्द",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Phidim",
+            "name_np": "फिदिम",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Miklajung",
+            "name_np": "मिक्लाजुङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Yangwarak",
+            "name_np": "याङवरक",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Hilihang",
+            "name_np": "हिलिहाङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          }
+        ]
+      },
+      {
+        "district_name_en": "Sankhuwasabha",
+        "district_name_np": "सङ्खुवासभा जिल्ला",
+        "headquarters": "Khandbari",
+        "total_local_levels": 10,
+        "total_wards": 76,
+        "local_levels": [
+          {
+            "name_en": "Khandbari",
+            "name_np": "खाँदवारी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Chichila",
+            "name_np": "चिचिला",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Chainpur",
+            "name_np": "चैनपुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Dharmadevi",
+            "name_np": "धर्मदेवी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Panchkhapan",
+            "name_np": "पाँचखपन",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Bhotkhola",
+            "name_np": "भोटखोला",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Makalu",
+            "name_np": "मकालु",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Madi",
+            "name_np": "मादी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Sabhapokhari",
+            "name_np": "सभापोखरी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Silichong",
+            "name_np": "सिलीचोङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          }
+        ]
+      },
+      {
+        "district_name_en": "Solukhumbu",
+        "district_name_np": "सोलुखुम्बु जिल्ला",
+        "headquarters": "Salleri (Solududhkunda)",
+        "total_local_levels": 8,
+        "total_wards": 52,
+        "local_levels": [
+          {
+            "name_en": "Khumbu Pasang Lhamu",
+            "name_np": "खुम्बु पासाङल्हामु",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Thulung Dudhkoshi",
+            "name_np": "थुलुङ दुधकोशी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Nechasalyan",
+            "name_np": "नेचासल्यान",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Mahakulung",
+            "name_np": "महाकुलुङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Mapya Dudhkoshi",
+            "name_np": "माप्य दुधकोशी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Likhu Pike",
+            "name_np": "लिखु पिके",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Sotang",
+            "name_np": "सोताङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Solududhkunda",
+            "name_np": "सोलुदुधकुण्ड",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          }
+        ]
+      },
+      {
+        "district_name_en": "Sunsari",
+        "district_name_np": "सुनसरी जिल्ला",
+        "headquarters": "Inaruwa",
+        "total_local_levels": 12,
+        "total_wards": 124,
+        "local_levels": [
+          {
+            "name_en": "Itahari",
+            "name_np": "इटहरी",
+            "type_en": "Sub-Metropolitan City",
+            "type_np": "उपमहानगरपालिका",
+            "wards": 20
+          },
+          {
+            "name_en": "Inaruwa",
+            "name_np": "ईनरूवा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Koshi",
+            "name_np": "कोशी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Gadhi",
+            "name_np": "गढी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Duhabi",
+            "name_np": "दुहवी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Dewangunj",
+            "name_np": "देवानगञ्ज",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Dharan",
+            "name_np": "धरान",
+            "type_en": "Sub-Metropolitan City",
+            "type_np": "उपमहानगरपालिका",
+            "wards": 20
+          },
+          {
+            "name_en": "Barahakshetra",
+            "name_np": "बराहक्षेत्र",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Barju",
+            "name_np": "बर्जु",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Bhokraha Narsingh",
+            "name_np": "भोक्राहा नरसिंह",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Ramdhuni",
+            "name_np": "रामधुनी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Harinagar",
+            "name_np": "हरिनगर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          }
+        ]
+      },
+      {
+        "district_name_en": "Taplejung",
+        "district_name_np": "ताप्लेजुङ जिल्ला",
+        "headquarters": "Phungling",
+        "total_local_levels": 9,
+        "total_wards": 61,
+        "local_levels": [
+          {
+            "name_en": "Aathrai Tribeni",
+            "name_np": "आठराई त्रिवेणी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Pathibhara Yangwarak",
+            "name_np": "पाथीभरा याङवरक",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Phaktanglung",
+            "name_np": "फक्त्ताङलुङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Phungling",
+            "name_np": "फुङलिङ",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Mikwakhola",
+            "name_np": "मिक्वाखोला",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Meringden",
+            "name_np": "मेरिङदेन",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Maiwakhola",
+            "name_np": "मैवाखोला",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Sidingwa",
+            "name_np": "सिदिङ्वा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Sirijangha",
+            "name_np": "सिरीजङ्घा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          }
+        ]
+      },
+      {
+        "district_name_en": "Tehrathum",
+        "district_name_np": "तेह्रथुम जिल्ला",
+        "headquarters": "Myanglung",
+        "total_local_levels": 6,
+        "total_wards": 43,
+        "local_levels": [
+          {
+            "name_en": "AATHRAI",
+            "name_np": "आठराई",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Chhathar",
+            "name_np": "छथर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Phedap",
+            "name_np": "फेदाप",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Menchhayayem",
+            "name_np": "मेन्छयायेम",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Myanglung",
+            "name_np": "म्याङलुङ",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Laligurans",
+            "name_np": "लालीगुराँस",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          }
+        ]
+      },
+      {
+        "district_name_en": "Udayapur",
+        "district_name_np": "उदयपुर जिल्ला",
+        "headquarters": "Gaighat (Triyuga)",
+        "total_local_levels": 8,
+        "total_wards": 75,
+        "local_levels": [
+          {
+            "name_en": "Udaypurgadhi",
+            "name_np": "उदयपुरगढी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Katari",
+            "name_np": "कटारी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Chaudandigadhi",
+            "name_np": "चौदण्डीगढी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Tapli",
+            "name_np": "ताप्ली",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Triyuga",
+            "name_np": "त्रियुगा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 16
+          },
+          {
+            "name_en": "Rautamai",
+            "name_np": "रौतामाई",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Limchungbung",
+            "name_np": "लिम्चुङ्बुङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Belaka",
+            "name_np": "वेलका",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "province_id": 2,
+    "province_name_en": "Madhesh Province",
+    "province_name_np": "मधेश प्रदेश",
+    "capital_en": "Janakpur",
+    "capital_np": "जनकपुर",
+    "total_districts": 8,
+    "districts": [
+      {
+        "district_name_en": "Parsa",
+        "district_name_np": "पर्सा जिल्ला",
+        "headquarters": "Birgunj",
+        "total_local_levels": 14,
+        "total_wards": 112,
+        "local_levels": [
+          {
+            "name_en": "Kalikamai",
+            "name_np": "कालिकामाई",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Chhipaharmai",
+            "name_np": "छिपहरमाई",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Jagarnathpur",
+            "name_np": "जगरनाथपुर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Jirabhawani",
+            "name_np": "जिराभवानी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Thori",
+            "name_np": "ठोरी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Dhobini",
+            "name_np": "धोबीनी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Pakaha Mainpur",
+            "name_np": "पकहाँ मैनपुर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Paterwa Sugauli",
+            "name_np": "पटेर्वा सुगौली",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Parsagadhi",
+            "name_np": "पर्सागढी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Pokhariya",
+            "name_np": "पोखरिया",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Bahudarmai",
+            "name_np": "बहुदरमाई",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Bindabasini",
+            "name_np": "बिन्दबासिनी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Birgunj",
+            "name_np": "बिरगंज",
+            "type_en": "Metropolitan City",
+            "type_np": "महानगरपालिका",
+            "wards": 32
+          },
+          {
+            "name_en": "Sakhuwa Prasauni",
+            "name_np": "सखुवा प्रसौनी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          }
+        ]
+      },
+      {
+        "district_name_en": "Bara",
+        "district_name_np": "बारा जिल्ला",
+        "headquarters": "Kalaiya",
+        "total_local_levels": 16,
+        "total_wards": 167,
+        "local_levels": [
+          {
+            "name_en": "Adarsha Kotwal",
+            "name_np": "आदर्श कोतवाल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Karaiyamai",
+            "name_np": "करैयामाई",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Kalaiya",
+            "name_np": "कलैया",
+            "type_en": "Sub-Metropolitan City",
+            "type_np": "उपमहानगरपालिका",
+            "wards": 27
+          },
+          {
+            "name_en": "Kolhawi",
+            "name_np": "कोल्हवी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Jeetpursimara",
+            "name_np": "जीतपुरसिमरा",
+            "type_en": "Sub-Metropolitan City",
+            "type_np": "उपमहानगरपालिका",
+            "wards": 24
+          },
+          {
+            "name_en": "Devtaal",
+            "name_np": "देवताल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Nijgadh",
+            "name_np": "निजगढ",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 13
+          },
+          {
+            "name_en": "Pachrauta",
+            "name_np": "पचरौता",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Parwanipur",
+            "name_np": "परवानीपुर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Prasauni",
+            "name_np": "प्रसौनी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Pheta",
+            "name_np": "फेटा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Baragadhi",
+            "name_np": "बारागढी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Mahagadhimai",
+            "name_np": "महागढीमाई",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Bishrampur",
+            "name_np": "विश्रामपुर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Simraungadh",
+            "name_np": "सिम्रौनगढ",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Subarna",
+            "name_np": "सुवर्ण",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          }
+        ]
+      },
+      {
+        "district_name_en": "Rautahat",
+        "district_name_np": "रौतहट जिल्ला",
+        "headquarters": "Gaur",
+        "total_local_levels": 18,
+        "total_wards": 157,
+        "local_levels": [
+          {
+            "name_en": "Ishanath",
+            "name_np": "ईशनाथ",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Katahariya",
+            "name_np": "कटहरिया",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Gadhimai",
+            "name_np": "गढीमाई",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Garuda",
+            "name_np": "गरुडा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Gujara",
+            "name_np": "गुजरा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Gaur",
+            "name_np": "गौर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Chandrapur",
+            "name_np": "चन्द्रपुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Durga Bhagwati",
+            "name_np": "दुर्गा भगवती",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Dewahi Gonahi",
+            "name_np": "देवाही गोनाही",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Paroha",
+            "name_np": "परोहा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Fatuwa Bijayapur",
+            "name_np": "फतुवा विजयपुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Brindawan",
+            "name_np": "बृन्दावन",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Baudhimai",
+            "name_np": "बौधीमाई",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Madhav Narayan",
+            "name_np": "माधव नारायण",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Maulapur",
+            "name_np": "मौलापुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Yamunamai",
+            "name_np": "यमुनामाई",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Rajdevi",
+            "name_np": "राजदेवी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Rajpur",
+            "name_np": "राजपुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          }
+        ]
+      },
+      {
+        "district_name_en": "Sarlahi",
+        "district_name_np": "सर्लाही जिल्ला",
+        "headquarters": "Malangwa",
+        "total_local_levels": 20,
+        "total_wards": 200,
+        "local_levels": [
+          {
+            "name_en": "Ishworpur",
+            "name_np": "ईश्वरपुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 15
+          },
+          {
+            "name_en": "Kabilasi",
+            "name_np": "कविलासी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Kaudena",
+            "name_np": "कौडेना",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Godaita",
+            "name_np": "गोडैटा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Chakraghatta",
+            "name_np": "चक्रघट्टा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Chandranagar",
+            "name_np": "चन्द्रनगर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Dhankaul",
+            "name_np": "धनकौल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Parsa",
+            "name_np": "पर्सा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Barahathawa",
+            "name_np": "बरहथवा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 18
+          },
+          {
+            "name_en": "Balara",
+            "name_np": "बलरा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Basbariya",
+            "name_np": "बसबरिया",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Bagmati",
+            "name_np": "बागमती",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Bramhapuri",
+            "name_np": "ब्रम्हापुरी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Malangwa",
+            "name_np": "मलंगवा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Ramnagar",
+            "name_np": "रामनगर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Lalbandi",
+            "name_np": "लालबन्दी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 17
+          },
+          {
+            "name_en": "Bishnu",
+            "name_np": "विष्णु",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Haripur",
+            "name_np": "हरिपुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Haripurba",
+            "name_np": "हरिपुर्वा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Harion",
+            "name_np": "हरिवन",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          }
+        ]
+      },
+      {
+        "district_name_en": "Dhanusha",
+        "district_name_np": "धनुषा जिल्ला",
+        "headquarters": "Janakpur",
+        "total_local_levels": 18,
+        "total_wards": 169,
+        "local_levels": [
+          {
+            "name_en": "Aurahi",
+            "name_np": "औरहि",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "KAMALA",
+            "name_np": "कमला",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Kshireshwornath",
+            "name_np": "क्षिरेश्वरनाथ",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Ganeshman Charnath",
+            "name_np": "गणेशमान चारनाथ",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Janaknandini",
+            "name_np": "जनकनन्दिनी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Janakpurdham",
+            "name_np": "जनकपुरधाम",
+            "type_en": "Sub-Metropolitan City",
+            "type_np": "उपमहानगरपालिका",
+            "wards": 25
+          },
+          {
+            "name_en": "Dhanusadham",
+            "name_np": "धनुषाधाम",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Dhanauji",
+            "name_np": "धनौजी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Nagarain",
+            "name_np": "नगराइन",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Bateshwor",
+            "name_np": "बटेश्वर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Mithila",
+            "name_np": "मिथिला",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Mithila Bihari",
+            "name_np": "मिथिला बिहारी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Mukhiyapatti Musaharniya",
+            "name_np": "मुखियापट्टी मुसहरनिया",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Laxminiya",
+            "name_np": "लक्ष्मीनिया",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Bideha",
+            "name_np": "विदेह",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Sahidnagar",
+            "name_np": "शहिदनगर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Sabaila",
+            "name_np": "सबैला",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 13
+          },
+          {
+            "name_en": "Hansapur",
+            "name_np": "हंसपुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          }
+        ]
+      },
+      {
+        "district_name_en": "Siraha",
+        "district_name_np": "सिराहा जिल्ला",
+        "headquarters": "Siraha",
+        "total_local_levels": 17,
+        "total_wards": 164,
+        "local_levels": [
+          {
+            "name_en": "Arnama",
+            "name_np": "अर्नमा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Aurahi",
+            "name_np": "औरही",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Karjanha",
+            "name_np": "कर्जन्हा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Kalyanpur",
+            "name_np": "कल्याणपुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Golbazar",
+            "name_np": "गोलबजार",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 13
+          },
+          {
+            "name_en": "Dhangadhimai",
+            "name_np": "धनगढीमाई",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Naraha",
+            "name_np": "नरहा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Nawarajpur",
+            "name_np": "नवराजपुर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Bariyarpatti",
+            "name_np": "बरियारपट्टी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Bishnupur",
+            "name_np": "बिष्णुपुर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Bhagawanpur",
+            "name_np": "भगवानपुर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Mirchaiya",
+            "name_np": "मिर्चैया",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Laxmipur Patari",
+            "name_np": "लक्ष्मीपुर पतारी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Lahan",
+            "name_np": "लहान",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 24
+          },
+          {
+            "name_en": "Sakhuwanankarkatti",
+            "name_np": "सखुवानान्कारकट्टी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Siraha",
+            "name_np": "सिरहा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 22
+          },
+          {
+            "name_en": "Sukhipur",
+            "name_np": "सुखीपुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          }
+        ]
+      },
+      {
+        "district_name_en": "Mahottari",
+        "district_name_np": "महोत्तरी जिल्ला",
+        "headquarters": "Jaleshwar",
+        "total_local_levels": 15,
+        "total_wards": 138,
+        "local_levels": [
+          {
+            "name_en": "Ekdara",
+            "name_np": "एकडारा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Aurahi",
+            "name_np": "औरही",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Gaushala",
+            "name_np": "गौशाला",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Jaleshwor",
+            "name_np": "जलेश्वर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Pipara",
+            "name_np": "पिपरा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Bardibas",
+            "name_np": "बर्दिबास",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Balawa",
+            "name_np": "बलवा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Bhangaha",
+            "name_np": "भँगाहा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Matihani",
+            "name_np": "मटिहानी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Manarashiswa",
+            "name_np": "मनराशिस्वा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Mahottari",
+            "name_np": "महोत्तरी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Ramgopalpur",
+            "name_np": "रामगोपालपुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Loharpatti",
+            "name_np": "लोहरपट्टी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Samsi",
+            "name_np": "साम्सी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Sonama",
+            "name_np": "सोनमा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          }
+        ]
+      },
+      {
+        "district_name_en": "Saptari",
+        "district_name_np": "सप्तरी जिल्ला",
+        "headquarters": "Rajbiraj",
+        "total_local_levels": 18,
+        "total_wards": 164,
+        "local_levels": [
+          {
+            "name_en": "Agnisair Krishnasawaran",
+            "name_np": "अग्निसाइर कृष्णासवरन",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Kanchanrup",
+            "name_np": "कञ्चनरुप",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Khadak",
+            "name_np": "खडक",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Chhinnamasta",
+            "name_np": "छिन्नमस्ता",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Dakneshwori",
+            "name_np": "डाक्नेश्वरी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Tirahut",
+            "name_np": "तिरहुत",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Tilathi Koiladi",
+            "name_np": "तिलाठी कोईलाडी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Balan-Bihul",
+            "name_np": "बलान-विहुल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Bishnupur",
+            "name_np": "बिष्णुपुर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Bodebarsain",
+            "name_np": "बोदेबरसाइन",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Mahadeva",
+            "name_np": "महादेवा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Rajgadh",
+            "name_np": "राजगढ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Rajbiraj",
+            "name_np": "राजबिराज",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 16
+          },
+          {
+            "name_en": "Rupani",
+            "name_np": "रुपनी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Shambhunath",
+            "name_np": "शम्भुनाथ",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Saptakoshi",
+            "name_np": "सप्तकोशी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Surunga",
+            "name_np": "सुरुङ्गा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Hanumannagar Kankalini",
+            "name_np": "हनुमाननगर कंकालिनी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "province_id": 3,
+    "province_name_en": "Bagmati Province",
+    "province_name_np": "बागमती प्रदेश",
+    "capital_en": "Hetauda",
+    "capital_np": "हेटौडा",
+    "total_districts": 13,
+    "districts": [
+      {
+        "district_name_en": "Sindhuli",
+        "district_name_np": "सिन्धुली जिल्ला",
+        "headquarters": "Sindhulimadhi (Kamalamai)",
+        "total_local_levels": 9,
+        "total_wards": 79,
+        "local_levels": [
+          {
+            "name_en": "Kamalamai",
+            "name_np": "कमलामाई",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Golanjor",
+            "name_np": "गोलन्जोर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Ghyanglekh",
+            "name_np": "घ्याङलेख",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Tinpatan",
+            "name_np": "तीनपाटन",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Dudhauli",
+            "name_np": "दुधौली",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Phikkal",
+            "name_np": "फिक्कल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Marin",
+            "name_np": "मरिण",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Sunkoshi",
+            "name_np": "सुनकोशी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Hariharpurgadhi",
+            "name_np": "हरिहरपुरगढी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          }
+        ]
+      },
+      {
+        "district_name_en": "Ramechhap",
+        "district_name_np": "रामेछाप जिल्ला",
+        "headquarters": "Manthali",
+        "total_local_levels": 8,
+        "total_wards": 64,
+        "local_levels": [
+          {
+            "name_en": "Umakunda",
+            "name_np": "उमाकुण्ड",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Khandadevi",
+            "name_np": "खाँडादेवी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Gokulganga",
+            "name_np": "गोकुलगङ्गा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Doramba Shailung",
+            "name_np": "दोरम्बा शैलुङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Manthali",
+            "name_np": "मन्थली",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Ramechhap",
+            "name_np": "रामेछाप",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Likhu Tamakoshi",
+            "name_np": "लिखु तामाकोशी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Sunapati",
+            "name_np": "सुनापती",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          }
+        ]
+      },
+      {
+        "district_name_en": "Dolakha",
+        "district_name_np": "दोलखा जिल्ला",
+        "headquarters": "Charikot (Bhimeshwar)",
+        "total_local_levels": 9,
+        "total_wards": 74,
+        "local_levels": [
+          {
+            "name_en": "Kalinchowk",
+            "name_np": "कालिन्चोक",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Gaurishankar",
+            "name_np": "गौरिशंकर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Jiri",
+            "name_np": "जिरी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Tamakoshi",
+            "name_np": "तामाकोशी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Bhimeshwor",
+            "name_np": "भिमेश्वर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Melung",
+            "name_np": "मेलुङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Bigu",
+            "name_np": "विगु",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Baiteshwor",
+            "name_np": "वैतेश्वर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Shailung",
+            "name_np": "शैलुङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          }
+        ]
+      },
+      {
+        "district_name_en": "Bhaktapur",
+        "district_name_np": "भक्तपुर जिल्ला",
+        "headquarters": "Bhaktapur",
+        "total_local_levels": 4,
+        "total_wards": 38,
+        "local_levels": [
+          {
+            "name_en": "Changunarayan",
+            "name_np": "चाँगुनारायण",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Bhaktapur",
+            "name_np": "भक्तपुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Madhyapur Thimi",
+            "name_np": "मध्यपुर थिमि",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Suryabinayak",
+            "name_np": "सूर्यविनायक",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          }
+        ]
+      },
+      {
+        "district_name_en": "Dhading",
+        "district_name_np": "धादिङ जिल्ला",
+        "headquarters": "Dhading Besi (Nilkantha)",
+        "total_local_levels": 13,
+        "total_wards": 104,
+        "local_levels": [
+          {
+            "name_en": "Khaniyabas",
+            "name_np": "खनियाबास",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Gangajamuna",
+            "name_np": "गङ्गाजमुना",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Gajuri",
+            "name_np": "गजुरी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Galchhi",
+            "name_np": "गल्छी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Jwalamukhi",
+            "name_np": "ज्वालामूखी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Tripurasundari",
+            "name_np": "त्रिपुरासुन्दरी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Thakre",
+            "name_np": "थाक्रे",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Dhunibeshi",
+            "name_np": "धुनिवेशी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Neelakantha",
+            "name_np": "नीलकण्ठ",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Netrawati Dabjong",
+            "name_np": "नेत्रावती डबजोङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Benighat Rorang",
+            "name_np": "बेनीघाट रोराङ्ग",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Rubi Valley",
+            "name_np": "रुवी भ्याली",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Siddhalek",
+            "name_np": "सिद्धलेक",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          }
+        ]
+      },
+      {
+        "district_name_en": "Kathmandu",
+        "district_name_np": "काठमाडौँ जिल्ला",
+        "headquarters": "Kathmandu",
+        "total_local_levels": 11,
+        "total_wards": 138,
+        "local_levels": [
+          {
+            "name_en": "Kageshwori Manohara",
+            "name_np": "कागेश्वरी मनोहरा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Kathmandu",
+            "name_np": "काठमाडौँ",
+            "type_en": "Metropolitan City",
+            "type_np": "महानगरपालिका",
+            "wards": 32
+          },
+          {
+            "name_en": "Kirtipur",
+            "name_np": "कीर्तिपुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Gokarneshwor",
+            "name_np": "गोकर्णेश्वर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Chandragiri",
+            "name_np": "चन्द्रागिरि",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 15
+          },
+          {
+            "name_en": "Tokha",
+            "name_np": "टोखा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Tarakeshwor",
+            "name_np": "तारकेश्वर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Dakshinkali",
+            "name_np": "दक्षिणकाली",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Nagarjun",
+            "name_np": "नागार्जुन",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Budhanilkantha",
+            "name_np": "बुढानिलकण्ठ",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 13
+          },
+          {
+            "name_en": "Shankharapur",
+            "name_np": "शङ्खरापुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          }
+        ]
+      },
+      {
+        "district_name_en": "Kavrepalanchok",
+        "district_name_np": "काभ्रेपलाञ्चोक जिल्ला",
+        "headquarters": "Dhulikhel",
+        "total_local_levels": 13,
+        "total_wards": 135,
+        "local_levels": [
+          {
+            "name_en": "Khanikhola",
+            "name_np": "खानीखोला",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Chaunrideurali",
+            "name_np": "चौंरीदेउराली",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Temal",
+            "name_np": "तेमाल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Dhulikhel",
+            "name_np": "धुलिखेल",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Namobuddha",
+            "name_np": "नमोबुद्ध",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Panauti",
+            "name_np": "पनौती",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Panchkhal",
+            "name_np": "पाँचखाल",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 13
+          },
+          {
+            "name_en": "Banepa",
+            "name_np": "बनेपा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Bethanchowk",
+            "name_np": "बेथानचोक",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Bhumlu",
+            "name_np": "भुम्लु",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Mandandeupur",
+            "name_np": "मण्डनदेउपुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Mahabharat",
+            "name_np": "महाभारत",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Roshi",
+            "name_np": "रोशी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 12
+          }
+        ]
+      },
+      {
+        "district_name_en": "Lalitpur",
+        "district_name_np": "ललितपुर जिल्ला",
+        "headquarters": "Lalitpur",
+        "total_local_levels": 6,
+        "total_wards": 71,
+        "local_levels": [
+          {
+            "name_en": "Konjyosom",
+            "name_np": "कोन्ज्योसोम",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Godawari",
+            "name_np": "गोदावरी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Mahankal",
+            "name_np": "महाङ्काल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Mahalaxmi",
+            "name_np": "महालक्ष्मी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Lalitpur",
+            "name_np": "ललितपुर",
+            "type_en": "Metropolitan City",
+            "type_np": "महानगरपालिका",
+            "wards": 29
+          },
+          {
+            "name_en": "Bagmati",
+            "name_np": "वाग्मती",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          }
+        ]
+      },
+      {
+        "district_name_en": "Nuwakot",
+        "district_name_np": "नुवाकोट जिल्ला",
+        "headquarters": "Bidur",
+        "total_local_levels": 12,
+        "total_wards": 88,
+        "local_levels": [
+          {
+            "name_en": "Kakani",
+            "name_np": "ककनी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Kispang",
+            "name_np": "किस्पाङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Tadi",
+            "name_np": "तादी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Tarkeshwor",
+            "name_np": "तारकेश्वर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Dupcheshwor",
+            "name_np": "दुप्चेश्वर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Panchakanya",
+            "name_np": "पञ्चकन्या",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Belkotgadhi",
+            "name_np": "बेलकोटगढी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 13
+          },
+          {
+            "name_en": "Myagang",
+            "name_np": "म्यागङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Likhu",
+            "name_np": "लिखु",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Bidur",
+            "name_np": "विदुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 13
+          },
+          {
+            "name_en": "Shivapuri",
+            "name_np": "शिवपुरी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Suryagadhi",
+            "name_np": "सूर्यगढी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          }
+        ]
+      },
+      {
+        "district_name_en": "Rasuwa",
+        "district_name_np": "रसुवा जिल्ला",
+        "headquarters": "Dhunche",
+        "total_local_levels": 5,
+        "total_wards": 27,
+        "local_levels": [
+          {
+            "name_en": "Aamachhodingmo",
+            "name_np": "आमाछोदिङमो",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Uttargaya",
+            "name_np": "उत्तरगया",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Kalika",
+            "name_np": "कालिका",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Gosainkunda",
+            "name_np": "गोसाईकुण्ड",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Naukunda",
+            "name_np": "नौकुण्ड",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          }
+        ]
+      },
+      {
+        "district_name_en": "Sindhupalchok",
+        "district_name_np": "सिन्धुपाल्चोक जिल्ला",
+        "headquarters": "Chautara",
+        "total_local_levels": 12,
+        "total_wards": 103,
+        "local_levels": [
+          {
+            "name_en": "Indrawati",
+            "name_np": "ईन्द्रावती",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Chautara Sangachokgadhi",
+            "name_np": "चौतारा साँगाचोकगढी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Jugal",
+            "name_np": "जुगल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Tripurasundari",
+            "name_np": "त्रिपुरासुन्दरी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Panchpokhari Thangpal",
+            "name_np": "पाँचपोखरी थाङपाल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Balephi",
+            "name_np": "बलेफी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Bhotekoshi",
+            "name_np": "भोटेकोशी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Melamchi",
+            "name_np": "मेलम्ची",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 13
+          },
+          {
+            "name_en": "Lisankhu Pakhar",
+            "name_np": "लिसंखु पाखर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Barhabise",
+            "name_np": "वाह्रविसे",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Sunkoshi",
+            "name_np": "सुनकोशी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Helambu",
+            "name_np": "हेलम्बु",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          }
+        ]
+      },
+      {
+        "district_name_en": "Chitwan",
+        "district_name_np": "चितवन जिल्ला",
+        "headquarters": "Bharatpur",
+        "total_local_levels": 7,
+        "total_wards": 98,
+        "local_levels": [
+          {
+            "name_en": "Ichchhakamana",
+            "name_np": "इच्छाकामना",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Kalika",
+            "name_np": "कालिका",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Khairahani",
+            "name_np": "खैरहनी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 13
+          },
+          {
+            "name_en": "Bharatpur",
+            "name_np": "भरतपुर",
+            "type_en": "Metropolitan City",
+            "type_np": "महानगरपालिका",
+            "wards": 29
+          },
+          {
+            "name_en": "Madi",
+            "name_np": "माडी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Ratnanagar",
+            "name_np": "रत्ननगर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 16
+          },
+          {
+            "name_en": "Rapti",
+            "name_np": "राप्ती",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 13
+          }
+        ]
+      },
+      {
+        "district_name_en": "Makwanpur",
+        "district_name_np": "मकवानपुर जिल्ला",
+        "headquarters": "Hetauda",
+        "total_local_levels": 10,
+        "total_wards": 102,
+        "local_levels": [
+          {
+            "name_en": "Indrasarowar",
+            "name_np": "इन्द्रसरोवर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Kailash",
+            "name_np": "कैलाश",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Thaha",
+            "name_np": "थाहा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Bakaiya",
+            "name_np": "बकैया",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Bhimphedi",
+            "name_np": "भीमफेदी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Makawanpurgadhi",
+            "name_np": "मकवानपुरगढी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Manahari",
+            "name_np": "मनहरी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Raksirang",
+            "name_np": "राक्सिराङ्ग",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Bagmati",
+            "name_np": "वाग्मती",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Hetauda",
+            "name_np": "हेटौडा",
+            "type_en": "Sub-Metropolitan City",
+            "type_np": "उपमहानगरपालिका",
+            "wards": 19
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "province_id": 4,
+    "province_name_en": "Gandaki Province",
+    "province_name_np": "गण्डकी प्रदेश",
+    "capital_en": "Pokhara",
+    "capital_np": "पोखरा",
+    "total_districts": 11,
+    "districts": [
+      {
+        "district_name_en": "Baglung",
+        "district_name_np": "बागलुङ जिल्ला",
+        "headquarters": "Baglung",
+        "total_local_levels": 10,
+        "total_wards": 85,
+        "local_levels": [
+          {
+            "name_en": "Kathekhola",
+            "name_np": "काठेखोला",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Galkot",
+            "name_np": "गल्कोट",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Jaimini",
+            "name_np": "जैमिनी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Dhorpatan",
+            "name_np": "ढोरपाटन",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Tamankhola",
+            "name_np": "तमानखोला",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Tarakhola",
+            "name_np": "ताराखोला",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Nisikhola",
+            "name_np": "निसीखोला",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Badigad",
+            "name_np": "बडिगाड",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Baglung",
+            "name_np": "बागलुङ",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Bareng",
+            "name_np": "वरेङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          }
+        ]
+      },
+      {
+        "district_name_en": "Gorkha",
+        "district_name_np": "गोरखा जिल्ला",
+        "headquarters": "Gorkha",
+        "total_local_levels": 11,
+        "total_wards": 94,
+        "local_levels": [
+          {
+            "name_en": "Ajirkot",
+            "name_np": "अजिरकोट",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Aarughat",
+            "name_np": "आरुघाट",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Gandaki",
+            "name_np": "गण्डकी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Gorkha",
+            "name_np": "गोरखा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Chumnubri",
+            "name_np": "चुमनुव्री",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Dharche",
+            "name_np": "धार्चे",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Palungtar",
+            "name_np": "पालुङटार",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Barpak Sulikot",
+            "name_np": "बारपाक सुलीकोट",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Bhimsenthapa",
+            "name_np": "भिमसेनथापा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Shahid Lakhan",
+            "name_np": "शहिद लखन",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Siranchok",
+            "name_np": "सिरानचोक",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          }
+        ]
+      },
+      {
+        "district_name_en": "Kaski",
+        "district_name_np": "कास्की जिल्ला",
+        "headquarters": "Pokhara",
+        "total_local_levels": 5,
+        "total_wards": 72,
+        "local_levels": [
+          {
+            "name_en": "Annapurna",
+            "name_np": "अन्नपूर्ण",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Pokhara",
+            "name_np": "पोखरा",
+            "type_en": "Metropolitan City",
+            "type_np": "महानगरपालिका",
+            "wards": 33
+          },
+          {
+            "name_en": "Machhapuchchhre",
+            "name_np": "माछापुच्छ्रे",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Madi",
+            "name_np": "मादी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Rupa",
+            "name_np": "रुपा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          }
+        ]
+      },
+      {
+        "district_name_en": "Lamjung",
+        "district_name_np": "लमजुङ जिल्ला",
+        "headquarters": "Besisahar",
+        "total_local_levels": 8,
+        "total_wards": 75,
+        "local_levels": [
+          {
+            "name_en": "Kwholasothar",
+            "name_np": "क्व्होलासोथार",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Dudhpokhari",
+            "name_np": "दूधपोखरी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Dordi",
+            "name_np": "दोर्दी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Besishahar",
+            "name_np": "बेसीशहर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Madhya Nepal",
+            "name_np": "मध्यनेपाल",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Marsyangdi",
+            "name_np": "मर्स्याङदी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Rainas",
+            "name_np": "राइनास",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Sundarbazar",
+            "name_np": "सुन्दरबजार",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          }
+        ]
+      },
+      {
+        "district_name_en": "Manang",
+        "district_name_np": "मनाङ जिल्ला",
+        "headquarters": "Chame",
+        "total_local_levels": 4,
+        "total_wards": 28,
+        "local_levels": [
+          {
+            "name_en": "Chame",
+            "name_np": "चामे",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Narpa Bhumi",
+            "name_np": "नार्पा भूमि",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Nason",
+            "name_np": "नासोँ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Manang Ngisyang",
+            "name_np": "मनाङ ङिस्याङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          }
+        ]
+      },
+      {
+        "district_name_en": "Mustang",
+        "district_name_np": "मुस्ताङ जिल्ला",
+        "headquarters": "Jomsom",
+        "total_local_levels": 5,
+        "total_wards": 25,
+        "local_levels": [
+          {
+            "name_en": "Gharapjhong",
+            "name_np": "घरपझोङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Thasang",
+            "name_np": "थासाङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Lo-Ghekar Damodarkunda",
+            "name_np": "लो-घेकर दामोदरकुण्ड",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Lomanthang",
+            "name_np": "लोमन्थाङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Baragung Muktichhetra",
+            "name_np": "वारागुङ मुक्तिक्षेत्र",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          }
+        ]
+      },
+      {
+        "district_name_en": "Myagdi",
+        "district_name_np": "म्याग्दी जिल्ला",
+        "headquarters": "Beni",
+        "total_local_levels": 6,
+        "total_wards": 45,
+        "local_levels": [
+          {
+            "name_en": "Annapurna",
+            "name_np": "अन्नपूर्ण",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Dhawalagiri",
+            "name_np": "धवलागिरी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Beni",
+            "name_np": "बेनी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Mangala",
+            "name_np": "मंगला",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Malika",
+            "name_np": "मालिका",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Raghuganga",
+            "name_np": "रघुगंगा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          }
+        ]
+      },
+      {
+        "district_name_en": "Nawalpur",
+        "district_name_np": "नवलपुर जिल्ला",
+        "headquarters": "Kawasoti",
+        "total_local_levels": 8,
+        "total_wards": 92,
+        "local_levels": [
+          {
+            "name_en": "Kawasoti",
+            "name_np": "कावासोती",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 17
+          },
+          {
+            "name_en": "Gaindakot",
+            "name_np": "गैंडाकोट",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 18
+          },
+          {
+            "name_en": "Devchuli",
+            "name_np": "देवचुली",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 17
+          },
+          {
+            "name_en": "Bulingtar",
+            "name_np": "बुलिङटार",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Baudikali",
+            "name_np": "बौदीकाली",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Madhyabindu",
+            "name_np": "मध्यविन्दु",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 15
+          },
+          {
+            "name_en": "Binayi Tribeni",
+            "name_np": "विनयी त्रिबेणी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Hupsekot",
+            "name_np": "हुप्सेकोट",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          }
+        ]
+      },
+      {
+        "district_name_en": "Parbat",
+        "district_name_np": "पर्वत जिल्ला",
+        "headquarters": "Kusma",
+        "total_local_levels": 7,
+        "total_wards": 61,
+        "local_levels": [
+          {
+            "name_en": "Kushma",
+            "name_np": "कुश्मा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Jaljala",
+            "name_np": "जलजला",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Paiyun",
+            "name_np": "पैयूं",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Phalewas",
+            "name_np": "फलेवास",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Mahashila",
+            "name_np": "महाशिला",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Modi",
+            "name_np": "मोदी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Bihadi",
+            "name_np": "विहादी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          }
+        ]
+      },
+      {
+        "district_name_en": "Syangja",
+        "district_name_np": "स्याङ्जा जिल्ला",
+        "headquarters": "Putalibazar",
+        "total_local_levels": 11,
+        "total_wards": 97,
+        "local_levels": [
+          {
+            "name_en": "Arjunchaupari",
+            "name_np": "अर्जुनचौपारी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Aandhikhola",
+            "name_np": "आँधिखोला",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Kaligandaki",
+            "name_np": "कालीगण्डकी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Galyang",
+            "name_np": "गल्याङ",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Chapakot",
+            "name_np": "चापाकोट",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Putalibazar",
+            "name_np": "पुतलीबजार",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Phedikhola",
+            "name_np": "फेदीखोला",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Biruwa",
+            "name_np": "बिरुवा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Bheerkot",
+            "name_np": "भीरकोट",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Waling",
+            "name_np": "वालिङ",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Harinas",
+            "name_np": "हरिनास",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          }
+        ]
+      },
+      {
+        "district_name_en": "Tanahun",
+        "district_name_np": "तनहुँ जिल्ला",
+        "headquarters": "Damauli (Vyas)",
+        "total_local_levels": 10,
+        "total_wards": 85,
+        "local_levels": [
+          {
+            "name_en": "Aanbookhaireni",
+            "name_np": "आँबुखैरेनी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Rishing",
+            "name_np": "ऋषिङ्ग",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Ghiring",
+            "name_np": "घिरिङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Devghat",
+            "name_np": "देवघाट",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Bandipur",
+            "name_np": "बन्दिपुर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Bhanu",
+            "name_np": "भानु",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 13
+          },
+          {
+            "name_en": "Bhimad",
+            "name_np": "भिमाद",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Myagde",
+            "name_np": "म्याग्दे",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Vyas",
+            "name_np": "व्यास",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Shuklagandaki",
+            "name_np": "शुक्लागण्डकी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "province_id": 5,
+    "province_name_en": "Lumbini Province",
+    "province_name_np": "लुम्बिनी प्रदेश",
+    "capital_en": "Deukhuri",
+    "capital_np": "देउखुरी",
+    "total_districts": 12,
+    "districts": [
+      {
+        "district_name_en": "Kapilvastu",
+        "district_name_np": "कपिलवस्तु जिल्ला",
+        "headquarters": "Taulihawa",
+        "total_local_levels": 10,
+        "total_wards": 96,
+        "local_levels": [
+          {
+            "name_en": "Kapilvastu",
+            "name_np": "कपिलवस्तु",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Krishnanagar",
+            "name_np": "कृष्णनगर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Banganga",
+            "name_np": "बाणगंगा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Buddhabhumi",
+            "name_np": "बुद्धभूमि",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Maharajgang",
+            "name_np": "महाराजग‌ंज",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Mayadevi",
+            "name_np": "मायादेवी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Yesodhara",
+            "name_np": "यशोधरा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Bijayanagar",
+            "name_np": "विजयनगर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Shivraj",
+            "name_np": "शिवराज",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Suddhodhan",
+            "name_np": "शुद्दोधन",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          }
+        ]
+      },
+      {
+        "district_name_en": "Parasi",
+        "district_name_np": "नवलपरासी (बर्दघाट सुस्ता पश्चिम) जिल्ला",
+        "headquarters": "Parasi (Ramgram)",
+        "total_local_levels": 7,
+        "total_wards": 74,
+        "local_levels": [
+          {
+            "name_en": "Palhinandan",
+            "name_np": "पाल्हिनन्दन",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Pratappur",
+            "name_np": "प्रतापपुर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Bardaghat",
+            "name_np": "बर्दघाट",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 16
+          },
+          {
+            "name_en": "Ramgram",
+            "name_np": "रामग्राम",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 18
+          },
+          {
+            "name_en": "Sarawal",
+            "name_np": "सरावल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Sunwal",
+            "name_np": "सुनवल",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 13
+          },
+          {
+            "name_en": "Susta",
+            "name_np": "सुस्ता",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          }
+        ]
+      },
+      {
+        "district_name_en": "Rupandehi",
+        "district_name_np": "रुपन्देही जिल्ला",
+        "headquarters": "Bhairahawa (Siddharthanagar)",
+        "total_local_levels": 16,
+        "total_wards": 155,
+        "local_levels": [
+          {
+            "name_en": "Omsatiya",
+            "name_np": "ओमसतिया",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Kanchan",
+            "name_np": "कन्चन",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Kotahimai",
+            "name_np": "कोटहीमाई",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Gaidahawa",
+            "name_np": "गैडहवा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Tilottama",
+            "name_np": "तिलोत्तमा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 17
+          },
+          {
+            "name_en": "Devdaha",
+            "name_np": "देवदह",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Butwal",
+            "name_np": "बुटवल",
+            "type_en": "Sub-Metropolitan City",
+            "type_np": "उपमहानगरपालिका",
+            "wards": 19
+          },
+          {
+            "name_en": "Marchawari",
+            "name_np": "मर्चवारी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Mayadevi",
+            "name_np": "मायादेवी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Rohini",
+            "name_np": "रोहिणी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Lumbini Sanskritik",
+            "name_np": "लुम्बिनी सांस्कृतिक",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 13
+          },
+          {
+            "name_en": "Shuddhodhan",
+            "name_np": "शुद्धोधन",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Sammarimai",
+            "name_np": "सम्मरीमाई",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Siddharthanagar",
+            "name_np": "सिद्धार्थनगर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 13
+          },
+          {
+            "name_en": "Siyari",
+            "name_np": "सियारी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Sainamaina",
+            "name_np": "सैनामैना",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          }
+        ]
+      },
+      {
+        "district_name_en": "Arghakhanchi",
+        "district_name_np": "अर्घाखाँची जिल्ला",
+        "headquarters": "Sandhikharka",
+        "total_local_levels": 6,
+        "total_wards": 61,
+        "local_levels": [
+          {
+            "name_en": "Chhatradev",
+            "name_np": "छत्रदेव",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Panini",
+            "name_np": "पाणिनी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Bhumikasthan",
+            "name_np": "भुमिकास्थान",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Malarani",
+            "name_np": "मालारानी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Shitaganga",
+            "name_np": "शितगंगा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Sandhikharka",
+            "name_np": "सन्धिखर्क",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          }
+        ]
+      },
+      {
+        "district_name_en": "Gulmi",
+        "district_name_np": "गुल्मी जिल्ला",
+        "headquarters": "Tamghas (Resunga)",
+        "total_local_levels": 12,
+        "total_wards": 93,
+        "local_levels": [
+          {
+            "name_en": "Isma",
+            "name_np": "इस्मा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Kaligandaki",
+            "name_np": "कालीगण्डकी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Gulmidarbar",
+            "name_np": "गुल्मीदरबार",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Chandrakot",
+            "name_np": "चन्द्रकोट",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Chhatrakot",
+            "name_np": "छत्रकोट",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Dhurkot",
+            "name_np": "धुर्कोट",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Madane",
+            "name_np": "मदाने",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Malika",
+            "name_np": "मालिका",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Musikot",
+            "name_np": "मुसिकोट",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Rurukshetra",
+            "name_np": "रुरुक्षेत्र",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Resunga",
+            "name_np": "रेसुङ्गा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Satyawati",
+            "name_np": "सत्यवती",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          }
+        ]
+      },
+      {
+        "district_name_en": "Palpa",
+        "district_name_np": "पाल्पा जिल्ला",
+        "headquarters": "Tansen",
+        "total_local_levels": 10,
+        "total_wards": 81,
+        "local_levels": [
+          {
+            "name_en": "Tansen",
+            "name_np": "तानसेन",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Tinau",
+            "name_np": "तिनाउ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Nisdi",
+            "name_np": "निस्दी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Purbakhola",
+            "name_np": "पुर्वखोला",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Baganaskali",
+            "name_np": "बगनासकाली",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Mathagadhi",
+            "name_np": "माथागढी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Rambha",
+            "name_np": "रम्भा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Rampur",
+            "name_np": "रामपुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Ribdikot",
+            "name_np": "रिब्दीकोट",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Rainadevi Chhahara",
+            "name_np": "रैनादेवी छहरा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          }
+        ]
+      },
+      {
+        "district_name_en": "Dang",
+        "district_name_np": "दाङ जिल्ला",
+        "headquarters": "Ghorahi",
+        "total_local_levels": 10,
+        "total_wards": 100,
+        "local_levels": [
+          {
+            "name_en": "Gadhawa",
+            "name_np": "गढवा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Ghorahi",
+            "name_np": "घोराही",
+            "type_en": "Sub-Metropolitan City",
+            "type_np": "उपमहानगरपालिका",
+            "wards": 19
+          },
+          {
+            "name_en": "Tulsipur",
+            "name_np": "तुल्सीपुर",
+            "type_en": "Sub-Metropolitan City",
+            "type_np": "उपमहानगरपालिका",
+            "wards": 19
+          },
+          {
+            "name_en": "Dangisharan",
+            "name_np": "दँगीशरण",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Bangalachuli",
+            "name_np": "बँगलाचुली",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Babai",
+            "name_np": "बबई",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Rajpur",
+            "name_np": "राजपुर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Rapti",
+            "name_np": "राप्ती",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Lamahi",
+            "name_np": "लमही",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Shantinagar",
+            "name_np": "शान्तिनगर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          }
+        ]
+      },
+      {
+        "district_name_en": "Pyuthan",
+        "district_name_np": "प्युठान जिल्ला",
+        "headquarters": "Pyuthan",
+        "total_local_levels": 9,
+        "total_wards": 64,
+        "local_levels": [
+          {
+            "name_en": "Airawati",
+            "name_np": "ऐरावती",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Gaumukhi",
+            "name_np": "गौमुखी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Jhimruk",
+            "name_np": "झिमरुक",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Naubahini",
+            "name_np": "नौबहिनी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Pyuthan",
+            "name_np": "प्युठान",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Mallarani",
+            "name_np": "मल्लरानी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Mandabi",
+            "name_np": "माण्डवी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Sarumarani",
+            "name_np": "सरुमारानी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Sworgadwari",
+            "name_np": "स्वर्गद्वारी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          }
+        ]
+      },
+      {
+        "district_name_en": "Rolpa",
+        "district_name_np": "रोल्पा जिल्ला",
+        "headquarters": "Liwang (Rolpa)",
+        "total_local_levels": 10,
+        "total_wards": 72,
+        "local_levels": [
+          {
+            "name_en": "Gangadev",
+            "name_np": "गंगादेव",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Triveni",
+            "name_np": "त्रिवेणी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Thabang",
+            "name_np": "थबाङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Paribartan",
+            "name_np": "परिवर्तन",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Madi",
+            "name_np": "माडी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Runtigadhi",
+            "name_np": "रुन्टीगढी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Rolpa",
+            "name_np": "रोल्पा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Lungri",
+            "name_np": "लुङग्री",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Sunchhahari",
+            "name_np": "सुनछहरी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Sunilsmriti",
+            "name_np": "सुनिलस्मृति",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          }
+        ]
+      },
+      {
+        "district_name_en": "Eastern Rukum",
+        "district_name_np": "पूर्वी रूकुम जिल्ला",
+        "headquarters": "Rukumkot",
+        "total_local_levels": 3,
+        "total_wards": 31,
+        "local_levels": [
+          {
+            "name_en": "Putha Uttarganga",
+            "name_np": "पुथा उत्तरगङ्गा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Bhume",
+            "name_np": "भूमे",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Sisne",
+            "name_np": "सिस्ने",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          }
+        ]
+      },
+      {
+        "district_name_en": "Banke",
+        "district_name_np": "बाँके जिल्ला",
+        "headquarters": "Nepalganj",
+        "total_local_levels": 8,
+        "total_wards": 81,
+        "local_levels": [
+          {
+            "name_en": "Kohalpur",
+            "name_np": "कोहलपुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 15
+          },
+          {
+            "name_en": "Khajura",
+            "name_np": "खजुरा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Janaki",
+            "name_np": "जानकी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Duduwa",
+            "name_np": "डुडुवा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Narainapur",
+            "name_np": "नरैनापुर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Nepalgunj",
+            "name_np": "नेपालगँज",
+            "type_en": "Sub-Metropolitan City",
+            "type_np": "उपमहानगरपालिका",
+            "wards": 23
+          },
+          {
+            "name_en": "Baijanath",
+            "name_np": "बैजनाथ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Raptisonari",
+            "name_np": "राप्तीसोनारी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          }
+        ]
+      },
+      {
+        "district_name_en": "Bardiya",
+        "district_name_np": "बर्दिया जिल्ला",
+        "headquarters": "Gulariya",
+        "total_local_levels": 8,
+        "total_wards": 75,
+        "local_levels": [
+          {
+            "name_en": "Gulariya",
+            "name_np": "गुलरिया",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Geruwa",
+            "name_np": "गेरुवा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Thakurbaba",
+            "name_np": "ठाकुरबाबा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Badhaiyatal",
+            "name_np": "बढैयाताल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Bansgadhi",
+            "name_np": "बाँसगढी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Barbardiya",
+            "name_np": "बारबर्दिया",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Madhuwan",
+            "name_np": "मधुवन",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Rajapur",
+            "name_np": "राजापुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "province_id": 6,
+    "province_name_en": "Karnali Province",
+    "province_name_np": "कर्णाली प्रदेश",
+    "capital_en": "Birendranagar",
+    "capital_np": "बीरेन्द्रनगर",
+    "total_districts": 10,
+    "districts": [
+      {
+        "district_name_en": "Western Rukum",
+        "district_name_np": "पश्चिमी रूकुम जिल्ला",
+        "headquarters": "Musikot",
+        "total_local_levels": 6,
+        "total_wards": 73,
+        "local_levels": [
+          {
+            "name_en": "Aathbiskot",
+            "name_np": "आठबिसकोट",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Chaurjahari",
+            "name_np": "चौरजहारी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Tribeni",
+            "name_np": "त्रिवेणी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Banphikot",
+            "name_np": "बाँफिकोट",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Musikot",
+            "name_np": "मुसिकोट",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Sanibheri",
+            "name_np": "सानीभेरी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 11
+          }
+        ]
+      },
+      {
+        "district_name_en": "Salyan",
+        "district_name_np": "सल्यान जिल्ला",
+        "headquarters": "Salyan (Sharada)",
+        "total_local_levels": 10,
+        "total_wards": 83,
+        "local_levels": [
+          {
+            "name_en": "Kapurkot",
+            "name_np": "कपुरकोट",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Kalimati",
+            "name_np": "कालीमाटी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Kumakh",
+            "name_np": "कुमाख",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Chhatreshwori",
+            "name_np": "छत्रेश्वरी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Triveni",
+            "name_np": "त्रिवेणी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Darma",
+            "name_np": "दार्मा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Bangad Kupinde",
+            "name_np": "बनगाड कुपिण्डे",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Bagchaur",
+            "name_np": "बागचौर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Sharada",
+            "name_np": "शारदा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 15
+          },
+          {
+            "name_en": "Siddha Kumakh",
+            "name_np": "सिद्ध कुमाख",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          }
+        ]
+      },
+      {
+        "district_name_en": "Dolpa",
+        "district_name_np": "डोल्पा जिल्ला",
+        "headquarters": "Dunai (Thuli Bheri)",
+        "total_local_levels": 8,
+        "total_wards": 65,
+        "local_levels": [
+          {
+            "name_en": "Kaike",
+            "name_np": "काइके",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Chharka tangsong",
+            "name_np": "छार्का ताङसोङ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Jagdulla",
+            "name_np": "जगदुल्ला",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Thulibheri",
+            "name_np": "ठुलिभेरी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Dolpo Buddha",
+            "name_np": "डोल्पो बुद्ध",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Tripurasundari",
+            "name_np": "त्रिपुरासुन्दरी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Mudkechula",
+            "name_np": "मुड्केचुला",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "She phoksundo",
+            "name_np": "शे फोक्सुण्डो",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          }
+        ]
+      },
+      {
+        "district_name_en": "Humla",
+        "district_name_np": "हुम्ला जिल्ला",
+        "headquarters": "Simikot",
+        "total_local_levels": 7,
+        "total_wards": 44,
+        "local_levels": [
+          {
+            "name_en": "Adanchuli",
+            "name_np": "अदानचुली",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "kharpunath",
+            "name_np": "खार्पुनाथ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Chankheli",
+            "name_np": "चंखेली",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Tanjakot",
+            "name_np": "ताँजाकोट",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Namkha",
+            "name_np": "नाम्खा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Sarkegad",
+            "name_np": "सर्केगाड",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Simkot",
+            "name_np": "सिमिकोट",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          }
+        ]
+      },
+      {
+        "district_name_en": "Jumla",
+        "district_name_np": "जुम्ला जिल्ला",
+        "headquarters": "Jumla (Chandannath)",
+        "total_local_levels": 8,
+        "total_wards": 60,
+        "local_levels": [
+          {
+            "name_en": "Kanakasundari",
+            "name_np": "कनकासुन्दरी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Guthichaur",
+            "name_np": "गुठीचौर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Chandannath",
+            "name_np": "चन्दननाथ",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Tatopani",
+            "name_np": "तातोपानी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Tila",
+            "name_np": "तिला",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Patarasi",
+            "name_np": "पातारासी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Sinja",
+            "name_np": "सिंजा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Hima",
+            "name_np": "हिमा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          }
+        ]
+      },
+      {
+        "district_name_en": "Kalikot",
+        "district_name_np": "कालिकोट जिल्ला",
+        "headquarters": "Manma (Khandachakra)",
+        "total_local_levels": 9,
+        "total_wards": 82,
+        "local_levels": [
+          {
+            "name_en": "Khandachakra",
+            "name_np": "खाँडाचक्र",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Tilagupha",
+            "name_np": "तिलागुफा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Naraharinath",
+            "name_np": "नरहरीनाथ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Pachaljharana",
+            "name_np": "पचालझरना",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Palata",
+            "name_np": "पलाँता",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Mahawai",
+            "name_np": "महावै",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Raskot",
+            "name_np": "रास्कोट",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Shubha Kalika",
+            "name_np": "शुभ कालीका",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Sanni tribeni",
+            "name_np": "सान्नी त्रीवेणी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          }
+        ]
+      },
+      {
+        "district_name_en": "Mugu",
+        "district_name_np": "मुगु जिल्ला",
+        "headquarters": "Gamgadhi (Chhyanath Rara)",
+        "total_local_levels": 4,
+        "total_wards": 45,
+        "local_levels": [
+          {
+            "name_en": "Khatyad",
+            "name_np": "खत्याड",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Chhayanathrara",
+            "name_np": "छायानाथरारा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Mugumkarmarog",
+            "name_np": "मुगुमकार्मारोंग",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Soru",
+            "name_np": "सोरु",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 11
+          }
+        ]
+      },
+      {
+        "district_name_en": "Surkhet",
+        "district_name_np": "सुर्खेत जिल्ला",
+        "headquarters": "Birendranagar",
+        "total_local_levels": 9,
+        "total_wards": 99,
+        "local_levels": [
+          {
+            "name_en": "Gurbhakot",
+            "name_np": "गुर्भाकोट",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Chingad",
+            "name_np": "चिङ्गाड",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Chaukune",
+            "name_np": "चौकुने",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Panchapuri",
+            "name_np": "पञ्चपुरी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Barahatal",
+            "name_np": "बराहताल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Bheriganga",
+            "name_np": "भेरिगंगा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 13
+          },
+          {
+            "name_en": "Lekbesi",
+            "name_np": "लेकवेशी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Birendranagar",
+            "name_np": "वीरेन्द्रनगर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 16
+          },
+          {
+            "name_en": "Simta",
+            "name_np": "सिम्ता",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          }
+        ]
+      },
+      {
+        "district_name_en": "Dailekh",
+        "district_name_np": "दैलेख जिल्ला",
+        "headquarters": "Dailekh (Narayan)",
+        "total_local_levels": 11,
+        "total_wards": 90,
+        "local_levels": [
+          {
+            "name_en": "Aathbis",
+            "name_np": "आठविस",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Gurans",
+            "name_np": "गुराँस",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Chamunda Bindrasaini",
+            "name_np": "चामुण्डा विन्द्रासैनी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Thatikandh",
+            "name_np": "ठाटीकाँध",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Dungeshwor",
+            "name_np": "डुङ्गेश्वर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Dullu",
+            "name_np": "दुल्लु",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 13
+          },
+          {
+            "name_en": "Narayan",
+            "name_np": "नारायण",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Naumule",
+            "name_np": "नौमुले",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Bhagawatimai",
+            "name_np": "भगवतिमाइ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Bhairabi",
+            "name_np": "भैरवी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Mahabu",
+            "name_np": "महावु",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          }
+        ]
+      },
+      {
+        "district_name_en": "Jajarkot",
+        "district_name_np": "जाजरकोट जिल्ला",
+        "headquarters": "Jajarkot Khalanga (Bheri)",
+        "total_local_levels": 7,
+        "total_wards": 77,
+        "local_levels": [
+          {
+            "name_en": "Kushe",
+            "name_np": "कुशे",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Chhedagad",
+            "name_np": "छेडागाड",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 13
+          },
+          {
+            "name_en": "Junichande",
+            "name_np": "जुनिचादे",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Nalgad",
+            "name_np": "नलगाड",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 13
+          },
+          {
+            "name_en": "Barekot",
+            "name_np": "बारेकोट",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Bheri",
+            "name_np": "भेरी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 13
+          },
+          {
+            "name_en": "Shivalaya",
+            "name_np": "शिवालय",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "province_id": 7,
+    "province_name_en": "Sudurpashchim Province",
+    "province_name_np": "सुदूरपश्चिम प्रदेश",
+    "capital_en": "Godawari",
+    "capital_np": "गोदावरी",
+    "total_districts": 9,
+    "districts": [
+      {
+        "district_name_en": "Kailali",
+        "district_name_np": "कैलाली जिल्ला",
+        "headquarters": "Dhangadhi",
+        "total_local_levels": 13,
+        "total_wards": 126,
+        "local_levels": [
+          {
+            "name_en": "Kailari",
+            "name_np": "कैलारी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Godawari",
+            "name_np": "गोदावरी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Gauriganga",
+            "name_np": "गौरीगंगा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Ghodaghodi",
+            "name_np": "घोडाघोडी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Chure",
+            "name_np": "चुरे",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Janaki",
+            "name_np": "जानकी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Joshipur",
+            "name_np": "जोशीपुर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Tikapur",
+            "name_np": "टिकापुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Dhangadhi",
+            "name_np": "धनगढी",
+            "type_en": "Sub-Metropolitan City",
+            "type_np": "उपमहानगरपालिका",
+            "wards": 19
+          },
+          {
+            "name_en": "Bardagoriya",
+            "name_np": "बर्दगोरिया",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Bhajani",
+            "name_np": "भजनी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Mohanyal",
+            "name_np": "मोहन्याल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Lamkichuha",
+            "name_np": "लम्किचुहा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          }
+        ]
+      },
+      {
+        "district_name_en": "Achham",
+        "district_name_np": "अछाम जिल्ला",
+        "headquarters": "Mangalsen",
+        "total_local_levels": 10,
+        "total_wards": 91,
+        "local_levels": [
+          {
+            "name_en": "Kamalbazar",
+            "name_np": "कमलबजार",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Chaurpati",
+            "name_np": "चौरपाटी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Dhakari",
+            "name_np": "ढकारी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Turmakhad",
+            "name_np": "तुर्माखाद",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Panchadewal Binayak",
+            "name_np": "पंचदेवल विनायक",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Bannigadhi Jayagadh",
+            "name_np": "बान्नीगढी जयगढ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Mangalsen",
+            "name_np": "मङ्गलसेन",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          },
+          {
+            "name_en": "Mellekh",
+            "name_np": "मेल्लेख",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Ramaroshan",
+            "name_np": "रामारोशन",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Sanfebagar",
+            "name_np": "साँफेबगर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 14
+          }
+        ]
+      },
+      {
+        "district_name_en": "Doti",
+        "district_name_np": "डोटी जिल्ला",
+        "headquarters": "Dipayal Silgadhi",
+        "total_local_levels": 9,
+        "total_wards": 65,
+        "local_levels": [
+          {
+            "name_en": "Aadarsh",
+            "name_np": "आदर्श",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "K.I.Singh",
+            "name_np": "के.आइ.सिंह",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Jorayal",
+            "name_np": "जोरायल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Dipayal silgadhi",
+            "name_np": "दिपायल सिलगढी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Purbichauki",
+            "name_np": "पुर्विचौकी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Badikedar",
+            "name_np": "बडिकेदार",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Bogatan Phudsil",
+            "name_np": "बोगटान फुड्सिल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Shikhar",
+            "name_np": "शिखर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Sayal",
+            "name_np": "सायल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          }
+        ]
+      },
+      {
+        "district_name_en": "Bajhang",
+        "district_name_np": "बझाङ जिल्ला",
+        "headquarters": "Chainpur (Jayaprithvi)",
+        "total_local_levels": 12,
+        "total_wards": 94,
+        "local_levels": [
+          {
+            "name_en": "Kedarsyun",
+            "name_np": "केदारस्युँ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Khaptadchhanna",
+            "name_np": "खप्तडछान्ना",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Chhabispathibhera",
+            "name_np": "छविसपाथिभेरा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "jayaprithvi",
+            "name_np": "जयपृथ्वी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Talkot",
+            "name_np": "तलकोट",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Thalara",
+            "name_np": "थलारा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Durgathali",
+            "name_np": "दुर्गाथली",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Bungal",
+            "name_np": "बुंगल",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Masta",
+            "name_np": "मष्टा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Bitthadchir",
+            "name_np": "वित्थडचिर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Saipal",
+            "name_np": "साइपाल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Surma",
+            "name_np": "सूर्मा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          }
+        ]
+      },
+      {
+        "district_name_en": "Bajura",
+        "district_name_np": "बाजुरा जिल्ला",
+        "headquarters": "Martadi (Badimalika)",
+        "total_local_levels": 9,
+        "total_wards": 69,
+        "local_levels": [
+          {
+            "name_en": "Khaptad Chhededaha",
+            "name_np": "खप्तड छेडेदह",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Gaumul",
+            "name_np": "गौमुल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Jagannath",
+            "name_np": "जगन्नाथ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Triveni",
+            "name_np": "त्रिवेणी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Badimalika",
+            "name_np": "बडिमालिका",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Budhinanda",
+            "name_np": "बुढिनन्दा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Budhiganga",
+            "name_np": "बुढीगंगा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Swamikartik Khapar",
+            "name_np": "स्वामिकार्तिक खापर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Himali",
+            "name_np": "हिमाली",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          }
+        ]
+      },
+      {
+        "district_name_en": "Kanchanpur",
+        "district_name_np": "कंचनपुर जिल्ला",
+        "headquarters": "Mahendranagar (Bheemdatta)",
+        "total_local_levels": 9,
+        "total_wards": 92,
+        "local_levels": [
+          {
+            "name_en": "Krishnapur",
+            "name_np": "कृष्णपुर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Dodhara Chandani",
+            "name_np": "दोधारा चाँदनी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Punarbas",
+            "name_np": "पुनर्वास",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Bedkot",
+            "name_np": "बेदकोट",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Beldandi",
+            "name_np": "बेलडाँडी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Belauri",
+            "name_np": "बेलौरी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Bheemdatt",
+            "name_np": "भीमदत्त",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 19
+          },
+          {
+            "name_en": "Laljhadi",
+            "name_np": "लालझाडी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Shuklaphanta",
+            "name_np": "शुक्लाफाँटा",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          }
+        ]
+      },
+      {
+        "district_name_en": "Dadeldhura",
+        "district_name_np": "डडेलधुरा जिल्ला",
+        "headquarters": "Dadeldhura (Amargadhi)",
+        "total_local_levels": 7,
+        "total_wards": 52,
+        "local_levels": [
+          {
+            "name_en": "Ajayameru",
+            "name_np": "अजयमेरु",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Amargadhi",
+            "name_np": "अमरगढी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Aalital",
+            "name_np": "आलिताल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Ganyapdhura",
+            "name_np": "गन्यापधुरा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Nawadurga",
+            "name_np": "नवदुर्गा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Parsuram",
+            "name_np": "परशुराम",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 12
+          },
+          {
+            "name_en": "Bhageshwar",
+            "name_np": "भागेश्वर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          }
+        ]
+      },
+      {
+        "district_name_en": "Baitadi",
+        "district_name_np": "बैतडी जिल्ला",
+        "headquarters": "Baitadi Khalanga (Dasharathchand)",
+        "total_local_levels": 10,
+        "total_wards": 84,
+        "local_levels": [
+          {
+            "name_en": "Dilasaini",
+            "name_np": "डिलासैनी",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 7
+          },
+          {
+            "name_en": "Dashrathchand",
+            "name_np": "दशरथचन्द",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 11
+          },
+          {
+            "name_en": "Dogdakedar",
+            "name_np": "दोगडाकेदार",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Pancheshwar",
+            "name_np": "पन्चेश्वर",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Patan",
+            "name_np": "पाटन",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Purchaudi",
+            "name_np": "पुर्चौडी",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 10
+          },
+          {
+            "name_en": "Melauli",
+            "name_np": "मेलौली",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Shivanath",
+            "name_np": "शिवनाथ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Sigas",
+            "name_np": "सिगास",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Surnaya",
+            "name_np": "सुर्नया",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          }
+        ]
+      },
+      {
+        "district_name_en": "Darchula",
+        "district_name_np": "दार्चुला जिल्ला",
+        "headquarters": "Darchula Khalanga (Mahakali)",
+        "total_local_levels": 9,
+        "total_wards": 61,
+        "local_levels": [
+          {
+            "name_en": "Apihimal",
+            "name_np": "अपिहिमाल",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Duhun",
+            "name_np": "दुहुँ",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 5
+          },
+          {
+            "name_en": "Naugad",
+            "name_np": "नौगाड",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Mahakali",
+            "name_np": "महाकाली",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          },
+          {
+            "name_en": "Marma",
+            "name_np": "मार्मा",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Malikarjun",
+            "name_np": "मालिकार्जुन",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 8
+          },
+          {
+            "name_en": "Lekam",
+            "name_np": "लेकम",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Byans",
+            "name_np": "व्यास",
+            "type_en": "Rural Municipality",
+            "type_np": "गाउँपालिका",
+            "wards": 6
+          },
+          {
+            "name_en": "Shailyashikhar",
+            "name_np": "शैल्यशिखर",
+            "type_en": "Municipality",
+            "type_np": "नगरपालिका",
+            "wards": 9
+          }
+        ]
+      }
+    ]
+  }
+]

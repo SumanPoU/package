@@ -1,0 +1,79 @@
+[
+  {
+    "id": 1,
+    "name_en": "Koshi Province",
+    "name_np": "कोशी प्रदेश",
+    "capital_en": "Biratnagar",
+    "capital_np": "विराटनगर",
+    "former_name": "Province No. 1",
+    "area_km2": 25905,
+    "population_2021": 4961412,
+    "total_districts": 14
+  },
+  {
+    "id": 2,
+    "name_en": "Madhesh Province",
+    "name_np": "मधेश प्रदेश",
+    "capital_en": "Janakpur",
+    "capital_np": "जनकपुर",
+    "former_name": "Province No. 2",
+    "area_km2": 9661,
+    "population_2021": 6114600,
+    "total_districts": 8
+  },
+  {
+    "id": 3,
+    "name_en": "Bagmati Province",
+    "name_np": "बागमती प्रदेश",
+    "capital_en": "Hetauda",
+    "capital_np": "हेटौडा",
+    "former_name": "Province No. 3",
+    "area_km2": 20300,
+    "population_2021": 6116866,
+    "total_districts": 13
+  },
+  {
+    "id": 4,
+    "name_en": "Gandaki Province",
+    "name_np": "गण्डकी प्रदेश",
+    "capital_en": "Pokhara",
+    "capital_np": "पोखरा",
+    "former_name": "Province No. 4",
+    "area_km2": 21504,
+    "population_2021": 2466427,
+    "total_districts": 11
+  },
+  {
+    "id": 5,
+    "name_en": "Lumbini Province",
+    "name_np": "लुम्बिनी प्रदेश",
+    "capital_en": "Deukhuri",
+    "capital_np": "देउखुरी",
+    "former_name": "Province No. 5",
+    "area_km2": 22288,
+    "population_2021": 5122078,
+    "total_districts": 12
+  },
+  {
+    "id": 6,
+    "name_en": "Karnali Province",
+    "name_np": "कर्णाली प्रदेश",
+    "capital_en": "Birendranagar",
+    "capital_np": "बीरेन्द्रनगर",
+    "former_name": "Province No. 6",
+    "area_km2": 27984,
+    "population_2021": 1688412,
+    "total_districts": 10
+  },
+  {
+    "id": 7,
+    "name_en": "Sudurpashchim Province",
+    "name_np": "सुदूरपश्चिम प्रदेश",
+    "capital_en": "Godawari",
+    "capital_np": "गोदावरी",
+    "former_name": "Province No. 7",
+    "area_km2": 19999.28,
+    "population_2021": 2694783,
+    "total_districts": 9
+  }
+]

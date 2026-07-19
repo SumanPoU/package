@@ -134,7 +134,7 @@ export function DocSidebar({
       </Link>
       <div className="mb-4 flex flex-col gap-0.5 px-2.5">
         <p className="text-[15px] font-medium tracking-tight text-primary">
-          table
+          Table
         </p>
         <p className="pkg text-[11px]">@itzsa/table</p>
       </div>

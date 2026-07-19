@@ -197,6 +197,7 @@ export const NepaliDatePicker = React.forwardRef<
               popoverClassName,
               classNames?.popover,
             )}
+            data-locale={locale}
             style={{
               position: "fixed",
               top: pos.top,
@@ -240,6 +241,7 @@ export const NepaliDatePicker = React.forwardRef<
       ref={rootRef}
       className={cn("itzsa-ndp", className, classNames?.root)}
       style={rootStyle}
+      data-locale={locale}
       data-disabled={disabled ? "" : undefined}
       data-open={open ? "" : undefined}
     >

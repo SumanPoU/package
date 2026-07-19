@@ -169,6 +169,7 @@ export function GeoSelect({
           <div
             ref={popoverRef}
             className={cn("itzsa-geo-popover", classNames?.popover)}
+            data-locale={locale}
             style={{
               ...mergedStyle,
               position: "fixed",
@@ -259,6 +260,7 @@ export function GeoSelect({
       ref={rootRef}
       className={cn("itzsa-geo", className, classNames?.root)}
       style={mergedStyle}
+      data-locale={locale}
       data-disabled={disabled ? "" : undefined}
       data-open={open ? "" : undefined}
     >

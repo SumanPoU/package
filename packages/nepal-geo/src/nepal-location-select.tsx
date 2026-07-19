@@ -180,6 +180,7 @@ export function NepalLocationSelect({
         classNames?.root,
       )}
       style={mergeGeoStyle(vars, style)}
+      data-locale={locale}
     >
       {levels.includes("province") ? (
         <div className={fieldClass}>

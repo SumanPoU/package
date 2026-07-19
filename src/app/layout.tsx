@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Outfit } from "next/font/google";
 
+import { SiteFooter } from "@/components/site-footer";
 import { SiteNav } from "@/components/site-nav";
 import { ThemeProvider } from "@/components/theme-provider";
 
@@ -44,6 +45,7 @@ export default function RootLayout({
         <ThemeProvider>
           <SiteNav />
           <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+          <SiteFooter />
         </ThemeProvider>
       </body>
     </html>

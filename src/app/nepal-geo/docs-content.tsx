@@ -3,10 +3,16 @@
 import { InstallCommand } from "@/components/install-command";
 
 import {
+  DATA_HELPER_ROWS,
+  GEO_SELECT_PROPS,
+  LOCATION_SELECT_PROPS,
+} from "./api-reference";
+import {
   Callout,
   CodeBlock,
   DocSection,
   DocsShell,
+  PropsTable,
 } from "./docs-ui";
 import {
   CascadeExample,
@@ -100,7 +106,7 @@ export function DocsContent() {
             Documentation · itzsa
           </p>
           <h1 className="text-3xl font-medium tracking-tight text-primary sm:text-4xl">
-            nepal-geo
+            Nepal Geo
           </h1>
           <p className="max-w-2xl text-base leading-relaxed text-secondary">
             Nepal administrative geography — provinces, districts, local levels
@@ -267,37 +273,22 @@ encodeWardId(5, 12); // → 5012`}
         <DocSection
           id="props"
           title="Props API"
-          description="Key components and value shapes."
+          description="Full prop tables for selects and data helpers."
         >
-          <CodeBlock
-            code={`NepalGeoSelect
-  level: "province" | "district" | "local" | "ward"
-  value?: number | null
-  onChange?: (id: number | null) => void
-  provinceId?: number | null   // null = wait; omit = all
-  districtId?: number | null
-  localId?: number | null      // for wards
-  typeKeys?: LocalLevelTypeKey[]
-  label?: string
-  vars?: NepalGeoVars
-  classNames?: NepalGeoClassNames
-  locale?: "en" | "ne"
-  placeholder?: string
-
-NepalLocationSelect
-  value?: { provinceId?, districtId?, localId?, wardId?, wardNumber? }
-  onChange?: (value) => void
-  levels?: ("province" | "district" | "local" | "ward")[]
-  typeKeys?: LocalLevelTypeKey[]
-  labels?: Partial<Record<GeoLevel, string>>
-  vars?: NepalGeoVars
-  classNames?: NepalGeoClassNames
-  locale?: "en" | "ne"
-  orientation?: "vertical" | "horizontal"
-
-Aliases: NepalProvinceSelect, NepalDistrictSelect,
-         NepalLocalSelect, NepalWardSelect`}
-          />
+          <div className="flex flex-col gap-8">
+            <PropsTable
+              caption="NepalGeoSelect (and Province / District / Local / Ward aliases)"
+              rows={GEO_SELECT_PROPS}
+            />
+            <PropsTable
+              caption="NepalLocationSelect"
+              rows={LOCATION_SELECT_PROPS}
+            />
+            <PropsTable
+              caption="Data helpers (@itzsa/nepal-geo & @itzsa/nepal-geo-data)"
+              rows={DATA_HELPER_ROWS}
+            />
+          </div>
         </DocSection>
       </div>
     </DocsShell>

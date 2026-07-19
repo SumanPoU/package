@@ -18,8 +18,12 @@ import { EditorToolbar } from "./EditorToolbar";
 import { StatusBar } from "./StatusBar";
 import { MediaModal } from "./MediaModal";
 import { TableModal } from "./TableModal";
-import { mergeLocale, type EditorLocaleText } from "./locale";
+import { mergeLocale } from "./locale";
 import { sanitizeHtml, validateMediaInsert } from "./security";
+import {
+  resolveEditorSettings,
+  type EditorSettings,
+} from "./settings";
 import {
   DEFAULT_TOOLBAR_FEATURES,
   type EditorClassNames,
@@ -27,6 +31,7 @@ import {
   type MediaModalType,
   type RichTextEditorHandle,
 } from "./types";
+import type { EditorUploadHandler } from "./upload";
 
 export type { RichTextEditorHandle } from "./types";
 
@@ -37,40 +42,36 @@ export interface RichTextEditorProps {
   onFocus?: () => void;
   placeholder?: string;
   label?: string;
-  /** Greys out and blocks interaction (form disabled). */
   disabled?: boolean;
-  /** Editable=false but still selectable/copyable. */
   readOnly?: boolean;
   invalid?: boolean;
   minHeight?: string;
   compact?: boolean;
   className?: string;
   classNames?: EditorClassNames;
-  /** Nepali input + language lock. `false` = English-only lock. */
   nepali?: NepaliInputMode | false;
-  /** Soft character limit (CharacterCount). */
   maxLength?: number;
-  /** Show status bar (default true). */
   showStatusBar?: boolean;
-  /** Allow HTML source mode (default true). */
   allowHtmlMode?: boolean;
-  /** Allow base64 images (default false — prefer onUpload). */
-  allowBase64?: boolean;
-  /** Max upload bytes for local FileReader fallback. */
-  maxUploadBytes?: number;
   /**
-   * Server/CDN upload. When provided, files are uploaded instead of inlined as base64.
-   * Return a public https URL.
+   * Host upload handler — required for device file uploads.
+   * Prefer `settings.media.onUpload` for production apps.
    */
-  onUpload?: (file: File) => Promise<string>;
-  /** Toolbar feature flags. */
+  onUpload?: EditorUploadHandler;
+  /**
+   * @deprecated Use `settings.media.maxImageBytes` / `maxVideoBytes`.
+   */
+  maxUploadBytes?: number;
   toolbar?: EditorToolbarFeatures;
-  /** Locale / label overrides. */
-  locale?: Partial<EditorLocaleText>;
-  /** Extra TipTap extensions (keep reference stable). */
+  locale?: EditorSettings["locale"];
   extensions?: Extensions;
-  /** Run HTML sanitizer on ingress (default true). */
   sanitize?: boolean;
+  immediatelyRender?: boolean;
+  /**
+   * Scalable settings bag (media upload, limits, toolbar, locale, …).
+   * Flat props still work and merge on top of / alongside this.
+   */
+  settings?: EditorSettings;
 }
 
 const FLASH_DURATION_MS = 2500;
@@ -90,44 +91,93 @@ export const RichTextEditor = forwardRef<
     readOnly = false,
     invalid = false,
     minHeight,
-    compact = false,
+    compact,
     className,
     classNames,
-    nepali = false,
+    nepali,
     maxLength,
-    showStatusBar = true,
-    allowHtmlMode = true,
-    allowBase64 = false,
-    maxUploadBytes,
+    showStatusBar,
+    allowHtmlMode,
     onUpload,
+    maxUploadBytes,
     toolbar: toolbarFeatures,
     locale: localeOverrides,
     extensions,
-    sanitize = true,
+    sanitize,
+    immediatelyRender,
+    settings,
   },
   ref,
 ) {
+  const resolved = useMemo(
+    () =>
+      resolveEditorSettings(settings, {
+        placeholder,
+        nepali,
+        maxLength,
+        minHeight,
+        compact,
+        showStatusBar,
+        allowHtmlMode,
+        sanitize,
+        immediatelyRender,
+        toolbar: toolbarFeatures,
+        classNames,
+        locale: localeOverrides,
+        extensions,
+        onUpload,
+        maxUploadBytes,
+      }),
+    [
+      settings,
+      placeholder,
+      nepali,
+      maxLength,
+      minHeight,
+      compact,
+      showStatusBar,
+      allowHtmlMode,
+      sanitize,
+      immediatelyRender,
+      toolbarFeatures,
+      classNames,
+      localeOverrides,
+      extensions,
+      onUpload,
+      maxUploadBytes,
+    ],
+  );
+
   const locale = useMemo(
-    () => mergeLocale({ ...localeOverrides, ...(placeholder ? { placeholder } : {}) }),
-    [localeOverrides, placeholder],
+    () =>
+      mergeLocale({
+        ...resolved.locale,
+        ...(resolved.placeholder ? { placeholder: resolved.placeholder } : {}),
+      }),
+    [resolved.locale, resolved.placeholder],
   );
 
   const features = useMemo(
     () => ({
       ...DEFAULT_TOOLBAR_FEATURES,
-      ...toolbarFeatures,
-      html: allowHtmlMode && (toolbarFeatures?.html ?? true),
+      ...resolved.toolbar,
+      html: resolved.allowHtmlMode && (resolved.toolbar?.html ?? true),
     }),
-    [toolbarFeatures, allowHtmlMode],
+    [resolved.toolbar, resolved.allowHtmlMode],
   );
 
   const [mediaModal, setMediaModal] = useState<MediaModalType>(null);
   const [tableModalOpen, setTableModalOpen] = useState(false);
   const [htmlMode, setHtmlMode] = useState(false);
   const [mediaError, setMediaError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
   const htmlRef = useRef<HTMLTextAreaElement>(null);
   const [flashVisible, setFlashVisible] = useState(false);
   const flashTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLanguageBlock = useCallback(() => {
     setFlashVisible(true);
@@ -145,7 +195,8 @@ export const RichTextEditor = forwardRef<
     [],
   );
 
-  const resolvedMinHeight = minHeight ?? (compact ? "160px" : "480px");
+  const resolvedMinHeight =
+    resolved.minHeight ?? (resolved.compact ? "160px" : "480px");
   const editable = !disabled && !readOnly;
 
   const editor = useEditorConfig({
@@ -153,26 +204,27 @@ export const RichTextEditor = forwardRef<
     placeholder: locale.placeholder,
     editable,
     minHeight: resolvedMinHeight,
-    nepali,
+    nepali: resolved.nepali,
     onLanguageBlock: handleLanguageBlock,
-    maxLength,
-    allowBase64,
-    extensions,
-    sanitize,
+    maxLength: resolved.maxLength,
+    allowBase64: false,
+    extensions: resolved.extensions,
+    sanitize: resolved.sanitize,
+    immediatelyRender: resolved.immediatelyRender,
   });
 
   const applyContent = useCallback(
     (html: string, emitUpdate: boolean) => {
       if (!editor) return;
-      const next = sanitize
+      const next = resolved.sanitize
         ? sanitizeHtml(html, {
-            allowDataImage: allowBase64,
+            allowDataImage: false,
             preserveEmpty: true,
           })
         : html;
       editor.commands.setContent(next || "", { emitUpdate });
     },
-    [editor, sanitize, allowBase64],
+    [editor, resolved.sanitize],
   );
 
   const lastPushed = useRef<string>(value);
@@ -241,7 +293,7 @@ export const RichTextEditor = forwardRef<
   );
 
   const toggleHtmlMode = useCallback(() => {
-    if (!editor || !allowHtmlMode) return;
+    if (!editor || !resolved.allowHtmlMode) return;
     if (!htmlMode) {
       setHtmlMode(true);
     } else {
@@ -250,7 +302,7 @@ export const RichTextEditor = forwardRef<
       lastPushed.current = editor.isEmpty ? "" : editor.getHTML();
       setHtmlMode(false);
     }
-  }, [editor, htmlMode, allowHtmlMode, applyContent]);
+  }, [editor, htmlMode, resolved.allowHtmlMode, applyContent]);
 
   const handleInsertMedia = useCallback(
     (src: string, width?: string) => {
@@ -259,8 +311,7 @@ export const RichTextEditor = forwardRef<
         src,
         width,
         kind: mediaModal,
-        allowBase64: allowBase64 && mediaModal === "image",
-        maxDataBytes: maxUploadBytes,
+        allowBase64: false,
       });
       if (!result.ok) {
         setMediaError(result.error);
@@ -285,7 +336,7 @@ export const RichTextEditor = forwardRef<
       }
       setMediaModal(null);
     },
-    [editor, mediaModal, allowBase64, maxUploadBytes],
+    [editor, mediaModal],
   );
 
   const handleInsertTable = useCallback(
@@ -293,19 +344,26 @@ export const RichTextEditor = forwardRef<
       if (!editor) return;
       const r = Math.max(1, Math.min(20, rows));
       const c = Math.max(1, Math.min(20, cols));
-      editor.chain().focus().insertTable({ rows: r, cols: c, withHeaderRow: true }).run();
+      editor
+        .chain()
+        .focus()
+        .insertTable({ rows: r, cols: c, withHeaderRow: true })
+        .run();
     },
     [editor],
   );
 
-  if (!editor) {
+  const rootClassNames = resolved.classNames;
+
+  if (!mounted || !editor) {
     return (
       <div
         className={cn(
           "itzsa-editor flex min-h-[120px] items-center justify-center border border-[var(--editor-border)] text-sm text-[var(--editor-muted)]",
           className,
-          classNames?.root,
+          rootClassNames?.root,
         )}
+        style={{ minHeight: resolvedMinHeight }}
         aria-busy="true"
         aria-label={label}
       >
@@ -316,19 +374,20 @@ export const RichTextEditor = forwardRef<
 
   const currentHtml = editor.isEmpty ? "" : editor.getHTML();
   const limitHit =
-    typeof maxLength === "number" &&
-    (editor.storage.characterCount?.characters?.() ?? 0) >= maxLength;
+    typeof resolved.maxLength === "number" &&
+    (editor.storage.characterCount?.characters?.() ?? 0) >= resolved.maxLength;
 
   return (
     <>
       <div
         className={cn(
           "itzsa-editor flex flex-col overflow-hidden border shadow-sm",
-          invalid && "ring-2 ring-[var(--editor-danger)] border-[var(--editor-danger)]",
+          invalid &&
+            "ring-2 ring-[var(--editor-danger)] border-[var(--editor-danger)]",
           disabled && "opacity-60 pointer-events-none",
           readOnly && "itzsa-editor-readonly",
           className,
-          classNames?.root,
+          rootClassNames?.root,
         )}
         aria-label={label}
         aria-invalid={invalid || undefined}
@@ -344,7 +403,7 @@ export const RichTextEditor = forwardRef<
             onToggleHtml={toggleHtmlMode}
             features={features}
             locale={locale}
-            className={classNames?.toolbar}
+            className={rootClassNames?.toolbar}
           />
         )}
 
@@ -355,7 +414,9 @@ export const RichTextEditor = forwardRef<
             className="itzsa-editor-flash flex items-center gap-2 border-b px-4 py-2 text-xs font-medium"
           >
             <CircleAlert className="size-4 shrink-0" />
-            {nepali ? locale.languageBlockNe : locale.languageBlockEn}
+            {resolved.nepali
+              ? locale.languageBlockNe
+              : locale.languageBlockEn}
           </div>
         )}
 
@@ -369,7 +430,7 @@ export const RichTextEditor = forwardRef<
         )}
 
         {htmlMode ? (
-          <div className={cn("flex flex-1 flex-col", classNames?.htmlPanel)}>
+          <div className={cn("flex flex-1 flex-col", rootClassNames?.htmlPanel)}>
             <div className="itzsa-editor-html-bar flex items-center justify-between border-b px-4 py-2 font-mono text-xs">
               <span>{locale.htmlBanner}</span>
               <button
@@ -383,7 +444,7 @@ export const RichTextEditor = forwardRef<
             <textarea
               ref={htmlRef}
               defaultValue={currentHtml}
-              className="itzsa-editor-html-input flex-1 w-full resize-none px-4 py-4 font-mono text-sm leading-relaxed outline-none"
+              className="itzsa-editor-html-input w-full flex-1 resize-none px-4 py-4 font-mono text-sm leading-relaxed outline-none"
               style={{ minHeight: resolvedMinHeight }}
               spellCheck={false}
               aria-label={locale.htmlMode}
@@ -392,21 +453,23 @@ export const RichTextEditor = forwardRef<
         ) : (
           <div
             className={cn(
-              compact ? "px-3 py-3 sm:px-4" : "px-4 py-6 sm:px-8 sm:py-8 md:px-12 md:py-9",
-              classNames?.content,
+              resolved.compact
+                ? "px-3 py-3 sm:px-4"
+                : "px-4 py-6 sm:px-8 sm:py-8 md:px-12 md:py-9",
+              rootClassNames?.content,
             )}
           >
             <EditorContent editor={editor} />
           </div>
         )}
 
-        {showStatusBar && !htmlMode && (
+        {resolved.showStatusBar && !htmlMode && (
           <StatusBar
             editor={editor}
-            nepali={nepali}
-            maxLength={maxLength}
+            nepali={resolved.nepali}
+            maxLength={resolved.maxLength}
             locale={locale}
-            className={classNames?.statusBar}
+            className={rootClassNames?.statusBar}
           />
         )}
       </div>
@@ -419,9 +482,7 @@ export const RichTextEditor = forwardRef<
             setMediaError(null);
           }}
           onInsert={handleInsertMedia}
-          allowBase64={allowBase64}
-          maxUploadBytes={maxUploadBytes}
-          onUpload={onUpload}
+          media={resolved.media}
           locale={locale}
           error={mediaError}
         />

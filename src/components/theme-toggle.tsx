@@ -44,7 +44,8 @@ function MoonIcon({ className }: { className?: string }) {
 
 export function ThemeToggle({ className }: { className?: string }) {
   const { theme, toggleTheme, ready } = useTheme();
-  const isDark = theme === "dark";
+  // Keep SSR + first client paint aligned (layout default is dark)
+  const isDark = !ready || theme === "dark";
 
   return (
     <button
@@ -52,13 +53,14 @@ export function ThemeToggle({ className }: { className?: string }) {
       onClick={toggleTheme}
       aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
       title={isDark ? "Light mode" : "Dark mode"}
+      suppressHydrationWarning
       className={cn(
         "relative inline-flex size-8 items-center justify-center overflow-hidden rounded-md border-[0.5px] border-border bg-transparent text-secondary transition-colors hover:text-primary",
-        !ready && "opacity-60",
+        !ready && "opacity-70",
         className,
       )}
     >
-      <span className="relative size-[15px]">
+      <span className="relative size-[15px]" suppressHydrationWarning>
         <SunIcon
           className={cn(
             "absolute inset-0 transition-all duration-300",

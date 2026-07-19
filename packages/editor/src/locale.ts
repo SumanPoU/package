@@ -40,6 +40,13 @@ export type EditorLocaleText = {
   mediaVideoTitle: string;
   mediaUrlLabel: string;
   mediaUploadLabel: string;
+  mediaUploadHint: string;
+  mediaUploadMissing: string;
+  mediaUploadMissingShort: string;
+  mediaUploadFailed: string;
+  mediaUploadInvalidUrl: string;
+  mediaUploading: string;
+  mediaUrlDisabled: string;
   mediaSizeLabel: string;
   cancel: string;
   insert: string;
@@ -91,6 +98,15 @@ export const DEFAULT_LOCALE: EditorLocaleText = {
   mediaVideoTitle: "Insert video",
   mediaUrlLabel: "Paste URL",
   mediaUploadLabel: "Upload from device",
+  mediaUploadHint: "Drag & drop or browse",
+  mediaUploadMissing:
+    "Provide an onUpload handler to upload files. Paste an https URL, or wire settings.media.onUpload.",
+  mediaUploadMissingShort: "onUpload required for file uploads",
+  mediaUploadFailed: "Upload failed. Try again.",
+  mediaUploadInvalidUrl:
+    "Upload must return a public https:// (or /path) URL — not a data: URL.",
+  mediaUploading: "Uploading…",
+  mediaUrlDisabled: "URL insert is disabled. Upload a file instead.",
   mediaSizeLabel: "Size",
   cancel: "Cancel",
   insert: "Insert",

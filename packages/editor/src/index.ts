@@ -34,6 +34,30 @@ export type {
 } from "./types";
 export { DEFAULT_TOOLBAR_FEATURES } from "./types";
 
+export type {
+  EditorSettings,
+  ResolvedEditorSettings,
+} from "./settings";
+export { resolveEditorSettings } from "./settings";
+
+export type {
+  EditorMediaKind,
+  EditorMediaSettings,
+  EditorUploadHandler,
+  EditorUploadContext,
+  EditorUploadProgress,
+  ResolvedMediaSettings,
+} from "./upload";
+export {
+  resolveMediaSettings,
+  validateUploadFile,
+  formatBytes,
+  DEFAULT_ACCEPT_IMAGE,
+  DEFAULT_ACCEPT_VIDEO,
+  DEFAULT_MAX_IMAGE_BYTES,
+  DEFAULT_MAX_VIDEO_BYTES,
+} from "./upload";
+
 export {
   COLORS,
   FONT_FAMILIES,

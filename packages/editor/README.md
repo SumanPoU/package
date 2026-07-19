@@ -1,6 +1,6 @@
 # @itzsa/editor
 
-Company-standard TipTap rich text editor with Unicode/Preeti Nepali input, language lock, and hardened HTML/URL sanitization.
+Company-standard TipTap rich text editor with Unicode/Preeti Nepali input, language lock, hardened sanitization, and **host-owned media uploads** (no base64).
 
 ## Install
 
@@ -8,71 +8,87 @@ Company-standard TipTap rich text editor with Unicode/Preeti Nepali input, langu
 pnpm add @itzsa/editor @itzsa/nepali-input
 ```
 
-## Setup (Tailwind v4)
-
 ```css
 @source "../node_modules/@itzsa/editor";
 @import "@itzsa/editor/styles.css";
 ```
 
-## Usage
+## Media uploads (required for files)
+
+Device uploads never convert to base64. You provide `onUpload` (or `settings.media.onUpload`); it must return a durable `https://` URL from your CDN/API.
 
 ```tsx
 "use client";
 
-import { useRef, useState } from "react";
-import {
-  RichTextEditor,
-  type RichTextEditorHandle,
-} from "@itzsa/editor";
+import { RichTextEditor, type EditorUploadHandler } from "@itzsa/editor";
 import "@itzsa/editor/styles.css";
 
-export function Example() {
-  const ref = useRef<RichTextEditorHandle>(null);
-  const [html, setHtml] = useState("<p>Hello</p>");
+const onUpload: EditorUploadHandler = async (file, { signal, onProgress, kind }) => {
+  const form = new FormData();
+  form.append("file", file);
+  form.append("kind", kind);
 
+  const res = await fetch("/api/upload", {
+    method: "POST",
+    body: form,
+    signal,
+  });
+  if (!res.ok) throw new Error("Upload failed");
+
+  const { url } = (await res.json()) as { url: string };
+  onProgress({ ratio: 1 });
+  return url; // https://cdn.example.com/...
+};
+
+export function Example() {
   return (
     <RichTextEditor
-      ref={ref}
-      value={html}
-      onChange={setHtml}
-      nepali="unicode"
-      maxLength={5000}
-      onUpload={async (file) => {
-        // upload to your CDN, return https URL
-        return "https://cdn.example.com/" + file.name;
+      onUpload={onUpload}
+      settings={{
+        media: {
+          maxImageBytes: 5 * 1024 * 1024,
+          maxVideoBytes: 50 * 1024 * 1024,
+        },
+        maxLength: 20_000,
+        nepali: "unicode",
       }}
-      toolbar={{ video: false }}
     />
   );
 }
 ```
 
+Without `onUpload`, users can still paste an https URL (unless `allowUrlInsert: false`).
+
+## Scalable `settings`
+
+```ts
+settings={{
+  nepali: "unicode",
+  maxLength: 5000,
+  compact: true,
+  showStatusBar: true,
+  allowHtmlMode: true,
+  sanitize: true,
+  toolbar: { video: false, html: false },
+  media: {
+    onUpload,
+    maxImageBytes: 5_000_000,
+    maxVideoBytes: 50_000_000,
+    acceptImage: ["image/png", "image/jpeg", "image/webp"],
+    allowUrlInsert: true,
+  },
+  locale: { placeholder: "लेख्नुहोस्…" },
+}}
+```
+
+Flat props (`onUpload`, `maxLength`, `nepali`, …) still work and merge with `settings`.
+
 ## Security
 
-- All HTML ingress (`value`, paste, HTML mode) is sanitized (tag/attr allowlist).
-- Links and media URLs reject `javascript:`, `data:` (unless `allowBase64`), and protocol-relative `//`.
-- CSS lengths (`width`, `font-size`) must match `12px` / `50%` / `1.5rem` patterns.
-- Video inserts use a schema node (`setVideo`) — never HTML string templates.
-- Prefer `onUpload` over `allowBase64` for production.
+- No base64 image inserts; data URLs are rejected on ingress
+- HTML / paste / link / CSS length sanitization
+- Schema-safe video node
 
-Still sanitize again when rendering stored HTML with `dangerouslySetInnerHTML`.
+## Ref API
 
-## Key props
-
-| Prop | Description |
-| --- | --- |
-| `value` / `onChange` | Controlled HTML |
-| `ref` | `getHTML`, `getJSON`, `setContent`, `clear`, `focus`, … |
-| `nepali` | `"unicode"` \| `"preeti"` \| `false` (English lock) |
-| `readOnly` / `disabled` | Selectable vs fully disabled |
-| `maxLength` | Character limit |
-| `onUpload` | `(file) => Promise<httpsUrl>` |
-| `allowBase64` | Opt-in data URLs for images (off by default) |
-| `toolbar` | Feature flags |
-| `locale` | Label overrides |
-| `classNames` | `root`, `toolbar`, `content`, `statusBar` |
-
-## Theming
-
-Override CSS variables on `.itzsa-editor` (see `styles.css`). Dark mode follows `.dark` ancestors.
+`getHTML`, `getJSON`, `getText`, `setContent`, `clear`, `focus`, `blur`, `isEmpty`, `getEditor`

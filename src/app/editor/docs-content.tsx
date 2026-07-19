@@ -13,27 +13,35 @@ const CSS_SETUP = `@source "../node_modules/@itzsa/editor";
 
 const STARTER = `"use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
   RichTextEditor,
-  type RichTextEditorHandle,
+  type EditorUploadHandler,
 } from "@itzsa/editor";
 import "@itzsa/editor/styles.css";
 
+const onUpload: EditorUploadHandler = async (file, { signal, onProgress }) => {
+  const body = new FormData();
+  body.append("file", file);
+  const res = await fetch("/api/upload", { method: "POST", body, signal });
+  if (!res.ok) throw new Error("Upload failed");
+  onProgress({ ratio: 1 });
+  const { url } = await res.json();
+  return url; // https://cdn.example.com/...
+};
+
 export function Example() {
-  const ref = useRef<RichTextEditorHandle>(null);
   const [html, setHtml] = useState("<p>Hello</p>");
 
   return (
     <RichTextEditor
-      ref={ref}
       value={html}
       onChange={setHtml}
-      nepali="unicode"
-      maxLength={5000}
-      onUpload={async (file) => {
-        // return a public https URL from your CDN
-        return URL.createObjectURL(file); // demo only — use https in production
+      onUpload={onUpload}
+      settings={{
+        nepali: "unicode",
+        maxLength: 5000,
+        media: { maxImageBytes: 5_000_000 },
       }}
     />
   );
@@ -69,6 +77,17 @@ export function DocsContent() {
       <section className="mb-12 flex flex-col gap-3">
         <h2 className="text-lg font-medium text-primary">Starter</h2>
         <CodeBlock language="tsx" code={STARTER} />
+      </section>
+
+      <section className="mb-12 flex flex-col gap-3">
+        <h2 className="text-lg font-medium text-primary">Uploads</h2>
+        <p className="text-sm text-secondary">
+          Files are never inlined as base64. Pass{" "}
+          <code className="font-mono text-primary">onUpload</code> (or{" "}
+          <code className="font-mono text-primary">settings.media.onUpload</code>
+          ) that returns a durable <code className="font-mono text-primary">https://</code>{" "}
+          CDN URL. URL paste still works without an uploader.
+        </p>
       </section>
 
       <section className="mb-12 flex flex-col gap-3">

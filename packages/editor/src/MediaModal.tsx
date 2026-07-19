@@ -1,19 +1,28 @@
-import { useState, useRef, useEffect, type FC, type FormEvent } from "react";
+import {
+  useState,
+  useRef,
+  useEffect,
+  type FC,
+  type FormEvent,
+} from "react";
 import { ImageIcon, Video, X, Upload } from "lucide-react";
 
-import {
-  DEFAULT_MAX_UPLOAD_BYTES,
-  sanitizeUrl,
-} from "./security";
+import { sanitizeUrl } from "./security";
 import type { EditorLocaleText } from "./locale";
+import {
+  acceptAttr,
+  formatBytes,
+  validateUploadFile,
+  type EditorMediaKind,
+  type ResolvedMediaSettings,
+} from "./upload";
+import { cn } from "./lib/utils";
 
 interface MediaModalProps {
-  type: "image" | "video";
+  type: EditorMediaKind;
   onClose: () => void;
   onInsert: (src: string, width?: string) => void;
-  allowBase64?: boolean;
-  maxUploadBytes?: number;
-  onUpload?: (file: File) => Promise<string>;
+  media: ResolvedMediaSettings;
   locale: EditorLocaleText;
   error?: string | null;
 }
@@ -23,15 +32,13 @@ const SIZE_PRESETS = [
   { label: "M", value: "50%" },
   { label: "L", value: "75%" },
   { label: "Full", value: "100%" },
-];
+] as const;
 
 export const MediaModal: FC<MediaModalProps> = ({
   type,
   onClose,
   onInsert,
-  allowBase64 = false,
-  maxUploadBytes = DEFAULT_MAX_UPLOAD_BYTES,
-  onUpload,
+  media,
   locale,
   error: externalError,
 }) => {
@@ -40,87 +47,95 @@ export const MediaModal: FC<MediaModalProps> = ({
   const [width, setWidth] = useState("100%");
   const [localError, setLocalError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [dragOver, setDragOver] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
   const isImage = type === "image";
+  const canUpload = typeof media.onUpload === "function";
+  const maxBytes = isImage ? media.maxImageBytes : media.maxVideoBytes;
+  const accept = isImage ? media.acceptImage : media.acceptVideo;
 
   useEffect(() => {
     const prev = document.activeElement as HTMLElement | null;
-    dialogRef.current?.querySelector<HTMLElement>("input")?.focus();
+    dialogRef.current?.querySelector<HTMLElement>("input,button")?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     return () => {
       document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+      abortRef.current?.abort();
       prev?.focus?.();
     };
   }, [onClose]);
 
   const error = externalError || localError;
 
-  const readFile = async (file: File) => {
+  const uploadFile = async (file: File) => {
     setLocalError(null);
-    if (!isImage && !onUpload) {
-      setLocalError("Video upload requires an onUpload handler (https URL).");
-      return;
-    }
-    if (file.size > maxUploadBytes) {
-      setLocalError(
-        `File too large (max ${Math.round(maxUploadBytes / 1024)} KB).`,
-      );
-      return;
-    }
-    if (isImage && !file.type.startsWith("image/")) {
-      setLocalError("Only image files are allowed.");
-      return;
-    }
-    if (!isImage && !file.type.startsWith("video/")) {
-      setLocalError("Only video files are allowed.");
+    setProgress(0);
+
+    if (!media.onUpload) {
+      setLocalError(locale.mediaUploadMissing);
       return;
     }
 
-    if (onUpload) {
-      setUploading(true);
-      try {
-        const remote = await onUpload(file);
-        const safe = sanitizeUrl(remote, { allowDataImage: false });
-        if (!safe) {
-          setLocalError("Upload returned an invalid URL.");
-          return;
-        }
-        setPreview(safe);
-        setUrl("");
-      } catch {
-        setLocalError("Upload failed. Try again.");
-      } finally {
-        setUploading(false);
+    const check = validateUploadFile(file, type, media);
+    if (!check.ok) {
+      setLocalError(check.error);
+      return;
+    }
+
+    abortRef.current?.abort();
+    const ac = new AbortController();
+    abortRef.current = ac;
+
+    setUploading(true);
+    try {
+      const remote = await media.onUpload(file, {
+        kind: type,
+        signal: ac.signal,
+        onProgress: (p) => setProgress(Math.max(0, Math.min(1, p.ratio))),
+      });
+
+      if (ac.signal.aborted) return;
+
+      const safe = sanitizeUrl(remote, {
+        allowDataImage: false,
+        allowRelative: true,
+      });
+      if (!safe || safe.startsWith("data:")) {
+        setLocalError(locale.mediaUploadInvalidUrl);
+        return;
       }
-      return;
+      setPreview(safe);
+      setUrl("");
+      setProgress(1);
+    } catch (err) {
+      if (ac.signal.aborted) return;
+      const message =
+        err instanceof Error && err.message
+          ? err.message
+          : locale.mediaUploadFailed;
+      setLocalError(message);
+    } finally {
+      if (!ac.signal.aborted) setUploading(false);
     }
-
-    if (!allowBase64) {
-      setLocalError(
-        "Local uploads require onUpload, or set allowBase64 for images.",
-      );
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const result = ev.target?.result as string;
-      if (result) {
-        setPreview(result);
-        setUrl("");
-      }
-    };
-    reader.readAsDataURL(file);
   };
 
   const handleInsert = (e?: FormEvent) => {
     e?.preventDefault();
     const src = preview || url;
     if (!src) return;
+    if (!preview && !media.allowUrlInsert) {
+      setLocalError(locale.mediaUrlDisabled);
+      return;
+    }
     onInsert(src, isImage ? width : undefined);
   };
 
@@ -137,145 +152,213 @@ export const MediaModal: FC<MediaModalProps> = ({
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-label={title}
-        className="itzsa-editor-modal flex max-h-[90vh] w-full max-w-[460px] flex-col overflow-hidden"
+        aria-labelledby="itzsa-media-modal-title"
+        className="itzsa-editor-modal flex max-h-[min(90vh,640px)] w-full max-w-[440px] flex-col overflow-hidden"
       >
-        <div className="flex items-center justify-between border-b border-[var(--editor-border)] px-5 py-4">
-          <div className="flex items-center gap-2">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-[var(--editor-surface)] text-[var(--editor-muted)]">
-              {isImage ? <ImageIcon size={15} /> : <Video size={15} />}
+        {/* Header */}
+        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-[var(--editor-border)] px-5 py-3.5">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[var(--editor-surface)] text-[var(--editor-muted)]">
+              {isImage ? <ImageIcon size={15} strokeWidth={1.75} /> : <Video size={15} strokeWidth={1.75} />}
             </div>
-            <span className="text-sm font-semibold">{title}</span>
+            <h2
+              id="itzsa-media-modal-title"
+              className="truncate text-[14px] font-semibold tracking-tight text-[var(--editor-fg)]"
+            >
+              {title}
+            </h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="flex size-7 items-center justify-center rounded-lg text-[var(--editor-muted)] hover:bg-[var(--editor-surface)]"
+            className="flex size-8 shrink-0 items-center justify-center rounded-lg text-[var(--editor-muted)] transition-colors hover:bg-[var(--editor-surface)] hover:text-[var(--editor-fg)]"
             aria-label="Close"
           >
-            <X size={14} />
+            <X size={15} strokeWidth={1.75} />
           </button>
         </div>
 
-        <form onSubmit={handleInsert} className="space-y-4 overflow-y-auto p-5">
-          <div>
-            <label className="mb-1.5 block text-[11px] font-medium tracking-wider text-[var(--editor-muted)] uppercase">
-              {locale.mediaUrlLabel}
-            </label>
-            <input
-              type="url"
-              placeholder={`https://example.com/${isImage ? "image.jpg" : "video.mp4"}`}
-              value={url}
-              onChange={(e) => {
-                setUrl(e.target.value);
-                setPreview(null);
-                setLocalError(null);
-              }}
-              className="h-9 w-full rounded-lg border border-[var(--editor-border)] bg-[var(--editor-surface)] px-3 font-mono text-sm outline-none focus:border-[var(--editor-accent)] focus:ring-2 focus:ring-[var(--editor-ring)]"
-            />
-          </div>
+        <form
+          onSubmit={handleInsert}
+          className="flex min-h-0 flex-1 flex-col"
+        >
+          <div className="space-y-4 overflow-y-auto px-5 py-4">
+            {media.allowUrlInsert && (
+              <>
+                <div>
+                  <label className="mb-1.5 block text-[10px] font-semibold tracking-[0.12em] text-[var(--editor-muted)] uppercase">
+                    {locale.mediaUrlLabel}
+                  </label>
+                  <input
+                    type="url"
+                    placeholder={`https://example.com/${isImage ? "image.jpg" : "video.mp4"}`}
+                    value={url}
+                    onChange={(e) => {
+                      setUrl(e.target.value);
+                      setPreview(null);
+                      setLocalError(null);
+                    }}
+                    className="h-10 w-full rounded-lg border border-[var(--editor-border)] bg-[var(--editor-surface)] px-3 font-mono text-[13px] text-[var(--editor-fg)] outline-none transition-[border,box-shadow] placeholder:text-[var(--editor-muted-fg)] focus:border-[var(--editor-accent)] focus:ring-2 focus:ring-[var(--editor-ring)]"
+                  />
+                </div>
 
-          <div className="flex items-center gap-3">
-            <div className="h-px flex-1 bg-[var(--editor-border)]" />
-            <span className="text-xs text-[var(--editor-muted-fg)]">or</span>
-            <div className="h-px flex-1 bg-[var(--editor-border)]" />
-          </div>
+                <div className="flex items-center gap-3" aria-hidden>
+                  <div className="h-px flex-1 bg-[var(--editor-border)]" />
+                  <span className="text-[11px] font-medium text-[var(--editor-muted-fg)]">
+                    or
+                  </span>
+                  <div className="h-px flex-1 bg-[var(--editor-border)]" />
+                </div>
+              </>
+            )}
 
-          <div>
-            <label className="mb-1.5 block text-[11px] font-medium tracking-wider text-[var(--editor-muted)] uppercase">
-              {locale.mediaUploadLabel}
-            </label>
-            <button
-              type="button"
-              onClick={() => fileRef.current?.click()}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                const file = e.dataTransfer.files?.[0];
-                if (file) void readFile(file);
-              }}
-              disabled={uploading}
-              className="flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[var(--editor-border)] p-6 transition-colors hover:border-[var(--editor-accent)] hover:bg-[var(--editor-surface)]"
-            >
-              <Upload size={20} className="text-[var(--editor-muted)]" />
-              <p className="text-sm text-[var(--editor-muted)]">
-                {uploading ? "Uploading…" : "Drag & drop or browse"}
-              </p>
-              <p className="text-[11px] text-[var(--editor-muted-fg)]">
-                {isImage ? "PNG, JPG, GIF, WebP" : "MP4, WebM — via onUpload"}
-              </p>
-            </button>
-            <input
-              ref={fileRef}
-              type="file"
-              accept={isImage ? "image/png,image/jpeg,image/gif,image/webp" : "video/*"}
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) void readFile(file);
-              }}
-              className="hidden"
-            />
-          </div>
-
-          {isImage && src && (
-            <div className="overflow-hidden rounded-lg border border-[var(--editor-border)] bg-[var(--editor-surface)]">
-              <img
-                src={src}
-                alt=""
-                className="mx-auto max-h-[160px] object-contain"
-                style={{ width }}
+            <div>
+              <label className="mb-1.5 block text-[10px] font-semibold tracking-[0.12em] text-[var(--editor-muted)] uppercase">
+                {locale.mediaUploadLabel}
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  if (!canUpload) {
+                    setLocalError(locale.mediaUploadMissing);
+                    return;
+                  }
+                  fileRef.current?.click();
+                }}
+                onDragEnter={(e) => {
+                  e.preventDefault();
+                  setDragOver(true);
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  setDragOver(false);
+                }}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setDragOver(false);
+                  if (!canUpload) {
+                    setLocalError(locale.mediaUploadMissing);
+                    return;
+                  }
+                  const file = e.dataTransfer.files?.[0];
+                  if (file) void uploadFile(file);
+                }}
+                disabled={uploading}
+                className={cn(
+                  "flex w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-4 py-7 transition-colors",
+                  dragOver
+                    ? "border-[var(--editor-accent)] bg-[color-mix(in_oklab,var(--editor-accent)_8%,transparent)]"
+                    : "border-[var(--editor-border)] bg-[var(--editor-surface)] hover:border-[var(--editor-accent)] hover:bg-[var(--editor-surface-2)]",
+                  "disabled:cursor-wait disabled:opacity-70",
+                )}
+              >
+                <span className="flex size-10 items-center justify-center rounded-full bg-[var(--editor-bg)] text-[var(--editor-muted)] shadow-sm ring-1 ring-[var(--editor-border)]">
+                  <Upload size={18} strokeWidth={1.75} />
+                </span>
+                <p className="text-[13px] font-medium text-[var(--editor-fg)]">
+                  {uploading
+                    ? locale.mediaUploading
+                    : canUpload
+                      ? locale.mediaUploadHint
+                      : locale.mediaUploadMissingShort}
+                </p>
+                <p className="text-[11px] text-[var(--editor-muted-fg)]">
+                  {isImage ? "PNG, JPG, GIF, WebP" : "MP4, WebM, OGG"} · max{" "}
+                  {formatBytes(maxBytes)}
+                </p>
+                {uploading && (
+                  <div
+                    className="mt-1 h-1.5 w-full max-w-[220px] overflow-hidden rounded-full bg-[var(--editor-border)]"
+                    role="progressbar"
+                    aria-valuenow={Math.round(progress * 100)}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                  >
+                    <div
+                      className="h-full rounded-full bg-[var(--editor-accent)] transition-[width] duration-150"
+                      style={{ width: `${Math.round(progress * 100)}%` }}
+                    />
+                  </div>
+                )}
+              </button>
+              <input
+                ref={fileRef}
+                type="file"
+                accept={acceptAttr(accept)}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  e.target.value = "";
+                  if (file) void uploadFile(file);
+                }}
+                className="hidden"
               />
             </div>
-          )}
 
-          {isImage && (
-            <div>
-              <label className="mb-1.5 block text-[11px] font-medium tracking-wider text-[var(--editor-muted)] uppercase">
-                {locale.mediaSizeLabel}
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {SIZE_PRESETS.map((p) => (
-                  <button
-                    key={p.value}
-                    type="button"
-                    onClick={() => setWidth(p.value)}
-                    className={`h-8 rounded-lg px-3 text-sm font-medium transition-colors ${
-                      width === p.value
-                        ? "itzsa-editor-btn-primary"
-                        : "itzsa-editor-btn"
-                    }`}
-                  >
-                    {p.label}
-                  </button>
-                ))}
+            {isImage && src && !src.startsWith("data:") && (
+              <div className="overflow-hidden rounded-xl border border-[var(--editor-border)] bg-[var(--editor-surface)] p-2">
+                <img
+                  src={src}
+                  alt=""
+                  className="mx-auto max-h-[140px] rounded-lg object-contain"
+                  style={{ width }}
+                />
               </div>
-            </div>
-          )}
+            )}
 
-          {error && (
-            <p className="text-xs text-[var(--editor-danger)]" role="alert">
-              {error}
-            </p>
-          )}
+            {isImage && (
+              <div>
+                <label className="mb-1.5 block text-[10px] font-semibold tracking-[0.12em] text-[var(--editor-muted)] uppercase">
+                  {locale.mediaSizeLabel}
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {SIZE_PRESETS.map((p) => (
+                    <button
+                      key={p.value}
+                      type="button"
+                      onClick={() => setWidth(p.value)}
+                      className={cn(
+                        "h-8 min-w-[2.75rem] rounded-lg px-3 text-[12px] font-medium transition-colors",
+                        width === p.value
+                          ? "itzsa-editor-btn-primary"
+                          : "itzsa-editor-btn",
+                      )}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {error && (
+              <p
+                className="rounded-lg bg-[var(--editor-danger-bg)] px-3 py-2 text-[12px] text-[var(--editor-danger)]"
+                role="alert"
+              >
+                {error}
+              </p>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="flex shrink-0 items-center justify-end gap-2 border-t border-[var(--editor-border)] bg-[var(--editor-surface)] px-5 py-3.5">
+            <button
+              type="button"
+              onClick={onClose}
+              className="itzsa-editor-btn h-9 rounded-lg px-4 text-[13px] font-medium"
+            >
+              {locale.cancel}
+            </button>
+            <button
+              type="submit"
+              disabled={!src || uploading}
+              className="itzsa-editor-btn-primary h-9 rounded-lg px-4 text-[13px] font-medium"
+            >
+              {locale.insert}
+            </button>
+          </div>
         </form>
-
-        <div className="flex items-center justify-end gap-2 border-t border-[var(--editor-border)] bg-[var(--editor-surface)] px-5 py-4">
-          <button
-            type="button"
-            onClick={onClose}
-            className="itzsa-editor-btn h-8 rounded-lg px-4 text-sm"
-          >
-            {locale.cancel}
-          </button>
-          <button
-            type="button"
-            onClick={() => handleInsert()}
-            disabled={!src || uploading}
-            className="itzsa-editor-btn-primary h-8 rounded-lg px-4 text-sm"
-          >
-            {locale.insert}
-          </button>
-        </div>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { CodeBlock } from "@/components/code-block";
+import { InstallCommand } from "@/components/install-command";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
@@ -44,35 +44,19 @@ export default function Home() {
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           <p className="text-[13px] text-secondary">Install table</p>
-          <CodeBlock
-            language="bash"
-            showPrompt
-            code="pnpm add @itzsa/table"
-          />
+          <InstallCommand packages="@itzsa/table" />
         </div>
         <div className="flex flex-col gap-2">
           <p className="text-[13px] text-secondary">Install nepali-input</p>
-          <CodeBlock
-            language="bash"
-            showPrompt
-            code="pnpm add @itzsa/nepali-input"
-          />
+          <InstallCommand packages="@itzsa/nepali-input" />
         </div>
         <div className="flex flex-col gap-2">
           <p className="text-[13px] text-secondary">Install nepali-datepicker</p>
-          <CodeBlock
-            language="bash"
-            showPrompt
-            code="pnpm add @itzsa/nepali-datepicker"
-          />
+          <InstallCommand packages="@itzsa/nepali-datepicker" />
         </div>
         <div className="flex flex-col gap-2">
           <p className="text-[13px] text-secondary">Install editor</p>
-          <CodeBlock
-            language="bash"
-            showPrompt
-            code="pnpm add @itzsa/editor @itzsa/nepali-input"
-          />
+          <InstallCommand packages={["@itzsa/editor", "@itzsa/nepali-input"]} />
         </div>
       </div>
     </main>

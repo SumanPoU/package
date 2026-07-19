@@ -59,6 +59,29 @@ adToBs(2025, 4, 14);  // { year: 2082, month: 1, day: 1 }
 
 Calendar data: **BS 2000–2100**.
 
+## Styling via props
+
+```tsx
+<NepaliDatePicker
+  value={date}
+  onChange={setDate}
+  vars={{ accent: "#0f766e", radius: "12px" }}
+  classNames={{ input: "h-10", popover: "shadow-lg" }}
+/>
+```
+
+## Validation
+
+```ts
+import { validateBsDate, isCompleteBsDate } from "@itzsa/nepali-datepicker";
+
+validateBsDate(2082, 1, 15); // { ok: true }
+isCompleteBsDate("2082-04"); // false — still typing
+```
+
+You do **not** need the jQuery plugin’s compressed calendar codec — month
+lengths and AD↔BS live in this package’s tables + helpers.
+
 ## Docs
 
 https://itzsa.acharya-suman.com.np/nepali-datepicker

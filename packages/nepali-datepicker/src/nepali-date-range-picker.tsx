@@ -25,6 +25,11 @@ import {
   useFloatingPopover,
   usePortalReady,
 } from "./popover-utils";
+import {
+  mergePickerStyle,
+  type NepaliDatePickerVars,
+  type NepaliDateRangeClassNames,
+} from "./styling";
 import type { DateParts, Locale } from "./types";
 
 export type BsDateRange = {
@@ -51,6 +56,10 @@ export type NepaliDateRangePickerProps = {
   className?: string;
   triggerClassName?: string;
   popoverClassName?: string;
+  classNames?: NepaliDateRangeClassNames;
+  vars?: NepaliDatePickerVars;
+  style?: React.CSSProperties;
+  popoverStyle?: React.CSSProperties;
   id?: string;
   "aria-label"?: string;
 };
@@ -94,10 +103,16 @@ export function NepaliDateRangePicker({
   className,
   triggerClassName,
   popoverClassName,
+  classNames,
+  vars,
+  style,
+  popoverStyle,
   id,
   "aria-label": ariaLabel,
 }: NepaliDateRangePickerProps) {
   const displayLocale = valueLocale ?? locale;
+  const rootStyle = mergePickerStyle(vars, style);
+  const panelStyle = mergePickerStyle(vars, popoverStyle);
   const isControlled = valueProp !== undefined;
   const [uncontrolled, setUncontrolled] = React.useState(defaultValue);
   const value = isControlled ? (valueProp ?? {}) : uncontrolled;
@@ -279,6 +294,7 @@ export function NepaliDateRangePicker({
               "itzsa-ndp-popover itzsa-ndp-popover-range",
               dual && "is-dual",
               popoverClassName,
+              classNames?.popover,
             )}
             style={{
               position: "fixed",
@@ -286,6 +302,7 @@ export function NepaliDateRangePicker({
               left: pos.left,
               width: Math.max(pos.width, dual ? 560 : 288),
               zIndex: 50,
+              ...panelStyle,
             }}
             role="dialog"
             aria-modal="false"
@@ -321,7 +338,7 @@ export function NepaliDateRangePicker({
               </button>
             </div>
 
-            <div className={cn("itzsa-ndp-range-months", dual && "is-dual")}>
+            <div className={cn("itzsa-ndp-range-months", dual && "is-dual", classNames?.rangeMonths)}>
               <CalendarMonth
                 year={leftView.year}
                 month={leftView.month}
@@ -388,7 +405,8 @@ export function NepaliDateRangePicker({
   return (
     <div
       ref={rootRef}
-      className={cn("itzsa-ndp itzsa-ndp-range", className)}
+      className={cn("itzsa-ndp itzsa-ndp-range", className, classNames?.root)}
+      style={rootStyle}
       data-disabled={disabled ? "" : undefined}
       data-open={open ? "" : undefined}
     >
@@ -399,7 +417,11 @@ export function NepaliDateRangePicker({
         aria-label={ariaLabel}
         aria-expanded={open}
         aria-haspopup="dialog"
-        className={cn("itzsa-ndp-range-trigger", triggerClassName)}
+        className={cn(
+          "itzsa-ndp-range-trigger",
+          triggerClassName,
+          classNames?.rangeTrigger,
+        )}
         onClick={() => {
           if (!disabled) setOpen((o) => !o);
         }}
@@ -409,6 +431,7 @@ export function NepaliDateRangePicker({
           className={cn(
             "itzsa-ndp-range-trigger-label",
             !(fromParts || toParts) && "is-placeholder",
+            classNames?.rangeLabel,
           )}
         >
           {label}

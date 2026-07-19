@@ -1,5 +1,7 @@
 "use client";
 
+import { InstallCommand } from "@/components/install-command";
+
 import {
   EDITABLE_PROPS,
   HELPER_API,
@@ -20,11 +22,9 @@ import {
   HelpersExample,
   LocaleExample,
   RangeExample,
+  StyledExample,
 } from "./examples";
 import { DOC_NAV } from "./nav";
-
-const INSTALL = `pnpm add @itzsa/nepali-datepicker
-# or: npm install @itzsa/nepali-datepicker`;
 
 const CSS = `@import "tailwindcss";
 @source "../node_modules/@itzsa/nepali-datepicker";
@@ -39,6 +39,8 @@ import {
   EditableNepaliDatePicker,
   NepaliDatePicker,
   NepaliDateRangePicker,
+  isCompleteBsDate,
+  validateBsDate,
 } from "@itzsa/nepali-datepicker";
 import "@itzsa/nepali-datepicker/styles.css";
 
@@ -52,9 +54,46 @@ export function DateFields() {
       <NepaliDatePicker value={date} onChange={setDate} locale="ne" />
       <EditableNepaliDatePicker value={typed} onChange={setTyped} />
       <NepaliDateRangePicker value={range} onChange={setRange} />
+      {/* before submit: */}
+      {isCompleteBsDate(typed) ? "ok" : "incomplete"}
     </>
   );
 }`;
+
+const STYLE_CODE = `<NepaliDatePicker
+  value={date}
+  onChange={setDate}
+  vars={{
+    accent: "#0f766e",
+    radius: "12px",
+    border: "#99f6e4",
+    surface: "#f0fdfa",
+  }}
+  classNames={{
+    input: "h-10 font-medium",
+    popover: "shadow-lg",
+  }}
+/>`;
+
+const VALIDATE_CODE = `import {
+  isCompleteBsDate,
+  parseDateString,
+  validateBsDate,
+  assertValidBsDate,
+} from "@itzsa/nepali-datepicker";
+
+// Soft (forms)
+const result = validateBsDate(2082, 1, 32);
+// → { ok: false, code: "invalid_date", message: "…" }
+
+if (!isCompleteBsDate(value)) {
+  // still typing or bad calendar day
+}
+
+// Hard (throw)
+assertValidBsDate(2082, 4, 15);
+
+const parts = parseDateString("2082-04-15"); // null if invalid`;
 
 export function DocsContent() {
   return (
@@ -71,9 +110,10 @@ export function DocsContent() {
             nepali-datepicker
           </h1>
           <p className="max-w-2xl text-base leading-relaxed text-secondary">
-            Bikram Sambat date pickers for React — calendar select, typeable{" "}
-            <code className="font-mono text-primary">YYYY-MM-DD</code> input, and
-            dual-month range selection, plus AD ↔ BS helpers.
+            Production-ready Bikram Sambat pickers for React: calendar select,
+            typeable <code className="font-mono text-primary">YYYY-MM-DD</code>{" "}
+            input, and dual-month range — with AD ↔ BS conversion, validation
+            helpers, and theme tokens via props.
           </p>
           <div className="flex flex-wrap gap-2 pt-1 text-xs text-secondary">
             <span className="pkg rounded-md border-[0.5px] border-border bg-card px-2 py-1 text-[12px]">
@@ -103,24 +143,47 @@ export function DocsContent() {
         <DocSection
           id="installation"
           title="Installation"
-          description="Add the package and styles. Use a Devanagari-capable font for Nepali labels."
+          description="Install with your package manager, then import styles once in the app."
         >
-          <CodeBlock language="bash" showPrompt code="pnpm add @itzsa/nepali-datepicker" />
-          <CodeBlock language="bash" code={INSTALL} />
+          <InstallCommand packages="@itzsa/nepali-datepicker" />
           <p className="text-sm text-secondary">Global CSS (Tailwind v4):</p>
           <CodeBlock language="css" code={CSS} />
           <Callout title="Peers">
             Peer deps: <code className="font-mono text-primary">react</code> and{" "}
             <code className="font-mono text-primary">react-dom</code> ^18 or ^19.
+            Load a Devanagari font for Nepali labels.
           </Callout>
         </DocSection>
 
         <DocSection
           id="getting-started"
           title="Getting started"
-          description="Canonical values are always ASCII YYYY-MM-DD (BS). Use Editable for typing; Range for from→to."
+          description="Canonical values are always ASCII YYYY-MM-DD (BS). Display locale is separate from the stored value."
         >
           <CodeBlock code={STARTER} />
+          <Callout title="vs jQuery NepaliDatePicker">
+            You do <strong>not</strong> need to port that plugin’s compressed
+            month codec or special-case patches. This package uses explicit BS
+            month-length tables (2000–2100) plus{" "}
+            <code className="font-mono text-primary">validateBsDate</code> /{" "}
+            <code className="font-mono text-primary">minDate</code> /{" "}
+            <code className="font-mono text-primary">maxDate</code> — same job,
+            clearer API.
+          </Callout>
+        </DocSection>
+
+        <DocSection
+          id="validation"
+          title="Validation"
+          description="Use soft checks in forms; assert helpers throw TypeError / RangeError when you need hard guards."
+        >
+          <CodeBlock code={VALIDATE_CODE} />
+          <Callout title="What we validate">
+            Integer year/month/day, year in 2000–2100, month 1–12, day within that
+            month’s length. Incomplete typed strings fail{" "}
+            <code className="font-mono text-primary">isCompleteBsDate</code> until
+            the user finishes a real calendar day.
+          </Callout>
         </DocSection>
 
         <DocSection
@@ -154,6 +217,16 @@ export function DocsContent() {
               description="Click start, then end. Hover previews the span; dual months on desktop."
             >
               <RangeExample />
+            </DocSection>
+
+            <DocSection
+              id="example-styled"
+              level={3}
+              title="Custom styling"
+              description="Theme with vars (CSS tokens) and classNames (per-part Tailwind / CSS)."
+            >
+              <StyledExample />
+              <CodeBlock code={STYLE_CODE} />
             </DocSection>
 
             <DocSection
@@ -211,7 +284,7 @@ const bs = adToBs(ad.year, ad.month, ad.day);`}
               id="props-editable"
               level={3}
               title="EditableNepaliDatePicker"
-              description="Typeable masked input + calendar. Use isCompleteBsDate to validate."
+              description="Typeable masked input + calendar. Validate with isCompleteBsDate."
             >
               <PropsTable
                 caption="EditableNepaliDatePickerProps"
@@ -237,7 +310,7 @@ const bs = adToBs(ad.year, ad.month, ad.day);`}
               title="Helpers"
               description="Tree-shakeable utilities from the same package entry."
             >
-              <PropsTable caption="Conversion & format" rows={HELPER_API} />
+              <PropsTable caption="Conversion, format & validation" rows={HELPER_API} />
             </DocSection>
           </div>
         </DocSection>
@@ -245,16 +318,25 @@ const bs = adToBs(ad.year, ad.month, ad.day);`}
         <DocSection
           id="styling"
           title="Styling & fonts"
-          description="Override CSS variables on .itzsa-ndp / .itzsa-ndp-popover."
+          description="Three layers: CSS import tokens, vars prop, and classNames / className."
         >
           <CodeBlock
             language="css"
             code={`.itzsa-ndp {
   --ndp-accent: #1d9e75;
+  --ndp-border: #e4e2db;
+  --ndp-radius: 10px;
   --itzsa-nepali-font: "Noto Sans Devanagari", sans-serif;
 }`}
           />
-          <Callout title="Calendar range">
+          <p className="text-sm text-secondary">
+            <code className="font-mono text-primary">vars</code> maps to the same
+            CSS variables at runtime.{" "}
+            <code className="font-mono text-primary">classNames</code> targets
+            root, field, input, trigger, popover (and range-specific keys on the
+            range picker).
+          </p>
+          <Callout title="Calendar data range">
             Tables cover BS 2000–2100. Outside that range, conversion helpers
             throw <code className="font-mono text-primary">RangeError</code>.
           </Callout>

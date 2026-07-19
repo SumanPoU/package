@@ -19,9 +19,7 @@ import {
   UnicodeExample,
 } from "./examples";
 import { DOC_NAV } from "./nav";
-
-const INSTALL = `pnpm add @itzsa/nepali-input
-# or: npm install @itzsa/nepali-input`;
+import { InstallCommand } from "@/components/install-command";
 
 const CSS = `@import "tailwindcss";
 @source "../node_modules/@itzsa/nepali-input";
@@ -105,8 +103,7 @@ export function DocsContent() {
           title="Installation"
           description="Add the package and optional styles. Use a Devanagari-capable font for correct glyphs."
         >
-          <CodeBlock language="bash" showPrompt code="pnpm add @itzsa/nepali-input" />
-          <CodeBlock language="bash" code={INSTALL} />
+          <InstallCommand packages="@itzsa/nepali-input" />
           <p className="text-sm text-secondary">Global CSS (Tailwind v4):</p>
           <CodeBlock language="css" code={CSS} />
           <Callout title="Peers">

@@ -1,5 +1,6 @@
 "use client";
 
+import { InstallCommand } from "@/components/install-command";
 import {
   ACTION_PROPS,
   ACTIONS_OPTIONS_PROPS,
@@ -25,9 +26,6 @@ import {
   RowEditExample,
   TreeExample,
 } from "./examples";
-
-const INSTALL_CODE = `pnpm add @itzsa/table
-# or: npm install @itzsa/table`;
 
 const CSS_CODE = `@import "tailwindcss";
 @source "../node_modules/@itzsa/table";
@@ -124,9 +122,7 @@ export function DocsContent() {
           title="Installation"
           description="Add the package, then wire Tailwind so utility classes inside the table are generated."
         >
-          <CodeBlock language="bash" showPrompt code="pnpm add @itzsa/table" />
-          <p className="text-sm text-secondary">Also works with npm / yarn:</p>
-          <CodeBlock language="bash" code={INSTALL_CODE} />
+          <InstallCommand packages="@itzsa/table" />
           <p className="text-sm text-secondary">
             In your global CSS (Tailwind v4):
           </p>

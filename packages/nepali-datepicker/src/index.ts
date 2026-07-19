@@ -2,6 +2,12 @@ export type { DateParts, DatePattern, Locale } from "./types";
 
 export type { BsDateRange } from "./nepali-date-range-picker";
 
+export type {
+  NepaliDatePickerClassNames,
+  NepaliDatePickerVars,
+  NepaliDateRangeClassNames,
+} from "./styling";
+
 export {
   BS_EPOCH_AD,
   BS_MAX_YEAR,
@@ -39,6 +45,16 @@ export {
   WEEKDAY_NAMES_EN,
   WEEKDAY_NAMES_NE,
 } from "./locale";
+
+export {
+  assertBsDay,
+  assertBsMonth,
+  assertBsYear,
+  assertValidBsDate,
+  validateBsDate,
+  validateBsDateParts,
+} from "./validate";
+export type { ValidationCode, ValidationResult } from "./validate";
 
 export type { NepaliDatePickerProps } from "./nepali-datepicker";
 export { NepaliDatePicker } from "./nepali-datepicker";

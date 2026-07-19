@@ -177,6 +177,34 @@ export function BoundsExample() {
   );
 }
 
+export function StyledExample() {
+  const [date, setDate] = useState(() => toDateString(todayBs()));
+
+  return (
+    <div className="flex flex-col gap-4 rounded-md border-[0.5px] border-border bg-card p-4">
+      <NepaliDatePicker
+        value={date}
+        onChange={setDate}
+        locale="en"
+        vars={{
+          accent: "#0f766e",
+          radius: "12px",
+          border: "#99f6e4",
+          surface: "#f0fdfa",
+        }}
+        classNames={{
+          input: "h-10 font-medium",
+          popover: "shadow-lg",
+        }}
+      />
+      <p className="text-[12px] text-secondary">
+        Themed via <code className="font-mono text-primary">vars</code> +{" "}
+        <code className="font-mono text-primary">classNames</code>.
+      </p>
+    </div>
+  );
+}
+
 export function HelpersExample() {
   const today = useMemo(() => todayBs(), []);
   const ad = useMemo(

@@ -3,10 +3,8 @@
 import Link from "next/link";
 
 import { CodeBlock } from "@/components/code-block";
+import { InstallCommand } from "@/components/install-command";
 import { EditorDemo } from "./examples";
-
-const INSTALL = `pnpm add @itzsa/editor @itzsa/nepali-input
-# or: npm install @itzsa/editor @itzsa/nepali-input`;
 
 const CSS_SETUP = `@source "../node_modules/@itzsa/editor";
 @import "@itzsa/editor/styles.css";`;
@@ -65,7 +63,7 @@ export function DocsContent() {
 
       <section className="mb-12 flex flex-col gap-3">
         <h2 className="text-lg font-medium text-primary">Install</h2>
-        <CodeBlock language="bash" showPrompt code={INSTALL} />
+        <InstallCommand packages={["@itzsa/editor", "@itzsa/nepali-input"]} />
         <CodeBlock language="css" code={CSS_SETUP} />
       </section>
 

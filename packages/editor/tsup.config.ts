@@ -7,11 +7,15 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
+  treeshake: true,
+  minify: false,
   external: [
     "react",
     "react-dom",
     "react/jsx-runtime",
     "@itzsa/nepali-input",
+    "lucide-react",
+    /^@tiptap\//,
   ],
   esbuildOptions(options) {
     options.banner = {

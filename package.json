@@ -8,8 +8,10 @@
   ],
   "scripts": {
     "dev": "next dev",
-    "build": "pnpm run build:registry && next build",
+    "build": "pnpm run build:packages && pnpm run build:registry && next build",
+    "build:packages": "pnpm --filter @itzsa/table --filter @itzsa/nepali-input --filter @itzsa/editor run build",
     "build:registry": "pnpm --filter registry run registry:build",
+    "typecheck:packages": "pnpm --filter @itzsa/table --filter @itzsa/nepali-input --filter @itzsa/editor run typecheck",
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write"

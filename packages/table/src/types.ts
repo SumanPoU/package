@@ -101,7 +101,9 @@ export type DataTableRowAction<T> = {
   hidden?: boolean | ((row: T) => boolean);
   /**
    * Permission key or predicate. String keys are checked via
-   * `actionsOptions.canAccess` / `actionsOptions.permissions`.
+   * String permission key checked against `actionsOptions.permissions` /
+   * `actionsOptions.canAccess`. **Fails closed** when a string permission is
+   * set but no ACL is provided.
    */
   permission?: string | ((row: T) => boolean);
 };
@@ -749,7 +751,8 @@ export function hasActionPermission<T>(
   if (options?.canAccess) return options.canAccess(permission, row);
 
   const perms = options?.permissions;
-  if (perms == null) return true;
+  // Fail closed: a permission string with no ACL must not grant access.
+  if (perms == null) return false;
   if (Array.isArray(perms)) return perms.includes(permission);
   return perms[permission] === true;
 }

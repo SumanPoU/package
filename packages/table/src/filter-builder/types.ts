@@ -174,8 +174,11 @@ export const FILTER_INPUT_PLACEHOLDER: Partial<
 let filterConditionSeq = 0;
 
 export function createFilterConditionId(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return `fc-${crypto.randomUUID()}`;
+  }
   filterConditionSeq += 1;
-  return `fc-${filterConditionSeq}`;
+  return `fc-${filterConditionSeq}-${Date.now().toString(36)}`;
 }
 
 export function titleCase(value: string): string {

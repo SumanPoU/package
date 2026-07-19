@@ -1,6 +1,6 @@
 import { isValidBsDate } from "./convert";
 import { getMonthName, localizeDigits } from "./locale";
-import type { DateParts, DatePattern, Locale } from "./types";
+import type { DateParts, DatePattern, DateTimeParts, Locale } from "./types";
 
 function pad2(n: number): string {
   return n < 10 ? `0${n}` : String(n);
@@ -74,4 +74,20 @@ export function formatBsLabel(parts: DateParts, locale: Locale = "en"): string {
   const month = getMonthName(parts.month, locale);
   const year = localizeDigits(parts.year, locale);
   return `${day} ${month} ${year}`;
+}
+
+/** e.g. `15 Magh 2082, 14:30` */
+export function formatBsDateTimeLabel(
+  parts: DateTimeParts,
+  locale: Locale = "en",
+  opts?: { withSeconds?: boolean },
+): string {
+  const date = formatBsLabel(parts, locale);
+  const h = localizeDigits(pad2(parts.hour), locale);
+  const m = localizeDigits(pad2(parts.minute), locale);
+  if (opts?.withSeconds) {
+    const s = localizeDigits(pad2(parts.second ?? 0), locale);
+    return `${date}, ${h}:${m}:${s}`;
+  }
+  return `${date}, ${h}:${m}`;
 }

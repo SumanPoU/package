@@ -5,6 +5,7 @@ import {
   EditableNepaliDatePicker,
   NepaliDatePicker,
   NepaliDateRangePicker,
+  NepaliDateTimePicker,
   addBsDays,
   adToBs,
   bsToAd,
@@ -12,7 +13,9 @@ import {
   isCompleteBsDate,
   parseDateString,
   todayBs,
+  todayBsDateTime,
   toDateString,
+  toDateTimeString,
   type BsDateRange,
 } from "@itzsa/nepali-datepicker";
 
@@ -76,6 +79,38 @@ export function EditableExample() {
         <span className="text-primary">
           {isCompleteBsDate(date) ? "yes" : "no"}
         </span>
+      </p>
+    </div>
+  );
+}
+
+export function DateTimeExample() {
+  const [value, setValue] = useState(() =>
+    toDateTimeString(todayBsDateTime()),
+  );
+
+  return (
+    <div className="flex flex-col gap-4 rounded-md border-[0.5px] border-border bg-card p-4">
+      <div className="flex flex-col gap-1.5">
+        <FieldLabel htmlFor="ndp-dt">Date & time</FieldLabel>
+        <NepaliDateTimePicker
+          id="ndp-dt"
+          value={value}
+          onChange={setValue}
+          locale="ne"
+          minuteStep={5}
+          minDateTime="2080-01-01 00:00"
+          maxDateTime="2090-12-30 23:59"
+          placeholder="मिति र समय"
+        />
+      </div>
+      <p className="font-mono text-[12px] text-tertiary">
+        value: <span className="text-primary">{value || "—"}</span>
+      </p>
+      <p className="text-[12px] text-secondary">
+        Bounds:{" "}
+        <code className="font-mono text-primary">2080-01-01 00:00</code> →{" "}
+        <code className="font-mono text-primary">2090-12-30 23:59</code>
       </p>
     </div>
   );

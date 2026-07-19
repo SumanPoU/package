@@ -127,6 +127,52 @@ export const EDITABLE_PROPS: PropRow[] = [
   },
 ];
 
+export const DATETIME_PROPS: PropRow[] = [
+  {
+    name: "value",
+    type: "string",
+    description: "Controlled BS datetime as ASCII YYYY-MM-DD HH:mm.",
+  },
+  {
+    name: "onChange",
+    type: "(value: string) => void",
+    description: "Fires on Confirm (canonical datetime string).",
+  },
+  {
+    name: "minDateTime / maxDateTime",
+    type: "string",
+    description:
+      "Inclusive bounds. Date-only (YYYY-MM-DD) = start/end of that day; or full YYYY-MM-DD HH:mm.",
+  },
+  {
+    name: "minDate / maxDate",
+    type: "string",
+    description: "Aliases of minDateTime / maxDateTime.",
+  },
+  {
+    name: "minuteStep",
+    type: "number",
+    default: "5",
+    description: "Minute list increment (1–30).",
+  },
+  {
+    name: "withSeconds",
+    type: "boolean",
+    default: "false",
+    description: "Show seconds column and include :ss in the value.",
+  },
+  {
+    name: "placeholder",
+    type: "string",
+    description: "Empty-state label.",
+  },
+  {
+    name: "classNames / vars / style",
+    type: "…",
+    description: "Same styling API as NepaliDatePicker.",
+  },
+];
+
 export const RANGE_PROPS: PropRow[] = [
   {
     name: "value",

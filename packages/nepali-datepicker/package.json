@@ -1,7 +1,7 @@
 {
   "name": "@itzsa/nepali-datepicker",
-  "version": "0.3.1",
-  "description": "Nepali (Bikram Sambat) date, datetime, and range pickers for React",
+  "version": "0.3.2",
+  "description": "Nepali (Bikram Sambat) date, datetime, and range pickers for React — AD↔BS via @itzsa/bs-date",
   "license": "MIT",
   "sideEffects": [
     "**/*.css",
@@ -38,6 +38,7 @@
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
+    "@itzsa/bs-date": "workspace:*",
     "clsx": "^2.1.1",
     "tailwind-merge": "^3.3.1"
   },

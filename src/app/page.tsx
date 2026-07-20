@@ -23,6 +23,12 @@ const PACKAGES = [
     blurb: "Bikram Sambat date, datetime, and range.",
   },
   {
+    href: "/bs-date",
+    name: "BS Date",
+    pkg: "@itzsa/bs-date",
+    blurb: "Headless BS convert, arithmetic, holidays.",
+  },
+  {
     href: "/nepal-geo",
     name: "Nepal Geo",
     pkg: "@itzsa/nepal-geo",
@@ -187,6 +193,10 @@ export default function Home() {
           <div className="flex flex-col gap-2">
             <p className="text-[13px] text-secondary">Datepicker</p>
             <InstallCommand packages="@itzsa/nepali-datepicker" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-[13px] text-secondary">BS Date (headless)</p>
+            <InstallCommand packages="@itzsa/bs-date" />
           </div>
           <div className="flex flex-col gap-2">
             <p className="text-[13px] text-secondary">Nepal Geo</p>

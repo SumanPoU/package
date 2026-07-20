@@ -6,7 +6,7 @@ export const SITE_URL = "https://itzsa.acharya-suman.com.np";
 export const SITE_NAME = "itzsa";
 
 export const SITE_DESCRIPTION =
-  "Open-source React component library for Nepal-ready product UIs — DataTable, Nepali input, Bikram Sambat datepicker, geography selects, and TipTap editor.";
+  "Open-source React component library for Nepal-ready product UIs — DataTable, Nepali input, Bikram Sambat datepicker and headless BS date logic, geography selects, and TipTap editor.";
 
 export const SITE_AUTHOR = {
   name: "Suman Acharya",
@@ -41,6 +41,13 @@ export const PACKAGE_ROUTES = [
     description:
       "Nepali (Bikram Sambat) date, datetime, and range pickers for React with validation and styling API. Install with pnpm add @itzsa/nepali-datepicker.",
     packageName: "@itzsa/nepali-datepicker",
+  },
+  {
+    path: "/bs-date",
+    title: "@itzsa/bs-date — Headless Bikram Sambat dates",
+    description:
+      "Headless Bikram Sambat convert, arithmetic, format, and holidays with pluggable calendar engines. Install with pnpm add @itzsa/bs-date.",
+    packageName: "@itzsa/bs-date",
   },
   {
     path: "/nepal-geo",

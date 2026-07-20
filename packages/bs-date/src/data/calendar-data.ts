@@ -1,6 +1,7 @@
 /**
- * BS month lengths (Baisakh	o Chaitra), years 2000–2100.
+ * BS month lengths (Baisakh → Chaitra), years 2000–2100.
  * Community-verified Nepal Panchanga tables (same range used by common BS libraries).
+ * Ported for @itzsa/bs-date from @itzsa/nepali-datepicker.
  */
 export const BS_MONTH_DAYS: Record<number, readonly number[]> = {
   2000: [30, 32, 31, 32, 31, 30, 30, 30, 29, 30, 29, 31],

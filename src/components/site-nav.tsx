@@ -11,6 +11,7 @@ const LINKS = [
   { href: "/table", label: "Table" },
   { href: "/nepali-input", label: "Nepali Input" },
   { href: "/nepali-datepicker", label: "Datepicker" },
+  { href: "/bs-date", label: "BS Date" },
   { href: "/nepal-geo", label: "Nepal Geo" },
   { href: "/editor", label: "Editor" },
   { href: "/registry", label: "Registry" },

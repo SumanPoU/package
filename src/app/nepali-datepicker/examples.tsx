@@ -39,6 +39,17 @@ function FieldLabel({
 export function BasicExample() {
   const [date, setDate] = useState(() => toDateString(todayBs()));
 
+  const adLabel = useMemo(() => {
+    const parts = parseDateString(date);
+    if (!parts) return null;
+    try {
+      const ad = bsToAd(parts.year, parts.month, parts.day);
+      return `${ad.year}-${String(ad.month).padStart(2, "0")}-${String(ad.day).padStart(2, "0")}`;
+    } catch {
+      return null;
+    }
+  }, [date]);
+
   return (
     <div className="flex flex-col gap-4 rounded-md border-[0.5px] border-border bg-card p-4">
       <div className="flex flex-col gap-1.5">
@@ -51,7 +62,9 @@ export function BasicExample() {
         />
       </div>
       <p className="font-mono text-[12px] text-tertiary">
-        value: <span className="text-primary">{date || "—"}</span>
+        BS: <span className="text-primary">{date || "—"}</span>
+        {" · "}
+        AD: <span className="text-primary">{adLabel ?? "—"}</span>
       </p>
     </div>
   );
@@ -238,29 +251,147 @@ export function StyledExample() {
 }
 
 export function HelpersExample() {
-  const today = useMemo(() => todayBs(), []);
-  const ad = useMemo(() => bsToAd(today.year, today.month, today.day), [today]);
-  const roundTrip = useMemo(() => adToBs(ad.year, ad.month, ad.day), [ad]);
+  const [bs, setBs] = useState(() => toDateString(todayBs()));
+  const [adInput, setAdInput] = useState(() => {
+    const t = todayBs();
+    const ad = bsToAd(t.year, t.month, t.day);
+    return `${ad.year}-${String(ad.month).padStart(2, "0")}-${String(ad.day).padStart(2, "0")}`;
+  });
+
+  const fromBs = useMemo(() => {
+    const parts = parseDateString(bs);
+    if (!parts || !isCompleteBsDate(bs)) {
+      return { ok: false as const, error: "Pick or type a complete BS date" };
+    }
+    try {
+      const ad = bsToAd(parts.year, parts.month, parts.day);
+      return {
+        ok: true as const,
+        ad,
+        label: `${ad.year}-${String(ad.month).padStart(2, "0")}-${String(ad.day).padStart(2, "0")}`,
+      };
+    } catch (e) {
+      return {
+        ok: false as const,
+        error: e instanceof Error ? e.message : "Invalid BS date",
+      };
+    }
+  }, [bs]);
+
+  const fromAd = useMemo(() => {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(adInput.trim());
+    if (!m) {
+      return { ok: false as const, error: "Use AD YYYY-MM-DD" };
+    }
+    const year = Number(m[1]);
+    const month = Number(m[2]);
+    const day = Number(m[3]);
+    try {
+      const converted = adToBs(year, month, day);
+      return {
+        ok: true as const,
+        bs: converted,
+        label: toDateString(converted),
+      };
+    } catch (e) {
+      return {
+        ok: false as const,
+        error: e instanceof Error ? e.message : "Invalid AD date",
+      };
+    }
+  }, [adInput]);
 
   return (
-    <div className="flex flex-col gap-3 rounded-md border-[0.5px] border-border bg-card p-4 font-mono text-[13px]">
-      <p className="text-secondary">
-        todayBs():{" "}
-        <span className="text-primary">
-          {today.year}-{today.month}-{today.day}
-        </span>
+    <div className="flex flex-col gap-4 rounded-md border-[0.5px] border-border bg-card p-4">
+      <p className="text-[13px] leading-relaxed text-secondary">
+        Pick a BS date — conversion uses{" "}
+        <a href="/bs-date" className="text-accent hover:underline">
+          @itzsa/bs-date
+        </a>{" "}
+        under the hood. Flip AD → BS below.
       </p>
-      <p className="text-secondary">
-        → AD:{" "}
-        <span className="text-primary">
-          {ad.year}-{ad.month}-{ad.day}
-        </span>
-      </p>
-      <p className="text-secondary">
-        → BS again:{" "}
-        <span className="text-primary">
-          {roundTrip.year}-{roundTrip.month}-{roundTrip.day}
-        </span>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="flex flex-col gap-2">
+          <FieldLabel htmlFor="ndp-helpers-bs">BS → AD</FieldLabel>
+          <NepaliDatePicker
+            id="ndp-helpers-bs"
+            value={bs}
+            onChange={(next) => {
+              setBs(next);
+              const parts = parseDateString(next);
+              if (!parts) return;
+              try {
+                const ad = bsToAd(parts.year, parts.month, parts.day);
+                setAdInput(
+                  `${ad.year}-${String(ad.month).padStart(2, "0")}-${String(ad.day).padStart(2, "0")}`,
+                );
+              } catch {
+                /* keep AD field */
+              }
+            }}
+            locale="en"
+          />
+          {fromBs.ok ? (
+            <p className="font-mono text-[13px] text-primary">
+              AD{" "}
+              <span className="text-accent">{fromBs.label}</span>
+            </p>
+          ) : (
+            <p className="text-[12px] text-secondary">{fromBs.error}</p>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <FieldLabel htmlFor="ndp-helpers-ad">AD → BS</FieldLabel>
+          <input
+            id="ndp-helpers-ad"
+            value={adInput}
+            onChange={(e) => {
+              const next = e.target.value;
+              setAdInput(next);
+              const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(next.trim());
+              if (!m) return;
+              try {
+                const converted = adToBs(
+                  Number(m[1]),
+                  Number(m[2]),
+                  Number(m[3]),
+                );
+                setBs(toDateString(converted));
+              } catch {
+                /* keep BS field */
+              }
+            }}
+            placeholder="YYYY-MM-DD"
+            className="h-9 rounded-md border-[0.5px] border-border bg-page px-2.5 font-mono text-[13px] text-primary outline-none focus:border-accent"
+          />
+          {fromAd.ok ? (
+            <p className="font-mono text-[13px] text-primary">
+              BS{" "}
+              <span className="text-accent">{fromAd.label}</span>
+              {" · "}
+              <button
+                type="button"
+                className="text-[12px] text-secondary underline-offset-2 hover:text-accent hover:underline"
+                onClick={() => setBs(fromAd.label)}
+              >
+                apply to picker
+              </button>
+            </p>
+          ) : (
+            <p className="text-[12px] text-secondary">{fromAd.error}</p>
+          )}
+        </div>
+      </div>
+
+      <p className="font-mono text-[11px] text-tertiary">
+        Round-trip check:{" "}
+        {fromBs.ok && fromAd.ok && fromAd.label === bs
+          ? "OK"
+          : fromBs.ok
+            ? "edit either side"
+            : "—"}
       </p>
     </div>
   );

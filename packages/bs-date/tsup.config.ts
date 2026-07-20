@@ -8,10 +8,4 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   treeshake: true,
-  external: ["react", "react-dom", "react/jsx-runtime", "@itzsa/bs-date"],
-  esbuildOptions(options) {
-    options.banner = {
-      js: '"use client";',
-    };
-  },
 });

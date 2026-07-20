@@ -220,12 +220,14 @@ export const HELPER_API: PropRow[] = [
   {
     name: "bsToAd(y, m, d)",
     type: "DateParts",
-    description: "Convert BS → AD civil date parts.",
+    description:
+      "Convert BS → AD civil date parts (via @itzsa/bs-date).",
   },
   {
     name: "adToBs(y, m, d)",
     type: "DateParts",
-    description: "Convert AD → BS date parts.",
+    description:
+      "Convert AD → BS date parts (via @itzsa/bs-date).",
   },
   {
     name: "todayBs()",
@@ -245,7 +247,7 @@ export const HELPER_API: PropRow[] = [
   {
     name: "diffBsDays / addBsDays",
     type: "…",
-    description: "Day arithmetic across the BS calendar.",
+    description: "Day arithmetic across the BS calendar (@itzsa/bs-date).",
   },
   {
     name: "validateBsDate / assertValidBsDate",

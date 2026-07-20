@@ -13,6 +13,7 @@ Component library monorepo — docs, demos, and npm packages under `packages/`.
 | `@itzsa/nepali-datepicker` | [/nepali-datepicker](https://itzsa.acharya-suman.com.np/nepali-datepicker) | [npm](https://www.npmjs.com/package/@itzsa/nepali-datepicker) |
 | `@itzsa/nepal-geo` | [/nepal-geo](https://itzsa.acharya-suman.com.np/nepal-geo) | [npm](https://www.npmjs.com/package/@itzsa/nepal-geo) |
 | `@itzsa/nepal-geo-data` | [/nepal-geo](https://itzsa.acharya-suman.com.np/nepal-geo) | [npm](https://www.npmjs.com/package/@itzsa/nepal-geo-data) |
+| `@itzsa/bs-date` | [/bs-date](https://itzsa.acharya-suman.com.np/bs-date) | [npm](https://www.npmjs.com/package/@itzsa/bs-date) |
 | `@itzsa/editor` | [/editor](https://itzsa.acharya-suman.com.np/editor) | [npm](https://www.npmjs.com/package/@itzsa/editor) |
 | Registry | [/registry](https://itzsa.acharya-suman.com.np/registry) | — |
 
@@ -33,6 +34,7 @@ pnpm add @itzsa/nepali-input
 pnpm add @itzsa/nepali-datepicker
 pnpm add @itzsa/nepal-geo
 pnpm add @itzsa/nepal-geo-data
+pnpm add @itzsa/bs-date
 pnpm add @itzsa/editor @itzsa/nepali-input
 ```
 

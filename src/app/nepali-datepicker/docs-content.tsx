@@ -126,6 +126,9 @@ export function DocsContent() {
             <span className="pkg rounded-md border-[0.5px] border-border bg-card px-2 py-1 text-[12px]">
               @itzsa/nepali-datepicker
             </span>
+            <span className="pkg rounded-md border-[0.5px] border-border bg-card px-2 py-1 text-[12px]">
+              uses @itzsa/bs-date
+            </span>
             <span className="rounded-md border-[0.5px] border-border bg-card px-2 py-1">
               single · editable · datetime · range
             </span>
@@ -267,11 +270,12 @@ export function DocsContent() {
               id="example-helpers"
               level={3}
               title="AD ↔ BS helpers"
-              description="Pure functions for conversion outside React."
+              description="Pick BS or type AD — conversion is powered by @itzsa/bs-date."
             >
               <HelpersExample />
               <CodeBlock
                 code={`import { adToBs, bsToAd, todayBs } from "@itzsa/nepali-datepicker";
+// Same math as @itzsa/bs-date (datepicker keeps (y, m, d) → DateParts)
 
 const today = todayBs();
 const ad = bsToAd(today.year, today.month, today.day);

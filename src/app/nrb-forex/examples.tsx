@@ -25,13 +25,22 @@ const panelClass =
 const tableShellClass =
   "min-w-0 overflow-x-auto rounded-lg border-[0.5px] border-border bg-card";
 
+/**
+ * One client per browser tab — MemoryForexCache survives React remounts.
+ * Full page reload still benefits from the docs proxy HTTP / CDN cache.
+ */
+let docsClientSingleton: ReturnType<typeof createNrbForexClient> | null = null;
+
 function docsClient() {
+  if (docsClientSingleton) return docsClientSingleton;
   const origin = typeof window !== "undefined" ? window.location.origin : "";
-  return createNrbForexClient({
+  docsClientSingleton = createNrbForexClient({
     baseUrl: `${origin}/api/nrb-forex`,
     maxRetries: 2,
     retryBaseMs: 150,
+    fallbackToPreviousDay: true,
   });
+  return docsClientSingleton;
 }
 
 /** Flag regions for every ISO3 NRB currently publishes (+ common extras). */

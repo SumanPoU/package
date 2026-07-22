@@ -14,6 +14,13 @@ export {
 } from "./client";
 export { convertAmount, convertFromNpr } from "./convert";
 export {
+  cacheTtlMsForDate,
+  formatNstDate,
+  NRB_TIME_ZONE,
+  recommendedRevalidateSeconds,
+  TODAY_SOFT_TTL_MS,
+} from "./dates";
+export {
   NrbApiError,
   NrbForexError,
   NrbRateNotFoundError,

@@ -174,6 +174,116 @@ export function DocsContent() {
         </DocSection>
 
         <DocSection
+          id="examples"
+          title="Examples"
+          description="Live via the docs proxy. NRB publishes ~22 ISO currencies (not every ISO 4217 code)."
+        >
+          <DocSection
+            id="example-rates"
+            level={3}
+            title="Latest rates"
+            description="Every currency for the day — date picker, multi-select popover, Buy / Sell / Mid."
+          >
+            <ExampleDemo
+              code={RATES_BOARD_CODE}
+              size="xl"
+              previewClassName="overflow-x-auto overflow-y-visible bg-muted/40"
+            >
+              <ForexRatesBoard />
+            </ExampleDemo>
+          </DocSection>
+          <DocSection id="example-convert" level={3} title="Convert to NPR">
+            <ExampleDemo
+              code={CONVERT_EXAMPLE_CODE}
+              previewClassName="bg-muted/40"
+            >
+              <ConvertExample />
+            </ExampleDemo>
+          </DocSection>
+          <DocSection
+            id="example-history"
+            level={3}
+            title="Rate history"
+            description="Pick currency, from, and to — getRateHistory with Buy / Sell."
+          >
+            <ExampleDemo
+              code={HISTORY_EXAMPLE_CODE}
+              size="lg"
+              previewClassName="bg-muted/40"
+            >
+              <HistoryExample />
+            </ExampleDemo>
+          </DocSection>
+          <DocSection
+            id="example-currencies"
+            level={3}
+            title="Published currencies"
+            description="All NRB currencies for a date with Unit / Buy / Sell / Mid."
+          >
+            <ExampleDemo
+              code={CURRENCIES_EXAMPLE_CODE}
+              size="lg"
+              previewClassName="bg-muted/40"
+            >
+              <CurrenciesExample />
+            </ExampleDemo>
+          </DocSection>
+        </DocSection>
+
+        <DocSection
+          id="api"
+          title="Package API"
+          description="Typed helpers over the NRB V1 rates endpoint."
+        >
+          <PropsTable rows={CLIENT_API} caption="Client helpers" />
+          <DocSection id="convert" level={3} title="Convert & units">
+            <PropsTable rows={RATE_FIELDS} caption="ForexRate" />
+            <Callout title="Math">
+              NPR = amount × (buy|sell|mid) / unit. Prefer{" "}
+              <code className="font-mono text-primary">convert</code> or{" "}
+              <code className="font-mono text-primary">perUnitRates</code>.
+            </Callout>
+          </DocSection>
+          <DocSection
+            id="cache"
+            level={3}
+            title="Caching"
+            description="Past NST days forever; today soft-refreshes every 2h for rare midday revisions."
+          >
+            <Callout title="Why refresh still hit NRB before">
+              Browser demos created a new client on each mount, so in-memory
+              cache was empty after reload. The docs proxy now sends{" "}
+              <code className="font-mono text-primary">Cache-Control</code> /
+              Next revalidate (2h for today, longer for history), and demos
+              reuse one tab-level client.
+            </Callout>
+            <CodeBlock code={CACHE_NOTES} language="text" />
+            <CodeBlock code={CACHE} />
+          </DocSection>
+          <DocSection
+            id="errors"
+            level={3}
+            title="Errors"
+            description="NrbValidationError · NrbApiError · NrbRateNotFoundError — network retries up to 3×."
+          >
+            <Callout title="Mapped from NRB">
+              Missing params or empty ranges surface as typed errors; this
+              client also paginates{" "}
+              <code className="font-mono text-primary">getRatesInRange</code>{" "}
+              for you.
+            </Callout>
+          </DocSection>
+        </DocSection>
+
+        <DocSection
+          id="node"
+          title="Node / CLI"
+          description="Nightly sync helper and npx CLI."
+        >
+          <CodeBlock code={NODE} />
+        </DocSection>
+
+        <DocSection
           id="nrb-api"
           title="NRB Forex API (V1)"
           description="Official upstream contract this package wraps. Published typically once per business day."
@@ -274,116 +384,6 @@ export function DocsContent() {
               (same query shape). Node and server runtimes can hit NRB directly.
             </Callout>
           </DocSection>
-        </DocSection>
-
-        <DocSection
-          id="api"
-          title="Package API"
-          description="Typed helpers over the NRB V1 rates endpoint."
-        >
-          <PropsTable rows={CLIENT_API} caption="Client helpers" />
-          <DocSection id="convert" level={3} title="Convert & units">
-            <PropsTable rows={RATE_FIELDS} caption="ForexRate" />
-            <Callout title="Math">
-              NPR = amount × (buy|sell|mid) / unit. Prefer{" "}
-              <code className="font-mono text-primary">convert</code> or{" "}
-              <code className="font-mono text-primary">perUnitRates</code>.
-            </Callout>
-          </DocSection>
-          <DocSection
-            id="cache"
-            level={3}
-            title="Caching"
-            description="Past NST days forever; today soft-refreshes every 2h for rare midday revisions."
-          >
-            <Callout title="Why refresh still hit NRB before">
-              Browser demos created a new client on each mount, so in-memory
-              cache was empty after reload. The docs proxy now sends{" "}
-              <code className="font-mono text-primary">Cache-Control</code> /
-              Next revalidate (2h for today, longer for history), and demos
-              reuse one tab-level client.
-            </Callout>
-            <CodeBlock code={CACHE_NOTES} language="text" />
-            <CodeBlock code={CACHE} />
-          </DocSection>
-          <DocSection
-            id="errors"
-            level={3}
-            title="Errors"
-            description="NrbValidationError · NrbApiError · NrbRateNotFoundError — network retries up to 3×."
-          >
-            <Callout title="Mapped from NRB">
-              Missing params or empty ranges surface as typed errors; this
-              client also paginates{" "}
-              <code className="font-mono text-primary">getRatesInRange</code>{" "}
-              for you.
-            </Callout>
-          </DocSection>
-        </DocSection>
-
-        <DocSection
-          id="examples"
-          title="Examples"
-          description="Live via the docs proxy. NRB publishes ~22 ISO currencies (not every ISO 4217 code)."
-        >
-          <DocSection
-            id="example-rates"
-            level={3}
-            title="Latest rates"
-            description="Every currency for the day — date picker, multi-select popover, Buy / Sell / Mid."
-          >
-            <ExampleDemo
-              code={RATES_BOARD_CODE}
-              size="xl"
-              previewClassName="overflow-x-auto overflow-y-visible bg-muted/40"
-            >
-              <ForexRatesBoard />
-            </ExampleDemo>
-          </DocSection>
-          <DocSection id="example-convert" level={3} title="Convert to NPR">
-            <ExampleDemo
-              code={CONVERT_EXAMPLE_CODE}
-              previewClassName="bg-muted/40"
-            >
-              <ConvertExample />
-            </ExampleDemo>
-          </DocSection>
-          <DocSection
-            id="example-history"
-            level={3}
-            title="Rate history"
-            description="Pick currency, from, and to — getRateHistory with Buy / Sell."
-          >
-            <ExampleDemo
-              code={HISTORY_EXAMPLE_CODE}
-              size="lg"
-              previewClassName="bg-muted/40"
-            >
-              <HistoryExample />
-            </ExampleDemo>
-          </DocSection>
-          <DocSection
-            id="example-currencies"
-            level={3}
-            title="Published currencies"
-            description="All NRB currencies for a date with Unit / Buy / Sell / Mid."
-          >
-            <ExampleDemo
-              code={CURRENCIES_EXAMPLE_CODE}
-              size="lg"
-              previewClassName="bg-muted/40"
-            >
-              <CurrenciesExample />
-            </ExampleDemo>
-          </DocSection>
-        </DocSection>
-
-        <DocSection
-          id="node"
-          title="Node / CLI"
-          description="Nightly sync helper and npx CLI."
-        >
-          <CodeBlock code={NODE} />
         </DocSection>
       </div>
     </DocsShell>

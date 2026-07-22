@@ -56,16 +56,36 @@ await client.getRate("USD", "2026-07-19");`;
 
 const CACHE = `import {
   createNrbForexClient,
+  MemoryForexCache,
   type ForexCache,
 } from "@itzsa/nrb-forex";
 
+// Long-lived Node process — in-memory is enough.
+// Historical days: cached forever. Today (NST): soft-refresh every 2h
+// so rare midday NRB revisions are picked up.
+const client = createNrbForexClient({
+  cache: new MemoryForexCache(),
+  fallbackToPreviousDay: true, // weekends / pre-publish morning
+});
+
+await client.getRatesForDate(); // Nepal "today"
+
+// Serverless / multi-instance — use Redis (or similar) so cache is shared.
 const redisCache: ForexCache = {
-  async get(key) { /* redis.get */ },
-  async set(key, value, ttlMs) { /* redis.set */ },
+  async get(key) { /* redis.get + JSON.parse */ },
+  async set(key, value, ttlMs) { /* redis.set with EX */ },
   async has(key) { /* … */ },
 };
 
-const client = createNrbForexClient({ cache: redisCache });`;
+const shared = createNrbForexClient({ cache: redisCache });`;
+
+const CACHE_NOTES = `NRB typically publishes once daily (~09:00–10:00 NST) and may revise
+slightly during the business day. This client:
+
+• Past NST dates → cache forever (immutable)
+• Today / future → soft TTL of 2 hours (catch revisions, avoid NRB spam)
+• Prefer one long-lived client (or Redis) — not a new client per request
+• Browser demos: hit a proxy with Cache-Control; do not call NRB from the browser`;
 
 const NODE = `import { syncDailyRates } from "@itzsa/nrb-forex/node";
 
@@ -270,7 +290,20 @@ export function DocsContent() {
               <code className="font-mono text-primary">perUnitRates</code>.
             </Callout>
           </DocSection>
-          <DocSection id="cache" level={3} title="Caching">
+          <DocSection
+            id="cache"
+            level={3}
+            title="Caching"
+            description="Past NST days forever; today soft-refreshes every 2h for rare midday revisions."
+          >
+            <Callout title="Why refresh still hit NRB before">
+              Browser demos created a new client on each mount, so in-memory
+              cache was empty after reload. The docs proxy now sends{" "}
+              <code className="font-mono text-primary">Cache-Control</code> /
+              Next revalidate (2h for today, longer for history), and demos
+              reuse one tab-level client.
+            </Callout>
+            <CodeBlock code={CACHE_NOTES} language="text" />
             <CodeBlock code={CACHE} />
           </DocSection>
           <DocSection

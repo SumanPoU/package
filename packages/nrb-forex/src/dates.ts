@@ -2,10 +2,22 @@ import { NrbValidationError } from "./errors";
 
 const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
 
+/** NRB publishes on Nepal Standard Time (UTC+5:45). */
+export const NRB_TIME_ZONE = "Asia/Kathmandu";
+
+/**
+ * Soft TTL for the current NST calendar day.
+ * NRB usually publishes once (~09:00–10:00 NST) but may revise slightly
+ * during the business day — refresh every 2h to pick those up without
+ * hammering the API.
+ */
+export const TODAY_SOFT_TTL_MS = 2 * 60 * 60 * 1000;
+
 /** Format a Date or YYYY-MM-DD string as NRB `Y-m-d`. */
 export function toIsoDate(input?: Date | string): string {
   if (input == null) {
-    return formatUtcDate(new Date());
+    // Default "today" = Nepal business day, not UTC midnight.
+    return formatNstDate(new Date());
   }
   if (typeof input === "string") {
     const trimmed = input.trim();
@@ -20,7 +32,17 @@ export function toIsoDate(input?: Date | string): string {
   if (!(input instanceof Date) || Number.isNaN(input.getTime())) {
     throw new NrbValidationError("Invalid Date object");
   }
-  return formatUtcDate(input);
+  return formatNstDate(input);
+}
+
+/** YYYY-MM-DD in Asia/Kathmandu. */
+export function formatNstDate(d: Date): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: NRB_TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(d);
 }
 
 function formatUtcDate(d: Date): string {
@@ -64,20 +86,31 @@ export function shiftIsoDate(iso: string, days: number): string {
 }
 
 /**
- * TTL for caching a snapshot day:
- * - past dates: indefinite (`null`)
- * - today / future: until next UTC midnight
+ * TTL for caching a snapshot day (NRB / Nepal calendar):
+ * - past NST dates: indefinite (`null`) — rates do not change after the day
+ * - today / future: soft TTL (`TODAY_SOFT_TTL_MS`) so rare midday revisions land
  */
 export function cacheTtlMsForDate(
   isoDate: string,
   now = new Date(),
 ): number | null {
-  const today = formatUtcDate(now);
-  if (isoDate < today) return null;
-  const m = ISO_DATE.exec(isoDate);
-  if (!m) return 60_000;
-  const end = Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]) + 1);
-  return Math.max(1_000, end - now.getTime());
+  const todayNst = formatNstDate(now);
+  if (isoDate < todayNst) return null;
+  return TODAY_SOFT_TTL_MS;
+}
+
+/**
+ * Suggested HTTP `s-maxage` / Next `revalidate` for a rates range.
+ * Historical ranges are long-lived; anything touching "today" is soft.
+ */
+export function recommendedRevalidateSeconds(
+  from: string,
+  to: string,
+  now = new Date(),
+): number {
+  const todayNst = formatNstDate(now);
+  if (to < todayNst) return 7 * 24 * 60 * 60; // 7 days
+  return Math.floor(TODAY_SOFT_TTL_MS / 1000); // 2 hours
 }
 
 export function normalizeCurrencyCode(code: string): string {

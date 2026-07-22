@@ -110,15 +110,30 @@ GET https://www.nrb.org.np/api/forex/v1/rates?page=1&per_page=100&from=2026-07-1
 
 ## Caching
 
-Default: in-memory `MemoryForexCache`.
+Default: in-memory `MemoryForexCache` (fine for a long-lived Node process).
 
-- **Historical dates** (`date < today` UTC): cached with **no TTL** (immutable).
-- **Today / future**: TTL until next UTC midnight.
-- Concurrent `getRate('USD')` + `getRate('INR')` for the same date **coalesce** into one HTTP range request.
-- Inject Redis (or anything else) via the `ForexCache` interface:
+NRB usually publishes **once per business day** (~09:00–10:00 NST) and may apply
+**slight midday revisions**. Caching follows that:
+
+| Snapshot day (NST) | TTL |
+| --- | --- |
+| **Past** | Forever (`null`) — treated as immutable |
+| **Today / future** | Soft **2 hours** — picks up rare revisions without hammering NRB |
+
+Also:
+
+- Concurrent calls for the same range **coalesce** into one HTTP request.
+- Use `{ fallbackToPreviousDay: true }` before the morning publish / on weekends.
+- On **serverless**, inject Redis (or similar) via `ForexCache` so instances share state.
+- Browsers should call a **proxy** with `Cache-Control` — never NRB directly (no CORS).
 
 ```ts
-import { createNrbForexClient, type ForexCache } from "@itzsa/nrb-forex";
+import { createNrbForexClient, MemoryForexCache, type ForexCache } from "@itzsa/nrb-forex";
+
+const client = createNrbForexClient({
+  cache: new MemoryForexCache(),
+  fallbackToPreviousDay: true,
+});
 
 const redisCache: ForexCache = {
   async get(key) { /* … */ },
@@ -126,7 +141,7 @@ const redisCache: ForexCache = {
   async has(key) { /* … */ },
 };
 
-const client = createNrbForexClient({ cache: redisCache });
+const shared = createNrbForexClient({ cache: redisCache });
 ```
 
 ## Errors

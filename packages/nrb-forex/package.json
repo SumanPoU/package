@@ -1,0 +1,68 @@
+{
+  "name": "@itzsa/nrb-forex",
+  "version": "0.1.0",
+  "description": "Typed Nepal Rastra Bank (NRB) forex rate client — fetch, cache, convert, with unit-aware normalization",
+  "license": "MIT",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "nrb-forex": "./dist/node/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.mjs"
+    },
+    "./node": {
+      "types": "./dist/node/index.d.ts",
+      "import": "./dist/node/index.mjs",
+      "require": "./dist/node/index.js",
+      "default": "./dist/node/index.mjs"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "dev": "tsup --watch",
+    "prepublishOnly": "pnpm run typecheck && pnpm run test && pnpm run build"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.0",
+    "typescript": "^5",
+    "vitest": "^3.2.4"
+  },
+  "keywords": [
+    "nepal",
+    "nrb",
+    "forex",
+    "exchange-rate",
+    "npr",
+    "rastra-bank",
+    "itzsa"
+  ],
+  "homepage": "https://itzsa.acharya-suman.com.np/nrb-forex",
+  "bugs": {
+    "url": "https://github.com/SumanPoU/package/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SumanPoU/package.git",
+    "directory": "packages/nrb-forex"
+  }
+}

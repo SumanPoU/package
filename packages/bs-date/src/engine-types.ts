@@ -1,20 +1,22 @@
 import type { AdDate, BsDate, HolidayCalendar, HolidayEntry } from "./types";
 
 /** Month lengths for one BS year: index 0 = Baisakh … 11 = Chaitra. */
-export type BsYearMonthDays = readonly [
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-] | readonly number[];
+export type BsYearMonthDays =
+  | readonly [
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+      number,
+    ]
+  | readonly number[];
 
 /**
  * Pluggable BS calendar table.

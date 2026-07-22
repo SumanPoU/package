@@ -10,7 +10,7 @@ import {
 import { cn } from "./lib/utils";
 import { useDataTableLocale } from "./locale-text";
 import { toolbarSelectTriggerClass } from "./toolbar-control";
-import { DENSITY_OPTIONS, type DataTableDensity } from "./types";
+import { type DataTableDensity, DENSITY_OPTIONS } from "./types";
 
 export type DensityControlProps = {
   value: DataTableDensity;

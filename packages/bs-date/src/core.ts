@@ -1,5 +1,5 @@
-import { BsInvalidError, BsParseError, BsRangeError } from "./errors";
 import type { BsCalendarData } from "./engine-types";
+import { BsInvalidError, BsParseError, BsRangeError } from "./errors";
 import type { AdDate, AdDateInput, BsDate, BsDateInput } from "./types";
 
 const DATE_RE = /^(\d{4})-(\d{1,2})-(\d{1,2})$/;
@@ -23,7 +23,11 @@ export function pad2(n: number): string {
   return String(n).padStart(2, "0");
 }
 
-export function formatIsoParts(year: number, month: number, day: number): string {
+export function formatIsoParts(
+  year: number,
+  month: number,
+  day: number,
+): string {
   return `${year}-${pad2(month)}-${pad2(day)}`;
 }
 
@@ -219,10 +223,7 @@ export function bsToAdPartsFor(
   return utcCivilParts(epochMs + offset * MS_PER_DAY);
 }
 
-export function bsToAdFor(
-  calendar: BsCalendarData,
-  input: BsDateInput,
-): Date {
+export function bsToAdFor(calendar: BsCalendarData, input: BsDateInput): Date {
   const ad = bsToAdPartsFor(calendar, input);
   return new Date(ad.year, ad.month - 1, ad.day);
 }
@@ -240,9 +241,7 @@ export function adToBsFor(
     throw new BsRangeError("AD year/month/day must be integers");
   }
   if (ad.month < 1 || ad.month > 12 || ad.day < 1 || ad.day > 31) {
-    throw new BsRangeError(
-      `Invalid AD date ${ad.year}-${ad.month}-${ad.day}`,
-    );
+    throw new BsRangeError(`Invalid AD date ${ad.year}-${ad.month}-${ad.day}`);
   }
 
   const epochMs = utcMsFromParts(calendar.epochAd);

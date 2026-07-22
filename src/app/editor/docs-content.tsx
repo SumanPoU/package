@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 
+import { ExampleDemo } from "@/components/example-demo";
 import { InstallCommand } from "@/components/install-command";
 import {
   CLASSNAMES_PROPS,
@@ -133,7 +134,9 @@ export function DocsContent() {
         </DocSection>
 
         <DocSection id="demo" title="Live demo">
-          <EditorDemo />
+          <ExampleDemo code={STARTER} size="lg">
+            <EditorDemo />
+          </ExampleDemo>
         </DocSection>
 
         <DocSection

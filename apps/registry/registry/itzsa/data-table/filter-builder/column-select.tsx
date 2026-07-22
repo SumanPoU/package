@@ -1,10 +1,8 @@
 "use client";
 
-import * as React from "react";
-import { CheckIcon, ChevronsUpDownIcon, SearchIcon } from "lucide-react";
 import {
-  FloatingPortal,
   autoUpdate,
+  FloatingPortal,
   flip,
   offset,
   shift,
@@ -15,6 +13,8 @@ import {
   useInteractions,
   useRole,
 } from "@floating-ui/react";
+import { CheckIcon, ChevronsUpDownIcon, SearchIcon } from "lucide-react";
+import * as React from "react";
 
 import { cn } from "../lib/utils";
 import { FILTER_TYPE_META, type FilterBuilderColumn } from "./types";

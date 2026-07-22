@@ -14,7 +14,10 @@ export type EditorProps = {
   placeholder?: string;
 };
 
-export function Editor({ className, placeholder = "Editor coming soon…" }: EditorProps) {
+export function Editor({
+  className,
+  placeholder = "Editor coming soon…",
+}: EditorProps) {
   return (
     <div
       className={className}

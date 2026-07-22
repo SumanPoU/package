@@ -294,8 +294,7 @@ export function matchesFilterConditions<T>(
   for (let i = 1; i < conditions.length; i += 1) {
     const condition = conditions[i]!;
     const matched = matchFilterCondition(row, condition, getValue);
-    result =
-      condition.logic === "AND" ? result && matched : result || matched;
+    result = condition.logic === "AND" ? result && matched : result || matched;
   }
   return result;
 }
@@ -348,9 +347,9 @@ function normalizeFilterColumnType(raw: string): FilterColumnType {
     "enum",
     "multi",
   ];
-  return (allowed.includes(raw as FilterColumnType)
-    ? raw
-    : "string") as FilterColumnType;
+  return (
+    allowed.includes(raw as FilterColumnType) ? raw : "string"
+  ) as FilterColumnType;
 }
 
 export type { React as FilterBuilderReact };

@@ -1,5 +1,6 @@
 "use client";
 
+import { ExampleDemo } from "@/components/example-demo";
 import { InstallCommand } from "@/components/install-command";
 
 import {
@@ -16,6 +17,16 @@ import {
   DocsShell,
   PropsTable,
 } from "./docs-ui";
+import {
+  BASIC_EXAMPLE_CODE,
+  BOUNDS_EXAMPLE_CODE,
+  DATETIME_EXAMPLE_CODE,
+  EDITABLE_EXAMPLE_CODE,
+  HELPERS_EXAMPLE_CODE,
+  LOCALE_EXAMPLE_CODE,
+  RANGE_EXAMPLE_CODE,
+  STYLED_EXAMPLE_CODE,
+} from "./example-codes";
 import {
   BasicExample,
   BoundsExample,
@@ -66,21 +77,6 @@ export function DateFields() {
     </>
   );
 }`;
-
-const STYLE_CODE = `<NepaliDatePicker
-  value={date}
-  onChange={setDate}
-  vars={{
-    accent: "#0f766e",
-    radius: "12px",
-    border: "#99f6e4",
-    surface: "#f0fdfa",
-  }}
-  classNames={{
-    input: "h-10 font-medium",
-    popover: "shadow-lg",
-  }}
-/>`;
 
 const VALIDATE_CODE = `import {
   isCompleteBsDate,
@@ -199,7 +195,7 @@ export function DocsContent() {
         <DocSection
           id="examples"
           title="Examples"
-          description="Interactive demos for each picker variant."
+          description="Interactive demos — Preview for the UI, Code for the full snippet (copy upper right)."
         >
           <div className="flex flex-col gap-12">
             <DocSection
@@ -208,7 +204,9 @@ export function DocsContent() {
               title="Basic picker"
               description="Read-only field with Nepali label — open calendar to pick."
             >
-              <BasicExample />
+              <ExampleDemo code={BASIC_EXAMPLE_CODE}>
+                <BasicExample />
+              </ExampleDemo>
             </DocSection>
 
             <DocSection
@@ -217,7 +215,9 @@ export function DocsContent() {
               title="Editable input"
               description="Type digits (auto-masked to YYYY-MM-DD) or open the calendar."
             >
-              <EditableExample />
+              <ExampleDemo code={EDITABLE_EXAMPLE_CODE}>
+                <EditableExample />
+              </ExampleDemo>
             </DocSection>
 
             <DocSection
@@ -226,7 +226,9 @@ export function DocsContent() {
               title="Date & time"
               description="Pick a BS date plus hour/minute. Use minDateTime / maxDateTime for bounds."
             >
-              <DateTimeExample />
+              <ExampleDemo code={DATETIME_EXAMPLE_CODE}>
+                <DateTimeExample />
+              </ExampleDemo>
             </DocSection>
 
             <DocSection
@@ -235,7 +237,9 @@ export function DocsContent() {
               title="Date range"
               description="Click start, then end. Hover previews the span; dual months on desktop."
             >
-              <RangeExample />
+              <ExampleDemo code={RANGE_EXAMPLE_CODE}>
+                <RangeExample />
+              </ExampleDemo>
             </DocSection>
 
             <DocSection
@@ -244,8 +248,9 @@ export function DocsContent() {
               title="Custom styling"
               description="Theme with vars (CSS tokens) and classNames (per-part Tailwind / CSS)."
             >
-              <StyledExample />
-              <CodeBlock code={STYLE_CODE} />
+              <ExampleDemo code={STYLED_EXAMPLE_CODE}>
+                <StyledExample />
+              </ExampleDemo>
             </DocSection>
 
             <DocSection
@@ -254,7 +259,9 @@ export function DocsContent() {
               title="Locale"
               description="Switch calendar and labels between ne and en."
             >
-              <LocaleExample />
+              <ExampleDemo code={LOCALE_EXAMPLE_CODE}>
+                <LocaleExample />
+              </ExampleDemo>
             </DocSection>
 
             <DocSection
@@ -263,7 +270,9 @@ export function DocsContent() {
               title="Min / max"
               description="Limit selectable days and years."
             >
-              <BoundsExample />
+              <ExampleDemo code={BOUNDS_EXAMPLE_CODE}>
+                <BoundsExample />
+              </ExampleDemo>
             </DocSection>
 
             <DocSection
@@ -272,15 +281,9 @@ export function DocsContent() {
               title="AD ↔ BS helpers"
               description="Pick BS or type AD — conversion is powered by @itzsa/bs-date."
             >
-              <HelpersExample />
-              <CodeBlock
-                code={`import { adToBs, bsToAd, todayBs } from "@itzsa/nepali-datepicker";
-// Same math as @itzsa/bs-date (datepicker keeps (y, m, d) → DateParts)
-
-const today = todayBs();
-const ad = bsToAd(today.year, today.month, today.day);
-const bs = adToBs(ad.year, ad.month, ad.day);`}
-              />
+              <ExampleDemo code={HELPERS_EXAMPLE_CODE} size="lg">
+                <HelpersExample />
+              </ExampleDemo>
             </DocSection>
           </div>
         </DocSection>

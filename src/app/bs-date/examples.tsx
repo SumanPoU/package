@@ -6,12 +6,10 @@ import {
   diffInBsYears,
   formatBs,
   formatBsIso,
-  getHolidaysInMonth,
-  isPublicHoliday,
   todayBs,
   toNepaliNumerals,
 } from "@itzsa/bs-date";
-import { useMemo, useState, type ReactNode } from "react";
+import { type ReactNode, useMemo, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -76,7 +74,10 @@ export function ConvertExample() {
         ne: formatBs(d, "DD MMMM YYYY", { locale: "ne", nepaliDigits: true }),
       };
     } catch (e) {
-      return { ok: false as const, error: e instanceof Error ? e.message : "Invalid" };
+      return {
+        ok: false as const,
+        error: e instanceof Error ? e.message : "Invalid",
+      };
     }
   }, [ad]);
 
@@ -88,7 +89,10 @@ export function ConvertExample() {
         iso: `${parts.year}-${String(parts.month).padStart(2, "0")}-${String(parts.day).padStart(2, "0")}`,
       };
     } catch (e) {
-      return { ok: false as const, error: e instanceof Error ? e.message : "Invalid" };
+      return {
+        ok: false as const,
+        error: e instanceof Error ? e.message : "Invalid",
+      };
     }
   }, [bs]);
 
@@ -112,7 +116,9 @@ export function ConvertExample() {
             </p>
           </div>
         ) : (
-          <p className="text-sm text-red-600 dark:text-red-400">{fromAd.error}</p>
+          <p className="text-sm text-red-600 dark:text-red-400">
+            {fromAd.error}
+          </p>
         )}
       </Panel>
       <Panel title="BS → AD">
@@ -120,9 +126,11 @@ export function ConvertExample() {
         {fromBs.ok ? (
           <p className="font-mono text-sm text-primary">{fromBs.iso}</p>
         ) : (
-          <p className="text-sm text-red-600 dark:text-red-400">{fromBs.error}</p>
+          <p className="text-sm text-red-600 dark:text-red-400">
+            {fromBs.error}
+          </p>
         )}
-        <p className="text-[12px] text-tertiary">
+        <p className="pr-10 text-[12px] text-tertiary">
           Today BS:{" "}
           <span className="font-mono text-secondary">{formatBsIso(today)}</span>
           {" · "}
@@ -148,7 +156,10 @@ export function AgeExample() {
     try {
       return { ok: true as const, value: diffInBsYears(asOf, dob) };
     } catch (e) {
-      return { ok: false as const, error: e instanceof Error ? e.message : "Invalid" };
+      return {
+        ok: false as const,
+        error: e instanceof Error ? e.message : "Invalid",
+      };
     }
   }, [dob, asOf]);
 
@@ -161,78 +172,10 @@ export function AgeExample() {
       {years.ok ? (
         <p className="text-sm text-primary">
           Completed years:{" "}
-          <span className="font-mono text-accent text-base">{years.value}</span>
+          <span className="font-mono text-base text-accent">{years.value}</span>
         </p>
       ) : (
         <p className="text-sm text-red-600 dark:text-red-400">{years.error}</p>
-      )}
-    </Panel>
-  );
-}
-
-export function HolidaysExample() {
-  const [year, setYear] = useState(2082);
-  const [month, setMonth] = useState(1);
-
-  const list = useMemo(
-    () => getHolidaysInMonth(year, month),
-    [year, month],
-  );
-
-  return (
-    <Panel title="Holidays in month (sample calendar)">
-      <div className="flex flex-wrap gap-3">
-        <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-[12px] text-secondary">Year</span>
-          <input
-            type="number"
-            value={year}
-            onChange={(e) => setYear(Number(e.target.value))}
-            className="w-24 rounded-md border-[0.5px] border-border bg-page px-2.5 py-1.5 font-mono text-[13px] text-primary outline-none focus:border-accent"
-          />
-        </label>
-        <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-[12px] text-secondary">Month (1–12)</span>
-          <input
-            type="number"
-            min={1}
-            max={12}
-            value={month}
-            onChange={(e) => setMonth(Number(e.target.value))}
-            className="w-24 rounded-md border-[0.5px] border-border bg-page px-2.5 py-1.5 font-mono text-[13px] text-primary outline-none focus:border-accent"
-          />
-        </label>
-      </div>
-      {list.length === 0 ? (
-        <p className="text-sm text-secondary">No sample holidays in this month.</p>
-      ) : (
-        <ul className="flex flex-col gap-2">
-          {list.map((h) => {
-            const key = `${h.year ?? "*"}-${h.month}-${h.day}-${h.nameEn}`;
-            const iso = `${year}-${String(h.month).padStart(2, "0")}-${String(h.day).padStart(2, "0")}`;
-            return (
-              <li
-                key={key}
-                className="flex flex-wrap items-baseline justify-between gap-2 border-b-[0.5px] border-border pb-2 text-sm last:border-0"
-              >
-                <span className="font-mono text-[12px] text-tertiary">{iso}</span>
-                <span className="text-primary">{h.nameEn}</span>
-                <span
-                  className="text-secondary"
-                  style={{
-                    fontFamily:
-                      "var(--itzsa-nepali-font, var(--font-outfit), sans-serif)",
-                  }}
-                >
-                  {h.nameNe}
-                </span>
-                <span className="text-[11px] text-tertiary">
-                  {isPublicHoliday(iso) ? "holiday" : ""}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
       )}
     </Panel>
   );

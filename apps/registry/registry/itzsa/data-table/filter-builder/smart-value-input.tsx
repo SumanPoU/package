@@ -14,8 +14,8 @@ import { cn } from "../lib/utils";
 import {
   FILTER_HTML_INPUT_TYPE,
   FILTER_INPUT_PLACEHOLDER,
-  titleCase,
   type FilterBuilderColumn,
+  titleCase,
 } from "./types";
 
 export type SmartValueInputProps = {
@@ -126,7 +126,9 @@ export function SmartValueInput({
         <span
           className={cn(
             "font-medium tabular-nums",
-            checked ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground",
+            checked
+              ? "text-emerald-600 dark:text-emerald-400"
+              : "text-muted-foreground",
           )}
         >
           {checked ? "true" : "false"}

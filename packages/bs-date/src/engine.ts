@@ -24,11 +24,13 @@ import {
 } from "./core";
 import { DEFAULT_HOLIDAY_CALENDAR } from "./data/holidays-default";
 import type { BsCalendarData, BsDateEngineOptions } from "./engine-types";
-import { formatBs, formatBsIso, getBsMonthName, toNepaliNumerals } from "./format";
 import {
-  createHolidayLookup,
-  mergeHolidayCalendars,
-} from "./holiday-lookup";
+  formatBs,
+  formatBsIso,
+  getBsMonthName,
+  toNepaliNumerals,
+} from "./format";
+import { createHolidayLookup, mergeHolidayCalendars } from "./holiday-lookup";
 import type {
   AdDateInput,
   BsDate,
@@ -111,8 +113,7 @@ export function createBsDateEngine(options: BsDateEngineOptions = {}) {
     },
 
     // arithmetic
-    addDays: (input: BsDateInput, n: number) =>
-      addDaysFor(calendar, input, n),
+    addDays: (input: BsDateInput, n: number) => addDaysFor(calendar, input, n),
     addMonths: (input: BsDateInput, n: number) =>
       addMonthsFor(calendar, input, n),
     addYears: (input: BsDateInput, n: number) =>

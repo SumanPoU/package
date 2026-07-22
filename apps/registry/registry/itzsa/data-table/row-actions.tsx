@@ -1,16 +1,16 @@
 "use client";
 
-import * as React from "react";
 import type { Placement } from "@floating-ui/react";
+import type * as React from "react";
 
 import { Button } from "./components/ui/button";
 import { cn } from "./lib/utils";
 import { RowActionsPopover } from "./row-actions-popover";
 import {
-  isRowActionDisabled,
-  splitRowActionsByDisplay,
   type DataTableActionsDisplay,
   type DataTableRowAction,
+  isRowActionDisabled,
+  splitRowActionsByDisplay,
 } from "./types";
 
 export type RowActionsProps<T> = {
@@ -36,7 +36,10 @@ export function RowActions<T>({
   menuAriaLabel = "Row actions",
   className,
 }: RowActionsProps<T>) {
-  const { iconActions, menuActions } = splitRowActionsByDisplay(actions, display);
+  const { iconActions, menuActions } = splitRowActionsByDisplay(
+    actions,
+    display,
+  );
   const showMenu = menuActions.length > 0 || children != null;
 
   if (iconActions.length === 0 && !showMenu) return null;

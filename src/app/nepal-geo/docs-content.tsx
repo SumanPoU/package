@@ -1,5 +1,6 @@
 "use client";
 
+import { ExampleDemo } from "@/components/example-demo";
 import { InstallCommand } from "@/components/install-command";
 
 import {
@@ -14,6 +15,13 @@ import {
   DocsShell,
   PropsTable,
 } from "./docs-ui";
+import {
+  CASCADE_EXAMPLE_CODE,
+  LOCALE_EXAMPLE_CODE,
+  SINGLE_EXAMPLE_CODE,
+  STYLE_EXAMPLE_CODE,
+  TYPE_FILTER_EXAMPLE_CODE,
+} from "./example-codes";
 import {
   CascadeExample,
   LocaleExample,
@@ -208,7 +216,7 @@ encodeWardId(5, 12); // → 5012`}
         <DocSection
           id="examples"
           title="Examples"
-          description="Searchable selects — single level, cascade with wards, type filters, and custom CSS."
+          description="Searchable selects — Preview / Code toggle; copy from the upper right."
         >
           <div className="flex flex-col gap-12">
             <DocSection
@@ -217,7 +225,9 @@ encodeWardId(5, 12); // → 5012`}
               title="Single select"
               description="label prop on each field; district waits until a province is chosen."
             >
-              <SingleExample />
+              <ExampleDemo code={SINGLE_EXAMPLE_CODE}>
+                <SingleExample />
+              </ExampleDemo>
             </DocSection>
 
             <DocSection
@@ -226,7 +236,9 @@ encodeWardId(5, 12); // → 5012`}
               title="Hierarchy + ward"
               description="Province → district → local → ward. Changing a parent clears children."
             >
-              <CascadeExample />
+              <ExampleDemo code={CASCADE_EXAMPLE_CODE}>
+                <CascadeExample />
+              </ExampleDemo>
             </DocSection>
 
             <DocSection
@@ -235,7 +247,9 @@ encodeWardId(5, 12); // → 5012`}
               title="Type filters"
               description="Limit locals to urban types, then pick a ward."
             >
-              <TypeFilterExample />
+              <ExampleDemo code={TYPE_FILTER_EXAMPLE_CODE}>
+                <TypeFilterExample />
+              </ExampleDemo>
             </DocSection>
 
             <DocSection
@@ -244,7 +258,9 @@ encodeWardId(5, 12); // → 5012`}
               title="Custom CSS"
               description="vars and classNames without forking styles.css."
             >
-              <StyleExample />
+              <ExampleDemo code={STYLE_EXAMPLE_CODE}>
+                <StyleExample />
+              </ExampleDemo>
             </DocSection>
 
             <DocSection
@@ -253,7 +269,9 @@ encodeWardId(5, 12); // → 5012`}
               title="Locale"
               description="English or Nepali labels from the same dataset."
             >
-              <LocaleExample />
+              <ExampleDemo code={LOCALE_EXAMPLE_CODE}>
+                <LocaleExample />
+              </ExampleDemo>
             </DocSection>
           </div>
         </DocSection>

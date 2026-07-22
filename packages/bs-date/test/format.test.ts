@@ -13,9 +13,7 @@ describe("format", () => {
     const d = { year: 2082, month: 1, day: 5 };
     expect(formatBs(d, "YYYY-MM-DD")).toBe("2082-01-05");
     expect(formatBs(d, "DD MMMM YYYY")).toBe("05 Baisakh 2082");
-    expect(formatBs(d, "DD MMMM YYYY", { locale: "ne" })).toBe(
-      "05 बैशाख 2082",
-    );
+    expect(formatBs(d, "DD MMMM YYYY", { locale: "ne" })).toBe("05 बैशाख 2082");
   });
 
   it("toNepaliNumerals", () => {
@@ -24,9 +22,9 @@ describe("format", () => {
   });
 
   it("formatBs with nepaliDigits", () => {
-    expect(
-      formatBs("2082-01-05", "YYYY-MM-DD", { nepaliDigits: true }),
-    ).toBe("२०८२-०१-०५");
+    expect(formatBs("2082-01-05", "YYYY-MM-DD", { nepaliDigits: true })).toBe(
+      "२०८२-०१-०५",
+    );
   });
 
   it("getBsMonthName", () => {

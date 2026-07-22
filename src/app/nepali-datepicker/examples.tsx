@@ -334,8 +334,7 @@ export function HelpersExample() {
           />
           {fromBs.ok ? (
             <p className="font-mono text-[13px] text-primary">
-              AD{" "}
-              <span className="text-accent">{fromBs.label}</span>
+              AD <span className="text-accent">{fromBs.label}</span>
             </p>
           ) : (
             <p className="text-[12px] text-secondary">{fromBs.error}</p>
@@ -368,8 +367,7 @@ export function HelpersExample() {
           />
           {fromAd.ok ? (
             <p className="font-mono text-[13px] text-primary">
-              BS{" "}
-              <span className="text-accent">{fromAd.label}</span>
+              BS <span className="text-accent">{fromAd.label}</span>
               {" · "}
               <button
                 type="button"

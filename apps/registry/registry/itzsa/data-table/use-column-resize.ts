@@ -3,10 +3,10 @@
 import * as React from "react";
 
 import {
-  DEFAULT_COLUMN_MIN_WIDTH,
-  DEFAULT_COLUMN_WIDTH,
   type DataTableColumn,
   type DataTableColumnWidths,
+  DEFAULT_COLUMN_MIN_WIDTH,
+  DEFAULT_COLUMN_WIDTH,
 } from "./types";
 
 export type UseColumnResizeOptions<T> = {
@@ -127,7 +127,7 @@ export function useColumnResize<T>({
       event.stopPropagation();
 
       const startX =
-        "touches" in event ? event.touches[0]?.clientX ?? 0 : event.clientX;
+        "touches" in event ? (event.touches[0]?.clientX ?? 0) : event.clientX;
       const startWidth = getWidth(key);
       const minWidth = options?.minWidth ?? DEFAULT_COLUMN_MIN_WIDTH;
       const maxWidth = options?.maxWidth ?? Number.POSITIVE_INFINITY;

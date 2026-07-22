@@ -21,8 +21,7 @@ export function QuickFilter({
   className,
 }: QuickFilterProps) {
   const locale = useDataTableLocale();
-  const resolvedPlaceholder =
-    placeholder ?? locale.quickFilterPlaceholder;
+  const resolvedPlaceholder = placeholder ?? locale.quickFilterPlaceholder;
 
   return (
     <div

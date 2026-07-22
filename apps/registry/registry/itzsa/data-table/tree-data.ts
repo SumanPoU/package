@@ -88,14 +88,12 @@ function countDirectChildren<T>(node: InternalNode<T>): number {
   return node.children.size;
 }
 
-function nodeToFlat<T>(
-  node: InternalNode<T>,
-  depth: number,
-): TreeFlatRow<T> {
+function nodeToFlat<T>(node: InternalNode<T>, depth: number): TreeFlatRow<T> {
   const isLeaf = node.leafRow != null && node.children.size === 0;
   // A path that is both a leaf and a parent: treat as group with leaf data.
   const hasChildren = node.children.size > 0;
-  const kind: TreeNodeKind = hasChildren || node.leafRow == null ? "group" : "leaf";
+  const kind: TreeNodeKind =
+    hasChildren || node.leafRow == null ? "group" : "leaf";
 
   if (isLeaf || (!hasChildren && node.leafRow != null)) {
     return {

@@ -48,12 +48,15 @@ export function CodeBlock({
   language = "tsx",
   className,
   showPrompt = false,
+  showCopy = true,
 }: {
   code: string;
   language?: string;
   className?: string;
   /** Prefix first line with a muted `$` (CLI style). */
   showPrompt?: boolean;
+  /** Show the upper-right copy control (default true). */
+  showCopy?: boolean;
 }) {
   const trimmed = code.trim();
   const [copied, setCopied] = useState(false);
@@ -80,17 +83,23 @@ export function CodeBlock({
         className,
       )}
     >
-      <button
-        type="button"
-        onClick={onCopy}
-        aria-label={copied ? "Copied" : "Copy to clipboard"}
-        className="absolute top-2.5 right-2.5 z-10 inline-flex size-7 items-center justify-center rounded-md text-secondary transition-colors hover:text-primary"
-      >
-        {copied ? <CheckIcon /> : <CopyIcon />}
-      </button>
+      {showCopy ? (
+        <button
+          type="button"
+          onClick={onCopy}
+          aria-label={copied ? "Copied" : "Copy to clipboard"}
+          title={copied ? "Copied" : "Copy"}
+          className="absolute top-2 right-2 z-10 inline-flex size-7 items-center justify-center rounded-md border-[0.5px] border-border bg-page/90 text-secondary shadow-sm backdrop-blur-sm transition-colors hover:bg-muted hover:text-primary"
+        >
+          {copied ? <CheckIcon /> : <CopyIcon />}
+        </button>
+      ) : null}
       <pre
         data-language={language}
-        className="data-table-thin-scroll overflow-x-auto p-3.5 pr-12 text-[13px] leading-relaxed text-primary sm:p-4 sm:pr-12"
+        className={cn(
+          "data-table-thin-scroll overflow-x-auto p-3.5 text-[13px] leading-relaxed text-primary sm:p-4",
+          showCopy && "pr-12 sm:pr-12",
+        )}
       >
         <code className="font-mono whitespace-pre">
           {showPrompt ? (

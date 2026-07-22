@@ -1,5 +1,6 @@
 "use client";
 
+import { ExampleDemo } from "@/components/example-demo";
 import { InstallCommand } from "@/components/install-command";
 import {
   ACTION_PROPS,
@@ -19,6 +20,12 @@ import {
   DocsShell,
   PropsTable,
 } from "./docs-ui";
+import {
+  FULL_EXAMPLE_CODE,
+  LOCALE_EXAMPLE_CODE,
+  ROW_EDIT_EXAMPLE_CODE,
+  TREE_EXAMPLE_CODE,
+} from "./example-codes";
 import {
   FullFeaturedExample,
   LocaleExample,
@@ -150,7 +157,7 @@ export function DocsContent() {
         <DocSection
           id="examples"
           title="Examples"
-          description="Live demos from this docs app. Data and serializable props live under src/app/table/data and props/."
+          description="Live demos — Preview / Code toggle; copy from the upper right."
         >
           <div className="flex flex-col gap-12">
             <DocSection
@@ -159,7 +166,9 @@ export function DocsContent() {
               title="Full-featured grid"
               description="Cell edit, detail panel, filters, export, keyboard nav, actions, and custom page size (type or pick)."
             >
-              <FullFeaturedExample />
+              <ExampleDemo code={FULL_EXAMPLE_CODE} size="xl">
+                <FullFeaturedExample />
+              </ExampleDemo>
             </DocSection>
 
             <DocSection
@@ -168,7 +177,9 @@ export function DocsContent() {
               title="Row edit mode"
               description='editMode="row" — double-click, edit several fields, then save or cancel.'
             >
-              <RowEditExample />
+              <ExampleDemo code={ROW_EDIT_EXAMPLE_CODE} size="lg">
+                <RowEditExample />
+              </ExampleDemo>
             </DocSection>
 
             <DocSection
@@ -177,17 +188,9 @@ export function DocsContent() {
               title="Tree data"
               description="Path-based hierarchy via getTreeDataPath. Expand groups on the first column."
             >
-              <TreeExample />
-              <CodeBlock
-                code={`<DataTable
-  treeData
-  getTreeDataPath={(row) => row.path}
-  defaultGroupingExpansionDepth={1}
-  groupingColDef={{ headerName: "Org / name" }}
-  data={rows}
-  columns={columns}
-/>`}
-              />
+              <ExampleDemo code={TREE_EXAMPLE_CODE} size="lg">
+                <TreeExample />
+              </ExampleDemo>
             </DocSection>
 
             <DocSection
@@ -196,7 +199,9 @@ export function DocsContent() {
               title="Locale override"
               description="Partial localeText map for toolbar and control labels."
             >
-              <LocaleExample />
+              <ExampleDemo code={LOCALE_EXAMPLE_CODE} size="md">
+                <LocaleExample />
+              </ExampleDemo>
             </DocSection>
           </div>
         </DocSection>

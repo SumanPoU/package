@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import type * as React from "react";
 
 import {
   Select,
@@ -190,7 +190,9 @@ export function EditableCell({
       {...stop}
       onChange={(event) => {
         const next = event.target.value;
-        onChange(editType === "number" ? (next === "" ? "" : Number(next)) : next);
+        onChange(
+          editType === "number" ? (next === "" ? "" : Number(next)) : next,
+        );
       }}
       onKeyDown={onKeyDown}
       onBlur={() => onCommit("blur")}

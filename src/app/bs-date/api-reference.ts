@@ -9,7 +9,8 @@ export const CONVERT_API: PropRow[] = [
   {
     name: "adToBs",
     type: "(input: AdDateInput) => BsDate",
-    description: "AD civil date → BS. Accepts Date, YYYY-MM-DD, or { year, month, day }.",
+    description:
+      "AD civil date → BS. Accepts Date, YYYY-MM-DD, or { year, month, day }.",
   },
   {
     name: "bsToAd",
@@ -52,7 +53,8 @@ export const ARITHMETIC_API: PropRow[] = [
   {
     name: "diffInBsYears",
     type: "(a: BsDateInput, b: BsDateInput) => number",
-    description: "Age/tenure style year count (anniversary not yet reached → floor).",
+    description:
+      "Age/tenure style year count (anniversary not yet reached → floor).",
   },
 ];
 
@@ -87,9 +89,10 @@ export const CALENDAR_API: PropRow[] = [
 export const FORMAT_API: PropRow[] = [
   {
     name: "formatBs",
-    type: '(date, pattern?, { locale?, nepaliDigits? }) => string',
+    type: "(date, pattern?, { locale?, nepaliDigits? }) => string",
     default: '"YYYY-MM-DD"',
-    description: "Tokens: YYYY, MM, DD, MMMM, MMM. locale ne uses Devanagari month names.",
+    description:
+      "Tokens: YYYY, MM, DD, MMMM, MMM. locale ne uses Devanagari month names.",
   },
   {
     name: "formatBsIso",
@@ -116,7 +119,7 @@ export const HOLIDAY_API: PropRow[] = [
   },
   {
     name: "getHolidayName",
-    type: '(input, locale?) => string | null',
+    type: "(input, locale?) => string | null",
     description: "First matching holiday name, or null.",
   },
   {

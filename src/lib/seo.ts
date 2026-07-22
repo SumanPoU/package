@@ -6,7 +6,7 @@ export const SITE_URL = "https://itzsa.acharya-suman.com.np";
 export const SITE_NAME = "itzsa";
 
 export const SITE_DESCRIPTION =
-  "Open-source React component library for Nepal-ready product UIs — DataTable, Nepali input, Bikram Sambat datepicker and headless BS date logic, geography selects, and TipTap editor.";
+  "Open-source React component library for Nepal-ready product UIs — DataTable, Nepali input, Bikram Sambat datepicker and headless BS date logic, NRB forex rates, geography selects, and TipTap editor.";
 
 export const SITE_AUTHOR = {
   name: "Suman Acharya",
@@ -48,6 +48,13 @@ export const PACKAGE_ROUTES = [
     description:
       "Headless Bikram Sambat convert, arithmetic, format, and holidays with pluggable calendar engines. Install with pnpm add @itzsa/bs-date.",
     packageName: "@itzsa/bs-date",
+  },
+  {
+    path: "/nrb-forex",
+    title: "@itzsa/nrb-forex — Nepal Rastra Bank forex",
+    description:
+      "Typed NRB forex client — fetch, cache, and convert foreign currency to NPR with unit-aware math. Install with pnpm add @itzsa/nrb-forex.",
+    packageName: "@itzsa/nrb-forex",
   },
   {
     path: "/nepal-geo",

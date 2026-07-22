@@ -166,9 +166,8 @@ export function resolveLocaleText(
   return { ...DEFAULT_LOCALE_TEXT, ...partial };
 }
 
-const LocaleContext = React.createContext<DataTableLocaleText>(
-  DEFAULT_LOCALE_TEXT,
-);
+const LocaleContext =
+  React.createContext<DataTableLocaleText>(DEFAULT_LOCALE_TEXT);
 
 export function DataTableLocaleProvider({
   value,
@@ -177,11 +176,7 @@ export function DataTableLocaleProvider({
   value: DataTableLocaleText;
   children: React.ReactNode;
 }) {
-  return React.createElement(
-    LocaleContext.Provider,
-    { value },
-    children,
-  );
+  return React.createElement(LocaleContext.Provider, { value }, children);
 }
 
 export function useDataTableLocale(): DataTableLocaleText {

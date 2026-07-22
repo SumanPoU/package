@@ -227,3 +227,32 @@ h6 {
     border-color 0.28s ease,
     color 0.28s ease;
 }
+
+/* Docs Preview/Code panels — thin scrollbars, stable chrome */
+.example-demo-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--text-tertiary) 55%, transparent)
+    transparent;
+}
+
+.example-demo-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.example-demo-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.example-demo-scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--text-tertiary) 45%, transparent);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.example-demo-scroll::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--text-secondary) 70%, transparent);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}

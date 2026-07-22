@@ -1,5 +1,5 @@
-import type { BsDate, HolidayCalendar, HolidayEntry } from "./types";
 import type { HolidayLookup } from "./engine-types";
+import type { BsDate, HolidayCalendar, HolidayEntry } from "./types";
 
 function key(year: number, month: number, day: number): string {
   return `${year}-${month}-${day}`;
@@ -12,9 +12,7 @@ function recurringKey(month: number, day: number): string {
 /**
  * Indexed holiday lookup — O(1) day checks, scalable to large org calendars.
  */
-export function createHolidayLookup(
-  calendar: HolidayCalendar,
-): HolidayLookup {
+export function createHolidayLookup(calendar: HolidayCalendar): HolidayLookup {
   const byExact = new Map<string, HolidayEntry[]>();
   const byRecurring = new Map<string, HolidayEntry[]>();
 
@@ -34,8 +32,7 @@ export function createHolidayLookup(
 
   function getNames(date: BsDate): HolidayEntry[] {
     const exact = byExact.get(key(date.year, date.month, date.day)) ?? [];
-    const recurring =
-      byRecurring.get(recurringKey(date.month, date.day)) ?? [];
+    const recurring = byRecurring.get(recurringKey(date.month, date.day)) ?? [];
     return [...exact, ...recurring];
   }
 
@@ -66,9 +63,6 @@ export function mergeHolidayCalendars(
   return {
     asOf: extras[extras.length - 1]?.asOf ?? base.asOf,
     yearRange: extras[extras.length - 1]?.yearRange ?? base.yearRange,
-    entries: [
-      ...base.entries,
-      ...extras.flatMap((c) => [...c.entries]),
-    ],
+    entries: [...base.entries, ...extras.flatMap((c) => [...c.entries])],
   };
 }

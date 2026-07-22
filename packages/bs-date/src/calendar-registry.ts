@@ -44,7 +44,12 @@ export function getCalendarMeta(
 export function extendCalendarData(
   base: BsCalendarData,
   extra: Readonly<Record<number, readonly number[]>>,
-  patch?: Partial<Pick<BsCalendarData, "minYear" | "maxYear" | "version" | "source" | "epochAd">>,
+  patch?: Partial<
+    Pick<
+      BsCalendarData,
+      "minYear" | "maxYear" | "version" | "source" | "epochAd"
+    >
+  >,
 ): BsCalendarData {
   const years = [
     ...Object.keys(base.monthDays).map(Number),

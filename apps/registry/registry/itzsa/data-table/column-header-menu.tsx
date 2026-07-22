@@ -1,17 +1,8 @@
 "use client";
 
-import * as React from "react";
 import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  EyeOffIcon,
-  MoreVerticalIcon,
-  PinIcon,
-  PinOffIcon,
-} from "lucide-react";
-import {
-  FloatingPortal,
   autoUpdate,
+  FloatingPortal,
   flip,
   offset,
   shift,
@@ -21,6 +12,15 @@ import {
   useInteractions,
   useRole,
 } from "@floating-ui/react";
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  EyeOffIcon,
+  MoreVerticalIcon,
+  PinIcon,
+  PinOffIcon,
+} from "lucide-react";
+import * as React from "react";
 
 import { Button } from "./components/ui/button";
 import { cn } from "./lib/utils";

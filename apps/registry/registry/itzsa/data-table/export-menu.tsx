@@ -1,15 +1,8 @@
 "use client";
 
-import * as React from "react";
 import {
-  CheckIcon,
-  ClipboardCopyIcon,
-  DownloadIcon,
-  FileSpreadsheetIcon,
-} from "lucide-react";
-import {
-  FloatingPortal,
   autoUpdate,
+  FloatingPortal,
   flip,
   offset,
   shift,
@@ -19,15 +12,21 @@ import {
   useInteractions,
   useRole,
 } from "@floating-ui/react";
-
-import { cn } from "./lib/utils";
-import { useDataTableLocale } from "./locale-text";
-import { toolbarSelectTriggerClass } from "./toolbar-control";
+import {
+  CheckIcon,
+  ClipboardCopyIcon,
+  DownloadIcon,
+  FileSpreadsheetIcon,
+} from "lucide-react";
+import * as React from "react";
 import {
   buildCsv,
   copyTextToClipboard,
   downloadTextFile,
 } from "./export-utils";
+import { cn } from "./lib/utils";
+import { useDataTableLocale } from "./locale-text";
+import { toolbarSelectTriggerClass } from "./toolbar-control";
 
 export type ExportMenuProps = {
   getCsv: () => { headers: string[]; matrix: unknown[][] };
@@ -130,11 +129,21 @@ export function ExportMenu({
             )}
             {...getFloatingProps()}
           >
-            <button type="button" role="menuitem" className={itemClass} onClick={exportCsv}>
+            <button
+              type="button"
+              role="menuitem"
+              className={itemClass}
+              onClick={exportCsv}
+            >
               <FileSpreadsheetIcon className="size-3.5" />
               {locale.exportDownloadCsv}
             </button>
-            <button type="button" role="menuitem" className={itemClass} onClick={() => void copyCsv()}>
+            <button
+              type="button"
+              role="menuitem"
+              className={itemClass}
+              onClick={() => void copyCsv()}
+            >
               {copied ? (
                 <CheckIcon className="size-3.5 text-emerald-600" />
               ) : (

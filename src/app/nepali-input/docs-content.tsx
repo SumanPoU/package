@@ -1,5 +1,6 @@
 "use client";
 
+import { ExampleDemo } from "@/components/example-demo";
 import { InstallCommand } from "@/components/install-command";
 import { HELPER_API, INPUT_PROPS, TEXTAREA_PROPS } from "./api-reference";
 import {
@@ -9,6 +10,12 @@ import {
   DocsShell,
   PropsTable,
 } from "./docs-ui";
+import {
+  HELPER_EXAMPLE_CODE,
+  PREETI_EXAMPLE_CODE,
+  TOGGLE_EXAMPLE_CODE,
+  UNICODE_EXAMPLE_CODE,
+} from "./example-codes";
 import {
   HelperExample,
   PreetiExample,
@@ -121,7 +128,7 @@ export function DocsContent() {
         <DocSection
           id="examples"
           title="Examples"
-          description="Type Latin characters in the fields below — they convert as you type."
+          description="Type Latin characters below — Preview / Code toggle; copy from the upper right."
         >
           <div className="flex flex-col gap-12">
             <DocSection
@@ -130,7 +137,9 @@ export function DocsContent() {
               title="Unicode mode"
               description="Traditional Unicode Nepali keyboard mapping (default)."
             >
-              <UnicodeExample />
+              <ExampleDemo code={UNICODE_EXAMPLE_CODE}>
+                <UnicodeExample />
+              </ExampleDemo>
             </DocSection>
 
             <DocSection
@@ -139,7 +148,9 @@ export function DocsContent() {
               title="Preeti mode"
               description="Preeti layout — some keys expand to conjuncts (e.g. ! → ज्ञ)."
             >
-              <PreetiExample />
+              <ExampleDemo code={PREETI_EXAMPLE_CODE}>
+                <PreetiExample />
+              </ExampleDemo>
             </DocSection>
 
             <DocSection
@@ -148,7 +159,9 @@ export function DocsContent() {
               title="Enable / disable"
               description="Toggle transliteration or switch layouts without remounting."
             >
-              <ToggleExample />
+              <ExampleDemo code={TOGGLE_EXAMPLE_CODE}>
+                <ToggleExample />
+              </ExampleDemo>
             </DocSection>
 
             <DocSection
@@ -157,13 +170,9 @@ export function DocsContent() {
               title="toNepali helper"
               description="Use the pure function outside React — forms, validation, server transforms."
             >
-              <HelperExample />
-              <CodeBlock
-                code={`import { toNepali } from "@itzsa/nepali-input";
-
-toNepali("namaste", "unicode");
-toNepali("s", "preeti"); // → क`}
-              />
+              <ExampleDemo code={HELPER_EXAMPLE_CODE}>
+                <HelperExample />
+              </ExampleDemo>
             </DocSection>
           </div>
         </DocSection>

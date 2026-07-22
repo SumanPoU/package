@@ -1,10 +1,8 @@
 "use client";
 
-import { ChevronDownIcon, Columns3Icon, SearchIcon } from "lucide-react";
-import * as React from "react";
 import {
-  FloatingPortal,
   autoUpdate,
+  FloatingPortal,
   flip,
   offset,
   shift,
@@ -14,6 +12,8 @@ import {
   useInteractions,
   useRole,
 } from "@floating-ui/react";
+import { ChevronDownIcon, Columns3Icon, SearchIcon } from "lucide-react";
+import * as React from "react";
 
 import { Checkbox } from "./components/ui/checkbox";
 import { cn } from "./lib/utils";

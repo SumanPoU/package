@@ -18,11 +18,7 @@ export type AdDate = {
   day: number;
 };
 
-export type HolidayKind =
-  | "national"
-  | "religious"
-  | "observance"
-  | "custom";
+export type HolidayKind = "national" | "religious" | "observance" | "custom";
 
 export type HolidayEntry = {
   /** BS year (omit for recurring month/day every year in range). */

@@ -4,20 +4,15 @@ import {
   coerceAdDate,
   coerceBsDateFor,
   daysInBsMonthFor,
+  formatIsoParts,
   isValidBsDateFor,
+  pad2,
   parseDateString,
   requireBsDateFor,
-  pad2,
-  formatIsoParts,
 } from "./core";
 import type { BsDate, BsDateInput } from "./types";
 
-export {
-  coerceAdDate,
-  parseDateString,
-  pad2,
-  formatIsoParts,
-};
+export { coerceAdDate, parseDateString, pad2, formatIsoParts };
 
 export function isValidBsDate(input: unknown): boolean {
   return isValidBsDateFor(DEFAULT_CALENDAR_DATA, input);

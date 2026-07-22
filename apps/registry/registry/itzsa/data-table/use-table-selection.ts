@@ -44,8 +44,7 @@ export function useTableSelection(
 
   const setSelectedIds = useCallback(
     (next: string[] | ((prev: string[]) => string[])) => {
-      const resolved =
-        typeof next === "function" ? next(selectedIds) : next;
+      const resolved = typeof next === "function" ? next(selectedIds) : next;
       if (!isControlled) {
         setUncontrolledSelectedIds(resolved);
       }

@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import * as React from "react";
 
 import type { DataTableDensity } from "./types";
 
@@ -40,8 +40,7 @@ export function useTableVirtualization({
 
   const virtualRows = enabled ? virtualizer.getVirtualItems() : [];
   const totalSize = enabled ? virtualizer.getTotalSize() : 0;
-  const paddingTop =
-    virtualRows.length > 0 ? (virtualRows[0]?.start ?? 0) : 0;
+  const paddingTop = virtualRows.length > 0 ? (virtualRows[0]?.start ?? 0) : 0;
   const paddingBottom =
     virtualRows.length > 0
       ? totalSize - (virtualRows[virtualRows.length - 1]?.end ?? 0)

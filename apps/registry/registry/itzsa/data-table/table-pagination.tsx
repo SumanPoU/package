@@ -1,14 +1,8 @@
 "use client";
 
-import * as React from "react";
 import {
-  ChevronDownIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-} from "lucide-react";
-import {
-  FloatingPortal,
   autoUpdate,
+  FloatingPortal,
   flip,
   offset,
   shift,
@@ -18,11 +12,17 @@ import {
   useInteractions,
   useRole,
 } from "@floating-ui/react";
+import {
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "lucide-react";
+import * as React from "react";
 
 import { Button } from "./components/ui/button";
 import { cn } from "./lib/utils";
 import { useDataTableLocale } from "./locale-text";
-import { mergePageSizeOptions, type DataTablePaginationOptions } from "./types";
+import { type DataTablePaginationOptions, mergePageSizeOptions } from "./types";
 
 export type TablePaginationProps = {
   page: number;
@@ -63,11 +63,7 @@ function getVisiblePages(
   return Array.from({ length: end - start + 1 }, (_, i) => start + i);
 }
 
-function clampPageSize(
-  value: number,
-  min: number,
-  max: number,
-): number | null {
+function clampPageSize(value: number, min: number, max: number): number | null {
   if (!Number.isFinite(value)) return null;
   const rounded = Math.floor(value);
   if (rounded < min || rounded > max) return null;
@@ -107,11 +103,7 @@ function PageSizeCombobox({
     placement: "top-end",
     strategy: "fixed",
     whileElementsMounted: autoUpdate,
-    middleware: [
-      offset(6),
-      flip({ padding: 8 }),
-      shift({ padding: 8 }),
-    ],
+    middleware: [offset(6), flip({ padding: 8 }), shift({ padding: 8 })],
   });
 
   const click = useClick(context, { enabled: !allowCustom });

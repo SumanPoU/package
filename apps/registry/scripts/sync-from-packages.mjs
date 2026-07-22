@@ -295,7 +295,9 @@ function writeRegistryJson(tableFiles, editorFiles) {
 
 console.log(`[sync] script dir=${__dirname}`);
 console.log(`[sync] registry root=${registryRoot}`);
-console.log(`[sync] monorepo root=${monorepoRoot ?? "(not found — standalone mode)"}`);
+console.log(
+  `[sync] monorepo root=${monorepoRoot ?? "(not found — standalone mode)"}`,
+);
 
 const tableFiles = syncTable();
 const editorFiles = syncEditor();

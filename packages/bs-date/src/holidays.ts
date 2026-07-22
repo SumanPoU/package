@@ -1,9 +1,6 @@
 import { DEFAULT_HOLIDAY_CALENDAR } from "./data/holidays-default";
-import {
-  createHolidayLookup,
-  mergeHolidayCalendars,
-} from "./holiday-lookup";
 import type { HolidayLookup } from "./engine-types";
+import { createHolidayLookup, mergeHolidayCalendars } from "./holiday-lookup";
 import type {
   BsDateInput,
   HolidayCalendar,
@@ -66,8 +63,4 @@ export function getHolidaysInMonth(
   return lookup.getInMonth(year, month);
 }
 
-export {
-  DEFAULT_HOLIDAY_CALENDAR,
-  createHolidayLookup,
-  mergeHolidayCalendars,
-};
+export { DEFAULT_HOLIDAY_CALENDAR, createHolidayLookup, mergeHolidayCalendars };

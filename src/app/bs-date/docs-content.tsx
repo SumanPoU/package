@@ -1,5 +1,6 @@
 "use client";
 
+import { ExampleDemo } from "@/components/example-demo";
 import { InstallCommand } from "@/components/install-command";
 
 import {
@@ -18,7 +19,8 @@ import {
   DocsShell,
   PropsTable,
 } from "./docs-ui";
-import { AgeExample, ConvertExample, HolidaysExample } from "./examples";
+import { AGE_EXAMPLE_CODE, CONVERT_EXAMPLE_CODE } from "./example-codes";
+import { AgeExample, ConvertExample } from "./examples";
 import { DOC_NAV } from "./nav";
 
 const STARTER = `import {
@@ -107,7 +109,10 @@ export function DocsContent() {
           <p className="max-w-2xl text-base leading-relaxed text-secondary">
             Headless Bikram Sambat date logic — convert, arithmetic, format, and
             swappable holidays. No React, no CSS, no picker. Pair with{" "}
-            <a href="/nepali-datepicker" className="text-accent hover:underline">
+            <a
+              href="/nepali-datepicker"
+              className="text-accent hover:underline"
+            >
               @itzsa/nepali-datepicker
             </a>{" "}
             when you need UI.
@@ -198,7 +203,8 @@ export function DocsContent() {
           <Callout title="Scalability">
             Module setters mutate process state. Use{" "}
             <code className="font-mono text-primary">createBsDateEngine</code>{" "}
-            when multiple holiday sets must coexist (multi-tenant APIs, workers).
+            when multiple holiday sets must coexist (multi-tenant APIs,
+            workers).
           </Callout>
         </DocSection>
 
@@ -228,16 +234,17 @@ export function DocsContent() {
         <DocSection
           id="examples"
           title="Examples"
-          description="Live against the workspace package."
+          description="Live against the workspace package. Toggle Preview / Code; copy from the upper right."
         >
           <DocSection id="example-convert" level={3} title="Convert live">
-            <ConvertExample />
+            <ExampleDemo code={CONVERT_EXAMPLE_CODE}>
+              <ConvertExample />
+            </ExampleDemo>
           </DocSection>
           <DocSection id="example-age" level={3} title="Age / tenure">
-            <AgeExample />
-          </DocSection>
-          <DocSection id="example-holidays" level={3} title="Month holidays">
-            <HolidaysExample />
+            <ExampleDemo code={AGE_EXAMPLE_CODE}>
+              <AgeExample />
+            </ExampleDemo>
           </DocSection>
         </DocSection>
 
@@ -280,10 +287,10 @@ export function DocsContent() {
                   </td>
                 </tr>
                 <tr className="border-b-[0.5px] border-border">
-                  <td className="px-3 py-2.5 font-medium text-primary">Epoch</td>
-                  <td className="px-3 py-2.5">
-                    BS 2000-01-01 ↔ AD 1943-04-14
+                  <td className="px-3 py-2.5 font-medium text-primary">
+                    Epoch
                   </td>
+                  <td className="px-3 py-2.5">BS 2000-01-01 ↔ AD 1943-04-14</td>
                 </tr>
                 <tr className="border-b-[0.5px] border-border">
                   <td className="px-3 py-2.5 font-medium text-primary">
@@ -302,8 +309,9 @@ export function DocsContent() {
                     Holidays
                   </td>
                   <td className="px-3 py-2.5">
-                    Sample data (<code className="font-mono text-[12px]">asOf</code>{" "}
-                    in package). Always override for production payroll.
+                    Sample data (
+                    <code className="font-mono text-[12px]">asOf</code> in
+                    package). Always override for production payroll.
                   </td>
                 </tr>
               </tbody>

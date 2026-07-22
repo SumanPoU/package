@@ -28,7 +28,9 @@ describe("arithmetic & calendar", () => {
     expect(d.day).toBeLessThanOrEqual(max);
     const moved = addMonths({ year: 2080, month: 2, day: max }, 1);
     expect(moved.month).toBe(3);
-    expect(moved.day).toBeLessThanOrEqual(daysInBsMonth(moved.year, moved.month));
+    expect(moved.day).toBeLessThanOrEqual(
+      daysInBsMonth(moved.year, moved.month),
+    );
   });
 
   it("addYears clamps day", () => {

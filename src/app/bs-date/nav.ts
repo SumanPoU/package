@@ -19,7 +19,6 @@ export const DOC_NAV: NavItem[] = [
   { id: "examples", label: "Examples" },
   { id: "example-convert", label: "Convert live", indent: true },
   { id: "example-age", label: "Age / tenure", indent: true },
-  { id: "example-holidays", label: "Month holidays", indent: true },
   { id: "api", label: "API reference" },
   { id: "limits", label: "Data & limits" },
 ];

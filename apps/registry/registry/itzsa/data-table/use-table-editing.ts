@@ -75,9 +75,7 @@ export function useTableEditing<T>({
     React.useState<DataTableEditingCell | null>(null);
   const [editingRowId, setEditingRowId] = React.useState<string | null>(null);
   const [draft, setDraft] = React.useState<Record<string, unknown>>({});
-  const [rowOverrides, setRowOverrides] = React.useState<Record<string, T>>(
-    {},
-  );
+  const [rowOverrides, setRowOverrides] = React.useState<Record<string, T>>({});
   const baselineRef = React.useRef<T | null>(null);
 
   const getDisplayRow = React.useCallback(

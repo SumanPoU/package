@@ -5,8 +5,8 @@ export default function Home() {
     <main className="mx-auto flex min-h-svh max-w-2xl flex-col gap-6 px-6 py-16">
       <h1 className="text-3xl font-medium tracking-tight">itzsa registry</h1>
       <p className="text-muted-foreground">
-        Static shadcn registry for @itzsa packages. Primary install path is still
-        npm. JSON items are served from{" "}
+        Static shadcn registry for @itzsa packages. Primary install path is
+        still npm. JSON items are served from{" "}
         <code className="text-sm">/r/[name].json</code>.
       </p>
       <ul className="flex flex-col gap-2 text-sm">

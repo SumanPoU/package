@@ -220,14 +220,12 @@ export const HELPER_API: PropRow[] = [
   {
     name: "bsToAd(y, m, d)",
     type: "DateParts",
-    description:
-      "Convert BS → AD civil date parts (via @itzsa/bs-date).",
+    description: "Convert BS → AD civil date parts (via @itzsa/bs-date).",
   },
   {
     name: "adToBs(y, m, d)",
     type: "DateParts",
-    description:
-      "Convert AD → BS date parts (via @itzsa/bs-date).",
+    description: "Convert AD → BS date parts (via @itzsa/bs-date).",
   },
   {
     name: "todayBs()",

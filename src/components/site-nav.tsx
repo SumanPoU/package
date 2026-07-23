@@ -13,6 +13,7 @@ const LINKS = [
   { href: "/nepali-datepicker", label: "Datepicker" },
   { href: "/bs-date", label: "BS Date" },
   { href: "/nrb-forex", label: "NRB Forex" },
+  { href: "/nepal-pay", label: "Nepal Pay" },
   { href: "/nepal-geo", label: "Nepal Geo" },
   { href: "/editor", label: "Editor" },
   { href: "/registry", label: "Registry" },

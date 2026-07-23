@@ -35,6 +35,12 @@ const PACKAGES = [
     blurb: "Official NRB rates — fetch, cache, convert.",
   },
   {
+    href: "/nepal-pay",
+    name: "Nepal Pay",
+    pkg: "@itzsa/nepal-pay",
+    blurb: "eSewa + Khalti with mandatory verify.",
+  },
+  {
     href: "/nepal-geo",
     name: "Nepal Geo",
     pkg: "@itzsa/nepal-geo",
@@ -207,6 +213,10 @@ export default function Home() {
           <div className="flex flex-col gap-2">
             <p className="text-[13px] text-secondary">NRB Forex (headless)</p>
             <InstallCommand packages="@itzsa/nrb-forex" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-[13px] text-secondary">Nepal Pay (headless)</p>
+            <InstallCommand packages="@itzsa/nepal-pay" />
           </div>
           <div className="flex flex-col gap-2">
             <p className="text-[13px] text-secondary">Nepal Geo</p>

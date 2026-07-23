@@ -1,6 +1,8 @@
+import https from "node:https";
 import { NextResponse } from "next/server";
 
-const UPSTREAM = "https://www.nrb.org.np/api/forex/v1/rates";
+const UPSTREAM_HOST = "www.nrb.org.np";
+const UPSTREAM_PATH = "/api/forex/v1/rates";
 const NST = "Asia/Kathmandu";
 
 /** YYYY-MM-DD in Nepal Standard Time (NRB business calendar). */
@@ -11,6 +13,77 @@ function todayNst(now = new Date()): string {
     month: "2-digit",
     day: "2-digit",
   }).format(now);
+}
+
+/**
+ * NRB currently serves an incomplete TLS certificate chain, so Node's default
+ * `fetch` fails with `unable to verify the first certificate` and our proxy
+ * returned HTTP 502. Scope TLS relaxation to this host only.
+ */
+function fetchNrbRates(
+  search: string,
+  timeoutMs = 20_000,
+): Promise<{ status: number; body: unknown }> {
+  return new Promise((resolve, reject) => {
+    const req = https.get(
+      {
+        host: UPSTREAM_HOST,
+        path: `${UPSTREAM_PATH}?${search}`,
+        headers: {
+          Accept: "application/json",
+          "User-Agent":
+            "itzsa-nrb-forex/0.1 (+https://itzsa.acharya-suman.com.np)",
+        },
+        // NRB cert chain is incomplete — verified 2026-07 against sandbox/docs.
+        rejectUnauthorized: false,
+        servername: UPSTREAM_HOST,
+        timeout: timeoutMs,
+      },
+      (res) => {
+        const chunks: Buffer[] = [];
+        res.on("data", (chunk: Buffer) => {
+          chunks.push(chunk);
+        });
+        res.on("end", () => {
+          const text = Buffer.concat(chunks).toString("utf8");
+          const status = res.statusCode ?? 502;
+          try {
+            resolve({ status, body: JSON.parse(text) as unknown });
+          } catch {
+            reject(
+              new Error(
+                `NRB returned non-JSON (HTTP ${status}): ${text.slice(0, 120)}`,
+              ),
+            );
+          }
+        });
+      },
+    );
+
+    req.on("timeout", () => {
+      req.destroy();
+      reject(new Error(`NRB request timed out after ${timeoutMs}ms`));
+    });
+    req.on("error", reject);
+  });
+}
+
+async function fetchNrbWithRetry(
+  search: string,
+  attempts = 3,
+): Promise<{ status: number; body: unknown }> {
+  let lastError: unknown;
+  for (let i = 1; i <= attempts; i++) {
+    try {
+      return await fetchNrbRates(search);
+    } catch (err) {
+      lastError = err;
+      if (i < attempts) {
+        await new Promise((r) => setTimeout(r, 200 * 2 ** (i - 1)));
+      }
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error(String(lastError));
 }
 
 /**
@@ -36,25 +109,20 @@ export async function GET(request: Request) {
   }
 
   const historical = to < todayNst();
-  // Soft 2h for today (revisions); 7d for closed days.
-  const revalidate = historical ? 7 * 24 * 60 * 60 : 2 * 60 * 60;
   const sMaxAge = historical ? 24 * 60 * 60 : 30 * 60;
   const swr = historical ? 7 * 24 * 60 * 60 : 2 * 60 * 60;
 
-  const upstream = new URL(UPSTREAM);
-  upstream.searchParams.set("from", from);
-  upstream.searchParams.set("to", to);
-  upstream.searchParams.set("page", page);
-  upstream.searchParams.set("per_page", perPage);
+  const params = new URLSearchParams({
+    from,
+    to,
+    page,
+    per_page: perPage,
+  });
 
   try {
-    const res = await fetch(upstream.toString(), {
-      headers: { Accept: "application/json" },
-      next: { revalidate },
-    });
-    const body: unknown = await res.json();
+    const { status, body } = await fetchNrbWithRetry(params.toString());
     return NextResponse.json(body, {
-      status: res.status,
+      status,
       headers: {
         "Cache-Control": `public, s-maxage=${sMaxAge}, stale-while-revalidate=${swr}`,
         "CDN-Cache-Control": `public, s-maxage=${sMaxAge}, stale-while-revalidate=${swr}`,
@@ -70,8 +138,7 @@ export async function GET(request: Request) {
       {
         status: 502,
         headers: {
-          // Don't cache failures for long.
-          "Cache-Control": "public, s-maxage=60, stale-while-revalidate=60",
+          "Cache-Control": "public, s-maxage=30, stale-while-revalidate=30",
         },
       },
     );

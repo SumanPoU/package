@@ -20,10 +20,10 @@ const controlClass =
   "h-9 rounded-md border-[0.5px] border-border bg-card px-2.5 text-[13px] text-primary outline-none transition-colors focus:border-accent";
 
 const panelClass =
-  "min-w-0 rounded-xl border-[0.5px] border-border bg-card p-4 shadow-[0_1px_0_color-mix(in_oklab,var(--border)_70%,transparent)] sm:p-5";
+  "min-w-0 max-w-full rounded-xl border-[0.5px] border-border bg-card p-3 shadow-[0_1px_0_color-mix(in_oklab,var(--border)_70%,transparent)] sm:p-5";
 
 const tableShellClass =
-  "min-w-0 overflow-x-auto rounded-lg border-[0.5px] border-border bg-card";
+  "min-w-0 max-w-full overflow-hidden rounded-lg border-[0.5px] border-border bg-card";
 
 /**
  * One client per browser tab — MemoryForexCache survives React remounts.
@@ -210,7 +210,7 @@ function CurrencyPopover({
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex h-9 min-w-[11rem] items-center justify-between gap-2 rounded-md border-[0.5px] border-border bg-card px-2.5 text-[13px] text-primary shadow-sm transition-colors hover:border-accent/40"
+        className="inline-flex h-9 w-full min-w-0 items-center justify-between gap-2 rounded-md border-[0.5px] border-border bg-card px-2.5 text-[13px] text-primary shadow-sm transition-colors hover:border-accent/40 sm:w-auto sm:min-w-[11rem]"
       >
         <span className="truncate text-secondary">{label}</span>
         <ChevronDownIcon
@@ -334,64 +334,116 @@ function RatesTable({ rows }: { rows: ForexRate[] }) {
   }
 
   return (
-    <div className="w-full min-w-0 overflow-x-auto">
-      <table className="w-full min-w-[32rem] border-collapse text-left text-sm">
-        <thead>
-          <tr className="border-b-[0.5px] border-border bg-card">
-            <th className="px-3 py-2.5 text-[11px] font-medium tracking-wide text-tertiary uppercase sm:px-4">
-              Currency
-            </th>
-            <th className="px-3 py-2.5 text-right text-[11px] font-medium tracking-wide text-tertiary uppercase sm:px-4">
-              Unit
-            </th>
-            <th className="px-3 py-2.5 text-right text-[11px] font-medium tracking-wide text-tertiary uppercase sm:px-4">
-              Buy
-            </th>
-            <th className="px-3 py-2.5 text-right text-[11px] font-medium tracking-wide text-tertiary uppercase sm:px-4">
-              Sell
-            </th>
-            <th className="px-3 py-2.5 text-right text-[11px] font-medium tracking-wide text-tertiary uppercase sm:px-4">
-              Mid
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r) => {
-            const mid = (r.buy + r.sell) / 2;
-            return (
-              <tr
-                key={`${r.currency}-${r.date}`}
-                className="border-b-[0.5px] border-border last:border-0 hover:bg-muted/25"
-              >
-                <td className="px-3 py-2.5 sm:px-4">
-                  <span className="inline-flex max-w-full items-center gap-2 sm:gap-2.5">
-                    <Flag iso3={r.currency} />
-                    <span className="min-w-0 font-medium text-primary">
-                      {r.currencyName}
+    <>
+      {/* Mobile: stacked rows — no horizontal scroll */}
+      <ul className="divide-y divide-border sm:hidden">
+        {rows.map((r) => {
+          const mid = (r.buy + r.sell) / 2;
+          return (
+            <li key={`${r.currency}-${r.date}`} className="px-3 py-3">
+              <div className="flex min-w-0 items-center gap-2">
+                <Flag iso3={r.currency} />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[13px] font-medium text-primary">
+                    {r.currencyName}
+                  </p>
+                  <p className="font-mono text-[11px] text-tertiary">
+                    {r.currency}
+                    {r.unit !== 1 ? ` · unit ${r.unit}` : null}
+                  </p>
+                </div>
+              </div>
+              <div className="mt-2.5 grid grid-cols-3 gap-2 text-center">
+                <div className="rounded-md bg-muted/50 px-1.5 py-1.5">
+                  <p className="text-[10px] tracking-wide text-tertiary uppercase">
+                    Buy
+                  </p>
+                  <p className="font-mono text-[12px] text-primary tabular-nums">
+                    {formatRate(r.buy)}
+                  </p>
+                </div>
+                <div className="rounded-md bg-muted/50 px-1.5 py-1.5">
+                  <p className="text-[10px] tracking-wide text-tertiary uppercase">
+                    Sell
+                  </p>
+                  <p className="font-mono text-[12px] text-primary tabular-nums">
+                    {formatRate(r.sell)}
+                  </p>
+                </div>
+                <div className="rounded-md bg-muted/50 px-1.5 py-1.5">
+                  <p className="text-[10px] tracking-wide text-tertiary uppercase">
+                    Mid
+                  </p>
+                  <p className="font-mono text-[12px] text-secondary tabular-nums">
+                    {formatRate(mid)}
+                  </p>
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+
+      {/* Desktop / tablet: full table */}
+      <div className="hidden w-full min-w-0 overflow-x-auto sm:block">
+        <table className="w-full border-collapse text-left text-sm">
+          <thead>
+            <tr className="border-b-[0.5px] border-border bg-card">
+              <th className="px-3 py-2.5 text-[11px] font-medium tracking-wide text-tertiary uppercase md:px-4">
+                Currency
+              </th>
+              <th className="px-3 py-2.5 text-right text-[11px] font-medium tracking-wide text-tertiary uppercase md:px-4">
+                Unit
+              </th>
+              <th className="px-3 py-2.5 text-right text-[11px] font-medium tracking-wide text-tertiary uppercase md:px-4">
+                Buy
+              </th>
+              <th className="px-3 py-2.5 text-right text-[11px] font-medium tracking-wide text-tertiary uppercase md:px-4">
+                Sell
+              </th>
+              <th className="px-3 py-2.5 text-right text-[11px] font-medium tracking-wide text-tertiary uppercase md:px-4">
+                Mid
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => {
+              const mid = (r.buy + r.sell) / 2;
+              return (
+                <tr
+                  key={`${r.currency}-${r.date}`}
+                  className="border-b-[0.5px] border-border last:border-0 hover:bg-muted/25"
+                >
+                  <td className="px-3 py-2.5 md:px-4">
+                    <span className="inline-flex max-w-full items-center gap-2 md:gap-2.5">
+                      <Flag iso3={r.currency} />
+                      <span className="min-w-0 truncate font-medium text-primary">
+                        {r.currencyName}
+                      </span>
+                      <span className="shrink-0 font-mono text-[11px] text-tertiary">
+                        {r.currency}
+                      </span>
                     </span>
-                    <span className="shrink-0 font-mono text-[11px] text-tertiary">
-                      {r.currency}
-                    </span>
-                  </span>
-                </td>
-                <td className="px-3 py-2.5 text-right font-mono text-[13px] text-secondary tabular-nums sm:px-4">
-                  {r.unit}
-                </td>
-                <td className="px-3 py-2.5 text-right font-mono text-[13px] text-primary tabular-nums sm:px-4">
-                  {formatRate(r.buy)}
-                </td>
-                <td className="px-3 py-2.5 text-right font-mono text-[13px] text-primary tabular-nums sm:px-4">
-                  {formatRate(r.sell)}
-                </td>
-                <td className="px-3 py-2.5 text-right font-mono text-[13px] text-secondary tabular-nums sm:px-4">
-                  {formatRate(mid)}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+                  </td>
+                  <td className="px-3 py-2.5 text-right font-mono text-[13px] text-secondary tabular-nums md:px-4">
+                    {r.unit}
+                  </td>
+                  <td className="px-3 py-2.5 text-right font-mono text-[13px] text-primary tabular-nums md:px-4">
+                    {formatRate(r.buy)}
+                  </td>
+                  <td className="px-3 py-2.5 text-right font-mono text-[13px] text-primary tabular-nums md:px-4">
+                    {formatRate(r.sell)}
+                  </td>
+                  <td className="px-3 py-2.5 text-right font-mono text-[13px] text-secondary tabular-nums md:px-4">
+                    {formatRate(mid)}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }
 
@@ -534,8 +586,8 @@ export function ForexRatesBoard() {
           </p>
         </div>
 
-        <div className="flex min-w-0 flex-wrap items-end gap-3">
-          <label className="flex flex-col gap-1">
+        <div className="flex w-full min-w-0 flex-wrap items-end gap-3">
+          <label className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-none">
             <span className="text-[11px] font-medium tracking-wide text-tertiary uppercase">
               Select date
             </span>
@@ -543,10 +595,10 @@ export function ForexRatesBoard() {
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className={cn(controlClass, "font-mono")}
+              className={cn(controlClass, "w-full font-mono sm:w-auto")}
             />
           </label>
-          <div className="flex flex-col gap-1">
+          <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-none">
             <span className="text-[11px] font-medium tracking-wide text-tertiary uppercase">
               Currency
             </span>
@@ -857,54 +909,56 @@ export function HistoryExample() {
         </p>
       ) : (
         <div className={cn(tableShellClass, "mt-4")}>
-          <table className="w-full min-w-[28rem] border-collapse text-left text-sm">
-            <thead>
-              <tr className="border-b-[0.5px] border-border bg-card">
-                <th className="px-3 py-2 text-[11px] font-medium tracking-wide text-tertiary uppercase">
-                  Date
-                </th>
-                <th className="px-3 py-2 text-right text-[11px] font-medium tracking-wide text-tertiary uppercase">
-                  Buy
-                </th>
-                <th className="px-3 py-2 text-right text-[11px] font-medium tracking-wide text-tertiary uppercase">
-                  Sell
-                </th>
-                <th className="hidden px-3 py-2 text-[11px] font-medium tracking-wide text-tertiary uppercase sm:table-cell">
-                  Sell trend
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => {
-                const pct =
-                  range === 0 ? 100 : 18 + ((r.sell - minSell) / range) * 82;
-                return (
-                  <tr
-                    key={r.date}
-                    className="border-b-[0.5px] border-border last:border-0 hover:bg-muted/20"
-                  >
-                    <td className="px-3 py-2 font-mono text-[12px] text-tertiary">
-                      {r.date}
-                    </td>
-                    <td className="px-3 py-2 text-right font-mono text-[13px] text-primary tabular-nums">
-                      {formatRate(r.buy)}
-                    </td>
-                    <td className="px-3 py-2 text-right font-mono text-[13px] text-primary tabular-nums">
-                      {formatRate(r.sell)}
-                    </td>
-                    <td className="hidden px-3 py-2 sm:table-cell">
-                      <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-                        <div
-                          className="h-full rounded-full bg-accent/70"
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <div className="w-full min-w-0 overflow-x-auto">
+            <table className="w-full border-collapse text-left text-sm">
+              <thead>
+                <tr className="border-b-[0.5px] border-border bg-card">
+                  <th className="px-3 py-2 text-[11px] font-medium tracking-wide text-tertiary uppercase">
+                    Date
+                  </th>
+                  <th className="px-3 py-2 text-right text-[11px] font-medium tracking-wide text-tertiary uppercase">
+                    Buy
+                  </th>
+                  <th className="px-3 py-2 text-right text-[11px] font-medium tracking-wide text-tertiary uppercase">
+                    Sell
+                  </th>
+                  <th className="hidden px-3 py-2 text-[11px] font-medium tracking-wide text-tertiary uppercase md:table-cell">
+                    Sell trend
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((r) => {
+                  const pct =
+                    range === 0 ? 100 : 18 + ((r.sell - minSell) / range) * 82;
+                  return (
+                    <tr
+                      key={r.date}
+                      className="border-b-[0.5px] border-border last:border-0 hover:bg-muted/20"
+                    >
+                      <td className="px-3 py-2 font-mono text-[12px] whitespace-nowrap text-tertiary">
+                        {r.date}
+                      </td>
+                      <td className="px-3 py-2 text-right font-mono text-[13px] text-primary tabular-nums">
+                        {formatRate(r.buy)}
+                      </td>
+                      <td className="px-3 py-2 text-right font-mono text-[13px] text-primary tabular-nums">
+                        {formatRate(r.sell)}
+                      </td>
+                      <td className="hidden px-3 py-2 md:table-cell">
+                        <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                          <div
+                            className="h-full rounded-full bg-accent/70"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
@@ -1022,59 +1076,7 @@ export function CurrenciesExample() {
         <p className="mt-3 text-sm text-secondary">No rates for this date.</p>
       ) : (
         <div className={cn(tableShellClass, "mt-4")}>
-          <table className="w-full min-w-[30rem] border-collapse text-left text-sm">
-            <thead>
-              <tr className="border-b-[0.5px] border-border bg-card">
-                <th className="px-3 py-2.5 text-[11px] font-medium tracking-wide text-tertiary uppercase">
-                  Currency
-                </th>
-                <th className="px-3 py-2.5 text-right text-[11px] font-medium tracking-wide text-tertiary uppercase">
-                  Unit
-                </th>
-                <th className="px-3 py-2.5 text-right text-[11px] font-medium tracking-wide text-tertiary uppercase">
-                  Buy
-                </th>
-                <th className="px-3 py-2.5 text-right text-[11px] font-medium tracking-wide text-tertiary uppercase">
-                  Sell
-                </th>
-                <th className="px-3 py-2.5 text-right text-[11px] font-medium tracking-wide text-tertiary uppercase">
-                  Mid
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {rates.map((r) => (
-                <tr
-                  key={r.currency}
-                  className="border-b-[0.5px] border-border last:border-0 hover:bg-muted/20"
-                >
-                  <td className="px-3 py-2">
-                    <span className="inline-flex items-center gap-2">
-                      <Flag iso3={r.currency} />
-                      <span className="font-medium text-primary">
-                        {r.currencyName}
-                      </span>
-                      <span className="font-mono text-[11px] text-tertiary">
-                        {r.currency}
-                      </span>
-                    </span>
-                  </td>
-                  <td className="px-3 py-2 text-right font-mono text-[13px] text-secondary tabular-nums">
-                    {r.unit}
-                  </td>
-                  <td className="px-3 py-2 text-right font-mono text-[13px] text-primary tabular-nums">
-                    {formatRate(r.buy)}
-                  </td>
-                  <td className="px-3 py-2 text-right font-mono text-[13px] text-primary tabular-nums">
-                    {formatRate(r.sell)}
-                  </td>
-                  <td className="px-3 py-2 text-right font-mono text-[13px] text-secondary tabular-nums">
-                    {formatRate((r.buy + r.sell) / 2)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <RatesTable rows={rates} />
         </div>
       )}
     </div>

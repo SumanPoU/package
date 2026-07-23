@@ -6,7 +6,7 @@ export const SITE_URL = "https://itzsa.acharya-suman.com.np";
 export const SITE_NAME = "itzsa";
 
 export const SITE_DESCRIPTION =
-  "Open-source React component library for Nepal-ready product UIs — DataTable, Nepali input, Bikram Sambat datepicker and headless BS date logic, NRB forex rates, geography selects, and TipTap editor.";
+  "Open-source React component library for Nepal-ready product UIs — DataTable, Nepali input, Bikram Sambat datepicker and headless BS date logic, NRB forex rates, eSewa/Khalti payments, geography selects, and TipTap editor.";
 
 export const SITE_AUTHOR = {
   name: "Suman Acharya",
@@ -55,6 +55,13 @@ export const PACKAGE_ROUTES = [
     description:
       "Typed NRB forex client — fetch, cache, and convert foreign currency to NPR with unit-aware math. Install with pnpm add @itzsa/nrb-forex.",
     packageName: "@itzsa/nrb-forex",
+  },
+  {
+    path: "/nepal-pay",
+    title: "@itzsa/nepal-pay — eSewa + Khalti payments",
+    description:
+      "Unified TypeScript SDK for eSewa ePay v2 and Khalti KPG-2 with mandatory server-side verification and idempotent confirms. Install with pnpm add @itzsa/nepal-pay.",
+    packageName: "@itzsa/nepal-pay",
   },
   {
     path: "/nepal-geo",

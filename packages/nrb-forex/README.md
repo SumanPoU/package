@@ -156,8 +156,18 @@ Network failures retry with exponential backoff (**3** attempts by default).
 
 ## Node helpers
 
+NRB currently serves an **incomplete TLS certificate chain**. Node’s default
+`fetch` may fail with `unable to verify the first certificate`. Use the
+Node-only helper (scoped to `www.nrb.org.np` only):
+
 ```ts
-import { syncDailyRates } from "@itzsa/nrb-forex/node";
+import {
+  createNrbForexClient,
+  createNrbHttpsFetch,
+  syncDailyRates,
+} from "@itzsa/nrb-forex/node";
+
+const client = createNrbForexClient({ fetch: createNrbHttpsFetch() });
 
 await syncDailyRates({
   write: async (snapshot) => {

@@ -1,0 +1,61 @@
+{
+  "name": "@itzsa/nepal-pay",
+  "version": "0.0.0",
+  "description": "Unified TypeScript SDK for eSewa (ePay v2) and Khalti (KPG-2) with mandatory server-side verification",
+  "license": "MIT",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "dev": "tsup --watch",
+    "prepublishOnly": "pnpm run typecheck && pnpm run test && pnpm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "tsup": "^8.5.0",
+    "typescript": "^5",
+    "vitest": "^3.2.4"
+  },
+  "keywords": [
+    "nepal",
+    "esewa",
+    "khalti",
+    "payment",
+    "epay",
+    "kpg-2",
+    "npr",
+    "itzsa"
+  ],
+  "homepage": "https://itzsa.acharya-suman.com.np/nepal-pay",
+  "bugs": {
+    "url": "https://github.com/SumanPoU/package/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SumanPoU/package.git",
+    "directory": "packages/nepal-pay"
+  }
+}

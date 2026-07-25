@@ -5,9 +5,13 @@ export { A11yToolbar, hasActiveA11yPreferences } from "./A11yToolbar";
 export {
   A11Y_ATTRS,
   applyA11yPreferences,
+  cancelScheduledApplyA11yPreferences,
   clearA11yPreferences,
+  flushApplyA11yPreferences,
   resolveSpacingVars,
+  scheduleApplyA11yPreferences,
 } from "./apply";
+export { CSS_VAR, EFFECT_CSS_VARS } from "./css-vars";
 export { DEFAULT_PREFERENCES, FEATURE_LABELS, STEP_COUNT } from "./defaults";
 export {
   DYSLEXIA_LINE_HEIGHT_LEVEL,
@@ -25,10 +29,17 @@ export {
   resetPreferences,
   toggleFeature,
 } from "./preferences";
-export type { FeatureDefinition, FeatureKind } from "./registry";
+export type {
+  A11yFeatureDef,
+  A11ySectionId,
+  FeatureIconId,
+  FeatureKind,
+} from "./registry";
 export {
+  A11Y_FEATURE_REGISTRY,
   FEATURE_REGISTRY,
   getFeatureDef,
+  getSectionsWithFeatures,
   isSteppedFeature,
   isToggleFeature,
   SECTION_META,
@@ -36,6 +47,7 @@ export {
 export {
   clearStoredPreferences,
   getStoredPreferences,
+  migrate,
   normalizePreferences,
   setStoredPreferences,
 } from "./storage";
@@ -47,14 +59,18 @@ export type {
   A11yHotkey,
   A11yPreferences,
   A11yToolbarPosition,
+  A11yToolbarTheme,
   ApplyA11yOptions,
   FeatureId,
   SteppedFeatureId,
+  StoredPreferences,
   ToggleFeatureId,
 } from "./types";
 export {
   A11Y_CONTENT_ATTR,
   A11Y_TOOLBAR_ATTR,
+  DEFAULT_A11Y_THEME,
   DEFAULT_HOTKEY,
   DEFAULT_STORAGE_KEY,
+  PREFERENCES_SCHEMA_VERSION,
 } from "./types";

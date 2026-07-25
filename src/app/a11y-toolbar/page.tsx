@@ -13,8 +13,6 @@ export const metadata: Metadata = buildMetadata({
   keywords: ["accessibility", "a11y", "toolbar", "preferences"],
 });
 
-const INSTALL = `pnpm add @itzsa/a11y-toolbar`;
-
 const USAGE = `import { A11yToolbar } from "@itzsa/a11y-toolbar";
 import { getA11yFoucScript } from "@itzsa/a11y-toolbar/headless";
 import "@itzsa/a11y-toolbar/styles.css";
@@ -26,7 +24,15 @@ import "@itzsa/a11y-toolbar/styles.css";
 <main data-a11y-content>{children}</main>
 
 // 3. Mount once from a Client Component, outside the content root
-<A11yToolbar position="bottom-right" accentColor="#1663d7" />`;
+<A11yToolbar
+  position="bottom-right"
+  theme={{
+    accent: "var(--accent)",
+    header: "var(--accent)",
+    headerForeground: "var(--accent-fg)",
+    fontFamily: 'var(--font-outfit), "Outfit", system-ui, sans-serif',
+  }}
+/>`;
 
 export default function A11yToolbarDocsPage() {
   return (
@@ -51,7 +57,7 @@ export default function A11yToolbarDocsPage() {
       <section className="mt-10">
         <h2 className="text-lg font-semibold text-primary">Install</h2>
         <div className="mt-3">
-          <InstallCommand command={INSTALL} />
+          <InstallCommand packages="@itzsa/a11y-toolbar" />
         </div>
       </section>
 
@@ -88,12 +94,12 @@ export default function A11yToolbarDocsPage() {
           </li>
           <li>
             Reading Guide (pointer band) and Highlight Links match Astral/Sienna
-            assist features. Panel is sectioned: Content, Color &amp; vision,
-            Motion &amp; assist.
+            assist features. Panel sections: Display, Motion &amp; assist.
           </li>
           <li>
             Configure <code className="font-mono">position</code> and{" "}
-            <code className="font-mono">accentColor</code> for brand placement.
+            <code className="font-mono">theme</code> (itzsa accent, Outfit font)
+            so the toolbar tracks your brand tokens.
           </li>
         </ul>
       </section>

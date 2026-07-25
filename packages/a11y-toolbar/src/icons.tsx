@@ -1,13 +1,15 @@
 import type { ReactElement, SVGProps } from "react";
 
+import type { FeatureIconId } from "./registry";
 import type { FeatureId } from "./types";
 
 type IconProps = SVGProps<SVGSVGElement>;
 
+/** Shared outline icon base — 24×24, 1.75 stroke, round caps/joins. */
 function base(props: IconProps): IconProps {
   return {
-    width: 28,
-    height: 28,
+    width: 24,
+    height: 24,
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
@@ -22,10 +24,10 @@ function base(props: IconProps): IconProps {
 export function IconTextSize(props: IconProps) {
   return (
     <svg {...base(props)}>
-      <path d="M4 18V8h3" />
-      <path d="M4 13h2.5" />
-      <path d="M12 18V6h4" />
-      <path d="M12 12h3.5" />
+      <path d="M4 19V7h4" />
+      <path d="M4 13h3" />
+      <path d="M12 19V5h5" />
+      <path d="M12 11h4" />
     </svg>
   );
 }
@@ -34,6 +36,7 @@ export function IconContrast(props: IconProps) {
   return (
     <svg {...base(props)}>
       <circle cx="12" cy="12" r="8" />
+      {/* Filled half-moon accent (allowed exception). */}
       <path d="M12 4a8 8 0 0 1 0 16V4Z" fill="currentColor" stroke="none" />
     </svg>
   );
@@ -51,7 +54,8 @@ export function IconColorFilter(props: IconProps) {
   return (
     <svg {...base(props)}>
       <circle cx="12" cy="12" r="8" />
-      <path d="M12 4a8 8 0 0 1 0 16" fill="#f472b6" stroke="none" />
+      <path d="M12 4a8 8 0 0 1 0 16" />
+      <path d="M8 12h8" />
     </svg>
   );
 }
@@ -59,8 +63,7 @@ export function IconColorFilter(props: IconProps) {
 export function IconSpacing(props: IconProps) {
   return (
     <svg {...base(props)}>
-      <path d="M5 8h3v10H5" />
-      <path d="M16 8h3v10h-3" />
+      <path d="M5 7v10M19 7v10" />
       <path d="M9 12h6M9 12l2-2M15 12l-2-2M9 12l2 2M15 12l-2 2" />
     </svg>
   );
@@ -69,8 +72,8 @@ export function IconSpacing(props: IconProps) {
 export function IconLineHeight(props: IconProps) {
   return (
     <svg {...base(props)}>
-      <path d="M6 5v14M6 5l-2 2M6 5l2 2M6 19l-2-2M6 19l2-2" />
-      <path d="M11 8h9M11 12h9M11 16h9" />
+      <path d="M6 4v16M6 4l-2 2M6 4l2 2M6 20l-2-2M6 20l2-2" />
+      <path d="M11 7h9M11 12h9M11 17h9" />
     </svg>
   );
 }
@@ -78,38 +81,36 @@ export function IconLineHeight(props: IconProps) {
 export function IconFont(props: IconProps) {
   return (
     <svg {...base(props)}>
-      <path d="M5 17V8h5" />
+      <path d="M5 18V8h5" />
       <path d="M5 12h4" />
-      <path d="M14 17V8h5" />
-      <path d="M14 17h5" />
+      <path d="M14 18V8h5" />
+      <path d="M14 18h5" />
     </svg>
   );
 }
 
 export function IconSaturation(props: IconProps) {
   return (
-    <svg {...base({ ...props, stroke: "none" })}>
-      <circle cx="9" cy="10" r="4" fill="#ef4444" opacity="0.9" />
-      <circle cx="15" cy="10" r="4" fill="#22c55e" opacity="0.9" />
-      <circle cx="12" cy="15" r="4" fill="#3b82f6" opacity="0.9" />
+    <svg {...base(props)}>
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 8v8M8 12h8" />
     </svg>
   );
 }
 
 export function IconDyslexia(props: IconProps) {
   return (
-    <svg {...base({ ...props, stroke: "none", fill: "currentColor" })}>
-      <text x="3" y="17" fontSize="11" fontFamily="system-ui,sans-serif">
-        Df
-      </text>
+    <svg {...base(props)}>
+      <path d="M5 7h6M5 12h9M5 17h7" />
+      <path d="M16 7l3 5-3 5" />
     </svg>
   );
 }
 
 export function IconCursor(props: IconProps) {
   return (
-    <svg {...base({ ...props, fill: "currentColor", stroke: "none" })}>
-      <path d="M5 3l12 9-5.5 1.5L14 21l-2.5-1.2L9 15.5 5 18V3z" />
+    <svg {...base(props)}>
+      <path d="M6 4l10 8-4.5 1.2L14 20l-2.2.8-2.3-6.2L5 17.5z" />
     </svg>
   );
 }
@@ -117,8 +118,9 @@ export function IconCursor(props: IconProps) {
 export function IconHideImages(props: IconProps) {
   return (
     <svg {...base(props)}>
-      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
-      <circle cx="12" cy="12" r="3" />
+      <rect x="3.5" y="5.5" width="17" height="13" rx="2" />
+      <circle cx="9" cy="11" r="1.5" />
+      <path d="M3.5 15.5l4.5-3.5 3 2.5 4-4 5.5 5" />
       <path d="M4 4l16 16" />
     </svg>
   );
@@ -127,8 +129,8 @@ export function IconHideImages(props: IconProps) {
 export function IconPause(props: IconProps) {
   return (
     <svg {...base(props)}>
-      <circle cx="12" cy="12" r="8" strokeDasharray="2 2" />
-      <path d="M10 9v6M14 9v6" />
+      <rect x="7" y="5" width="3" height="14" rx="1" />
+      <rect x="14" y="5" width="3" height="14" rx="1" />
     </svg>
   );
 }
@@ -136,8 +138,8 @@ export function IconPause(props: IconProps) {
 export function IconReadingGuide(props: IconProps) {
   return (
     <svg {...base(props)}>
-      <path d="M4 6h16M4 12h16M4 18h10" />
-      <path d="M3 10h18" strokeWidth="2.5" />
+      <path d="M4 7h16M4 12h16M4 17h10" />
+      <path d="M3 10.5h18" strokeWidth="2.5" />
     </svg>
   );
 }
@@ -145,17 +147,34 @@ export function IconReadingGuide(props: IconProps) {
 export function IconHighlightLinks(props: IconProps) {
   return (
     <svg {...base(props)}>
-      <path d="M10 13a5 5 0 0 0 7.07 0l2.12-2.12a5 5 0 0 0-7.07-7.07L11 5" />
-      <path d="M14 11a5 5 0 0 0-7.07 0L4.8 13.12a5 5 0 0 0 7.07 7.07L13 19" />
+      <path d="M9 11a3.5 3.5 0 0 1 0-5l2-2a3.5 3.5 0 0 1 5 5l-1 1" />
+      <path d="M15 13a3.5 3.5 0 0 1 0 5l-2 2a3.5 3.5 0 0 1-5-5l1-1" />
     </svg>
   );
 }
 
+export function IconSectionDisplay(props: IconProps) {
+  return (
+    <svg {...base({ ...props, width: 16, height: 16 })}>
+      <rect x="4" y="5" width="16" height="12" rx="2" />
+      <path d="M8 9h8M8 13h5" />
+    </svg>
+  );
+}
+
+export function IconSectionMotion(props: IconProps) {
+  return (
+    <svg {...base({ ...props, width: 16, height: 16 })}>
+      <path d="M5 12h4l2-6 3 12 2-6h3" />
+    </svg>
+  );
+}
+
+/** Horizontal dash — reset control (not a circular arrow). */
 export function IconReset(props: IconProps) {
   return (
     <svg {...base({ ...props, width: 20, height: 20 })}>
-      <path d="M3 12a9 9 0 1 0 3-6.7" />
-      <path d="M3 4v5h5" />
+      <path d="M5 12h14" strokeWidth="2.25" />
     </svg>
   );
 }
@@ -168,8 +187,12 @@ export function IconClose(props: IconProps) {
   );
 }
 
-/** Universal Symbol of Access mark — blue disc, white ring, outstretched figure. */
-export function IconAccessibility(props: IconProps) {
+/**
+ * Launcher mark: stylized "Aa" with a horizontal slider through the baseline.
+ * Solid brand disc for contrast over arbitrary host page backgrounds.
+ * Slider is thickened so it stays readable at ~40–56px.
+ */
+export function IconLauncher(props: IconProps) {
   const { width = 56, height = 56, ...rest } = props;
   return (
     <svg
@@ -180,29 +203,55 @@ export function IconAccessibility(props: IconProps) {
       aria-hidden
       {...rest}
     >
-      <circle cx="32" cy="32" r="32" fill="#4B5EBB" />
-      <circle
-        cx="32"
-        cy="32"
-        r="23.5"
+      {/* Rounded square + light ring for contrast on arbitrary host backgrounds */}
+      <rect
+        x="1"
+        y="1"
+        width="62"
+        height="62"
+        rx="14"
+        fill="var(--itzsa-a11y-toolbar-accent, #1d9e75)"
+        stroke="#fff"
+        strokeWidth="2"
+      />
+      {/* Capital A — open counters stay clear at ~48px */}
+      <path
+        d="M16 44 L25.5 16 L35 44"
         stroke="#fff"
         strokeWidth="3.5"
-        fill="none"
-      />
-      <circle cx="32" cy="17.5" r="4.75" fill="#fff" />
-      {/* Horizontal outstretched arms */}
-      <rect x="12.5" y="25.25" width="39" height="5.5" rx="2.75" fill="#fff" />
-      {/* Torso + A-frame legs */}
-      <path
-        d="M32 30.5v9.25M32 39.75 21.5 52.25M32 39.75 42.5 52.25"
-        stroke="#fff"
-        strokeWidth="5.25"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
+      <path
+        d="M19.5 33.5h11"
+        stroke="#fff"
+        strokeWidth="3.25"
+        strokeLinecap="round"
+      />
+      {/* lowercase a */}
+      <circle
+        cx="45"
+        cy="35"
+        r="8"
+        stroke="#fff"
+        strokeWidth="3.25"
+        fill="none"
+      />
+      <path
+        d="M53 26.5v17"
+        stroke="#fff"
+        strokeWidth="3.25"
+        strokeLinecap="round"
+      />
+      {/* Slider — thick track + knob so it survives small render sizes */}
+      <path d="M12 51h40" stroke="#fff" strokeWidth="4" strokeLinecap="round" />
+      <circle cx="40" cy="51" r="5" fill="#fff" />
     </svg>
   );
 }
+
+/** @deprecated Use IconLauncher */
+export const IconAccessibility = IconLauncher;
 
 export const FEATURE_ICONS: Record<FeatureId, (p: IconProps) => ReactElement> =
   {
@@ -221,3 +270,22 @@ export const FEATURE_ICONS: Record<FeatureId, (p: IconProps) => ReactElement> =
     readingGuide: IconReadingGuide,
     highlightLinks: IconHighlightLinks,
   };
+
+export const SECTION_ICONS = {
+  sectionDisplay: IconSectionDisplay,
+  sectionMotion: IconSectionMotion,
+} as const;
+
+export function resolveIcon(
+  iconId: FeatureIconId,
+): (p: IconProps) => ReactElement {
+  if (iconId in FEATURE_ICONS) {
+    return FEATURE_ICONS[iconId as FeatureId];
+  }
+  if (iconId === "sectionDisplay") return IconSectionDisplay;
+  if (iconId === "sectionMotion") return IconSectionMotion;
+  if (iconId === "launcher") return IconLauncher;
+  if (iconId === "reset") return IconReset;
+  if (iconId === "close") return IconClose;
+  return IconTextSize;
+}

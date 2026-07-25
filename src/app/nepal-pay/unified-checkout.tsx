@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
 
 import { CodeBlock } from "@/components/code-block";
 import { cn } from "@/lib/utils";
@@ -12,6 +12,13 @@ import {
 } from "./flow-diagram";
 
 type GatewayChoice = "esewa" | "khalti";
+
+/** Stable SSR default — regenerate only on user action to avoid hydration mismatch. */
+const DEFAULT_ORDER_ID = "ORD-DEMO-001";
+
+function nextOrderId(): string {
+  return `ORD-${Date.now().toString(36).toUpperCase()}`;
+}
 
 type InitiateResult = {
   ok: boolean;
@@ -113,9 +120,7 @@ export function UnifiedCheckoutForm() {
   const [gateway, setGateway] = useState<GatewayChoice>("esewa");
   const [name, setName] = useState("Suman Acharya");
   const [amount, setAmount] = useState("100");
-  const [orderId, setOrderId] = useState(
-    () => `ORD-${Date.now().toString(36).toUpperCase()}`,
-  );
+  const [orderId, setOrderId] = useState(DEFAULT_ORDER_ID);
   const [description, setDescription] = useState("Order payment");
   const [successUrl, setSuccessUrl] = useState("");
   const [failureUrl, setFailureUrl] = useState("");
@@ -126,6 +131,11 @@ export function UnifiedCheckoutForm() {
   const [useMock, setUseMock] = useState(true);
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<InitiateResult | null>(null);
+  const [origin, setOrigin] = useState("http://localhost:3000");
+
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
 
   const total = useMemo(() => {
     const a = Number(amount) || 0;
@@ -134,11 +144,6 @@ export function UnifiedCheckoutForm() {
     const d = Number(delivery) || 0;
     return (a + t + s + d).toFixed(2).replace(/\.00$/, "");
   }, [amount, tax, service, delivery]);
-
-  const origin =
-    typeof window !== "undefined"
-      ? window.location.origin
-      : "http://localhost:3000";
 
   const defaultSuccess =
     gateway === "esewa"
@@ -152,7 +157,7 @@ export function UnifiedCheckoutForm() {
   function clearForm() {
     setName("Suman Acharya");
     setAmount("100");
-    setOrderId(`ORD-${Date.now().toString(36).toUpperCase()}`);
+    setOrderId(nextOrderId());
     setDescription("Order payment");
     setSuccessUrl("");
     setFailureUrl("");

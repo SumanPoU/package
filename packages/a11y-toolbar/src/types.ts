@@ -37,6 +37,39 @@ export type A11yToolbarPosition =
   | "top-left";
 
 /**
+ * Theme tokens for chrome (header, accents, focus, type).
+ * Prefer host CSS variables (e.g. `var(--accent)`) so light/dark stay in sync.
+ * Defaults match the itzsa brand green with WCAG-safe header foreground.
+ */
+export type A11yToolbarTheme = {
+  /** Primary accent — icons, steps, pressed borders (default `#1d9e75`). */
+  accent?: string;
+  /** Header background (defaults to accent). */
+  header?: string;
+  /**
+   * Header title + icon button color.
+   * Default `#04342c` — ≥4.5:1 on `#1d9e75` (white on brand green fails AA).
+   */
+  headerForeground?: string;
+  /** Card / panel icon + step fill (defaults to accent). */
+  icon?: string;
+  /** Focus ring for launcher, cards, header buttons (non-text ≥3:1). */
+  focusRing?: string;
+  /** Panel font stack — e.g. `var(--font-outfit), Outfit, system-ui, sans-serif`. */
+  fontFamily?: string;
+};
+
+/** itzsa brand defaults (aligned with docs site `--accent` / `--accent-fg`). */
+export const DEFAULT_A11Y_THEME = {
+  accent: "#1d9e75",
+  header: "#1d9e75",
+  headerForeground: "#04342c",
+  focusRing: "#0b3d34",
+  fontFamily:
+    'var(--font-outfit), "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif',
+} as const;
+
+/**
  * User preferences. Attributes are mirrored onto `<html>`; CSS effects
  * apply under `[data-a11y-content]` (see `applyA11yPreferences`).
  */
@@ -79,4 +112,16 @@ export type A11yFeatureFlags = Partial<Record<FeatureId, boolean>>;
 export type ApplyA11yOptions = {
   /** Element that receives `data-a11y-*` attrs and CSS vars (default: documentElement). */
   root?: HTMLElement;
+};
+
+/** Current localStorage document schema version. */
+export const PREFERENCES_SCHEMA_VERSION = 1;
+
+/**
+ * Versioned localStorage document.
+ * Legacy unversioned blobs are migrated via `migrate()` in storage.ts.
+ */
+export type StoredPreferences = {
+  schemaVersion: number;
+  values: A11yPreferences;
 };

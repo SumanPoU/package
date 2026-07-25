@@ -260,7 +260,7 @@ type EsewaInitiateResponse = {
 export function EsewaTestForm() {
   const [amount, setAmount] = useState("100");
   const [tax, setTax] = useState("0");
-  const [orderId, setOrderId] = useState(`demo-${Date.now().toString(36)}`);
+  const [orderId, setOrderId] = useState("demo-1");
   const [returnUrl, setReturnUrl] = useState("");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<EsewaInitiateResponse | null>(null);
@@ -491,7 +491,7 @@ type KhaltiInitiateResponse = {
 
 export function KhaltiTestForm() {
   const [amount, setAmount] = useState("10.50");
-  const [orderId, setOrderId] = useState(`demo-${Date.now().toString(36)}`);
+  const [orderId, setOrderId] = useState("demo-1");
   const [orderName, setOrderName] = useState("itzsa docs demo");
   const [phone, setPhone] = useState("9800000000");
   const [secretKey, setSecretKey] = useState("");

@@ -55,20 +55,45 @@ import "@itzsa/a11y-toolbar/styles.css";
 | `hotkey` | `{ altKey?, key, ... } \| null` | `Alt+A` | Pass `null` to disable |
 | `onChange` | `(prefs) => void` | — | Fired after preference updates |
 | `launcherLabel` | `string` | `"Accessibility tools"` | Launcher accessible name |
+| `position` | `"bottom-right" \| …` | `"bottom-right"` | Corner placement |
+| `theme` | `A11yToolbarTheme` | itzsa green | Accent, header, focus, `fontFamily` (Outfit-ready) |
+| `accentColor` | `string` | — | Deprecated shorthand for accent + header |
+
+## Theme
+
+Defaults match the itzsa brand (`#1d9e75` accent, `#04342c` header text for
+WCAG AA on the green header — white-on-brand fails 4.5:1). Pass host CSS
+variables so the toolbar follows your theme:
+
+```tsx
+<A11yToolbar
+  position="bottom-right"
+  theme={{
+    accent: "var(--accent)",
+    header: "var(--accent)",
+    headerForeground: "var(--accent-fg)",
+    fontFamily: 'var(--font-outfit), "Outfit", system-ui, sans-serif',
+  }}
+/>
+```
 
 ## Features (v1)
 
-**Stepped:** Text Size, High Contrast, Text Align, Color Filter, Text Spacing,
-Line Height, Font Selection, Saturation.
+Defined in `A11Y_FEATURE_REGISTRY` — UI renders by mapping the registry.
 
-**Toggles:** Dyslexia Friendly (spacing-only — no bundled font), Bigger Cursor
-(32×32 SVG cursor), Hide Images (media only), Pause Animations.
+**Display:** Text Size, Text Spacing, Line Height, Font Selection, Text Align,
+Dyslexia Friendly, High Contrast, Color Filter, Saturation, Hide Images,
+Highlight Links.
+
+**Motion & assist:** Pause Animations, Bigger Cursor, Reading Guide.
 
 **Text size** uses `zoom` on `[data-a11y-content]` so Tailwind `text-*` / `px`
 utilities scale (parent `font-size` alone is not enough).
 
 **Motion model:** `paused = toggle || prefers-reduced-motion`. The toggle never
 re-enables motion when the OS preference is `reduce`.
+
+**CSS variables** use the `--itzsa-a11y-*` namespace (see repo `STANDARDS.md`).
 
 Engineering detail: see [`IMPLEMENTATION.md`](./IMPLEMENTATION.md) and
 [`BEHAVIOR.md`](./BEHAVIOR.md) (per-control WCAG/ARIA spec).
@@ -99,9 +124,11 @@ spike criteria remain in [`IMPLEMENTATION.md`](./IMPLEMENTATION.md).
 
 ## Architecture notes
 
-- Attrs + CSS variables → `<html>`
+- Preferences persist as `{ schemaVersion, values }` (legacy blobs auto-migrate)
+- Attrs + `--itzsa-a11y-*` CSS variables → `<html>` (DOM writes debounced ~50ms)
 - Effects → `[data-a11y-content]` only (toolbar uses `data-a11y-toolbar`)
 - Content wrapper **must** be in SSR HTML for FOUC script to matter
+- Feature metadata lives in `A11Y_FEATURE_REGISTRY` (React-free; icons via `iconId`)
 
 ## Headless helpers
 

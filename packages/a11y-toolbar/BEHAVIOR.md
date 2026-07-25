@@ -53,7 +53,7 @@ Restore rules keep `svg` / `[role=img]` inside `button`/`a` and
 
 ## Color Filter + Saturation
 
-Single `filter` property: `saturate(var(--a11y-saturation)) var(--a11y-color-filter)`.
+Single `filter` property: `saturate(var(--itzsa-a11y-saturation)) var(--itzsa-a11y-color-filter)`.
 Presentation aid only — **not** a clinical color-vision correction (see README).
 
 ## Pause Animations

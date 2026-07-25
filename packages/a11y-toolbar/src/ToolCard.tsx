@@ -1,42 +1,37 @@
 "use client";
 
-import { FEATURE_LABELS } from "./defaults";
 import { STEP_LEVEL_LABELS } from "./effect-values";
-import { FEATURE_ICONS } from "./icons";
-import type { FeatureId, SteppedFeatureId } from "./types";
+import { resolveIcon } from "./icons";
+import type { A11yFeatureDef } from "./registry";
+import type { SteppedFeatureId } from "./types";
 
 export type ToolCardProps = {
-  feature: FeatureId;
-  kind: "step" | "toggle";
-  /** Current step index (0-based). */
+  feature: A11yFeatureDef;
+  /** Current step index (0-based) or 0/1 for toggles. */
   value: number;
-  /** Total steps for stepped features. */
-  steps?: number;
   pressed?: boolean;
   onActivate: () => void;
 };
 
 export function ToolCard({
   feature,
-  kind,
   value,
-  steps = 0,
   pressed = false,
   onActivate,
 }: ToolCardProps) {
-  const Icon = FEATURE_ICONS[feature];
-  const label = FEATURE_LABELS[feature];
-  const active = kind === "step" ? value > 0 : pressed;
+  const Icon = resolveIcon(feature.iconId);
+  const { title, description } = feature.labels;
+  const kind = feature.kind;
+  const steps = feature.levels ?? 0;
+  const active = kind === "stepped" ? value > 0 : pressed;
 
   const levelName =
-    kind === "step"
-      ? (STEP_LEVEL_LABELS[feature as SteppedFeatureId]?.[value] ??
+    kind === "stepped"
+      ? (STEP_LEVEL_LABELS[feature.id as SteppedFeatureId]?.[value] ??
         `Level ${value + 1}`)
       : null;
 
-  // Toggle: stable accessible name; state via aria-pressed only (APG toggle).
-  // Stepped: visible + accessible name includes current level (not aria-valuenow).
-  const accessibleName = kind === "toggle" ? label : `${label} — ${levelName}`;
+  const accessibleName = kind === "toggle" ? title : `${title} — ${levelName}`;
 
   return (
     <button
@@ -50,11 +45,12 @@ export function ToolCard({
       <span className="itzsa-a11y-card-icon">
         <Icon />
       </span>
-      <span className="itzsa-a11y-card-label">{label}</span>
-      {kind === "step" && levelName ? (
+      <span className="itzsa-a11y-card-label">{title}</span>
+      <span className="itzsa-a11y-card-desc">{description}</span>
+      {kind === "stepped" && levelName ? (
         <span className="itzsa-a11y-card-level">{levelName}</span>
       ) : null}
-      {kind === "step" && steps > 0 ? (
+      {kind === "stepped" && steps > 0 ? (
         <span className="itzsa-a11y-steps" aria-hidden>
           {Array.from({ length: steps }, (_, i) => (
             <span
@@ -63,6 +59,15 @@ export function ToolCard({
               data-on={i <= value ? "true" : "false"}
             />
           ))}
+        </span>
+      ) : null}
+      {kind === "toggle" ? (
+        <span
+          className="itzsa-a11y-toggle-pill"
+          data-on={pressed ? "true" : "false"}
+          aria-hidden
+        >
+          {pressed ? "On" : "Off"}
         </span>
       ) : null}
     </button>

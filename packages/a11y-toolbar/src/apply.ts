@@ -1,3 +1,4 @@
+import { CSS_VAR, EFFECT_CSS_VARS } from "./css-vars";
 import {
   COLOR_FILTER_VALUES,
   DYSLEXIA_LINE_HEIGHT_LEVEL,
@@ -9,6 +10,7 @@ import {
   TEXT_SIZE_ZOOMS,
   WORD_SPACING_EM,
 } from "./effect-values";
+import { A11Y_FEATURE_REGISTRY } from "./registry";
 import type { A11yPreferences, ApplyA11yOptions } from "./types";
 
 const ATTR = {
@@ -32,34 +34,7 @@ const ATTR = {
 /** @deprecated Use TEXT_SIZE_ZOOMS from effect-values. */
 export const FONT_SCALES = TEXT_SIZE_ZOOMS;
 
-/**
- * Mirror preferences onto a root element (default `<html>`).
- * Visual effects come from package CSS (`styles.css`).
- */
-export function applyA11yPreferences(
-  prefs: A11yPreferences,
-  options: ApplyA11yOptions = {},
-): void {
-  if (typeof document === "undefined") return;
-  const root = options.root ?? document.documentElement;
-
-  root.setAttribute(ATTR.textSize, String(prefs.textSize));
-  root.setAttribute(ATTR.highContrast, String(prefs.highContrast));
-  root.setAttribute(ATTR.textAlign, String(prefs.textAlign));
-  root.setAttribute(ATTR.colorFilter, String(prefs.colorFilter));
-  root.setAttribute(ATTR.textSpacing, String(prefs.textSpacing));
-  root.setAttribute(ATTR.lineHeight, String(prefs.lineHeight));
-  root.setAttribute(ATTR.fontSelection, String(prefs.fontSelection));
-  root.setAttribute(ATTR.saturation, String(prefs.saturation));
-  root.setAttribute(ATTR.dyslexiaFriendly, prefs.dyslexiaFriendly ? "1" : "0");
-  root.setAttribute(ATTR.biggerCursor, prefs.biggerCursor ? "1" : "0");
-  root.setAttribute(ATTR.hideImages, prefs.hideImages ? "1" : "0");
-  root.setAttribute(ATTR.pauseAnimations, prefs.pauseAnimations ? "1" : "0");
-  root.setAttribute(ATTR.readingGuide, prefs.readingGuide ? "1" : "0");
-  root.setAttribute(ATTR.highlightLinks, prefs.highlightLinks ? "1" : "0");
-  root.setAttribute(ATTR.zoomSupport, supportsCssZoom() ? "1" : "0");
-
-  // Dyslexia Friendly reuses max Text Spacing + Line Height presets (1.4.12).
+function syncEffectCssVars(root: HTMLElement, prefs: A11yPreferences): void {
   const spacingLevel = prefs.dyslexiaFriendly
     ? DYSLEXIA_SPACING_LEVEL
     : prefs.textSpacing;
@@ -68,46 +43,107 @@ export function applyA11yPreferences(
     : prefs.lineHeight;
 
   root.style.setProperty(
-    "--a11y-font-scale",
+    CSS_VAR.fontScale,
     String(TEXT_SIZE_ZOOMS[prefs.textSize]),
   );
   root.style.setProperty(
-    "--a11y-letter-spacing",
+    CSS_VAR.letterSpacing,
     `${LETTER_SPACING_EM[spacingLevel]}em`,
   );
   root.style.setProperty(
-    "--a11y-word-spacing",
+    CSS_VAR.wordSpacing,
     `${WORD_SPACING_EM[spacingLevel]}em`,
   );
   root.style.setProperty(
-    "--a11y-line-height",
+    CSS_VAR.lineHeight,
     String(LINE_HEIGHT_VALUES[lineLevel]),
   );
   root.style.setProperty(
-    "--a11y-saturation",
+    CSS_VAR.saturation,
     String(SATURATION_VALUES[prefs.saturation]),
   );
   root.style.setProperty(
-    "--a11y-color-filter",
+    CSS_VAR.colorFilter,
     COLOR_FILTER_VALUES[prefs.colorFilter],
   );
+}
+
+/**
+ * Mirror preferences onto a root element (default `<html>`).
+ * Visual effects come from package CSS (`styles.css`).
+ * Synchronous — prefer `scheduleApplyA11yPreferences` for rapid UI cycling.
+ */
+export function applyA11yPreferences(
+  prefs: A11yPreferences,
+  options: ApplyA11yOptions = {},
+): void {
+  if (typeof document === "undefined") return;
+  const root = options.root ?? document.documentElement;
+
+  for (const feature of A11Y_FEATURE_REGISTRY) {
+    feature.apply(root, prefs[feature.id]);
+  }
+  root.setAttribute(ATTR.zoomSupport, supportsCssZoom() ? "1" : "0");
+  syncEffectCssVars(root, prefs);
+}
+
+let applyTimer: ReturnType<typeof setTimeout> | null = null;
+let pendingPrefs: A11yPreferences | null = null;
+let pendingOptions: ApplyA11yOptions = {};
+
+const DEFAULT_DEBOUNCE_MS = 50;
+
+/**
+ * Debounced DOM write (trailing edge). React preference state stays sync;
+ * only attribute / CSS-var mutation is delayed.
+ */
+export function scheduleApplyA11yPreferences(
+  prefs: A11yPreferences,
+  options: ApplyA11yOptions = {},
+  delayMs: number = DEFAULT_DEBOUNCE_MS,
+): void {
+  pendingPrefs = prefs;
+  pendingOptions = options;
+  if (applyTimer != null) clearTimeout(applyTimer);
+  applyTimer = setTimeout(() => {
+    applyTimer = null;
+    if (pendingPrefs) {
+      applyA11yPreferences(pendingPrefs, pendingOptions);
+      pendingPrefs = null;
+    }
+  }, delayMs);
+}
+
+/** Flush a pending debounced apply immediately (reset / unmount / tests). */
+export function flushApplyA11yPreferences(): void {
+  if (applyTimer != null) {
+    clearTimeout(applyTimer);
+    applyTimer = null;
+  }
+  if (pendingPrefs) {
+    applyA11yPreferences(pendingPrefs, pendingOptions);
+    pendingPrefs = null;
+  }
+}
+
+/** Cancel a pending debounced apply without writing. */
+export function cancelScheduledApplyA11yPreferences(): void {
+  if (applyTimer != null) {
+    clearTimeout(applyTimer);
+    applyTimer = null;
+  }
+  pendingPrefs = null;
 }
 
 /** Remove all a11y attrs/vars set by this package. */
 export function clearA11yPreferences(options: ApplyA11yOptions = {}): void {
   if (typeof document === "undefined") return;
+  cancelScheduledApplyA11yPreferences();
   const root = options.root ?? document.documentElement;
   for (const attr of Object.values(ATTR)) {
     root.removeAttribute(attr);
   }
-  for (const prop of [
-    "--a11y-font-scale",
-    "--a11y-letter-spacing",
-    "--a11y-word-spacing",
-    "--a11y-line-height",
-    "--a11y-saturation",
-    "--a11y-color-filter",
-  ]) {
+  for (const prop of EFFECT_CSS_VARS) {
     root.style.removeProperty(prop);
   }
 }

@@ -9,10 +9,15 @@ import {
   useState,
 } from "react";
 import { ANNOUNCE_RESET, announceStep, announceToggle } from "./announce";
-import { applyA11yPreferences, clearA11yPreferences } from "./apply";
-import { FEATURE_SECTIONS, STEP_COUNT } from "./defaults";
+import {
+  clearA11yPreferences,
+  flushApplyA11yPreferences,
+  scheduleApplyA11yPreferences,
+} from "./apply";
+import { CSS_VAR } from "./css-vars";
+import { A11yPanelErrorBoundary } from "./ErrorBoundary";
 import { useFocusTrap, useHotkey, useIdSafe } from "./hooks";
-import { IconAccessibility, IconClose, IconReset } from "./icons";
+import { IconClose, IconLauncher, IconReset, resolveIcon } from "./icons";
 import {
   cycleStep,
   isPreferencesEqual,
@@ -20,11 +25,16 @@ import {
   toggleFeature,
 } from "./preferences";
 import { ReadingGuide } from "./ReadingGuide";
-import { isSteppedFeature, isToggleFeature } from "./registry";
+import {
+  getFeatureDef,
+  getSectionsWithFeatures,
+  isSteppedFeature,
+  isToggleFeature,
+} from "./registry";
 import {
   clearStoredPreferences,
   getStoredPreferences,
-  normalizePreferences,
+  migrate,
   setStoredPreferences,
 } from "./storage";
 import { ToolCard } from "./ToolCard";
@@ -33,12 +43,14 @@ import type {
   A11yHotkey,
   A11yPreferences,
   A11yToolbarPosition,
+  A11yToolbarTheme,
   FeatureId,
   SteppedFeatureId,
   ToggleFeatureId,
 } from "./types";
 import {
   A11Y_TOOLBAR_ATTR,
+  DEFAULT_A11Y_THEME,
   DEFAULT_HOTKEY,
   DEFAULT_STORAGE_KEY,
 } from "./types";
@@ -56,8 +68,12 @@ export type A11yToolbarProps = {
   launcherLabel?: string;
   /** Corner placement (default bottom-right). */
   position?: A11yToolbarPosition;
-  /** Brand accent for header (launcher uses the ISA mark colors). */
+  /**
+   * @deprecated Prefer `theme.accent` — still sets header + accent for one color.
+   */
   accentColor?: string;
+  /** Dynamic chrome tokens (accent, header, font, focus). */
+  theme?: A11yToolbarTheme;
 };
 
 function isEnabled(
@@ -65,6 +81,29 @@ function isEnabled(
   id: FeatureId,
 ): boolean {
   return flags?.[id] !== false;
+}
+
+function resolveThemeStyle(
+  theme: A11yToolbarTheme | undefined,
+  accentColor: string | undefined,
+): CSSProperties {
+  const accent = theme?.accent ?? accentColor ?? DEFAULT_A11Y_THEME.accent;
+  const header = theme?.header ?? accentColor ?? accent;
+  const headerFg =
+    theme?.headerForeground ?? DEFAULT_A11Y_THEME.headerForeground;
+  const icon = theme?.icon ?? accent;
+  const focus = theme?.focusRing ?? DEFAULT_A11Y_THEME.focusRing;
+  const font = theme?.fontFamily ?? DEFAULT_A11Y_THEME.fontFamily;
+
+  return {
+    [CSS_VAR.toolbarAccent]: accent,
+    [CSS_VAR.toolbarHeader]: header,
+    [CSS_VAR.toolbarHeaderFg]: headerFg,
+    [CSS_VAR.toolbarIcon]: icon,
+    [CSS_VAR.toolbarFocus]: focus,
+    [CSS_VAR.toolbarFont]: font,
+    fontFamily: font,
+  } as CSSProperties;
 }
 
 export function A11yToolbar({
@@ -80,6 +119,7 @@ export function A11yToolbar({
   launcherLabel = "Accessibility tools",
   position = "bottom-right",
   accentColor,
+  theme,
 }: A11yToolbarProps) {
   const titleId = useIdSafe("a11y-title");
   const panelId = titleId.replace("a11y-title", "a11y-panel");
@@ -104,19 +144,24 @@ export function A11yToolbar({
   const [announcement, setAnnouncement] = useState("");
 
   useEffect(() => {
-    applyA11yPreferences(prefs);
+    scheduleApplyA11yPreferences(prefs);
     setStoredPreferences(prefs, storageKey);
     onChange?.(prefs);
   }, [prefs, storageKey, onChange]);
 
-  // Keep open tabs in sync when preferences change elsewhere.
+  useEffect(() => {
+    return () => {
+      flushApplyA11yPreferences();
+    };
+  }, []);
+
   useEffect(() => {
     const onStorage = (event: StorageEvent) => {
       if (event.key !== storageKey) return;
       const next =
         event.newValue == null
           ? resetPreferences()
-          : normalizePreferences(
+          : migrate(
               (() => {
                 try {
                   return JSON.parse(event.newValue) as unknown;
@@ -124,7 +169,7 @@ export function A11yToolbar({
                   return null;
                 }
               })(),
-            );
+            ).values;
       setPrefs((prev) => (isPreferencesEqual(prev, next) ? prev : next));
     };
     window.addEventListener("storage", onStorage);
@@ -141,12 +186,10 @@ export function A11yToolbar({
     true,
   );
 
-  const sections = useMemo(() => {
-    return FEATURE_SECTIONS.map((section) => ({
-      ...section,
-      features: section.features.filter((id) => isEnabled(features, id)),
-    })).filter((s) => s.features.length > 0);
-  }, [features]);
+  const sections = useMemo(
+    () => getSectionsWithFeatures((id) => isEnabled(features, id)),
+    [features],
+  );
 
   const active = hasActiveA11yPreferences(prefs);
 
@@ -155,37 +198,30 @@ export function A11yToolbar({
     setAnnouncement(message);
   }, []);
 
-  const onStep = (id: SteppedFeatureId) => {
-    const next = cycleStep(prefs, id);
-    update(next, announceStep(id, next[id] as number));
-  };
-
-  const onToggle = (id: ToggleFeatureId) => {
-    const next = toggleFeature(prefs, id);
-    update(next, announceToggle(id, next[id]));
-  };
-
   const onActivate = (id: FeatureId) => {
-    if (isSteppedFeature(id)) onStep(id);
-    else if (isToggleFeature(id)) onToggle(id);
+    const def = getFeatureDef(id);
+    if (!def) return;
+    if (isSteppedFeature(id)) {
+      const next = cycleStep(prefs, id);
+      update(next, announceStep(id, next[id] as number));
+    } else if (isToggleFeature(id)) {
+      const next = toggleFeature(prefs, id);
+      update(next, announceToggle(id, next[id]));
+    }
   };
 
   const onReset = () => {
     const next = resetPreferences();
     clearStoredPreferences(storageKey);
     clearA11yPreferences();
-    applyA11yPreferences(next);
+    scheduleApplyA11yPreferences(next, {}, 0);
+    flushApplyA11yPreferences();
     update(next, ANNOUNCE_RESET);
   };
 
   const rootStyle: CSSProperties = {
+    ...resolveThemeStyle(theme, accentColor),
     ...style,
-    ...(accentColor
-      ? ({
-          ["--a11y-toolbar-header" as string]: accentColor,
-          ["--a11y-toolbar-accent" as string]: accentColor,
-        } as CSSProperties)
-      : null),
   };
 
   return (
@@ -207,7 +243,7 @@ export function A11yToolbar({
         data-active={active ? "true" : "false"}
         onClick={() => setOpen(!open)}
       >
-        <IconAccessibility />
+        <IconLauncher />
         {active ? (
           <span className="itzsa-a11y-launcher-dot" aria-hidden />
         ) : null}
@@ -258,45 +294,54 @@ export function A11yToolbar({
               </div>
             </div>
 
-            <div className="itzsa-a11y-body">
-              {sections.map((section) => (
-                <section
-                  key={section.id}
-                  className="itzsa-a11y-section"
-                  aria-labelledby={`${panelId}-${section.id}`}
-                >
-                  <h3
-                    id={`${panelId}-${section.id}`}
-                    className="itzsa-a11y-section-title"
-                  >
-                    {section.title}
-                  </h3>
-                  <div className="itzsa-a11y-grid">
-                    {section.features.map((id) =>
-                      isSteppedFeature(id) ? (
-                        <ToolCard
-                          key={id}
-                          feature={id}
-                          kind="step"
-                          value={prefs[id] as number}
-                          steps={STEP_COUNT[id]}
-                          onActivate={() => onActivate(id)}
-                        />
-                      ) : (
-                        <ToolCard
-                          key={id}
-                          feature={id}
-                          kind="toggle"
-                          value={prefs[id] ? 1 : 0}
-                          pressed={Boolean(prefs[id])}
-                          onActivate={() => onActivate(id)}
-                        />
-                      ),
-                    )}
-                  </div>
-                </section>
-              ))}
-            </div>
+            <A11yPanelErrorBoundary>
+              <div className="itzsa-a11y-body">
+                {sections.map((section) => {
+                  const SectionIcon = resolveIcon(section.iconId);
+                  return (
+                    <section
+                      key={section.id}
+                      className="itzsa-a11y-section"
+                      aria-labelledby={`${panelId}-${section.id}`}
+                    >
+                      <h3
+                        id={`${panelId}-${section.id}`}
+                        className="itzsa-a11y-section-title"
+                      >
+                        <span className="itzsa-a11y-section-icon" aria-hidden>
+                          <SectionIcon />
+                        </span>
+                        {section.title}
+                      </h3>
+                      <div className="itzsa-a11y-grid">
+                        {section.features.map((feature) => {
+                          const id = feature.id;
+                          if (feature.kind === "stepped") {
+                            return (
+                              <ToolCard
+                                key={id}
+                                feature={feature}
+                                value={prefs[id as SteppedFeatureId] as number}
+                                onActivate={() => onActivate(id)}
+                              />
+                            );
+                          }
+                          return (
+                            <ToolCard
+                              key={id}
+                              feature={feature}
+                              value={prefs[id as ToggleFeatureId] ? 1 : 0}
+                              pressed={Boolean(prefs[id as ToggleFeatureId])}
+                              onActivate={() => onActivate(id)}
+                            />
+                          );
+                        })}
+                      </div>
+                    </section>
+                  );
+                })}
+              </div>
+            </A11yPanelErrorBoundary>
 
             <div className="itzsa-a11y-live" aria-live="polite" aria-atomic>
               {announcement}

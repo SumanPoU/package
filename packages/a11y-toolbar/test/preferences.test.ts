@@ -60,10 +60,12 @@ describe("preference helpers", () => {
 });
 
 describe("getA11yFoucScript", () => {
-  it("embeds the storage key and html attrs", () => {
+  it("embeds the storage key, html attrs, and namespaced CSS vars", () => {
     const script = getA11yFoucScript("my-key");
     expect(script).toContain('"my-key"');
     expect(script).toContain("data-a11y-text-size");
     expect(script).toContain("data-a11y-pause-animations");
+    expect(script).toContain("--itzsa-a11y-letter-spacing");
+    expect(script).toContain("schemaVersion");
   });
 });

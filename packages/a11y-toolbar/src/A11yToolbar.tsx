@@ -66,13 +66,20 @@ export type A11yToolbarProps = {
   className?: string;
   style?: CSSProperties;
   launcherLabel?: string;
-  /** Corner placement (default bottom-right). */
-  position?: A11yToolbarPosition;
   /**
-   * @deprecated Prefer `theme.accent` — still sets header + accent for one color.
+   * Screen placement for the floating launcher (+ panel nearby).
+   * Corners, edge centers, or middle sides.
+   */
+  position?: A11yToolbarPosition;
+  /** Distance from viewport edge (e.g. `1.25rem`, `20px`). */
+  offset?: string;
+  /** Launcher button size (e.g. `3.5rem`, `56px`). */
+  launcherSize?: string;
+  /**
+   * @deprecated Prefer `theme.accent` / `theme.launcher`.
    */
   accentColor?: string;
-  /** Dynamic chrome tokens (accent, header, font, focus). */
+  /** Dynamic chrome + launcher colors (accent, header, launcher, font, focus). */
   theme?: A11yToolbarTheme;
 };
 
@@ -86,6 +93,8 @@ function isEnabled(
 function resolveThemeStyle(
   theme: A11yToolbarTheme | undefined,
   accentColor: string | undefined,
+  offset: string | undefined,
+  launcherSize: string | undefined,
 ): CSSProperties {
   const accent = theme?.accent ?? accentColor ?? DEFAULT_A11Y_THEME.accent;
   const header = theme?.header ?? accentColor ?? accent;
@@ -94,6 +103,10 @@ function resolveThemeStyle(
   const icon = theme?.icon ?? accent;
   const focus = theme?.focusRing ?? DEFAULT_A11Y_THEME.focusRing;
   const font = theme?.fontFamily ?? DEFAULT_A11Y_THEME.fontFamily;
+  const launcher = theme?.launcher ?? accent;
+  const launcherFg =
+    theme?.launcherForeground ?? DEFAULT_A11Y_THEME.launcherForeground;
+  const launcherRing = theme?.launcherRing ?? DEFAULT_A11Y_THEME.launcherRing;
 
   return {
     [CSS_VAR.toolbarAccent]: accent,
@@ -102,6 +115,11 @@ function resolveThemeStyle(
     [CSS_VAR.toolbarIcon]: icon,
     [CSS_VAR.toolbarFocus]: focus,
     [CSS_VAR.toolbarFont]: font,
+    [CSS_VAR.launcherBg]: launcher,
+    [CSS_VAR.launcherFg]: launcherFg,
+    [CSS_VAR.launcherRing]: launcherRing,
+    ...(offset ? { [CSS_VAR.offset]: offset } : null),
+    ...(launcherSize ? { [CSS_VAR.launcherSize]: launcherSize } : null),
     fontFamily: font,
   } as CSSProperties;
 }
@@ -118,6 +136,8 @@ export function A11yToolbar({
   style,
   launcherLabel = "Accessibility tools",
   position = "bottom-right",
+  offset,
+  launcherSize,
   accentColor,
   theme,
 }: A11yToolbarProps) {
@@ -220,7 +240,7 @@ export function A11yToolbar({
   };
 
   const rootStyle: CSSProperties = {
-    ...resolveThemeStyle(theme, accentColor),
+    ...resolveThemeStyle(theme, accentColor, offset, launcherSize),
     ...style,
   };
 

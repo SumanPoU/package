@@ -55,23 +55,26 @@ import "@itzsa/a11y-toolbar/styles.css";
 | `hotkey` | `{ altKey?, key, ... } \| null` | `Alt+A` | Pass `null` to disable |
 | `onChange` | `(prefs) => void` | — | Fired after preference updates |
 | `launcherLabel` | `string` | `"Accessibility tools"` | Launcher accessible name |
-| `position` | `"bottom-right" \| …` | `"bottom-right"` | Corner placement |
-| `theme` | `A11yToolbarTheme` | itzsa green | Accent, header, focus, `fontFamily` (Outfit-ready) |
+| `position` | `A11yToolbarPosition` | `"bottom-right"` | `bottom-*` / `top-*` / `middle-*` / `*-center` |
+| `offset` | `string` | `"1.25rem"` | Gap from viewport edge |
+| `launcherSize` | `string` | `"3.5rem"` | Floating button size |
+| `theme` | `A11yToolbarTheme` | itzsa green | Accent, header, launcher colors, font, focus |
 | `accentColor` | `string` | — | Deprecated shorthand for accent + header |
 
-## Theme
-
-Defaults match the itzsa brand (`#1d9e75` accent, `#04342c` header text for
-WCAG AA on the green header — white-on-brand fails 4.5:1). Pass host CSS
-variables so the toolbar follows your theme:
+## Placement & colors
 
 ```tsx
 <A11yToolbar
-  position="bottom-right"
+  position="top-left" // or bottom-center, middle-right, …
+  offset="1rem"
+  launcherSize="3rem"
   theme={{
     accent: "var(--accent)",
     header: "var(--accent)",
     headerForeground: "var(--accent-fg)",
+    launcher: "#1d9e75", // button fill
+    launcherForeground: "#ffffff", // Aa + slider
+    launcherRing: "#ffffff", // outer contrast ring
     fontFamily: 'var(--font-outfit), "Outfit", system-ui, sans-serif',
   }}
 />

@@ -34,10 +34,14 @@ export type A11yToolbarPosition =
   | "bottom-right"
   | "bottom-left"
   | "top-right"
-  | "top-left";
+  | "top-left"
+  | "bottom-center"
+  | "top-center"
+  | "middle-left"
+  | "middle-right";
 
 /**
- * Theme tokens for chrome (header, accents, focus, type).
+ * Theme tokens for chrome (header, accents, focus, type, launcher).
  * Prefer host CSS variables (e.g. `var(--accent)`) so light/dark stay in sync.
  * Defaults match the itzsa brand green with WCAG-safe header foreground.
  */
@@ -57,6 +61,12 @@ export type A11yToolbarTheme = {
   focusRing?: string;
   /** Panel font stack — e.g. `var(--font-outfit), Outfit, system-ui, sans-serif`. */
   fontFamily?: string;
+  /** Floating launcher button fill (defaults to accent). */
+  launcher?: string;
+  /** Launcher glyph color (Aa + slider) — default `#ffffff`. */
+  launcherForeground?: string;
+  /** Thin outer ring for contrast on busy pages — default `#ffffff`. */
+  launcherRing?: string;
 };
 
 /** itzsa brand defaults (aligned with docs site `--accent` / `--accent-fg`). */
@@ -65,6 +75,9 @@ export const DEFAULT_A11Y_THEME = {
   header: "#1d9e75",
   headerForeground: "#04342c",
   focusRing: "#0b3d34",
+  launcher: "#1d9e75",
+  launcherForeground: "#ffffff",
+  launcherRing: "#ffffff",
   fontFamily:
     'var(--font-outfit), "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif',
 } as const;

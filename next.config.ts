@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
     "@itzsa/nepali-datepicker",
     "@itzsa/nepal-geo",
     "@itzsa/nepal-geo-data",
+    "@itzsa/a11y-toolbar",
   ],
   // Monorepo includes apps/registry; pin Turbopack root so Next resolves from here.
   turbopack: {

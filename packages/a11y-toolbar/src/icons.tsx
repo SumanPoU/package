@@ -36,7 +36,6 @@ export function IconContrast(props: IconProps) {
   return (
     <svg {...base(props)}>
       <circle cx="12" cy="12" r="8" />
-      {/* Filled half-moon accent (allowed exception). */}
       <path d="M12 4a8 8 0 0 1 0 16V4Z" fill="currentColor" stroke="none" />
     </svg>
   );
@@ -170,11 +169,12 @@ export function IconSectionMotion(props: IconProps) {
   );
 }
 
-/** Horizontal dash — reset control (not a circular arrow). */
+/** Circular reset arrow — restores all preferences. */
 export function IconReset(props: IconProps) {
   return (
     <svg {...base({ ...props, width: 20, height: 20 })}>
-      <path d="M5 12h14" strokeWidth="2.25" />
+      <path d="M4 12a8 8 0 1 0 2.2-5.5" />
+      <path d="M4 4v4.5h4.5" />
     </svg>
   );
 }
@@ -188,9 +188,8 @@ export function IconClose(props: IconProps) {
 }
 
 /**
- * Launcher mark: stylized "Aa" with a horizontal slider through the baseline.
- * Solid brand disc for contrast over arbitrary host page backgrounds.
- * Slider is thickened so it stays readable at ~40–56px.
+ * Launcher glyph: stylized "Aa" + slider.
+ * Button provides fill/ring via CSS vars; SVG uses currentColor.
  */
 export function IconLauncher(props: IconProps) {
   const { width = 56, height = 56, ...rest } = props;
@@ -203,49 +202,40 @@ export function IconLauncher(props: IconProps) {
       aria-hidden
       {...rest}
     >
-      {/* Rounded square + light ring for contrast on arbitrary host backgrounds */}
-      <rect
-        x="1"
-        y="1"
-        width="62"
-        height="62"
-        rx="14"
-        fill="var(--itzsa-a11y-toolbar-accent, #1d9e75)"
-        stroke="#fff"
-        strokeWidth="2"
-      />
-      {/* Capital A — open counters stay clear at ~48px */}
       <path
         d="M16 44 L25.5 16 L35 44"
-        stroke="#fff"
+        stroke="currentColor"
         strokeWidth="3.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M19.5 33.5h11"
-        stroke="#fff"
+        stroke="currentColor"
         strokeWidth="3.25"
         strokeLinecap="round"
       />
-      {/* lowercase a */}
       <circle
         cx="45"
         cy="35"
         r="8"
-        stroke="#fff"
+        stroke="currentColor"
         strokeWidth="3.25"
         fill="none"
       />
       <path
         d="M53 26.5v17"
-        stroke="#fff"
+        stroke="currentColor"
         strokeWidth="3.25"
         strokeLinecap="round"
       />
-      {/* Slider — thick track + knob so it survives small render sizes */}
-      <path d="M12 51h40" stroke="#fff" strokeWidth="4" strokeLinecap="round" />
-      <circle cx="40" cy="51" r="5" fill="#fff" />
+      <path
+        d="M12 51h40"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+      <circle cx="40" cy="51" r="5" fill="currentColor" />
     </svg>
   );
 }

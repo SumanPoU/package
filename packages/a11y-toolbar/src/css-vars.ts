@@ -26,6 +26,11 @@ export const CSS_VAR = {
   toolbarFocus: "--itzsa-a11y-toolbar-focus",
   toolbarFont: "--itzsa-a11y-toolbar-font",
   toolbarIcon: "--itzsa-a11y-toolbar-icon",
+  launcherSize: "--itzsa-a11y-launcher-size",
+  launcherBg: "--itzsa-a11y-launcher-bg",
+  launcherFg: "--itzsa-a11y-launcher-fg",
+  launcherRing: "--itzsa-a11y-launcher-ring",
+  launcherRadius: "--itzsa-a11y-launcher-radius",
 } as const;
 
 /** Effect vars written by apply / FOUC (cleanup list). */

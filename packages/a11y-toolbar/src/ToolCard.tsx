@@ -20,7 +20,7 @@ export function ToolCard({
   onActivate,
 }: ToolCardProps) {
   const Icon = resolveIcon(feature.iconId);
-  const { title, description } = feature.labels;
+  const { title } = feature.labels;
   const kind = feature.kind;
   const steps = feature.levels ?? 0;
   const active = kind === "stepped" ? value > 0 : pressed;
@@ -31,7 +31,11 @@ export function ToolCard({
         `Level ${value + 1}`)
       : null;
 
-  const accessibleName = kind === "toggle" ? title : `${title} — ${levelName}`;
+  // Visible UI is icon + title + dashes; state stays in the accessible name.
+  const accessibleName =
+    kind === "toggle"
+      ? `${title}, ${pressed ? "on" : "off"}`
+      : `${title}, ${levelName}`;
 
   return (
     <button
@@ -46,10 +50,6 @@ export function ToolCard({
         <Icon />
       </span>
       <span className="itzsa-a11y-card-label">{title}</span>
-      <span className="itzsa-a11y-card-desc">{description}</span>
-      {kind === "stepped" && levelName ? (
-        <span className="itzsa-a11y-card-level">{levelName}</span>
-      ) : null}
       {kind === "stepped" && steps > 0 ? (
         <span className="itzsa-a11y-steps" aria-hidden>
           {Array.from({ length: steps }, (_, i) => (
@@ -62,12 +62,11 @@ export function ToolCard({
         </span>
       ) : null}
       {kind === "toggle" ? (
-        <span
-          className="itzsa-a11y-toggle-pill"
-          data-on={pressed ? "true" : "false"}
-          aria-hidden
-        >
-          {pressed ? "On" : "Off"}
+        <span className="itzsa-a11y-steps" aria-hidden>
+          <span
+            className="itzsa-a11y-step itzsa-a11y-step-toggle"
+            data-on={pressed ? "true" : "false"}
+          />
         </span>
       ) : null}
     </button>

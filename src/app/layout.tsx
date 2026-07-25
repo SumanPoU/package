@@ -131,11 +131,11 @@ export default function RootLayout({
       </head>
       <body className="flex min-h-full flex-col bg-page font-sans text-primary">
         <ThemeProvider>
-          <SiteNav />
           <div data-a11y-content className="flex min-h-0 flex-1 flex-col">
-            {children}
+            <SiteNav />
+            <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+            <SiteFooter />
           </div>
-          <SiteFooter />
           <SiteA11yToolbar />
         </ThemeProvider>
       </body>

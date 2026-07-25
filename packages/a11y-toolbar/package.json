@@ -1,0 +1,79 @@
+{
+  "name": "@itzsa/a11y-toolbar",
+  "version": "0.0.0",
+  "description": "Accessible site preference toolbar — text size, contrast, motion, and related reading aids applied via CSS on a content root",
+  "license": "MIT",
+  "sideEffects": [
+    "**/*.css",
+    "./src/styles.css"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.mjs"
+    },
+    "./headless": {
+      "types": "./dist/headless.d.ts",
+      "import": "./dist/headless.mjs",
+      "require": "./dist/headless.js",
+      "default": "./dist/headless.mjs"
+    },
+    "./styles.css": "./src/styles.css"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "src/styles.css",
+    "README.md",
+    "IMPLEMENTATION.md",
+    "BEHAVIOR.md"
+  ],
+  "scripts": {
+    "build": "tsup && node ./scripts/prepend-use-client.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "dev": "tsup --watch",
+    "prepublishOnly": "pnpm run typecheck && pnpm run test && pnpm run build"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tsup": "^8.5.0",
+    "typescript": "^5",
+    "vitest": "^3.2.4"
+  },
+  "keywords": [
+    "accessibility",
+    "a11y",
+    "toolbar",
+    "preferences",
+    "react",
+    "itzsa"
+  ],
+  "homepage": "https://itzsa.acharya-suman.com.np/a11y-toolbar",
+  "bugs": {
+    "url": "https://github.com/SumanPoU/package/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SumanPoU/package.git",
+    "directory": "packages/a11y-toolbar"
+  }
+}

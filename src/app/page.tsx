@@ -41,6 +41,12 @@ const PACKAGES = [
     blurb: "eSewa + Khalti with mandatory verify.",
   },
   {
+    href: "/a11y-toolbar",
+    name: "A11y Toolbar",
+    pkg: "@itzsa/a11y-toolbar",
+    blurb: "Site reading aids — size, contrast, motion.",
+  },
+  {
     href: "/nepal-geo",
     name: "Nepal Geo",
     pkg: "@itzsa/nepal-geo",

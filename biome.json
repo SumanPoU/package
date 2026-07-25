@@ -101,6 +101,16 @@
           }
         }
       }
+    },
+    {
+      "includes": ["packages/a11y-toolbar/**/*.css"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noImportantStyles": "off"
+          }
+        }
+      }
     }
   ]
 }

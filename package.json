@@ -9,10 +9,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "pnpm run build:packages && pnpm run build:registry && next build",
-    "build:packages": "pnpm --filter @itzsa/table --filter @itzsa/nepali-input --filter @itzsa/editor --filter @itzsa/nepali-datepicker --filter @itzsa/nepal-geo-data --filter @itzsa/nepal-geo --filter @itzsa/bs-date --filter @itzsa/nrb-forex --filter @itzsa/nepal-pay run build",
+    "build:packages": "pnpm --filter @itzsa/table --filter @itzsa/nepali-input --filter @itzsa/editor --filter @itzsa/nepali-datepicker --filter @itzsa/nepal-geo-data --filter @itzsa/nepal-geo --filter @itzsa/bs-date --filter @itzsa/nrb-forex --filter @itzsa/nepal-pay --filter @itzsa/a11y-toolbar run build",
     "build:registry": "pnpm --filter registry run registry:build",
-    "typecheck:packages": "pnpm --filter @itzsa/table --filter @itzsa/nepali-input --filter @itzsa/editor --filter @itzsa/nepali-datepicker --filter @itzsa/nepal-geo-data --filter @itzsa/nepal-geo --filter @itzsa/bs-date --filter @itzsa/nrb-forex --filter @itzsa/nepal-pay run typecheck",
-    "test:packages": "pnpm --filter @itzsa/bs-date --filter @itzsa/nrb-forex --filter @itzsa/nepal-pay run test",
+    "typecheck:packages": "pnpm --filter @itzsa/table --filter @itzsa/nepali-input --filter @itzsa/editor --filter @itzsa/nepali-datepicker --filter @itzsa/nepal-geo-data --filter @itzsa/nepal-geo --filter @itzsa/bs-date --filter @itzsa/nrb-forex --filter @itzsa/nepal-pay --filter @itzsa/a11y-toolbar run typecheck",
+    "test:packages": "pnpm --filter @itzsa/bs-date --filter @itzsa/nrb-forex --filter @itzsa/nepal-pay --filter @itzsa/a11y-toolbar run test",
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write",
@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
+    "@itzsa/a11y-toolbar": "workspace:*",
     "@itzsa/bs-date": "workspace:*",
     "@itzsa/editor": "workspace:*",
     "@itzsa/nepal-geo": "workspace:*",

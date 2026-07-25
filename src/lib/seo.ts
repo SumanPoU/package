@@ -64,6 +64,13 @@ export const PACKAGE_ROUTES = [
     packageName: "@itzsa/nepal-pay",
   },
   {
+    path: "/a11y-toolbar",
+    title: "@itzsa/a11y-toolbar — Accessibility preference toolbar",
+    description:
+      "React accessibility tools panel — text size, contrast, spacing, motion, and related reading aids with localStorage persistence. Install with pnpm add @itzsa/a11y-toolbar.",
+    packageName: "@itzsa/a11y-toolbar",
+  },
+  {
     path: "/nepal-geo",
     title: "@itzsa/nepal-geo — Nepal geography selects",
     description:

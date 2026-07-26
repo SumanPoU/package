@@ -368,6 +368,11 @@
           "target": "components/itzsa/captcha/draw.ts"
         },
         {
+          "path": "registry/itzsa/captcha/errors.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/captcha/errors.ts"
+        },
+        {
           "path": "registry/itzsa/captcha/generate.ts",
           "type": "registry:component",
           "target": "components/itzsa/captcha/generate.ts"

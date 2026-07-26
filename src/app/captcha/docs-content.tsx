@@ -1,58 +1,76 @@
 "use client";
 
-import { Captcha, type CaptchaCharsetMode } from "@itzsa/captcha";
-import { useState } from "react";
+import {
+  Captcha,
+  type CaptchaCharsetMode,
+  type CaptchaHandle,
+} from "@itzsa/captcha";
+import { useRef, useState } from "react";
 
 import { CdnUrlList } from "@/components/cdn-url-list";
-import { CodeBlock } from "@/components/code-block";
 import { InstallCommand } from "@/components/install-command";
 
-const STARTER = `import { useRef, useState } from "react";
+import {
+  CHROME_PROPS,
+  CORE_PROPS,
+  HANDLE_ROWS,
+  VERIFY_PROPS,
+} from "./api-reference";
+import {
+  Callout,
+  CodeBlock,
+  DocSection,
+  DocsShell,
+  PropsTable,
+} from "./docs-ui";
+import { DOC_NAV } from "./nav";
+
+const MINIMAL = `import { useRef, useState } from "react";
 import { Captcha, type CaptchaHandle } from "@itzsa/captcha";
 
-export function FormGate() {
-  const ref = useRef<CaptchaHandle>(null);
-  const [ok, setOk] = useState(false);
+export function LoginGate() {
+  const captchaRef = useRef<CaptchaHandle>(null);
+  const [verified, setVerified] = useState(false);
+
+  function handleCaptchaVerified(valid: boolean) {
+    setVerified(valid);
+  }
+
+  function onSubmit() {
+    // Imperative check before submit
+    if (!captchaRef.current?.validate()) return;
+    // …submit form
+  }
 
   return (
     <>
-      <Captcha
-        ref={ref}
-        length={6}           // number of characters
-        charsetMode="both"   // "both" | "letters" | "numbers"
-        theme="system"
-        onVerified={setOk}
-      />
-      <button type="button" disabled={!ok}>
+      <Captcha ref={captchaRef} onVerified={handleCaptchaVerified} />
+      <button type="button" disabled={!verified} onClick={onSubmit}>
         Continue
       </button>
     </>
   );
 }`;
 
-const REGISTRY = `pnpm dlx shadcn@latest add https://itzsa.acharya-suman.com.np/r/captcha.json
-# → components/itzsa/captcha/… (includes components/ui/input.tsx)`;
+const SERVER = `const [apiError, setApiError] = useState<string | null>(null);
 
-const PROPS = [
-  ["length / chars", "number", "6", "How many characters (3–16)"],
-  [
-    "charsetMode",
-    '"both" | "letters" | "numbers"',
-    '"both"',
-    "Letters + digits, letters only, or digits only",
-  ],
-  ["caseSensitive", "boolean", "true", "Exact case (ignored for numbers)"],
-  ["theme", '"light" | "dark" | "system"', '"system"', "Canvas palette"],
-  ["noise", "number", "0.7", "Interference 0–1"],
-  ["width / height", "number", "210 / 62", "Canvas size"],
-  [
-    "onVerified",
-    "(valid: boolean) => void",
-    "—",
-    "When input length is complete",
-  ],
-  ["messages", "CaptchaMessages", "EN defaults", "Labels & status copy"],
-] as const;
+<Captcha
+  ref={captchaRef}
+  error={apiError}
+  maxAttempts={5}
+  verify={async ({ value, challengeId }) => {
+    const res = await fetch("/api/captcha/verify", {
+      method: "POST",
+      body: JSON.stringify({ value, challengeId }),
+    });
+    if (!res.ok) throw new Error("verify_failed"); // → onError + status "error"
+    return true;
+  }}
+  onError={(err) => console.warn(err.code, err.message)}
+  onVerified={handleCaptchaVerified}
+/>`;
+
+const REGISTRY = `pnpm dlx shadcn@latest add https://itzsa.acharya-suman.com.np/r/captcha.json`;
 
 const MODES: { id: CaptchaCharsetMode; label: string }[] = [
   { id: "both", label: "Both" },
@@ -61,154 +79,233 @@ const MODES: { id: CaptchaCharsetMode; label: string }[] = [
 ];
 
 export function DocsContent() {
+  const captchaRef = useRef<CaptchaHandle>(null);
   const [verified, setVerified] = useState(false);
   const [mode, setMode] = useState<CaptchaCharsetMode>("both");
   const [length, setLength] = useState(6);
+  const [demoError, setDemoError] = useState<string | null>(null);
+
+  function handleCaptchaVerified(valid: boolean) {
+    setVerified(valid);
+    if (valid) setDemoError(null);
+  }
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-12 px-6 py-16">
-      <header className="flex flex-col gap-3 border-b-[0.5px] border-border pb-8">
-        <p className="text-[11px] font-medium tracking-[0.16em] text-secondary uppercase">
-          Documentation · itzsa
-        </p>
-        <h1 className="text-3xl font-medium tracking-tight text-primary sm:text-4xl">
-          Captcha
-        </h1>
-        <p className="max-w-2xl text-base leading-relaxed text-secondary">
-          Canvas challenge with prop-driven length, charset mode (letters /
-          numbers / both), theme, and callbacks. Client-side friction only — not
-          a security boundary.
-        </p>
-        <div className="flex flex-wrap gap-2 pt-1 text-xs text-secondary">
-          <span className="pkg rounded-md border-[0.5px] border-border bg-card px-2 py-1 text-[12px]">
-            @itzsa/captcha
-          </span>
-          <span className="rounded-md border-[0.5px] border-border bg-card px-2 py-1">
-            registry → components/itzsa/captcha
-          </span>
-        </div>
-      </header>
-
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-medium text-primary">Live demo</h2>
-        <div className="flex flex-wrap items-center gap-3">
-          <fieldset
-            aria-label="Charset mode"
-            className="flex rounded-md border-[0.5px] border-border bg-card p-0.5"
-          >
-            {MODES.map((m) => (
-              <button
-                key={m.id}
-                type="button"
-                onClick={() => {
-                  setMode(m.id);
-                  setVerified(false);
-                }}
-                className={`rounded-sm px-2.5 py-1 text-xs transition-colors ${
-                  mode === m.id
-                    ? "bg-muted font-medium text-primary"
-                    : "text-secondary hover:text-primary"
-                }`}
-              >
-                {m.label}
-              </button>
-            ))}
-          </fieldset>
-          <label className="flex items-center gap-2 text-xs text-secondary">
-            Length
-            <input
-              type="range"
-              min={3}
-              max={10}
-              value={length}
-              onChange={(e) => {
-                setLength(Number(e.target.value));
-                setVerified(false);
-              }}
-              className="w-28"
-            />
-            <span className="tabular-nums text-primary">{length}</span>
-          </label>
-        </div>
-        <div className="rounded-md border-[0.5px] border-border bg-card p-5">
-          <Captcha
-            key={`${mode}-${length}`}
-            length={length}
-            charsetMode={mode}
-            theme="system"
-            noise={0.65}
-            onVerified={setVerified}
-            className="max-w-sm"
-          />
-          <p className="mt-3 text-sm text-secondary">
-            Status:{" "}
-            <span className="font-medium text-primary">
-              {verified ? "verified" : "not verified"}
-            </span>
+    <DocsShell>
+      <div className="flex flex-col gap-8 sm:gap-14">
+        <header
+          id="introduction"
+          className="scroll-mt-28 flex flex-col gap-3 border-b-[0.5px] border-border pb-6 sm:pb-8"
+        >
+          <p className="text-[11px] font-medium tracking-[0.16em] text-secondary uppercase">
+            Documentation · itzsa
           </p>
-        </div>
-      </section>
+          <h1 className="text-3xl font-medium tracking-tight text-primary sm:text-4xl">
+            Captcha
+          </h1>
+          <p className="max-w-2xl text-base leading-relaxed text-secondary">
+            Company-standard canvas captcha with{" "}
+            <code className="font-mono text-primary">ref</code> +{" "}
+            <code className="font-mono text-primary">onVerified</code>, attempt
+            limits, and structured API error props. Client friction only — pair
+            with a server check for sensitive flows.
+          </p>
+          <div className="flex flex-wrap gap-2 pt-1 text-xs text-secondary">
+            <span className="pkg rounded-md border-[0.5px] border-border bg-white px-2 py-1 text-[12px] dark:bg-card">
+              @itzsa/captcha
+            </span>
+            <span className="rounded-md border-[0.5px] border-border bg-white px-2 py-1 dark:bg-card">
+              registry → components/itzsa/captcha
+            </span>
+          </div>
+        </header>
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-medium text-primary">Installation</h2>
-        <InstallCommand packages="@itzsa/captcha" />
-        <p className="text-sm text-secondary">
-          Or copy from the itzsa registry:
-        </p>
-        <CodeBlock code={REGISTRY} language="bash" showPrompt />
-      </section>
+        <nav aria-label="Jump to" className="flex flex-wrap gap-2 lg:hidden">
+          {DOC_NAV.filter((n) => !n.indent).map((item) => (
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              className="rounded-md border-[0.5px] border-border bg-white px-2.5 py-1 text-xs text-secondary hover:text-accent dark:bg-card"
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-medium text-primary">Getting started</h2>
-        <CodeBlock code={STARTER} language="tsx" />
-      </section>
-
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-medium text-primary">Props</h2>
-        <div className="overflow-x-auto rounded-md border-[0.5px] border-border">
-          <table className="w-full min-w-[36rem] text-left text-sm">
-            <thead className="border-b-[0.5px] border-border bg-card text-xs tracking-wide text-secondary uppercase">
-              <tr>
-                <th className="px-3 py-2 font-medium">Prop</th>
-                <th className="px-3 py-2 font-medium">Type</th>
-                <th className="px-3 py-2 font-medium">Default</th>
-                <th className="px-3 py-2 font-medium">Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              {PROPS.map(([name, type, def, desc]) => (
-                <tr
-                  key={name}
-                  className="border-b-[0.5px] border-border last:border-0"
+        <DocSection
+          id="demo"
+          title="Live demo"
+          description="Same API as production — try charset mode, length, and a simulated bad API response."
+        >
+          <div className="flex flex-wrap items-center gap-3">
+            <fieldset
+              aria-label="Charset mode"
+              className="flex rounded-md border-[0.5px] border-border bg-white p-0.5 dark:bg-card"
+            >
+              {MODES.map((m) => (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => {
+                    setMode(m.id);
+                    setVerified(false);
+                    setDemoError(null);
+                  }}
+                  className={`rounded-sm px-2.5 py-1 text-xs transition-colors ${
+                    mode === m.id
+                      ? "bg-muted font-medium text-primary"
+                      : "text-secondary hover:text-primary"
+                  }`}
                 >
-                  <td className="px-3 py-2 font-mono text-[13px] text-accent">
-                    {name}
-                  </td>
-                  <td className="px-3 py-2 font-mono text-[12px] text-secondary">
-                    {type}
-                  </td>
-                  <td className="px-3 py-2 font-mono text-[12px] text-secondary">
-                    {def}
-                  </td>
-                  <td className="px-3 py-2 text-secondary">{desc}</td>
-                </tr>
+                  {m.label}
+                </button>
               ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+            </fieldset>
+            <label className="flex items-center gap-2 text-xs text-secondary">
+              Length
+              <input
+                type="range"
+                min={3}
+                max={10}
+                value={length}
+                onChange={(e) => {
+                  setLength(Number(e.target.value));
+                  setVerified(false);
+                  setDemoError(null);
+                }}
+                className="w-28"
+              />
+              <span className="tabular-nums text-primary">{length}</span>
+            </label>
+            <button
+              type="button"
+              className="rounded-md border-[0.5px] border-border bg-white px-2.5 py-1 text-xs text-secondary hover:text-primary dark:bg-card"
+              onClick={() =>
+                setDemoError("API error: captcha rejected by server (429).")
+              }
+            >
+              Simulate bad API
+            </button>
+          </div>
+          <div className="rounded-md border-[0.5px] border-border bg-white p-5 dark:bg-card">
+            <Captcha
+              key={`${mode}-${length}`}
+              ref={captchaRef}
+              length={length}
+              charsetMode={mode}
+              error={demoError}
+              onVerified={handleCaptchaVerified}
+              className="max-w-sm"
+            />
+            <p className="mt-3 text-sm text-secondary">
+              onVerified →{" "}
+              <span className="font-medium text-primary">
+                {verified ? "true" : "false"}
+              </span>
+              {" · "}
+              validate() →{" "}
+              <span className="font-medium text-primary">
+                {verified ? "true" : "false"}
+              </span>
+            </p>
+          </div>
+        </DocSection>
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-medium text-primary">Registry JSON</h2>
-        <CdnUrlList
-          assets={[
-            {
-              label: "captcha.json",
-              url: "https://itzsa.acharya-suman.com.np/r/captcha.json",
-            },
-          ]}
-        />
-      </section>
-    </main>
+        <DocSection
+          id="installation"
+          title="Installation"
+          description="npm package or copy-paste from the itzsa registry."
+        >
+          <InstallCommand packages="@itzsa/captcha" />
+          <CodeBlock code={REGISTRY} language="bash" showPrompt />
+        </DocSection>
+
+        <DocSection
+          id="getting-started"
+          title="Getting started"
+          description="Minimal usage is enough for most forms."
+        >
+          <DocSection
+            id="minimal"
+            level={3}
+            title="Minimal — ref + onVerified"
+            description="Yes: this pattern is fully supported. onVerified(true) when the answer is accepted; onVerified(false) on wrong input, refresh, or clear."
+          >
+            <CodeBlock code={MINIMAL} language="tsx" />
+            <Callout title="Checklist">
+              <ul className="mt-1 list-disc space-y-1 pl-4">
+                <li>
+                  <code className="font-mono text-primary">onVerified</code>{" "}
+                  updates UI (enable submit).
+                </li>
+                <li>
+                  <code className="font-mono text-primary">
+                    captchaRef.current?.validate()
+                  </code>{" "}
+                  before submit.
+                </li>
+                <li>
+                  Optional:{" "}
+                  <code className="font-mono text-primary">
+                    captchaRef.current?.refresh()
+                  </code>{" "}
+                  after a failed host API.
+                </li>
+              </ul>
+            </Callout>
+          </DocSection>
+
+          <DocSection
+            id="server-verify"
+            level={3}
+            title="Server verify / API errors"
+            description="Pass verify for async checks. Throw or return false on bad API calls — onError receives a CaptchaError. Use error for host-driven messages."
+          >
+            <CodeBlock code={SERVER} language="tsx" />
+          </DocSection>
+        </DocSection>
+
+        <DocSection
+          id="props"
+          title="Props"
+          description="Public surface of Captcha. Tables use a solid white background."
+        >
+          <div className="flex flex-col gap-10">
+            <DocSection id="props-core" level={3} title="Core">
+              <PropsTable caption="Core" rows={CORE_PROPS} />
+            </DocSection>
+            <DocSection id="props-verify" level={3} title="Verify & errors">
+              <PropsTable caption="Verify & errors" rows={VERIFY_PROPS} />
+            </DocSection>
+            <DocSection id="props-chrome" level={3} title="Chrome & styling">
+              <PropsTable caption="Chrome" rows={CHROME_PROPS} />
+            </DocSection>
+          </div>
+        </DocSection>
+
+        <DocSection
+          id="imperative"
+          title="Imperative API"
+          description="CaptchaHandle via ref — same object as captchaRef.current."
+        >
+          <PropsTable caption="CaptchaHandle" rows={HANDLE_ROWS} />
+        </DocSection>
+
+        <DocSection
+          id="registry"
+          title="Registry"
+          description="Installs under components/itzsa/captcha (nested components/ui)."
+        >
+          <CdnUrlList
+            assets={[
+              {
+                label: "captcha.json",
+                url: "https://itzsa.acharya-suman.com.np/r/captcha.json",
+              },
+            ]}
+          />
+        </DocSection>
+      </div>
+    </DocsShell>
   );
 }

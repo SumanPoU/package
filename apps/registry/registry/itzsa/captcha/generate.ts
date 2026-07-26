@@ -3,10 +3,17 @@ import type { CaptchaCharsetMode, CaptchaGenerateOptions } from "./types";
 const ALPHA_UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const ALPHA_LOWER = "abcdefghijklmnopqrstuvwxyz";
 const DIGITS = "0123456789";
+/** Look-alikes commonly excluded in enterprise captchas. */
+const AMBIGUOUS = "0O1lI";
 const LETTERS = ALPHA_UPPER + ALPHA_LOWER;
 const DEFAULT_CHARSET = LETTERS + DIGITS;
 
+function stripAmbiguous(pool: string): string {
+  return [...pool].filter((c) => !AMBIGUOUS.includes(c)).join("");
+}
+
 function pick(pool: string): string {
+  if (!pool.length) return "A";
   return pool[Math.floor(Math.random() * pool.length)] ?? "A";
 }
 
@@ -31,10 +38,18 @@ export function resolveCharsetMode(
   return mode ?? "both";
 }
 
-export function charsetForMode(mode: CaptchaCharsetMode): string {
-  if (mode === "letters") return LETTERS;
-  if (mode === "numbers") return DIGITS;
-  return DEFAULT_CHARSET;
+export function charsetForMode(
+  mode: CaptchaCharsetMode,
+  excludeAmbiguous = true,
+): string {
+  let pool =
+    mode === "letters"
+      ? LETTERS
+      : mode === "numbers"
+        ? DIGITS
+        : DEFAULT_CHARSET;
+  if (excludeAmbiguous) pool = stripAmbiguous(pool);
+  return pool;
 }
 
 /** Regex that strips disallowed input characters for a mode. */
@@ -50,15 +65,32 @@ export function defaultIdleHint(mode: CaptchaCharsetMode): string {
   return "Letters & numbers — match case exactly as shown";
 }
 
+export function createChallengeId(): string {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+  return `cap_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+}
+
 /**
  * Build a challenge string with guaranteed character classes when requested.
  */
 export function generateCaptcha(options: CaptchaGenerateOptions = {}): string {
   const length = normalizeCaptchaLength(options.length);
   const mode = resolveCharsetMode(options.charsetMode);
+  const excludeAmbiguous = options.excludeAmbiguous !== false;
+  const upperPool = excludeAmbiguous
+    ? stripAmbiguous(ALPHA_UPPER)
+    : ALPHA_UPPER;
+  const lowerPool = excludeAmbiguous
+    ? stripAmbiguous(ALPHA_LOWER)
+    : ALPHA_LOWER;
+  const digitPool = excludeAmbiguous ? stripAmbiguous(DIGITS) : DIGITS;
   const charset = options.charset?.length
-    ? options.charset
-    : charsetForMode(mode);
+    ? excludeAmbiguous
+      ? stripAmbiguous(options.charset)
+      : options.charset
+    : charsetForMode(mode, excludeAmbiguous);
 
   let requireDigit: number;
   let requireUpper: number;
@@ -84,11 +116,11 @@ export function generateCaptcha(options: CaptchaGenerateOptions = {}): string {
 
   const picks: string[] = [];
   if (mode !== "letters") {
-    for (let i = 0; i < requireDigit; i++) picks.push(pick(DIGITS));
+    for (let i = 0; i < requireDigit; i++) picks.push(pick(digitPool));
   }
   if (mode !== "numbers") {
-    for (let i = 0; i < requireUpper; i++) picks.push(pick(ALPHA_UPPER));
-    for (let i = 0; i < requireLower; i++) picks.push(pick(ALPHA_LOWER));
+    for (let i = 0; i < requireUpper; i++) picks.push(pick(upperPool));
+    for (let i = 0; i < requireLower; i++) picks.push(pick(lowerPool));
   }
 
   while (picks.length < length) {
@@ -108,4 +140,11 @@ export function verifyCaptcha(
   return input.toLowerCase() === expected.toLowerCase();
 }
 
-export { ALPHA_UPPER, ALPHA_LOWER, DIGITS, LETTERS, DEFAULT_CHARSET };
+export {
+  ALPHA_UPPER,
+  ALPHA_LOWER,
+  DIGITS,
+  LETTERS,
+  DEFAULT_CHARSET,
+  AMBIGUOUS,
+};

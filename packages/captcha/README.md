@@ -1,11 +1,11 @@
 # @itzsa/captcha
 
-Canvas captcha for React — configurable length, theme, noise, messages, and
-verification callbacks. Also installable from the **itzsa** shadcn registry
-into `components/itzsa/captcha` (nested UI under `components/ui`).
+Company-standard canvas captcha for React — length, charset mode, attempt
+limits, ambiguous-char exclusion, structured API errors, and optional async
+`verify`. Installable from npm or the **itzsa** shadcn registry
+(`components/itzsa/captcha`, nested `components/ui`).
 
-> **Not a security boundary.** This is client-side friction against casual bots.
-> Pair with server-side checks for anything sensitive.
+> **Not a security boundary alone.** Use `verify` / your API for sensitive flows.
 
 ## Install (npm)
 
@@ -20,26 +20,38 @@ import { Captcha, type CaptchaHandle } from "@itzsa/captcha";
 export function SignupForm() {
   const captchaRef = useRef<CaptchaHandle>(null);
   const [ok, setOk] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
 
   return (
     <form
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
+        setApiError(null);
         if (!captchaRef.current?.validate()) return;
-        // submit…
+        try {
+          await submitForm();
+        } catch {
+          setApiError("Server rejected the captcha.");
+          captchaRef.current.refresh();
+        }
       }}
     >
       <Captcha
         ref={captchaRef}
         length={6}
-        theme="system"
-        noise={0.7}
-        caseSensitive
-        onVerified={setOk}
-        messages={{
-          placeholder: "Enter captcha",
-          validHint: "Looks good",
+        charsetMode="both"
+        maxAttempts={5}
+        error={apiError}
+        verify={async ({ value, challengeId }) => {
+          const res = await fetch("/api/captcha/verify", {
+            method: "POST",
+            body: JSON.stringify({ value, challengeId }),
+          });
+          if (!res.ok) throw new Error("verify_failed");
+          return true;
         }}
+        onError={(err) => console.warn(err.code, err.message)}
+        onVerified={setOk}
       />
       <button type="submit" disabled={!ok}>
         Continue
@@ -55,32 +67,24 @@ export function SignupForm() {
 pnpm dlx shadcn@latest add https://itzsa.acharya-suman.com.np/r/captcha.json
 ```
 
-Copies source to `components/itzsa/captcha/…` including `components/ui/input.tsx`.
+## Key props
 
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `length` / `chars` | `number` | `6` | Number of captcha characters (3–16) |
-| `charsetMode` | `"both" \| "letters" \| "numbers"` | `"both"` | Letters+digits, letters only, or digits only |
-| `caseSensitive` | `boolean` | `true` | Exact case match (ignored for `numbers`) |
-| `requireDigit` / `requireUpper` / `requireLower` | `number` | mode defaults | Guaranteed character classes |
-| `charset` | `string` | from mode | Override character pool |
-| `width` / `height` | `number` | `210` / `62` | Canvas size |
-| `theme` | `"light" \| "dark" \| "system"` | `"system"` | Canvas colors |
-| `noise` | `number` | `0.7` | Interference 0–1 |
-| `onVerified` | `(valid: boolean) => void` | — | Fires when length is complete |
-| `onChange` / `onStatusChange` / `onRefresh` | callbacks | — | Input / status / refresh |
-| `value` / `defaultValue` | `string` | — | Controlled / uncontrolled input |
-| `messages` | `CaptchaMessages` | English defaults | Labels & hints |
-| `showRefresh` / `showCounter` / `showStatus` | `boolean` | `true` | Chrome toggles |
-| `className` / `canvasClassName` / `inputClassName` / `refreshClassName` | `string` | — | Styling hooks |
-| `inputProps` | `input` props | — | Forwarded to the text field |
-| `disabled` / `autoFocus` / `id` / `name` | — | — | Form helpers |
+| Prop | Default | Description |
+|------|---------|-------------|
+| `length` / `chars` | `6` | Character count (3–16) |
+| `charsetMode` | `"both"` | `"both"` \| `"letters"` \| `"numbers"` |
+| `excludeAmbiguous` | `true` | Drop 0/O/1/l/I |
+| `maxAttempts` | `5` | Lock after N failures |
+| `verify` | — | Async/server check — `false` or throw = bad API |
+| `error` | — | Controlled host/API error string |
+| `loading` | — | Controlled host loading |
+| `onError` | — | Structured `CaptchaError` (`invalid`, `network`, `timeout`, `max_attempts`, …) |
+| `onLock` | — | Fired when locked |
+| `autoRefreshOnInvalid` / `autoRefreshOnError` | `false` | Auto-new challenge |
 
 ## Imperative API (`ref`)
 
-`refresh()`, `reset()`, `getValue()`, `validate()`, `getStatus()`.
+`refresh()`, `reset()`, `unlock()`, `getValue()`, `getChallengeId()`, `validate()`, `getStatus()`, `getAttempts()`.
 
 ## Docs
 

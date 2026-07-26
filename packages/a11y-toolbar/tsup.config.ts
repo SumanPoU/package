@@ -13,7 +13,8 @@ export default defineConfig([
   {
     ...shared,
     entry: ["src/index.ts"],
-    clean: true,
+    // Avoid wiping dist while Next.dev is resolving the package (race → module-not-found).
+    clean: false,
     external: ["react", "react-dom", "react/jsx-runtime"],
     esbuildOptions(options) {
       // Must be first in the emitted file for Next.js client boundary.

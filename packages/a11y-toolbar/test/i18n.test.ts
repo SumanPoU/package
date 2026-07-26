@@ -114,6 +114,8 @@ describe("resolveLocaleFont", () => {
     expect(resolveLocaleFont("en")).toBe(DEFAULT_LOCALE_FONTS.en);
     expect(resolveLocaleFont("ne")).toContain("Poppins");
     expect(resolveLocaleFont("ne")).toContain("--font-poppins");
+    expect(resolveLocaleFont("en")).toContain("Noto Sans Devanagari");
+    expect(resolveLocaleFont("ne")).toContain("Noto Sans Devanagari");
   });
 
   it("lets theme.fontFamily force one stack for all locales", async () => {

@@ -4,8 +4,8 @@
  * `theme.fontFamilyByLocale` (per locale).
  */
 export const DEFAULT_LOCALE_FONTS = {
-  en: 'var(--font-outfit), "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif',
-  ne: 'var(--font-poppins), "Poppins", "Noto Sans Devanagari", "Noto Sans", system-ui, sans-serif',
+  en: 'var(--font-outfit), "Outfit", var(--font-noto-devanagari), "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", sans-serif',
+  ne: 'var(--font-poppins), "Poppins", var(--font-noto-devanagari), "Noto Sans Devanagari", "Noto Sans", system-ui, sans-serif',
 } as const;
 
 export type A11yLocaleFontMap = Record<string, string>;

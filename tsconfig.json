@@ -19,7 +19,10 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@itzsa/a11y-toolbar": ["./packages/a11y-toolbar/src/index.ts"],
+      "@itzsa/a11y-toolbar/headless": ["./packages/a11y-toolbar/src/headless.ts"],
+      "@itzsa/a11y-toolbar/styles.css": ["./packages/a11y-toolbar/src/styles.css"]
     }
   },
   "include": [

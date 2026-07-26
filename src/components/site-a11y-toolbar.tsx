@@ -18,8 +18,10 @@ export function SiteA11yToolbar() {
       locales={{ ne: NE_MESSAGES }}
       theme={{
         accent: "var(--accent)",
-        header: "var(--accent)",
-        headerForeground: "var(--accent-fg)",
+        // Header pair must clear 4.5:1 — do not reuse --accent / --accent-fg here
+        // (--accent #1d9e75 with --accent-fg #04342c ≈ 4.05:1).
+        header: "#15805f",
+        headerForeground: "#ffffff",
         icon: "var(--accent)",
         focusRing: "var(--accent-fg)",
         launcher: "var(--accent)",

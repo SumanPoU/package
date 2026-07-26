@@ -44,6 +44,96 @@ import "@itzsa/a11y-toolbar/styles.css";
 <A11yToolbar />
 ```
 
+## WordPress / CDN (minified drop-in)
+
+A minified IIFE bundles React so classic WordPress and static HTML sites
+only need two files:
+
+- `dist/a11y-toolbar.min.js` → global `ItzsaA11yToolbar`
+- `dist/a11y-toolbar.min.css`
+
+### CDN URLs (docs site)
+
+```
+https://itzsa.acharya-suman.com.np/cdn/a11y-toolbar/a11y-toolbar.min.css
+https://itzsa.acharya-suman.com.np/cdn/a11y-toolbar/a11y-toolbar.min.js
+```
+
+After publish, jsDelivr:
+
+```
+https://cdn.jsdelivr.net/npm/@itzsa/a11y-toolbar@VERSION/dist/a11y-toolbar.min.css
+https://cdn.jsdelivr.net/npm/@itzsa/a11y-toolbar@VERSION/dist/a11y-toolbar.min.js
+```
+
+### Plain HTML
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://itzsa.acharya-suman.com.np/cdn/a11y-toolbar/a11y-toolbar.min.css"
+    />
+  </head>
+  <body>
+    <main data-a11y-content>
+      <!-- your site content -->
+    </main>
+    <script src="https://itzsa.acharya-suman.com.np/cdn/a11y-toolbar/a11y-toolbar.min.js"></script>
+    <script>
+      ItzsaA11yToolbar.mount({
+        position: "bottom-center",
+        panelAlign: "left",
+        locales: { ne: ItzsaA11yToolbar.NE_MESSAGES },
+        // contentRoot: true, // optional — stamps data-a11y-content on <body>
+      });
+    </script>
+  </body>
+</html>
+```
+
+### WordPress (`functions.php`)
+
+```php
+add_action('wp_enqueue_scripts', function () {
+  $base = get_stylesheet_directory_uri() . '/vendor/itzsa-a11y';
+  wp_enqueue_style('itzsa-a11y', $base . '/a11y-toolbar.min.css', [], '0.0.0');
+  wp_enqueue_script('itzsa-a11y', $base . '/a11y-toolbar.min.js', [], '0.0.0', true);
+  wp_add_inline_script('itzsa-a11y', <<<'JS'
+ItzsaA11yToolbar.mount({
+  position: "bottom-right",
+  contentRoot: "main", // or true for document.body
+  theme: { header: "#15805f", headerForeground: "#ffffff" }
+});
+JS, 'after');
+});
+
+// FOUC in <head> — enqueue a tiny inline script early:
+add_action('wp_head', function () {
+  // Prefer printing getA11yFoucScript() output from a build step.
+  // Fallback: mark content root only (prefs apply after JS).
+}, 1);
+
+add_filter('body_class', function ($classes) {
+  // Ensure a content root if you use contentRoot: true in mount()
+  return $classes;
+});
+```
+
+Copy files from `node_modules/@itzsa/a11y-toolbar/dist/` after `pnpm add @itzsa/a11y-toolbar`
+(or from a GitHub release / CDN once published).
+
+API on the global:
+
+| Method | Description |
+| --- | --- |
+| `mount(options?)` | Render the toolbar (options = React props + `target` / `contentRoot`) |
+| `unmount()` | Remove the toolbar |
+| `getA11yFoucScript(storageKey?)` | Returns the FOUC inline script string |
+| `NE_MESSAGES` / `EN_MESSAGES` | Locale dictionaries |
+
 ## Props
 
 | Prop | Type | Default | Description |
@@ -137,8 +227,8 @@ Load the faces in the host app (`next/font`: `--font-outfit`, `--font-poppins`).
   locales={{ ne: NE_MESSAGES }}
   theme={{
     accent: "var(--accent)",
-    header: "var(--accent)",
-    headerForeground: "var(--accent-fg)",
+    header: "#15805f", // darker than accent — white text clears 4.5:1
+    headerForeground: "#ffffff",
     launcher: "#1d9e75",
     launcherForeground: "#ffffff",
     launcherRing: "#ffffff",

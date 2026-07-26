@@ -68,7 +68,9 @@ export type A11yToolbarTheme = {
   header?: string;
   /**
    * Header title + icon button color.
-   * Default `#04342c` — ≥4.5:1 on `#1d9e75` (white on brand green fails AA).
+   * Default `#ffffff` on header `#15805f` (~4.9:1) — AA for normal text.
+   * Do not pair `#ffffff` with brand accent `#1d9e75` (~3.4:1) or `#04342c` on
+   * `#1d9e75` (~4.05:1); both miss 4.5:1.
    */
   headerForeground?: string;
   /** Card / panel icon + step fill (defaults to accent). */
@@ -96,8 +98,9 @@ export type A11yToolbarTheme = {
 /** itzsa brand defaults (aligned with docs site `--accent` / `--accent-fg`). */
 export const DEFAULT_A11Y_THEME = {
   accent: "#1d9e75",
-  header: "#1d9e75",
-  headerForeground: "#04342c",
+  /** Darker than brand accent so white header text clears 4.5:1. */
+  header: "#15805f",
+  headerForeground: "#ffffff",
   focusRing: "#0b3d34",
   launcher: "#1d9e75",
   launcherForeground: "#ffffff",

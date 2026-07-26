@@ -16,17 +16,24 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "development": "./src/index.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js",
       "default": "./dist/index.mjs"
     },
     "./headless": {
       "types": "./dist/headless.d.ts",
+      "development": "./src/headless.ts",
       "import": "./dist/headless.mjs",
       "require": "./dist/headless.js",
       "default": "./dist/headless.mjs"
     },
-    "./styles.css": "./src/styles.css"
+    "./browser": {
+      "default": "./dist/a11y-toolbar.min.js"
+    },
+    "./styles.css": "./src/styles.css",
+    "./a11y-toolbar.min.css": "./dist/a11y-toolbar.min.css",
+    "./a11y-toolbar.min.js": "./dist/a11y-toolbar.min.js"
   },
   "publishConfig": {
     "access": "public"
@@ -39,7 +46,7 @@
     "BEHAVIOR.md"
   ],
   "scripts": {
-    "build": "tsup && node ./scripts/prepend-use-client.mjs",
+    "build": "node ./scripts/clean-dist.mjs && tsup && node ./scripts/prepend-use-client.mjs && tsup --config tsup.browser.ts && node ./scripts/minify-css.mjs && node ./scripts/sync-cdn.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -53,6 +60,7 @@
   "devDependencies": {
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "esbuild": "^0.25.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "tsup": "^8.5.0",
@@ -65,6 +73,8 @@
     "toolbar",
     "preferences",
     "react",
+    "wordpress",
+    "cdn",
     "itzsa"
   ],
   "homepage": "https://itzsa.acharya-suman.com.np/a11y-toolbar",

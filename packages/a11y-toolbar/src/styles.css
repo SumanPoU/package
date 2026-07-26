@@ -4,8 +4,8 @@
 
 :root {
   /* itzsa brand defaults — override via theme / accentColor props */
-  --itzsa-a11y-toolbar-header: #1d9e75;
-  --itzsa-a11y-toolbar-header-fg: #04342c;
+  --itzsa-a11y-toolbar-header: #15805f;
+  --itzsa-a11y-toolbar-header-fg: #ffffff;
   --itzsa-a11y-toolbar-bg: #e8eaef;
   --itzsa-a11y-toolbar-card: #f7f6f4;
   --itzsa-a11y-toolbar-fg: #1a1a1a;
@@ -287,7 +287,7 @@
 .itzsa-a11y-lang {
   display: inline-flex;
   align-items: center;
-  max-width: 7.5rem;
+  max-width: 9rem;
   margin-inline-end: 0.15rem;
 }
 .itzsa-a11y-lang-label {
@@ -313,11 +313,26 @@
     var(--itzsa-a11y-toolbar-header-fg) 10%,
     transparent
   );
+  /* Header chrome is light-on-dark; keep closed control readable */
   color: inherit;
-  font: inherit;
+  /*
+   * Always include a Devanagari face — locale names (नेपाली) must render even
+   * when the active chrome stack is Latin-only (Outfit / Poppins).
+   */
+  font-family:
+    var(--font-noto-devanagari), "Noto Sans Devanagari", "Noto Sans",
+    var(--itzsa-a11y-toolbar-font), system-ui, sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
+}
+/* Native <option> lists use a light OS surface — never inherit header white */
+.itzsa-a11y-lang-select option {
+  color: #1a1a1a;
+  background-color: #ffffff;
+  font-family:
+    var(--font-noto-devanagari), "Noto Sans Devanagari", "Noto Sans", system-ui,
+    sans-serif;
 }
 .itzsa-a11y-lang-select:focus-visible {
   outline: 3px solid var(--itzsa-a11y-toolbar-focus);

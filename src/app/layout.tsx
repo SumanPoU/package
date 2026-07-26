@@ -1,7 +1,12 @@
 import { getA11yFoucScript } from "@itzsa/a11y-toolbar/headless";
 import "@itzsa/a11y-toolbar/styles.css";
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Outfit, Poppins } from "next/font/google";
+import {
+  JetBrains_Mono,
+  Noto_Sans_Devanagari,
+  Outfit,
+  Poppins,
+} from "next/font/google";
 import { JsonLd } from "@/components/json-ld";
 import { SiteA11yToolbar } from "@/components/site-a11y-toolbar";
 import { SiteFooter } from "@/components/site-footer";
@@ -20,6 +25,13 @@ const outfit = Outfit({
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const notoDevanagari = Noto_Sans_Devanagari({
+  variable: "--font-noto-devanagari",
+  subsets: ["devanagari"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
 });
@@ -126,7 +138,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${outfit.variable} ${poppins.variable} ${jetbrainsMono.variable} dark h-full antialiased`}
+      className={`${outfit.variable} ${poppins.variable} ${notoDevanagari.variable} ${jetbrainsMono.variable} dark h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

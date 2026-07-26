@@ -12,6 +12,17 @@ control-behavior only.
 - Reset → one announcement: `Preferences reset`.
 - Toggles: stable accessible name + `aria-pressed` (APG Toggle Button).
 - Stepped: no fake `aria-valuenow` on buttons; visible level text + live region.
+- Panel `lang={locale}` when i18n is active (WCAG 3.1.2).
+- Language `<select>` options use dark text on a light surface (never inherit
+  header white) and a Devanagari-capable font stack so names like नेपाली render.
+
+## Open contrast / verify items (not closed by header-pair math alone)
+
+- **Header text pair** (`#ffffff` on `#15805f`, ~4.9:1 by sRGB math): confirm with
+  axe / browser contrast inspector on rendered pixels before treating as signed-off.
+- **Launcher `focus-visible` ring** (`--itzsa-a11y-toolbar-focus` / `#0b3d34`) against
+  arbitrary host backgrounds (esp. dark pages): still unresolved — non-text contrast
+  ≥3:1 (1.4.11) is host-dependent; track when running the open-panel axe pass.
 
 ## Effect values (`effect-values.ts`)
 

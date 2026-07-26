@@ -71,6 +71,13 @@ export const PACKAGE_ROUTES = [
     packageName: "@itzsa/a11y-toolbar",
   },
   {
+    path: "/captcha",
+    title: "@itzsa/captcha — Canvas captcha",
+    description:
+      "React canvas captcha with configurable length, theme, noise, and verification callbacks. Install with pnpm add @itzsa/captcha or the itzsa shadcn registry.",
+    packageName: "@itzsa/captcha",
+  },
+  {
     path: "/nepal-geo",
     title: "@itzsa/nepal-geo — Nepal geography selects",
     description:

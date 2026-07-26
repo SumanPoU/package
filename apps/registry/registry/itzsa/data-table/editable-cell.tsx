@@ -96,7 +96,6 @@ export function EditableCell({
         role="switch"
         aria-checked={checked}
         aria-label={ariaLabel}
-        autoFocus={autoFocus}
         className={cn(
           "flex h-8 w-full items-center justify-between border border-input bg-background px-2 text-xs",
           radiusClass,
@@ -157,7 +156,6 @@ export function EditableCell({
     return (
       <textarea
         aria-label={ariaLabel}
-        autoFocus={autoFocus}
         className={cn(
           "min-h-16 w-full resize-y border border-input bg-background px-2 py-1.5 text-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
           radiusClass,
@@ -184,7 +182,6 @@ export function EditableCell({
     <input
       type={editType === "number" ? "number" : "text"}
       aria-label={ariaLabel}
-      autoFocus={autoFocus}
       className={cn(inputClass, radiusClass)}
       value={stringValue}
       {...stop}

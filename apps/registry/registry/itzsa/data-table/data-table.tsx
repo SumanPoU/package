@@ -67,7 +67,6 @@ import {
   getColumnSizeStyle,
   getVisibleColumns,
   HIDE_BELOW_CLASS,
-  isColumnVisible,
   mergePageSizeOptions,
   normalizeSort,
   orderColumns,
@@ -753,7 +752,6 @@ export function DataTable<T>({
   }, [
     data,
     editing.getDisplayRow,
-    editing.rowOverrides,
     flattenedTreeRows,
     getRowId,
     isServer,
@@ -1583,7 +1581,7 @@ export function DataTable<T>({
               ) : (
                 <>
                   {virtualization.enabled && virtualization.paddingTop > 0 ? (
-                    <tr aria-hidden="true">
+                    <tr>
                       <td
                         colSpan={colSpan}
                         style={{
@@ -1857,7 +1855,7 @@ export function DataTable<T>({
                                     renderEditCell={
                                       column.renderEditCell
                                         ? (helpers) =>
-                                            column.renderEditCell!({
+                                            column.renderEditCell?.({
                                               ...helpers,
                                               row,
                                               field: column.key,
@@ -2045,7 +2043,7 @@ export function DataTable<T>({
 
                   {virtualization.enabled &&
                   virtualization.paddingBottom > 0 ? (
-                    <tr aria-hidden="true">
+                    <tr>
                       <td
                         colSpan={colSpan}
                         style={{

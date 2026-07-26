@@ -47,6 +47,12 @@ const PACKAGES = [
     blurb: "Site reading aids — size, contrast, motion.",
   },
   {
+    href: "/captcha",
+    name: "Captcha",
+    pkg: "@itzsa/captcha",
+    blurb: "Canvas captcha — npm or itzsa registry.",
+  },
+  {
     href: "/nepal-geo",
     name: "Nepal Geo",
     pkg: "@itzsa/nepal-geo",
@@ -223,6 +229,10 @@ export default function Home() {
           <div className="flex flex-col gap-2">
             <p className="text-[13px] text-secondary">Nepal Pay (headless)</p>
             <InstallCommand packages="@itzsa/nepal-pay" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-[13px] text-secondary">Captcha</p>
+            <InstallCommand packages="@itzsa/captcha" />
           </div>
           <div className="flex flex-col gap-2">
             <p className="text-[13px] text-secondary">Nepal Geo</p>

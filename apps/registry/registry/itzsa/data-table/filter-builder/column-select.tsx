@@ -136,7 +136,6 @@ export function FilterColumnSelect({
                 <input
                   type="search"
                   value={query}
-                  autoFocus
                   onChange={(event) => setQuery(event.target.value)}
                   onKeyDown={(event) => {
                     if (event.key === "Enter" && filtered[0]) {

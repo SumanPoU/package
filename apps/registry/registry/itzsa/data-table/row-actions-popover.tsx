@@ -103,7 +103,7 @@ export function RowActionsPopover<T>({
             })}
           >
             {hasActions && row !== undefined
-              ? actions!.map((action, index) => {
+              ? actions?.map((action, index) => {
                   const disabled = isRowActionDisabled(action, row);
                   return (
                     <button

@@ -1,7 +1,6 @@
 "use client";
 
 import { useVirtualizer } from "@tanstack/react-virtual";
-import * as React from "react";
 
 import type { DataTableDensity } from "./types";
 

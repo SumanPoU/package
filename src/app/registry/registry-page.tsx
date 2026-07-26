@@ -23,6 +23,14 @@ const ITEMS = [
       "TipTap rich text editor with Nepali input — synced from @itzsa/editor.",
     status: "ready" as const,
   },
+  {
+    name: "captcha",
+    title: "Captcha",
+    npm: "@itzsa/captcha",
+    description:
+      "Canvas captcha — installs to components/itzsa/captcha (with nested components/ui). Synced from @itzsa/captcha.",
+    status: "ready" as const,
+  },
 ] as const;
 
 function installUrl(origin: string, name: string) {

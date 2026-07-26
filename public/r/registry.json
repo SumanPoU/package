@@ -11,11 +11,13 @@
       "registryDependencies": [],
       "dependencies": [
         "@floating-ui/react",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-select",
+        "@radix-ui/react-slot",
         "@tanstack/react-virtual",
         "class-variance-authority",
         "clsx",
         "lucide-react",
-        "radix-ui",
         "tailwind-merge"
       ],
       "files": [
@@ -205,14 +207,185 @@
       "name": "editor",
       "type": "registry:component",
       "title": "Editor",
-      "description": "Rich text / block editor. Placeholder until packages/editor exists — prefer npm @itzsa/editor when published.",
+      "description": "TipTap rich text editor with Nepali Unicode/Preeti input and language guard. Source synced from @itzsa/editor.",
       "registryDependencies": [],
-      "dependencies": [],
+      "dependencies": [
+        "@itzsa/nepali-input",
+        "@tiptap/core",
+        "@tiptap/extension-character-count",
+        "@tiptap/extension-highlight",
+        "@tiptap/extension-image",
+        "@tiptap/extension-placeholder",
+        "@tiptap/extension-subscript",
+        "@tiptap/extension-superscript",
+        "@tiptap/extension-table",
+        "@tiptap/extension-table-cell",
+        "@tiptap/extension-table-header",
+        "@tiptap/extension-table-row",
+        "@tiptap/extension-task-item",
+        "@tiptap/extension-task-list",
+        "@tiptap/extension-text-align",
+        "@tiptap/extension-text-style",
+        "@tiptap/pm",
+        "@tiptap/react",
+        "@tiptap/starter-kit",
+        "clsx",
+        "lucide-react",
+        "tailwind-merge"
+      ],
       "files": [
         {
-          "path": "registry/itzsa/editor/editor.tsx",
+          "path": "registry/itzsa/editor/ColorPicker.tsx",
           "type": "registry:component",
-          "target": "components/itzsa/editor/editor.tsx"
+          "target": "components/itzsa/editor/ColorPicker.tsx"
+        },
+        {
+          "path": "registry/itzsa/editor/EditorToolbar.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/EditorToolbar.tsx"
+        },
+        {
+          "path": "registry/itzsa/editor/LanguageGuard.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/LanguageGuard.ts"
+        },
+        {
+          "path": "registry/itzsa/editor/LinkPopup.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/LinkPopup.tsx"
+        },
+        {
+          "path": "registry/itzsa/editor/MediaModal.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/MediaModal.tsx"
+        },
+        {
+          "path": "registry/itzsa/editor/NepaliInputExtension.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/NepaliInputExtension.ts"
+        },
+        {
+          "path": "registry/itzsa/editor/RichTextEditor.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/RichTextEditor.tsx"
+        },
+        {
+          "path": "registry/itzsa/editor/StatusBar.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/StatusBar.tsx"
+        },
+        {
+          "path": "registry/itzsa/editor/TableModal.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/TableModal.tsx"
+        },
+        {
+          "path": "registry/itzsa/editor/ToolbarButton.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/ToolbarButton.tsx"
+        },
+        {
+          "path": "registry/itzsa/editor/constants.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/constants.ts"
+        },
+        {
+          "path": "registry/itzsa/editor/index.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/index.ts"
+        },
+        {
+          "path": "registry/itzsa/editor/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "components/itzsa/editor/lib/utils.ts"
+        },
+        {
+          "path": "registry/itzsa/editor/locale.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/locale.ts"
+        },
+        {
+          "path": "registry/itzsa/editor/security.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/security.ts"
+        },
+        {
+          "path": "registry/itzsa/editor/settings.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/settings.ts"
+        },
+        {
+          "path": "registry/itzsa/editor/styles.css",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/styles.css"
+        },
+        {
+          "path": "registry/itzsa/editor/types.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/types.ts"
+        },
+        {
+          "path": "registry/itzsa/editor/upload.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/upload.ts"
+        },
+        {
+          "path": "registry/itzsa/editor/useEditorConfig.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/useEditorConfig.ts"
+        },
+        {
+          "path": "registry/itzsa/editor/video-extension.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/editor/video-extension.ts"
+        }
+      ]
+    },
+    {
+      "name": "captcha",
+      "type": "registry:component",
+      "title": "Captcha",
+      "description": "Canvas captcha with configurable length, theme, noise, and verification callbacks. Installs under components/itzsa/captcha (nested components/ui). Synced from @itzsa/captcha.",
+      "registryDependencies": [],
+      "dependencies": [
+        "clsx",
+        "tailwind-merge"
+      ],
+      "files": [
+        {
+          "path": "registry/itzsa/captcha/captcha.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/captcha/captcha.tsx"
+        },
+        {
+          "path": "registry/itzsa/captcha/components/ui/input.tsx",
+          "type": "registry:component",
+          "target": "components/itzsa/captcha/components/ui/input.tsx"
+        },
+        {
+          "path": "registry/itzsa/captcha/draw.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/captcha/draw.ts"
+        },
+        {
+          "path": "registry/itzsa/captcha/generate.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/captcha/generate.ts"
+        },
+        {
+          "path": "registry/itzsa/captcha/index.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/captcha/index.ts"
+        },
+        {
+          "path": "registry/itzsa/captcha/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "components/itzsa/captcha/lib/utils.ts"
+        },
+        {
+          "path": "registry/itzsa/captcha/types.ts",
+          "type": "registry:component",
+          "target": "components/itzsa/captcha/types.ts"
         }
       ]
     }

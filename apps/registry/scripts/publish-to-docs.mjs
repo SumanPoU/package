@@ -47,7 +47,12 @@ if (!monorepoRoot) {
 const docsPublicR = path.join(monorepoRoot, "public", "r");
 fs.mkdirSync(docsPublicR, { recursive: true });
 
-const keep = new Set(["data-table.json", "editor.json", "registry.json"]);
+const keep = new Set([
+  "data-table.json",
+  "editor.json",
+  "captcha.json",
+  "registry.json",
+]);
 
 for (const name of fs.readdirSync(registryPublicR)) {
   if (!keep.has(name)) continue;

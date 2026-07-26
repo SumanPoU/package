@@ -174,8 +174,14 @@ export const FILTER_INPUT_PLACEHOLDER: Partial<
 let filterConditionSeq = 0;
 
 export function createFilterConditionId(): string {
+  if (
+    typeof crypto !== "undefined" &&
+    typeof crypto.randomUUID === "function"
+  ) {
+    return `fc-${crypto.randomUUID()}`;
+  }
   filterConditionSeq += 1;
-  return `fc-${filterConditionSeq}`;
+  return `fc-${filterConditionSeq}-${Date.now().toString(36)}`;
 }
 
 export function titleCase(value: string): string {
@@ -193,7 +199,7 @@ export function makeFilterCondition(
   return {
     id: createFilterConditionId(),
     column: columns[0]?.value ?? "",
-    operator: FILTER_OPERATORS[0]!.value,
+    operator: FILTER_OPERATORS[0]?.value,
     value: "",
     logic,
   };
@@ -300,7 +306,7 @@ export function matchesFilterConditions<T>(
 }
 
 /** Map DataTable columns → filter-builder columns (filterable only). */
-export function toFilterBuilderColumns<T>(
+export function toFilterBuilderColumns<_T>(
   columns: Array<{
     key: string;
     header: string;

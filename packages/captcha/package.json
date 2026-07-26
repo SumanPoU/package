@@ -1,0 +1,69 @@
+{
+  "name": "@itzsa/captcha",
+  "version": "0.0.0",
+  "description": "Canvas captcha for React — configurable length, theme, noise, and verification callbacks",
+  "license": "MIT",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "pnpm run typecheck && pnpm run test && pnpm run build"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tsup": "^8.5.0",
+    "typescript": "^5",
+    "vitest": "^3.2.4"
+  },
+  "keywords": [
+    "captcha",
+    "canvas",
+    "react",
+    "verification",
+    "itzsa"
+  ],
+  "homepage": "https://itzsa.acharya-suman.com.np/captcha",
+  "bugs": {
+    "url": "https://github.com/SumanPoU/package/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SumanPoU/package.git",
+    "directory": "packages/captcha"
+  }
+}

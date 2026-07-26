@@ -22,7 +22,6 @@ import { FilterColumnSelect } from "./column-select";
 import { SmartValueInput } from "./smart-value-input";
 import type {
   FilterBuilderApplyPayload,
-  FilterBuilderColumn,
   FilterBuilderProps,
   FilterCondition,
   FilterLogic,

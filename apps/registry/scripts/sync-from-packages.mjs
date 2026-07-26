@@ -23,7 +23,6 @@ function findMonorepoRoot(startDir) {
     if (fs.existsSync(path.join(dir, "pnpm-workspace.yaml"))) {
       return dir;
     }
-    // Fallback: package.json with workspaces field
     const pkgPath = path.join(dir, "package.json");
     if (fs.existsSync(pkgPath)) {
       try {
@@ -46,8 +45,12 @@ const TABLE_SRC = monorepoRoot
 const EDITOR_SRC = monorepoRoot
   ? path.join(monorepoRoot, "packages", "editor", "src")
   : null;
+const CAPTCHA_SRC = monorepoRoot
+  ? path.join(monorepoRoot, "packages", "captcha", "src")
+  : null;
 const TABLE_DEST = path.join(registryRoot, "registry", "itzsa", "data-table");
 const EDITOR_DEST = path.join(registryRoot, "registry", "itzsa", "editor");
+const CAPTCHA_DEST = path.join(registryRoot, "registry", "itzsa", "captcha");
 
 const WORKSPACE_IMPORT =
   /from\s+["']@(?:itzsa|ss-components)\/|from\s+["']workspace:/;
@@ -114,43 +117,54 @@ function fileEntries(destDir, registryPrefix) {
   }));
 }
 
-function syncTable() {
-  const hasPackageSrc = TABLE_SRC && fs.existsSync(TABLE_SRC);
+function syncPackage({ name, src, dest, stub }) {
+  const hasPackageSrc = src && fs.existsSync(src);
 
   if (hasPackageSrc) {
-    rmrf(TABLE_DEST);
-    ensureDir(path.dirname(TABLE_DEST));
-    fs.cpSync(TABLE_SRC, TABLE_DEST, { recursive: true });
-    console.log(`[sync] data-table ← ${TABLE_SRC}`);
-  } else if (walkFiles(TABLE_DEST).length > 0) {
+    rmrf(dest);
+    ensureDir(path.dirname(dest));
+    fs.cpSync(src, dest, { recursive: true });
+    console.log(`[sync] ${name} ← ${src}`);
+    const workspaceHits = scanWorkspaceImports(dest);
+    if (workspaceHits.length > 0) {
+      console.warn(
+        `\n[REGISTRY NOTE] ${name} has workspace-only imports — flatten before shipping:`,
+      );
+      for (const h of workspaceHits) console.warn(`  - ${h}`);
+    } else {
+      console.log(`[sync] ${name}: no workspace-only imports (OK)`);
+    }
+    return fileEntries(dest, `registry/itzsa/${name}`);
+  }
+
+  if (walkFiles(dest).length > 0) {
     console.warn(
-      `[sync] packages/table/src not found` +
-        (TABLE_SRC
-          ? ` at ${TABLE_SRC} (monorepo root: ${monorepoRoot})`
+      `[sync] packages/${name}/src not found` +
+        (src
+          ? ` at ${src} (monorepo root: ${monorepoRoot})`
           : ` (no monorepo root from ${__dirname})`) +
-        `\n  Reusing committed ${TABLE_DEST}`,
+        `\n  Reusing committed ${dest}`,
     );
-  } else {
-    throw new Error(
-      `Missing table package source` +
-        (TABLE_SRC
-          ? `: ${TABLE_SRC} (resolved from monorepo root: ${monorepoRoot})`
-          : ` and no monorepo root found walking up from ${__dirname}`) +
-        `\nAlso no committed files under ${TABLE_DEST}`,
-    );
+    return fileEntries(dest, `registry/itzsa/${name}`);
   }
 
-  const workspaceHits = scanWorkspaceImports(TABLE_DEST);
-  if (workspaceHits.length > 0) {
+  if (stub) {
     console.warn(
-      "\n[REGISTRY NOTE] data-table has workspace-only imports — needs a registry-friendly flatten before shipping:",
+      `\n[REGISTRY NOTE] packages/${name}/src does not exist yet.\n` +
+        `  Writing a stub under registry/itzsa/${name}.\n`,
     );
-    for (const h of workspaceHits) console.warn(`  - ${h}`);
-  } else {
-    console.log("[sync] data-table: no workspace-only imports (OK)");
+    ensureDir(dest);
+    fs.writeFileSync(path.join(dest, stub.filename), stub.content, "utf8");
+    return fileEntries(dest, `registry/itzsa/${name}`);
   }
 
-  return fileEntries(TABLE_DEST, "registry/itzsa/data-table");
+  throw new Error(
+    `Missing ${name} package source` +
+      (src
+        ? `: ${src} (resolved from monorepo root: ${monorepoRoot})`
+        : ` and no monorepo root found walking up from ${__dirname}`) +
+      `\nAlso no committed files under ${dest}`,
+  );
 }
 
 const EDITOR_STUB = `/**
@@ -189,44 +203,12 @@ export function Editor({ className, placeholder = "Editor coming soon…" }: Edi
 }
 `;
 
-function syncEditor() {
-  ensureDir(path.dirname(EDITOR_DEST));
-  const hasPackageSrc = EDITOR_SRC && fs.existsSync(EDITOR_SRC);
-
-  if (hasPackageSrc) {
-    rmrf(EDITOR_DEST);
-    fs.cpSync(EDITOR_SRC, EDITOR_DEST, { recursive: true });
-    console.log(`[sync] editor ← ${EDITOR_SRC}`);
-    const workspaceHits = scanWorkspaceImports(EDITOR_DEST);
-    if (workspaceHits.length > 0) {
-      console.warn(
-        "\n[REGISTRY NOTE] editor has workspace-only imports — flatten before shipping:",
-      );
-      for (const h of workspaceHits) console.warn(`  - ${h}`);
-    }
-    return fileEntries(EDITOR_DEST, "registry/itzsa/editor");
-  }
-
-  if (walkFiles(EDITOR_DEST).length === 0) {
-    console.warn(
-      "\n[REGISTRY NOTE] packages/editor/src does not exist yet.\n" +
-        "  Writing a stub under registry/itzsa/editor.\n",
-    );
-    ensureDir(EDITOR_DEST);
-    fs.writeFileSync(path.join(EDITOR_DEST, "editor.tsx"), EDITOR_STUB, "utf8");
-  } else {
-    console.log(`[sync] editor: reusing committed ${EDITOR_DEST}`);
-  }
-
-  return fileEntries(EDITOR_DEST, "registry/itzsa/editor");
-}
-
-function readTableDeps() {
+function readDeps(packageDirName, itemName = packageDirName, fallback = []) {
   if (monorepoRoot) {
     const pkgPath = path.join(
       monorepoRoot,
       "packages",
-      "table",
+      packageDirName,
       "package.json",
     );
     if (fs.existsSync(pkgPath)) {
@@ -234,29 +216,20 @@ function readTableDeps() {
       return Object.keys(pkg.dependencies ?? {}).sort();
     }
   }
-  // Prefer deps already recorded in registry.json
   const existing = path.join(registryRoot, "registry.json");
   if (fs.existsSync(existing)) {
     try {
       const reg = JSON.parse(fs.readFileSync(existing, "utf8"));
-      const item = reg.items?.find((i) => i.name === "data-table");
+      const item = reg.items?.find((i) => i.name === itemName);
       if (item?.dependencies?.length) return item.dependencies;
     } catch {
       /* fall through */
     }
   }
-  return TABLE_DEPS_FALLBACK;
+  return fallback;
 }
 
-function readEditorDeps() {
-  if (!monorepoRoot) return [];
-  const pkgPath = path.join(monorepoRoot, "packages", "editor", "package.json");
-  if (!fs.existsSync(pkgPath)) return [];
-  const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
-  return Object.keys(pkg.dependencies ?? {}).sort();
-}
-
-function writeRegistryJson(tableFiles, editorFiles) {
+function writeRegistryJson(tableFiles, editorFiles, captchaFiles) {
   const registry = {
     $schema: "https://ui.shadcn.com/schema/registry.json",
     name: "itzsa",
@@ -269,7 +242,7 @@ function writeRegistryJson(tableFiles, editorFiles) {
         description:
           "Composable data table with sorting, pagination, filtering, row selection, editing, export, tree/detail panels, and server/client modes. Source synced from @itzsa/table.",
         registryDependencies: [],
-        dependencies: readTableDeps(),
+        dependencies: readDeps("table", "data-table", TABLE_DEPS_FALLBACK),
         files: tableFiles,
       },
       {
@@ -279,8 +252,18 @@ function writeRegistryJson(tableFiles, editorFiles) {
         description:
           "TipTap rich text editor with Nepali Unicode/Preeti input and language guard. Source synced from @itzsa/editor.",
         registryDependencies: [],
-        dependencies: readEditorDeps(),
+        dependencies: readDeps("editor", "editor"),
         files: editorFiles,
+      },
+      {
+        name: "captcha",
+        type: "registry:component",
+        title: "Captcha",
+        description:
+          "Canvas captcha with configurable length, theme, noise, and verification callbacks. Installs under components/itzsa/captcha (nested components/ui). Synced from @itzsa/captcha.",
+        registryDependencies: [],
+        dependencies: readDeps("captcha", "captcha"),
+        files: captchaFiles,
       },
     ],
   };
@@ -289,7 +272,7 @@ function writeRegistryJson(tableFiles, editorFiles) {
   fs.writeFileSync(outPath, `${JSON.stringify(registry, null, 2)}\n`, "utf8");
   console.log(`[sync] wrote ${outPath}`);
   console.log(
-    `[sync] root=${monorepoRoot ?? "(standalone registry)"} data-table=${tableFiles.length} editor=${editorFiles.length}`,
+    `[sync] root=${monorepoRoot ?? "(standalone registry)"} data-table=${tableFiles.length} editor=${editorFiles.length} captcha=${captchaFiles.length}`,
   );
 }
 
@@ -299,7 +282,21 @@ console.log(
   `[sync] monorepo root=${monorepoRoot ?? "(not found — standalone mode)"}`,
 );
 
-const tableFiles = syncTable();
-const editorFiles = syncEditor();
-writeRegistryJson(tableFiles, editorFiles);
+const tableFiles = syncPackage({
+  name: "data-table",
+  src: TABLE_SRC,
+  dest: TABLE_DEST,
+});
+const editorFiles = syncPackage({
+  name: "editor",
+  src: EDITOR_SRC,
+  dest: EDITOR_DEST,
+  stub: { filename: "editor.tsx", content: EDITOR_STUB },
+});
+const captchaFiles = syncPackage({
+  name: "captcha",
+  src: CAPTCHA_SRC,
+  dest: CAPTCHA_DEST,
+});
+writeRegistryJson(tableFiles, editorFiles, captchaFiles);
 console.log("[sync] done");

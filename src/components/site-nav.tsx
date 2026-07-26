@@ -15,6 +15,7 @@ const LINKS = [
   { href: "/nrb-forex", label: "NRB Forex" },
   { href: "/nepal-pay", label: "Nepal Pay" },
   { href: "/a11y-toolbar", label: "A11y Toolbar" },
+  { href: "/captcha", label: "Captcha" },
   { href: "/nepal-geo", label: "Nepal Geo" },
   { href: "/editor", label: "Editor" },
   { href: "/registry", label: "Registry" },

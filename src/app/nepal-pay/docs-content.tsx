@@ -5,6 +5,8 @@ import { InstallCommand } from "@/components/install-command";
 
 import {
   CONFIG_ROWS,
+  CONNECTIPS_FORM_ROWS,
+  CONNECTIPS_STATUS_ROWS,
   ERROR_ROWS,
   ESEWA_STATUS_ROWS,
   GATEWAY_API,
@@ -27,9 +29,18 @@ import {
   STATE_MACHINE_DEMO_CODE,
   StateMachineDemo,
 } from "./examples";
-import { ArrowFlow, ESEWA_FLOW_STEPS, KHALTI_FLOW_STEPS } from "./flow-diagram";
+import {
+  ArrowFlow,
+  CONNECTIPS_FLOW_STEPS,
+  GatewayComparisonTable,
+  GatewayFlowCompare,
+} from "./flow-diagram";
 import { DOC_NAV } from "./nav";
 import {
+  CONNECTIPS_CALLBACK,
+  CONNECTIPS_INITIATE_SUCCESS,
+  CONNECTIPS_VALIDATE_REQUEST,
+  CONNECTIPS_VALIDATE_SUCCESS,
   ESEWA_CALLBACK_SUCCESS,
   ESEWA_INITIATE_SUCCESS,
   ESEWA_SIGNATURE_MISMATCH,
@@ -63,6 +74,14 @@ const pay = createNepalPay({
   },
   khalti: {
     secretKey: process.env.KHALTI_SECRET!,
+  },
+  connectips: {
+    merchantId: process.env.CONNECTIPS_MERCHANT_ID!,
+    appId: process.env.CONNECTIPS_APP_ID!,
+    appName: process.env.CONNECTIPS_APP_NAME!,
+    password: process.env.CONNECTIPS_PASSWORD!,
+    pfx: process.env.CONNECTIPS_PFX_BASE64!,
+    pfxPassword: process.env.CONNECTIPS_PFX_PASSWORD!,
   },
 });
 
@@ -99,6 +118,33 @@ const html = \`<!doctype html><html><body>
 </form>
 <script>document.getElementById("esewa").submit()</script>
 </body></html>\`;`;
+
+const CONNECTIPS_FORM = `const connectips = pay.gateway("connectips");
+const service = createPaymentService(connectips, store, {
+  successUrl: "https://example.com/pay/success",
+  failureUrl: "https://example.com/pay/failed",
+});
+
+const { initiate } = await service.start({
+  amount: 10.5, // → 1050 paisa in TXNAMT
+  orderId: "order-42",
+  orderName: "Pro plan",
+  returnUrl: "https://example.com/pay/connectips/return", // NCHL registers static URLs
+  websiteUrl: "https://example.com",
+});
+
+// Same HTML form POST pattern as eSewa (loginpage)
+const html = \`<!doctype html><html><body>
+<form id="cips" action="\${initiate.redirectUrl}" method="POST">
+\${Object.entries(initiate.formFields!)
+  .map(([k, v]) => \`<input type="hidden" name="\${k}" value="\${v}" />\`)
+  .join("")}
+</form>
+<script>document.getElementById("cips").submit()</script>
+</body></html>\`;
+
+// Return URL gets ?TXNID=… only — always call verify() / handleReturn
+// Point NCHL failure URL at …/return?outcome=failure`;
 
 const KHALTI_REDIRECT = `const { initiate } = await service.start({
   amount: 10.5,          // → 1050 paisa inside KhaltiGateway
@@ -200,7 +246,7 @@ const store = new PrismaPaymentStore(prisma);
 
 const ARCH = `packages/nepal-pay/src
   core/          types, errors, state machine, amount helpers
-  gateways/      esewa/ · khalti/  (+ future folders)
+  gateways/      esewa/ · khalti/ · connectips/
   registry/      registerGateway() for plugins
   store/         PaymentStore + Memory + Prisma reference
   flow/          PaymentService orchestrator
@@ -223,9 +269,9 @@ export function DocsContent() {
             Nepal Pay
           </h1>
           <p className="max-w-2xl text-base leading-relaxed text-secondary">
-            Unified TypeScript SDK for eSewa (ePay v2) and Khalti (KPG-2).
-            Server-side verification is mandatory — a browser redirect is never
-            treated as proof of payment.
+            Unified TypeScript SDK for eSewa (ePay v2), Khalti (KPG-2), and
+            connectIPS (NCHL). Server-side verification is mandatory — a browser
+            redirect is never treated as proof of payment.
           </p>
           <div className="flex flex-wrap gap-2 pt-1 text-xs text-secondary">
             <span className="pkg rounded-md border-[0.5px] border-border bg-card px-2 py-1 text-[12px]">
@@ -242,9 +288,9 @@ export function DocsContent() {
             </span>
           </div>
           <Callout title="Unofficial">
-            Not affiliated with or endorsed by eSewa (F1Soft) or Khalti.
-            Merchant agreements and credentials stay between you and the
-            providers.{" "}
+            Not affiliated with or endorsed by eSewa (F1Soft), Khalti, or
+            NCHL/connectIPS. Merchant agreements and credentials stay between
+            you and the providers.{" "}
             <a
               href="http://developer.esewa.com.np/pages/Epay"
               target="_blank"
@@ -262,7 +308,8 @@ export function DocsContent() {
             >
               Khalti docs
             </a>
-            .
+            {" · "}
+            connectIPS Process Interface Doc v5.1.
           </Callout>
         </header>
 
@@ -297,28 +344,32 @@ export function DocsContent() {
         <DocSection
           id="playground"
           title="Test forms"
-          description="One checkout form for both gateways — same fields, arrow flow, full code always visible, then pay → return → verify."
+          description="One checkout form for eSewa, Khalti, and connectIPS — same fields, per-gateway arrow flow, full code always visible, then draft → pay → return → verify."
         >
           <Callout title="Complete a transaction">
-            Pick <strong className="font-medium text-primary">eSewa</strong> or{" "}
-            <strong className="font-medium text-primary">Khalti</strong>, fill
-            the form, generate/initiate, then follow the pay button. Returns
-            land on{" "}
-            <code className="font-mono text-primary">/nepal-pay/return</code>{" "}
-            (eSewa) or{" "}
+            Pick <strong className="font-medium text-primary">eSewa</strong>,{" "}
+            <strong className="font-medium text-primary">Khalti</strong>, or{" "}
+            <strong className="font-medium text-primary">connectIPS</strong>,
+            fill the form, generate/draft/initiate, then follow the pay or
+            simulate button. Returns land on{" "}
+            <code className="font-mono text-primary">/nepal-pay/return</code>,{" "}
             <code className="font-mono text-primary">
               /nepal-pay/khalti-return
+            </code>
+            , or{" "}
+            <code className="font-mono text-primary">
+              /nepal-pay/connectips-return
             </code>{" "}
-            (Khalti) for server-side verify. Khalti mock mode still runs the
-            full return → lookup path; paste a sandbox secret and uncheck mock
-            for a live payment page.
+            for server-side verify. connectIPS mock mode builds a real
+            RSA-signed form payload, then simulates{" "}
+            <code className="font-mono text-primary">validatetxn SUCCESS</code>.
           </Callout>
 
           <DocSection
             id="playground-checkout"
             level={3}
             title="Unified checkout"
-            description="Name, amount, reference, URLs, tax/service/delivery, gateway toggle — matches a real merchant form."
+            description="Name, amount, reference, URLs, tax/service/delivery, gateway toggle — draft payment + payload for each rail."
           >
             <UnifiedCheckoutForm />
             <p className="mt-3 text-[11px] font-medium tracking-wide text-tertiary uppercase">
@@ -330,19 +381,19 @@ export function DocsContent() {
           <DocSection
             id="playground-diagrams"
             level={3}
-            title="Flow comparison"
-            description="Arrow paths for both gateways."
+            title="Flow diagrams"
+            description="Six phases each: draft → sign/initiate → pay → return → verify. Text stays inside the white cards."
           >
-            <div className="grid gap-4 lg:grid-cols-2">
-              <div className="flex flex-col gap-2">
-                <p className="text-[13px] font-medium text-primary">eSewa</p>
-                <ArrowFlow steps={ESEWA_FLOW_STEPS} />
-              </div>
-              <div className="flex flex-col gap-2">
-                <p className="text-[13px] font-medium text-primary">Khalti</p>
-                <ArrowFlow steps={KHALTI_FLOW_STEPS} />
-              </div>
-            </div>
+            <GatewayFlowCompare />
+          </DocSection>
+
+          <DocSection
+            id="playground-compare"
+            level={3}
+            title="Gateway comparison"
+            description="Same ideas side-by-side — what a layman cares about under each technical row."
+          >
+            <GatewayComparisonTable />
           </DocSection>
         </DocSection>
 
@@ -429,6 +480,31 @@ export function DocsContent() {
           </DocSection>
 
           <DocSection
+            id="responses-connectips"
+            level={3}
+            title="connectIPS payloads"
+            description="Draft form (RSA TOKEN), callback TXNID, validatetxn request/response."
+          >
+            <p className="text-[13px] font-medium text-primary">
+              Good — draft initiate (form + TOKEN message)
+            </p>
+            <CodeBlock code={CONNECTIPS_INITIATE_SUCCESS} />
+            <p className="text-[13px] font-medium text-primary">
+              Info — callback (?TXNID= only — untrusted)
+            </p>
+            <CodeBlock code={CONNECTIPS_CALLBACK} />
+            <p className="text-[13px] font-medium text-primary">
+              Request — validatetxn body
+            </p>
+            <CodeBlock code={CONNECTIPS_VALIDATE_REQUEST} />
+            <p className="text-[13px] font-medium text-primary">
+              Good — validatetxn SUCCESS (deliver service)
+            </p>
+            <CodeBlock code={CONNECTIPS_VALIDATE_SUCCESS} />
+            <PropsTable rows={CONNECTIPS_STATUS_ROWS} nameHeader="Status" />
+          </DocSection>
+
+          <DocSection
             id="responses-sdk"
             level={3}
             title="SDK results & errors"
@@ -476,14 +552,15 @@ export function DocsContent() {
             id="amounts"
             level={3}
             title="Amount units"
-            description="Public API is always NPR decimal. Khalti paisa conversion is internal."
+            description="Public API is always NPR decimal. Paisa conversion for Khalti / connectIPS is internal."
           >
             <Callout title="100× bug">
-              eSewa uses NPR decimals. Khalti uses paisa (NPR × 100). Passing{" "}
+              eSewa uses NPR decimals. Khalti and connectIPS use paisa (NPR ×
+              100). Passing{" "}
               <code className="font-mono text-primary">10.50</code> to{" "}
               <code className="font-mono text-primary">initiate</code> sends{" "}
               <code className="font-mono text-primary">1050</code> paisa to
-              Khalti — never ask your app code to convert.
+              those gateways — never ask your app code to convert.
             </Callout>
           </DocSection>
 
@@ -554,6 +631,14 @@ export function DocsContent() {
 
           <DocSection id="example-khalti" level={3} title="Khalti redirect">
             <CodeBlock code={KHALTI_REDIRECT} />
+          </DocSection>
+
+          <DocSection
+            id="example-connectips"
+            level={3}
+            title="connectIPS form POST"
+          >
+            <CodeBlock code={CONNECTIPS_FORM} />
           </DocSection>
 
           <DocSection id="example-return" level={3} title="Return URL handler">
@@ -661,6 +746,220 @@ export function DocsContent() {
 
           <DocSection id="khalti-lookup" level={3} title="Lookup mapping">
             <PropsTable rows={KHALTI_STATUS_ROWS} nameHeader="Gateway status" />
+          </DocSection>
+        </DocSection>
+
+        <DocSection
+          id="connectips"
+          title="connectIPS (NCHL)"
+          description="Bank / wallet payments via Nepal Clearing House. Same safety rule as the others: a browser redirect is never proof of payment."
+        >
+          <DocSection
+            id="connectips-overview"
+            level={3}
+            title="In plain words"
+            description="For product owners and first-time integrators."
+          >
+            <ol className="list-decimal space-y-2 pl-5 text-sm leading-relaxed text-secondary">
+              <li>
+                <span className="font-medium text-primary">You draft</span> an
+                order on your server (amount, order id, remarks).
+              </li>
+              <li>
+                <span className="font-medium text-primary">You seal it</span>{" "}
+                with a digital signature (RSA TOKEN) so NCHL knows the request
+                is really from your merchant app.
+              </li>
+              <li>
+                <span className="font-medium text-primary">
+                  The customer pays
+                </span>{" "}
+                on the connectIPS / bank page after an HTML form POST.
+              </li>
+              <li>
+                <span className="font-medium text-primary">They come back</span>{" "}
+                to your site with only a transaction id (
+                <code className="font-mono text-primary">TXNID</code>) — anyone
+                could fake that URL.
+              </li>
+              <li>
+                <span className="font-medium text-primary">You ask NCHL</span>{" "}
+                “did this payment succeed?” via{" "}
+                <code className="font-mono text-primary">validatetxn</code>.
+                Only <code className="font-mono text-primary">SUCCESS</code>{" "}
+                means deliver the product.
+              </li>
+            </ol>
+            <Callout title="Who needs what from NCHL">
+              After onboarding you receive merchant id, app id, app name, app
+              password, and a{" "}
+              <code className="font-mono text-primary">CREDITOR.pfx</code>{" "}
+              certificate. Register static success and failure URLs with NCHL
+              (they cannot be changed per payment like eSewa’s success_url).
+            </Callout>
+          </DocSection>
+
+          <DocSection
+            id="connectips-phases"
+            level={3}
+            title="Each phase"
+            description="What happens, who does it, and what you store."
+          >
+            <div className="flex flex-col gap-4">
+              <div className="min-w-0 overflow-hidden rounded-lg border-[0.5px] border-border bg-card p-4 dark:bg-card">
+                <p className="text-[13px] font-medium text-primary">
+                  Phase 1 — Draft payment
+                </p>
+                <p className="mt-1 text-sm leading-relaxed break-words text-secondary">
+                  Start from NPR in your checkout (example: Rs. 10.50). The SDK
+                  converts to paisa for{" "}
+                  <code className="font-mono text-primary">TXNAMT</code> (1050).
+                  Create a unique{" "}
+                  <code className="font-mono text-primary">TXNID</code> (≤ 20
+                  characters) — this is your{" "}
+                  <code className="font-mono text-primary">providerRef</code>.
+                  Set <code className="font-mono text-primary">TXNDATE</code> to
+                  today as{" "}
+                  <code className="font-mono text-primary">DD-MM-YYYY</code>.
+                  Persist a pending row in your DB keyed by that TXNID before
+                  sending the customer away.
+                </p>
+              </div>
+              <div className="min-w-0 overflow-hidden rounded-lg border-[0.5px] border-border bg-card p-4 dark:bg-card">
+                <p className="text-[13px] font-medium text-primary">
+                  Phase 2 — Build the TOKEN
+                </p>
+                <p className="mt-1 text-sm leading-relaxed break-words text-secondary">
+                  Concatenate the login fields in the documented order,
+                  separated by commas with{" "}
+                  <span className="font-medium text-primary">no spaces</span>,
+                  and end with{" "}
+                  <code className="font-mono text-primary">TOKEN=TOKEN</code>.
+                  Sign that string with your private key (SHA256withRSA) and
+                  Base64-encode the result. That value is the form’s{" "}
+                  <code className="font-mono text-primary">TOKEN</code> field.
+                  Prefer exporting PEM from the PFX once; the playground can
+                  draft a mock-signed payload without NCHL.
+                </p>
+              </div>
+              <div className="min-w-0 overflow-hidden rounded-lg border-[0.5px] border-border bg-card p-4 dark:bg-card">
+                <p className="text-[13px] font-medium text-primary">
+                  Phase 3 — HTML form POST (loginpage)
+                </p>
+                <p className="mt-1 text-sm leading-relaxed break-words text-secondary">
+                  Same pattern as eSewa: render a hidden form and auto-submit to{" "}
+                  <code className="font-mono text-primary [overflow-wrap:anywhere]">
+                    …/connectipswebgw/loginpage
+                  </code>
+                  . Do not turn this into a GET. UAT host:{" "}
+                  <code className="font-mono text-primary [overflow-wrap:anywhere]">
+                    https://uat.connectips.com
+                  </code>
+                  .
+                </p>
+              </div>
+              <div className="min-w-0 overflow-hidden rounded-lg border-[0.5px] border-border bg-card p-4 dark:bg-card">
+                <p className="text-[13px] font-medium text-primary">
+                  Phase 4 — Customer pays
+                </p>
+                <p className="mt-1 text-sm leading-relaxed break-words text-secondary">
+                  The user authenticates with connectIPS or their bank. You do
+                  not control this UI. On success NCHL redirects to your
+                  registered success URL; on cancel/fail, to the failure URL.
+                </p>
+              </div>
+              <div className="min-w-0 overflow-hidden rounded-lg border-[0.5px] border-border bg-card p-4 dark:bg-card">
+                <p className="text-[13px] font-medium text-primary">
+                  Phase 5 — Return URL (untrusted)
+                </p>
+                <p className="mt-1 text-sm leading-relaxed break-words text-secondary">
+                  Success redirect appends only{" "}
+                  <code className="font-mono text-primary">?TXNID=…</code>.
+                  Point the NCHL failure URL at the same handler with{" "}
+                  <code className="font-mono text-primary">
+                    ?outcome=failure
+                  </code>{" "}
+                  so{" "}
+                  <code className="font-mono text-primary">handleCallback</code>{" "}
+                  can mark cancel without waiting on validate. Never fulfill
+                  from this step alone.
+                </p>
+              </div>
+              <div className="min-w-0 overflow-hidden rounded-lg border-[0.5px] border-border bg-card p-4 dark:bg-card">
+                <p className="text-[13px] font-medium text-primary">
+                  Phase 6 — validatetxn (only path to “paid”)
+                </p>
+                <p className="mt-1 text-sm leading-relaxed break-words text-secondary">
+                  Your server POSTs to{" "}
+                  <code className="font-mono text-primary [overflow-wrap:anywhere]">
+                    …/connectipswebws/api/creditor/validatetxn
+                  </code>{" "}
+                  with Basic Auth (
+                  <code className="font-mono text-primary">APPID</code> as
+                  username, app password) and a signed body ( merchantId, appId,
+                  referenceId = TXNID, txnAmt in paisa). Map{" "}
+                  <code className="font-mono text-primary">SUCCESS</code> →
+                  confirmed,{" "}
+                  <code className="font-mono text-primary">FAILED</code> →
+                  failed, <code className="font-mono text-primary">ERROR</code>{" "}
+                  → pending (not found / incomplete — re-poll, do not deliver).
+                  Optional:{" "}
+                  <code className="font-mono text-primary">gettxndetail</code>{" "}
+                  for richer fields after SUCCESS.
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 min-w-0 overflow-hidden">
+              <p className="mb-2 text-[12px] font-medium text-primary">
+                Diagram (same six phases)
+              </p>
+              <ArrowFlow steps={CONNECTIPS_FLOW_STEPS} />
+            </div>
+          </DocSection>
+
+          <DocSection id="connectips-token" level={3} title="TOKEN signing">
+            <p className="text-sm leading-relaxed break-words text-secondary">
+              Build the comma-joined string (no spaces after commas) ending in{" "}
+              <code className="font-mono text-primary">TOKEN=TOKEN</code>, then
+              sign with SHA256withRSA using the NCHL-issued PKCS#12 private key
+              and Base64-encode. Prefer{" "}
+              <code className="font-mono text-primary">privateKeyPem</code>{" "}
+              (convert{" "}
+              <code className="font-mono text-primary">CREDITOR.pfx</code> once
+              with OpenSSL). <code className="font-mono text-primary">pfx</code>{" "}
+              + <code className="font-mono text-primary">pfxPassword</code>{" "}
+              works when <code className="font-mono text-primary">openssl</code>{" "}
+              is on PATH. Amounts on the wire are paisa integers.
+            </p>
+            <CodeBlock
+              code={`MERCHANTID=902,APPID=MER-902-APP-1,APPNAME=Demo,TXNID=ord42txn001,TXNDATE=22-07-2026,TXNCRNCY=NPR,TXNAMT=1050,REFERENCEID=ord42txn001,REMARKS=Pro plan,PARTICULARS=Pro plan,TOKEN=TOKEN
+// → SHA256withRSA(privateKey) → Base64 → form field TOKEN`}
+            />
+          </DocSection>
+
+          <DocSection
+            id="connectips-form"
+            level={3}
+            title="Login form fields"
+            description="Draft payment payload posted to /connectipswebgw/loginpage."
+          >
+            <PropsTable rows={CONNECTIPS_FORM_ROWS} />
+          </DocSection>
+
+          <DocSection id="connectips-validate" level={3} title="validatetxn">
+            <Callout title="Callback is untrusted">
+              Success/failure URLs only receive{" "}
+              <code className="font-mono text-primary">?TXNID=</code>. Always
+              call <code className="font-mono text-primary">verify()</code>{" "}
+              (Basic Auth + signed body). Point the NCHL failure URL at the same
+              handler with{" "}
+              <code className="font-mono text-primary">?outcome=failure</code>{" "}
+              so cancel can be detected before validate.
+            </Callout>
+            <PropsTable
+              rows={CONNECTIPS_STATUS_ROWS}
+              nameHeader="Gateway status"
+            />
           </DocSection>
         </DocSection>
 

@@ -6,12 +6,13 @@ import { CodeBlock } from "@/components/code-block";
 import { cn } from "@/lib/utils";
 import {
   ArrowFlow,
+  CONNECTIPS_FLOW_STEPS,
   ESEWA_FLOW_STEPS,
   KHALTI_FLOW_STEPS,
   TestCredentialsCard,
 } from "./flow-diagram";
 
-type GatewayChoice = "esewa" | "khalti";
+type GatewayChoice = "esewa" | "khalti" | "connectips";
 
 /** Stable SSR default — regenerate only on user action to avoid hydration mismatch. */
 const DEFAULT_ORDER_ID = "ORD-DEMO-001";
@@ -25,9 +26,11 @@ type InitiateResult = {
   live?: boolean;
   note?: string;
   signedMessage?: string;
+  loginTokenMessage?: string;
   amountNpr?: number;
   amountPaisa?: number;
   requestSent?: Record<string, unknown>;
+  formFields?: Record<string, string>;
   simulateReturnUrl?: string;
   initiate?: {
     redirectUrl: string;
@@ -36,6 +39,7 @@ type InitiateResult = {
     formFields?: Record<string, string>;
   };
   upstream?: Record<string, unknown>;
+  flow?: string[];
   error?: {
     code?: string;
     name?: string;
@@ -112,9 +116,14 @@ function JsonBlock({
   );
 }
 
+function flowStepsFor(gateway: GatewayChoice) {
+  if (gateway === "esewa") return ESEWA_FLOW_STEPS;
+  if (gateway === "khalti") return KHALTI_FLOW_STEPS;
+  return CONNECTIPS_FLOW_STEPS;
+}
+
 /**
- * Unified eSewa + Khalti checkout form (same fields → gateway-specific initiate).
- * Always shows the full form and generated code — nothing behind tabs.
+ * Unified eSewa + Khalti + connectIPS checkout (same fields → gateway initiate).
  */
 export function UnifiedCheckoutForm() {
   const [gateway, setGateway] = useState<GatewayChoice>("esewa");
@@ -128,6 +137,11 @@ export function UnifiedCheckoutForm() {
   const [service, setService] = useState("0");
   const [delivery, setDelivery] = useState("0");
   const [khaltiSecret, setKhaltiSecret] = useState("");
+  const [connectPem, setConnectPem] = useState("");
+  const [connectMerchantId, setConnectMerchantId] = useState("");
+  const [connectAppId, setConnectAppId] = useState("");
+  const [connectAppName, setConnectAppName] = useState("");
+  const [connectPassword, setConnectPassword] = useState("");
   const [useMock, setUseMock] = useState(true);
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<InitiateResult | null>(null);
@@ -148,11 +162,15 @@ export function UnifiedCheckoutForm() {
   const defaultSuccess =
     gateway === "esewa"
       ? `${origin}/nepal-pay/return`
-      : `${origin}/nepal-pay/khalti-return`;
+      : gateway === "khalti"
+        ? `${origin}/nepal-pay/khalti-return`
+        : `${origin}/nepal-pay/connectips-return`;
   const defaultFailure =
     gateway === "esewa"
       ? `${origin}/nepal-pay/return?failed=1`
-      : `${origin}/nepal-pay/khalti-return?status=${encodeURIComponent("User canceled")}`;
+      : gateway === "khalti"
+        ? `${origin}/nepal-pay/khalti-return?status=${encodeURIComponent("User canceled")}`
+        : `${origin}/nepal-pay/connectips-return?outcome=failure`;
 
   function clearForm() {
     setName("Suman Acharya");
@@ -165,6 +183,11 @@ export function UnifiedCheckoutForm() {
     setService("0");
     setDelivery("0");
     setKhaltiSecret("");
+    setConnectPem("");
+    setConnectMerchantId("");
+    setConnectAppId("");
+    setConnectAppName("");
+    setConnectPassword("");
     setUseMock(true);
     setResult(null);
   }
@@ -176,7 +199,10 @@ export function UnifiedCheckoutForm() {
 
     const returnUrl = successUrl.trim() || defaultSuccess;
     const failUrl = failureUrl.trim() || defaultFailure;
-    const ref = orderId.replace(/[^A-Za-z0-9_-]/g, "-").slice(0, 40);
+    const ref =
+      gateway === "connectips"
+        ? orderId.replace(/[^A-Za-z0-9]/g, "").slice(0, 20)
+        : orderId.replace(/[^A-Za-z0-9_-]/g, "-").slice(0, 40);
 
     try {
       if (gateway === "esewa") {
@@ -195,7 +221,7 @@ export function UnifiedCheckoutForm() {
           }),
         });
         setResult((await res.json()) as InitiateResult);
-      } else {
+      } else if (gateway === "khalti") {
         const res = await fetch("/api/nepal-pay/khalti/initiate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -211,6 +237,27 @@ export function UnifiedCheckoutForm() {
           }),
         });
         setResult((await res.json()) as InitiateResult);
+      } else {
+        const res = await fetch("/api/nepal-pay/connectips/initiate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: Number(amount),
+            orderId: ref,
+            orderName: description || "Order payment",
+            returnUrl,
+            failureUrl: failUrl,
+            remarks: description || "Order payment",
+            particulars: description || "Order payment",
+            mock: useMock,
+            merchantId: connectMerchantId.trim() || undefined,
+            appId: connectAppId.trim() || undefined,
+            appName: connectAppName.trim() || undefined,
+            password: connectPassword.trim() || undefined,
+            privateKeyPem: connectPem.trim() || undefined,
+          }),
+        });
+        setResult((await res.json()) as InitiateResult);
       }
     } catch (err) {
       setResult({
@@ -223,6 +270,8 @@ export function UnifiedCheckoutForm() {
       setBusy(false);
     }
   }
+
+  const paisa = Math.round((Number(amount) || 0) * 100);
 
   const snippet = `// Unified checkout → ${gateway}
 const payload = {
@@ -248,31 +297,53 @@ const res = await fetch("/api/nepal-pay/esewa/initiate", {
 const { initiate } = await res.json();
 // <form method="POST" action={initiate.redirectUrl}>…formFields…</form>
 // → /nepal-pay/return?data=… → verify signature + status`
-    : `// Khalti: amount NPR → paisa internally (${Math.round((Number(amount) || 0) * 100)} paisa)
+    : gateway === "khalti"
+      ? `// Khalti: amount NPR → paisa internally (${paisa} paisa)
 const res = await fetch("/api/nepal-pay/khalti/initiate", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
     ...payload,
     customerPhone: "9800000000",
-    secretKey: process.env.KHALTI_SECRET, // or paste in form
+    secretKey: process.env.KHALTI_SECRET,
     mock: ${useMock},
   }),
 });
 const { initiate } = await res.json();
 // window.location = initiate.redirectUrl
-// → /nepal-pay/khalti-return?pidx=&status=… → lookup verify
-// Test: 9800000000–05 · MPIN 1111 · OTP 987654`
+// → /nepal-pay/khalti-return?pidx=&status=… → lookup verify`
+      : `// connectIPS: NPR → paisa TXNAMT (${paisa}); RSA TOKEN on form
+const res = await fetch("/api/nepal-pay/connectips/initiate", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    ...payload,
+    remarks: payload.orderName,
+    particulars: payload.orderName,
+    mock: ${useMock},
+    // live UAT: merchantId, appId, appName, password, privateKeyPem
+  }),
+});
+const { initiate, loginTokenMessage } = await res.json();
+// <form method="POST" action={initiate.redirectUrl}>…formFields…</form>
+// → /nepal-pay/connectips-return?TXNID=… → validatetxn
+// Mock: simulate return without NCHL; live needs NCHL CREDITOR cert`
 }`;
 
-  const fields = result?.initiate?.formFields;
+  const fields =
+    result?.initiate?.formFields ?? result?.formFields ?? undefined;
+
+  const submitLabel =
+    gateway === "esewa"
+      ? "Generate signed form"
+      : gateway === "khalti"
+        ? "Initiate Khalti payment"
+        : "Draft connectIPS payment";
 
   return (
     <div className="flex flex-col gap-5">
       <TestCredentialsCard gateway={gateway} />
-      <ArrowFlow
-        steps={gateway === "esewa" ? ESEWA_FLOW_STEPS : KHALTI_FLOW_STEPS}
-      />
+      <ArrowFlow steps={flowStepsFor(gateway)} />
 
       <form
         onSubmit={onSubmit}
@@ -286,22 +357,31 @@ const { initiate } = await res.json();
             onChange={setAmount}
             type="number"
             hint={
-              gateway === "khalti"
-                ? "Must be > 10 — sent as paisa (×100)"
-                : "eSewa uses NPR decimals"
+              gateway === "esewa"
+                ? "eSewa uses NPR decimals"
+                : `Sent as paisa (×100) → ${paisa}`
             }
           />
           <LabeledInput
             label="Reference / Order ID"
             value={orderId}
             onChange={setOrderId}
-            hint="Alphanumeric + hyphen (eSewa); unique per payment"
+            hint={
+              gateway === "connectips"
+                ? "TXNID ≤ 20 alphanumeric (auto-trimmed)"
+                : "Alphanumeric + hyphen; unique per payment"
+            }
           />
           <LabeledInput
             label="Description"
             value={description}
             onChange={setDescription}
             placeholder="Order payment"
+            hint={
+              gateway === "connectips"
+                ? "Maps to REMARKS / PARTICULARS"
+                : undefined
+            }
           />
           <LabeledInput
             label="Success URL"
@@ -345,30 +425,30 @@ const { initiate } = await res.json();
         <fieldset className="flex flex-col gap-2">
           <legend className="text-[13px] text-secondary">Payment method</legend>
           <div className="flex flex-wrap gap-4">
-            <label className="flex items-center gap-2 text-[13px] text-primary">
-              <input
-                type="radio"
-                name="gateway"
-                checked={gateway === "esewa"}
-                onChange={() => {
-                  setGateway("esewa");
-                  setResult(null);
-                }}
-              />
-              eSewa
-            </label>
-            <label className="flex items-center gap-2 text-[13px] text-primary">
-              <input
-                type="radio"
-                name="gateway"
-                checked={gateway === "khalti"}
-                onChange={() => {
-                  setGateway("khalti");
-                  setResult(null);
-                }}
-              />
-              Khalti
-            </label>
+            {(
+              [
+                ["esewa", "eSewa"],
+                ["khalti", "Khalti"],
+                ["connectips", "connectIPS"],
+              ] as const
+            ).map(([id, label]) => (
+              <label
+                key={id}
+                className="flex items-center gap-2 text-[13px] text-primary"
+              >
+                <input
+                  type="radio"
+                  name="gateway"
+                  checked={gateway === id}
+                  onChange={() => {
+                    setGateway(id);
+                    setResult(null);
+                    setUseMock(true);
+                  }}
+                />
+                {label}
+              </label>
+            ))}
           </div>
         </fieldset>
 
@@ -392,17 +472,64 @@ const { initiate } = await res.json();
           </div>
         ) : null}
 
+        {gateway === "connectips" ? (
+          <div className="flex flex-col gap-3 rounded-md border-[0.5px] border-border bg-muted/40 p-3">
+            <p className="text-[12px] text-tertiary">
+              Optional live UAT credentials (otherwise mock drafts a signed
+              payload with a throwaway RSA key).
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <LabeledInput
+                label="Merchant ID"
+                value={connectMerchantId}
+                onChange={setConnectMerchantId}
+                placeholder="from NCHL"
+              />
+              <LabeledInput
+                label="App ID"
+                value={connectAppId}
+                onChange={setConnectAppId}
+              />
+              <LabeledInput
+                label="App name"
+                value={connectAppName}
+                onChange={setConnectAppName}
+              />
+              <LabeledInput
+                label="App password"
+                value={connectPassword}
+                onChange={setConnectPassword}
+                type="password"
+              />
+            </div>
+            <label className="flex flex-col gap-1.5 text-[13px]">
+              <span className="text-secondary">Private key PEM</span>
+              <textarea
+                value={connectPem}
+                onChange={(e) => setConnectPem(e.target.value)}
+                rows={4}
+                placeholder="-----BEGIN PRIVATE KEY----- … (from CREDITOR.pfx)"
+                className="rounded-md border-[0.5px] border-border bg-card px-3 py-2 font-mono text-[11px] text-primary outline-none focus:border-accent"
+              />
+            </label>
+            <label className="flex items-center gap-2 text-[13px] text-secondary">
+              <input
+                type="checkbox"
+                checked={useMock}
+                onChange={(e) => setUseMock(e.target.checked)}
+              />
+              Mock mode (draft form + simulate validatetxn SUCCESS)
+            </label>
+          </div>
+        ) : null}
+
         <div className="flex flex-wrap gap-2 pt-1">
           <button
             type="submit"
             disabled={busy}
             className="rounded-md bg-accent px-4 py-2 text-[13px] font-medium text-accent-fg disabled:opacity-50"
           >
-            {busy
-              ? "Working…"
-              : gateway === "esewa"
-                ? "Generate signed form"
-                : "Initiate Khalti payment"}
+            {busy ? "Working…" : submitLabel}
           </button>
           <button
             type="button"
@@ -427,29 +554,61 @@ const { initiate } = await res.json();
 
       {result?.ok && result.initiate ? (
         <div className="flex flex-col gap-3">
-          {result.signedMessage ? (
-            <JsonBlock title="eSewa HMAC message" data={result.signedMessage} />
+          {result.signedMessage || result.loginTokenMessage ? (
+            <JsonBlock
+              title={
+                gateway === "connectips"
+                  ? "connectIPS TOKEN message (pre-sign)"
+                  : "eSewa HMAC message"
+              }
+              data={result.loginTokenMessage || result.signedMessage}
+            />
           ) : null}
-          {result.requestSent ? (
+          {result.requestSent && gateway === "khalti" ? (
             <JsonBlock
               title="Khalti request body (paisa)"
               data={result.requestSent}
               tone="ok"
             />
           ) : null}
+          {result.amountPaisa != null && gateway === "connectips" ? (
+            <JsonBlock
+              title="Amount conversion"
+              data={{
+                amountNpr: result.amountNpr,
+                TXNAMT_paisa: result.amountPaisa,
+              }}
+              tone="ok"
+            />
+          ) : null}
           <JsonBlock title="Initiate response" data={result} tone="ok" />
 
-          {gateway === "esewa" && fields ? (
+          {(gateway === "esewa" || gateway === "connectips") && fields ? (
             <form
-              action={result.initiate.redirectUrl}
+              action={
+                gateway === "connectips" && !result.live
+                  ? undefined
+                  : result.initiate.redirectUrl
+              }
               method="POST"
+              onSubmit={
+                gateway === "connectips" && !result.live
+                  ? (ev) => {
+                      ev.preventDefault();
+                    }
+                  : undefined
+              }
               className="flex flex-col gap-3 rounded-xl border-[0.5px] border-border bg-card p-4"
             >
               {Object.entries(fields).map(([k, v]) => (
                 <input key={k} type="hidden" name={k} value={v} />
               ))}
               <p className="text-[13px] font-medium text-primary">
-                HTML form ready — POST to eSewa sandbox
+                {gateway === "esewa"
+                  ? "HTML form ready — POST to eSewa sandbox"
+                  : result.live
+                    ? "HTML form ready — POST to connectIPS UAT loginpage"
+                    : "Draft form payload (mock) — inspect fields, then simulate return"}
               </p>
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[28rem] text-left text-[12px]">
@@ -469,19 +628,33 @@ const { initiate } = await res.json();
                           {k}
                         </td>
                         <td className="py-1.5 font-mono break-all text-secondary">
-                          {v}
+                          {v.length > 80 ? `${v.slice(0, 80)}…` : v}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              <button
-                type="submit"
-                className="self-start rounded-md bg-accent px-4 py-2 text-[13px] font-medium text-accent-fg"
-              >
-                Pay with eSewa →
-              </button>
+              <div className="flex flex-wrap gap-2">
+                {gateway === "esewa" || result.live ? (
+                  <button
+                    type="submit"
+                    className="self-start rounded-md bg-accent px-4 py-2 text-[13px] font-medium text-accent-fg"
+                  >
+                    {gateway === "esewa"
+                      ? "Pay with eSewa →"
+                      : "Pay with connectIPS →"}
+                  </button>
+                ) : null}
+                {gateway === "connectips" && result.simulateReturnUrl ? (
+                  <a
+                    href={result.simulateReturnUrl}
+                    className="rounded-md bg-accent px-4 py-2 text-[13px] font-medium text-accent-fg no-underline"
+                  >
+                    Complete return + validatetxn →
+                  </a>
+                ) : null}
+              </div>
             </form>
           ) : null}
 
@@ -514,12 +687,17 @@ const { initiate } = await res.json();
   );
 }
 
-export const UNIFIED_CHECKOUT_CODE = `// One form → eSewa or Khalti
+export const UNIFIED_CHECKOUT_CODE = `// One form → eSewa | Khalti | connectIPS
 // Fields: name, amount, orderId, description, success/failure URLs,
 //         tax, service, delivery → total
 //
-// eSewa  → POST /api/nepal-pay/esewa/initiate → HTML form POST → /nepal-pay/return
-// Khalti → POST /api/nepal-pay/khalti/initiate → payment_url → /nepal-pay/khalti-return
+// eSewa      → POST /api/nepal-pay/esewa/initiate
+//              → HTML form POST → /nepal-pay/return?data=…
+// Khalti     → POST /api/nepal-pay/khalti/initiate
+//              → payment_url → /nepal-pay/khalti-return?pidx=…
+// connectIPS → POST /api/nepal-pay/connectips/initiate
+//              → HTML form POST → /nepal-pay/connectips-return?TXNID=…
 //
 // eSewa UAT: 9711111111 / Nepal@123 / 123456 · secret 8gBm/:&EnhH.1/q
-// Khalti:    9800000000–05 / MPIN 1111 / OTP 987654 · merchant test secret`;
+// Khalti:    9800000000–05 / MPIN 1111 / OTP 987654 · merchant test secret
+// connectIPS: NCHL merchant + CREDITOR.pfx (docs mock drafts signed payload)`;

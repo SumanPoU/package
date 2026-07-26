@@ -1,5 +1,5 @@
 /** Built-in gateways. Additional names can be registered via `registerGateway`. */
-export type BuiltInGatewayName = "esewa" | "khalti";
+export type BuiltInGatewayName = "esewa" | "khalti" | "connectips";
 
 /**
  * Gateway identifier. Built-ins are typed; custom plugins use any string
@@ -25,7 +25,7 @@ export type PaymentMode = "sandbox" | "production";
 
 /**
  * Shared payment request. Amount is always NPR as a decimal at the public API
- * boundary (e.g. `10.50`). Khalti paisa conversion happens inside the adapter.
+ * boundary (e.g. `10.50`). Khalti / connectIPS paisa conversion is internal.
  */
 export interface PaymentRequest {
   /** Amount in NPR (decimal). Must be > 10 for Khalti (API minimum). */
@@ -58,7 +58,7 @@ export interface InitiateResult {
   /** transaction_uuid (eSewa) or pidx (Khalti). */
   providerRef: string;
   /**
-   * eSewa uses an HTML form POST. When `method` is `"POST"`, render an
+   * eSewa / connectIPS use an HTML form POST. When `method` is `"POST"`, render an
    * auto-submit form with `formFields` to `redirectUrl`. Khalti is `"GET"`.
    */
   method: "GET" | "POST";
@@ -129,8 +129,31 @@ export interface KhaltiConfig {
   secretKey: string;
 }
 
+/**
+ * connectIPS (NCHL) credentials — Process Interface Doc v5.1.
+ *
+ * Provide either `privateKeyPem` (easier for tests / CI) or the NCHL-issued
+ * PKCS#12 `pfx` + `pfxPassword` (CREDITOR.pfx in sandbox).
+ */
+export interface ConnectIpsConfig {
+  merchantId: number | string;
+  appId: string;
+  appName: string;
+  /** App password — Basic Auth username is `appId`. */
+  password: string;
+  /** PEM-encoded RSA private key. Mutually exclusive with `pfx`. */
+  privateKeyPem?: string;
+  /** PKCS#12 (.pfx) as Buffer or base64 string. */
+  pfx?: Buffer | string;
+  /** Passphrase for `pfx`. */
+  pfxPassword?: string;
+  /** Override UAT / production host (default from mode). */
+  baseUrl?: string;
+}
+
 export interface NepalPayConfig {
   mode: PaymentMode;
   esewa?: EsewaConfig;
   khalti?: KhaltiConfig;
+  connectips?: ConnectIpsConfig;
 }

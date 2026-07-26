@@ -1,9 +1,9 @@
 # @itzsa/nepal-pay
 
-Unified TypeScript SDK for Nepal’s two dominant digital wallets — **eSewa (ePay v2)** and **Khalti (KPG-2)** — with **server-side verification mandatory by default**.
+Unified TypeScript SDK for Nepal’s digital payment rails — **eSewa (ePay v2)**, **Khalti (KPG-2)**, and **connectIPS (NCHL)** — with **server-side verification mandatory by default**.
 
 > **Disclaimer — unofficial community wrapper**  
-> `@itzsa/nepal-pay` is an independent, community-built library. It is **not affiliated with, endorsed by, or partnered with** eSewa (F1Soft) or Khalti. Gateway APIs, credentials, and merchant agreements remain between you and the respective providers. Always verify against official docs before going live.
+> `@itzsa/nepal-pay` is an independent, community-built library. It is **not affiliated with, endorsed by, or partnered with** eSewa (F1Soft), Khalti, or NCHL/connectIPS. Gateway APIs, credentials, and merchant agreements remain between you and the respective providers. Always verify against official docs before going live.
 
 **Docs site:** [itzsa.acharya-suman.com.np/nepal-pay](https://itzsa.acharya-suman.com.np/nepal-pay) — includes interactive eSewa HTML form + Khalti React form playgrounds and a full success/error response explorer.
 
@@ -15,6 +15,7 @@ Redirecting a browser to your `success_url` / `return_url` is **not proof of pay
 |---------|--------------------|------------------------|
 | eSewa   | Base64 JSON on success URL (has a signature — still re-check it) | Recompute HMAC + call status API (`COMPLETE` only) |
 | Khalti  | Query params with **no signature** | `POST /epayment/lookup/` (`Completed` only) |
+| connectIPS | `?TXNID=` only (no signature) | `POST …/validatetxn` (`SUCCESS` only) |
 
 This SDK makes `verify()` the only path to `confirmed`.
 
@@ -46,6 +47,15 @@ const pay = createNepalPay({
   },
   khalti: {
     secretKey: process.env.KHALTI_SECRET!,
+  },
+  connectips: {
+    merchantId: process.env.CONNECTIPS_MERCHANT_ID!,
+    appId: process.env.CONNECTIPS_APP_ID!,
+    appName: process.env.CONNECTIPS_APP_NAME!,
+    password: process.env.CONNECTIPS_PASSWORD!,
+    // NCHL CREDITOR.pfx (Buffer / base64) — or privateKeyPem for PEM
+    pfx: process.env.CONNECTIPS_PFX_BASE64!,
+    pfxPassword: process.env.CONNECTIPS_PFX_PASSWORD!,
   },
 });
 
@@ -83,7 +93,7 @@ return Response.redirect(redirectTo);
 ```
 src/
   core/       types · errors · state machine · amount helpers
-  gateways/   esewa/ · khalti/   (additive folders for future gateways)
+  gateways/   esewa/ · khalti/ · connectips/
   registry/   registerGateway() plugin API
   store/      PaymentStore · MemoryPaymentStore · PrismaPaymentStore
   flow/       PaymentService (initiate + persist + return handler)
@@ -114,6 +124,7 @@ confirmed ──► refunded
 | Public `PaymentRequest.amount` | NPR decimal (`10.50`) |
 | eSewa form / status API | NPR decimal |
 | Khalti initiate / lookup | Paisa (`1050`) — converted inside `KhaltiGateway` |
+| connectIPS login / validatetxn | Paisa (`1050`) — converted inside `ConnectIpsGateway` |
 
 ### Idempotency
 
@@ -144,6 +155,18 @@ Exported as `ESEWA_UAT_SECRET_KEY`. The official HTML form sample signature for 
 - **Initiate:** `POST /epayment/initiate/` → `payment_url` + `pidx`.
 - **Lookup (mandatory):** `POST /epayment/lookup/` — only `Completed` means deliver service.
 - **Min amount:** > Rs. 10 (> 1000 paisa).
+
+## connectIPS
+
+- **Sandbox base:** `https://uat.connectips.com`
+- **Production base:** `https://login.connectips.com` (override with `baseUrl` if NCHL gives another host)
+- **Initiate:** HTML form `POST …/connectipswebgw/loginpage` with `MERCHANTID`, `APPID`, `APPNAME`, `TXNID`, `TXNDATE` (`DD-MM-YYYY`), `TXNCRNCY=NPR`, `TXNAMT` (**paisa**), `REFERENCEID`, `REMARKS`, `PARTICULARS`, `TOKEN`
+- **TOKEN:** SHA256withRSA over the comma-joined field string ending in `TOKEN=TOKEN`, Base64 (Process Interface Doc v5.1). Prefer `privateKeyPem` (convert NCHL `CREDITOR.pfx` once with OpenSSL). `pfx` + `pfxPassword` also works when `openssl` is on `PATH`.
+- **Callback:** static success/failure URLs registered with NCHL; gateway appends `?TXNID=` only — untrusted.
+- **Validate (mandatory):** `POST …/connectipswebws/api/creditor/validatetxn` with Basic Auth (`appId` / `password`) and a second signed token. Only `SUCCESS` → `confirmed`. `ERROR` maps to `pending` (txn not found / incomplete); `FAILED` → `failed`.
+- Tip: point your NCHL **failure** URL at the same return handler with `?outcome=failure` so `handleCallback` can mark cancel without waiting on validate.
+
+`initiate()` returns `method: "POST"` + `formFields` — same auto-submit pattern as eSewa.
 
 ## Scalability
 
@@ -176,7 +199,7 @@ const store = new PrismaPaymentStore(prisma);
 | `createNepalPay` / `NepalPay` | Config + gateway access |
 | `createPaymentService` / `PaymentService` | Orchestrated checkout |
 | `createReturnUrlHandler` | Low-level return-URL factory |
-| `EsewaGateway` / `KhaltiGateway` | Direct adapters |
+| `EsewaGateway` / `KhaltiGateway` / `ConnectIpsGateway` | Direct adapters |
 | `MemoryPaymentStore` / `PrismaPaymentStore` | Stores |
 | `registerGateway` | Plugin registration |
 | `PaymentStateMachine` | Transition enforcement |
@@ -217,7 +240,7 @@ export async function GET(request: Request) {
 
 ## Non-goals (v1)
 
-- Fonepay / ConnectIPS / IME Pay — register via `registerGateway` when ready
+- Fonepay / IME Pay — register via `registerGateway` when ready
 - UI components — headless / backend-first
 - Hard ORM dependency — bring your own `PaymentStore` (Prisma reference included)
 - Merchant refund APIs — `refund()` throws `RefundNotSupportedError`
@@ -226,6 +249,7 @@ export async function GET(request: Request) {
 
 - [Khalti KPG-2](https://docs.khalti.com/khalti-epayment/)
 - [eSewa ePay v2](http://developer.esewa.com.np/pages/Epay)
+- connectIPS Process Interface Document for Merchant and Technical Member (v5.1)
 - [Praxium Labs playbook](https://praxiumlabs.com/blog/esewa-khalti-automation/)
 
 ## License

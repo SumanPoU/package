@@ -25,6 +25,7 @@ export {
 export type {
   BuiltInGatewayName,
   CallbackResult,
+  ConnectIpsConfig,
   EsewaConfig,
   GatewayName,
   InitiateResult,
@@ -46,6 +47,32 @@ export {
   createPaymentService,
   PaymentService,
 } from "./flow/PaymentService";
+export type { ConnectIpsGatewayOptions } from "./gateways/connectips/ConnectIpsGateway";
+export {
+  ConnectIpsGateway,
+  formatConnectIpsTxnDate,
+  generateConnectIpsTxnId,
+  mapConnectIpsStatusForTest,
+} from "./gateways/connectips/ConnectIpsGateway";
+export {
+  buildConnectIpsLoginMessage,
+  buildConnectIpsValidateMessage,
+  loadConnectIpsPrivateKey,
+  signConnectIpsToken,
+} from "./gateways/connectips/signature";
+export type {
+  ConnectIpsTxnDetailResponse,
+  ConnectIpsTxnStatus,
+  ConnectIpsValidateRequest,
+  ConnectIpsValidateResponse,
+} from "./gateways/connectips/types";
+export {
+  CONNECTIPS_BASE_URL,
+  CONNECTIPS_LIMITS,
+  connectIpsLoginUrl,
+  connectIpsTxnDetailUrl,
+  connectIpsValidateUrl,
+} from "./gateways/connectips/types";
 export type { EsewaGatewayOptions } from "./gateways/esewa/EsewaGateway";
 export { EsewaGateway } from "./gateways/esewa/EsewaGateway";
 export {

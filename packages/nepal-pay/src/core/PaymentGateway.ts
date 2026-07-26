@@ -28,6 +28,7 @@ export interface PaymentGateway {
    * The ONLY method whose result may drive a transition to `confirmed`.
    * eSewa: recompute signature (if callback data provided via store) + status API.
    * Khalti: POST /epayment/lookup/.
+   * connectIPS: POST /validatetxn (signed + Basic Auth).
    */
   verify(
     providerRef: string,

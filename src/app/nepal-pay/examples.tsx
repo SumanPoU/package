@@ -710,9 +710,9 @@ const { initiate, requestSent } = await res.json();
 // Test: ID 9800000000–05 · MPIN 1111 · OTP 987654`;
 
 export function ResponseExplorer() {
-  const [gateway, setGateway] = useState<"all" | "esewa" | "khalti" | "sdk">(
-    "all",
-  );
+  const [gateway, setGateway] = useState<
+    "all" | "esewa" | "khalti" | "connectips" | "sdk"
+  >("all");
   const [kind, setKind] = useState<"all" | "success" | "error" | "info">("all");
   const [activeId, setActiveId] = useState(RESPONSE_SAMPLES[0]?.id ?? "");
 
@@ -732,6 +732,7 @@ export function ResponseExplorer() {
             ["all", "All"],
             ["esewa", "eSewa"],
             ["khalti", "Khalti"],
+            ["connectips", "connectIPS"],
             ["sdk", "SDK"],
           ] as const
         ).map(([id, label]) => (
@@ -828,4 +829,4 @@ export function ResponseExplorer() {
 }
 
 export const RESPONSE_EXPLORER_CODE = `// All success + error payloads live in response-samples.ts
-// Filter by gateway (esewa | khalti | sdk) and kind (success | error | info)`;
+// Filter by gateway (esewa | khalti | connectips | sdk) and kind (success | error | info)`;

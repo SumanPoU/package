@@ -42,9 +42,9 @@ export class NepalPay {
     const configured: GatewayName[] = [];
     if (config.esewa) configured.push("esewa");
     if (config.khalti) configured.push("khalti");
+    if (config.connectips) configured.push("connectips");
 
-    // Also instantiate any custom registered gateways the consumer listed via metadata? No —
-    // only built-ins auto-wire from config keys. Custom gateways: call gateway(name) lazily.
+    // Only built-ins auto-wire from config keys. Custom gateways: call gateway(name) lazily.
 
     for (const name of configured) {
       this.gateways.set(name, createGateway(name, config));
@@ -52,7 +52,7 @@ export class NepalPay {
 
     if (this.gateways.size === 0) {
       throw new ConfigError(
-        "Provide at least one of esewa or khalti in NepalPay config (or register + call gateway())",
+        "Provide at least one of esewa, khalti, or connectips in NepalPay config (or register + call gateway())",
       );
     }
   }
@@ -65,7 +65,7 @@ export class NepalPay {
     const existing = this.gateways.get(name);
     if (existing) return existing;
 
-    if (name === "esewa" || name === "khalti") {
+    if (name === "esewa" || name === "khalti" || name === "connectips") {
       throw new ConfigError(
         `Gateway "${name}" is not configured on this NepalPay instance`,
       );

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { type ReactNode, useCallback, useEffect, useState } from "react";
 
 import { CodeBlock } from "@/components/code-block";
+import { useScrollNavToActive } from "@/components/docs/use-scroll-nav-to-active";
 import { cn } from "@/lib/utils";
 import type { PropRow } from "./api-reference";
 import { DOC_NAV, type NavItem, RIGHT_TOC } from "./nav";
@@ -71,6 +72,7 @@ function NavLink({
   return (
     <a
       href={`#${item.id}`}
+      data-nav-id={item.id}
       aria-current={active ? "location" : undefined}
       className={cn(
         "group relative block rounded-sm transition-colors",
@@ -122,6 +124,8 @@ function childrenOf(parentId: string): NavItem[] {
 export function DocsShell({ children }: { children: ReactNode }) {
   const ids = DOC_NAV.map((n) => n.id);
   const activeId = useActiveSection(ids);
+  useScrollNavToActive(activeId, '[data-docs-sidebar="left"]');
+  useScrollNavToActive(activeId, '[data-docs-sidebar="right"]');
   const topActive = parentSectionId(activeId);
   const sectionChildren = childrenOf(topActive);
 
@@ -132,7 +136,10 @@ export function DocsShell({ children }: { children: ReactNode }) {
   return (
     <div className="docs-shell min-h-full bg-page">
       <div className="mx-auto flex w-full max-w-[88rem] gap-4 px-4 py-6 sm:px-6 sm:py-8 lg:gap-8 lg:py-10 xl:gap-10">
-        <aside className="sticky top-20 hidden h-[calc(100vh-6rem)] w-52 shrink-0 overflow-y-auto lg:block xl:w-56">
+        <aside
+          data-docs-sidebar="left"
+          className="sticky top-20 hidden h-[calc(100vh-6rem)] w-52 shrink-0 overflow-y-auto lg:block xl:w-56"
+        >
           <nav aria-label="Documentation" className="flex flex-col gap-0.5">
             <Link
               href="/"
@@ -158,7 +165,10 @@ export function DocsShell({ children }: { children: ReactNode }) {
 
         <main className="min-w-0 flex-1 pb-12 sm:pb-24">{children}</main>
 
-        <aside className="sticky top-20 hidden h-[calc(100vh-6rem)] w-44 shrink-0 overflow-y-auto xl:block">
+        <aside
+          data-docs-sidebar="right"
+          className="sticky top-20 hidden h-[calc(100vh-6rem)] w-44 shrink-0 overflow-y-auto xl:block"
+        >
           <nav aria-label="On this page" className="flex flex-col">
             <p className="mb-3 text-[11px] font-medium tracking-[0.14em] text-tertiary uppercase">
               On this page
@@ -257,9 +267,9 @@ export function PropsTable({
   nameHeader?: string;
 }) {
   return (
-    <div className="overflow-x-auto rounded-lg border-[0.5px] border-border bg-card shadow-[0_1px_0_color-mix(in_oklab,var(--border)_80%,transparent)]">
+    <div className="overflow-x-auto rounded-lg border-[0.5px] border-border bg-card shadow-[0_1px_0_color-mix(in_oklab,var(--border)_80%,transparent)] dark:bg-card">
       {caption ? (
-        <p className="border-b-[0.5px] border-border bg-card px-3 py-2 font-mono text-[11px] tracking-wide text-tertiary uppercase">
+        <p className="border-b-[0.5px] border-border bg-card px-3 py-2 font-mono text-[11px] tracking-wide text-tertiary uppercase dark:bg-card">
           {caption}
         </p>
       ) : null}
@@ -286,16 +296,16 @@ export function PropsTable({
               key={row.name}
               className="border-b-[0.5px] border-border last:border-0"
             >
-              <td className="px-3 py-2.5 align-top font-mono text-[12.5px] text-accent">
+              <td className="px-3 py-2.5 align-top font-mono text-[12.5px] break-words [overflow-wrap:anywhere] text-accent">
                 {row.name}
               </td>
               <td className="max-w-[14rem] px-3 py-2.5 align-top font-mono text-[11.5px] leading-snug break-all text-secondary">
                 {row.type}
               </td>
               <td className="px-3 py-2.5 align-top font-mono text-[12px] whitespace-nowrap text-tertiary">
-                {row.default ?? "—"}
+                {row.default ?? "â€”"}
               </td>
-              <td className="px-3 py-2.5 align-top text-[13px] leading-relaxed text-secondary">
+              <td className="min-w-0 px-3 py-2.5 align-top text-[13px] leading-relaxed break-words [overflow-wrap:anywhere] text-secondary">
                 {row.description}
               </td>
             </tr>
@@ -314,7 +324,7 @@ export function Callout({
   title?: string;
 }) {
   return (
-    <div className="rounded-md border-[0.5px] border-border bg-card px-3.5 py-3 text-sm leading-relaxed text-secondary">
+    <div className="rounded-md border-[0.5px] border-border bg-card px-3.5 py-3 text-sm leading-relaxed text-secondary dark:bg-card">
       {title ? (
         <p className="mb-1 text-[12px] font-medium tracking-wide text-primary uppercase">
           {title}

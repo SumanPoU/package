@@ -29,6 +29,43 @@ export const CONFIG_ROWS: PropRow[] = [
     description: "Live/test secret. Sent as Authorization: Key <secret>.",
   },
   {
+    name: "connectips.merchantId",
+    type: "number | string",
+    description: "NCHL merchant id (CREDITOR).",
+  },
+  {
+    name: "connectips.appId",
+    type: "string",
+    description: "Application id — also Basic Auth username for validate APIs.",
+  },
+  {
+    name: "connectips.appName",
+    type: "string",
+    description: "App display name (≤30 chars on login form).",
+  },
+  {
+    name: "connectips.password",
+    type: "string",
+    description: "App password for Basic Auth on validatetxn / gettxndetail.",
+  },
+  {
+    name: "connectips.pfx / pfxPassword",
+    type: "Buffer | string / string",
+    description:
+      "PKCS#12 (CREDITOR.pfx) as Buffer or base64 + passphrase. Or use privateKeyPem.",
+  },
+  {
+    name: "connectips.privateKeyPem",
+    type: "string?",
+    description: "PEM RSA private key alternative to pfx (handy for tests).",
+  },
+  {
+    name: "connectips.baseUrl",
+    type: "string?",
+    description:
+      "Override host (default UAT https://uat.connectips.com / prod https://login.connectips.com).",
+  },
+  {
     name: "timeoutMs",
     type: "number",
     default: "15000",
@@ -88,7 +125,7 @@ export const REQUEST_ROWS: PropRow[] = [
     name: "metadata",
     type: "Record<string, string>?",
     description:
-      "Opaque fields. merchant_* echoed by Khalti; transaction_uuid override for eSewa.",
+      "Opaque fields. merchant_* echoed by Khalti; transaction_uuid for eSewa; txn_id / txn_date / remarks / particulars for connectIPS.",
   },
 ];
 
@@ -97,7 +134,7 @@ export const GATEWAY_API: PropRow[] = [
     name: "initiate",
     type: "(req) => Promise<InitiateResult>",
     description:
-      "Start payment. Khalti → payment_url (GET). eSewa → form action + formFields (POST).",
+      "Start payment. Khalti → payment_url (GET). eSewa / connectIPS → form action + formFields (POST).",
   },
   {
     name: "handleCallback",
@@ -109,7 +146,7 @@ export const GATEWAY_API: PropRow[] = [
     name: "verify",
     type: "(providerRef, context?) => Promise<VerificationResult>",
     description:
-      "ONLY path that may yield confirmed. eSewa: signature + status API. Khalti: lookup.",
+      "ONLY path that may yield confirmed. eSewa: signature + status API. Khalti: lookup. connectIPS: validatetxn.",
   },
   {
     name: "refund",
@@ -225,6 +262,84 @@ export const KHALTI_STATUS_ROWS: PropRow[] = [
     name: "Partially refunded",
     type: "→ partially_refunded",
     description: "Partial refund.",
+  },
+];
+
+export const CONNECTIPS_STATUS_ROWS: PropRow[] = [
+  {
+    name: "SUCCESS",
+    type: "→ confirmed",
+    description: "Only validatetxn status meaning paid.",
+  },
+  {
+    name: "ERROR",
+    type: "→ pending",
+    description: "Txn not found / incomplete — re-poll; do not fulfill.",
+  },
+  {
+    name: "FAILED",
+    type: "→ failed",
+    description: "Not paid.",
+  },
+];
+
+export const CONNECTIPS_FORM_ROWS: PropRow[] = [
+  {
+    name: "MERCHANTID",
+    type: "string",
+    description: "NCHL merchant id (≤20).",
+  },
+  {
+    name: "APPID",
+    type: "string",
+    description: "Application id (≤20). Also Basic Auth username.",
+  },
+  {
+    name: "APPNAME",
+    type: "string",
+    description: "Display name on login page (≤30).",
+  },
+  {
+    name: "TXNID",
+    type: "string",
+    description:
+      "Unique txn id ≤20 — becomes providerRef / REFERENCEID default.",
+  },
+  {
+    name: "TXNDATE",
+    type: "DD-MM-YYYY",
+    description: "Transaction date (Nepal calendar day as registered).",
+  },
+  {
+    name: "TXNCRNCY",
+    type: '"NPR"',
+    description: "Always NPR for merchant payments.",
+  },
+  {
+    name: "TXNAMT",
+    type: "integer paisa",
+    description: "NPR × 100 (e.g. 10.50 → 1050). Never send NPR decimals here.",
+  },
+  {
+    name: "REFERENCEID",
+    type: "string",
+    description: "Merchant reference ≤20 (often same as TXNID).",
+  },
+  {
+    name: "REMARKS",
+    type: "string",
+    description: "≤50 chars — order label.",
+  },
+  {
+    name: "PARTICULARS",
+    type: "string",
+    description: "≤100 chars — order detail.",
+  },
+  {
+    name: "TOKEN",
+    type: "Base64",
+    description:
+      "SHA256withRSA over comma-joined fields ending TOKEN=TOKEN (no spaces after commas).",
   },
 ];
 

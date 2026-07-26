@@ -218,6 +218,91 @@ export const KHALTI_VALIDATION_ERROR = `{
   }
 }`;
 
+export const CONNECTIPS_INITIATE_SUCCESS = `{
+  "ok": true,
+  "gateway": "connectips",
+  "mode": "sandbox",
+  "amountNpr": 10.5,
+  "amountPaisa": 1050,
+  "loginTokenMessage": "MERCHANTID=902,APPID=MER-902-APP-1,APPNAME=Demo,TXNID=ord42txn001,TXNDATE=22-07-2026,TXNCRNCY=NPR,TXNAMT=1050,REFERENCEID=ord42txn001,REMARKS=Pro plan,PARTICULARS=Pro plan,TOKEN=TOKEN",
+  "initiate": {
+    "redirectUrl": "https://uat.connectips.com/connectipswebgw/loginpage",
+    "providerRef": "ord42txn001",
+    "method": "POST",
+    "formFields": {
+      "MERCHANTID": "902",
+      "APPID": "MER-902-APP-1",
+      "APPNAME": "Demo",
+      "TXNID": "ord42txn001",
+      "TXNDATE": "22-07-2026",
+      "TXNCRNCY": "NPR",
+      "TXNAMT": "1050",
+      "REFERENCEID": "ord42txn001",
+      "REMARKS": "Pro plan",
+      "PARTICULARS": "Pro plan",
+      "TOKEN": "<SHA256withRSA Base64>"
+    }
+  }
+}`;
+
+export const CONNECTIPS_CALLBACK = `{
+  "TXNID": "ord42txn001"
+}`;
+
+export const CONNECTIPS_CALLBACK_FAILURE = `{
+  "TXNID": "ord42txn001",
+  "outcome": "failure"
+}`;
+
+export const CONNECTIPS_VALIDATE_REQUEST = `{
+  "merchantId": 902,
+  "appId": "MER-902-APP-1",
+  "referenceId": "ord42txn001",
+  "txnAmt": 1050,
+  "token": "<SHA256withRSA over MERCHANTID=…,APPID=…,REFERENCEID=…,TXNAMT=…>"
+}`;
+
+export const CONNECTIPS_VALIDATE_SUCCESS = `{
+  "merchantId": 902,
+  "appId": "MER-902-APP-1",
+  "referenceId": "ord42txn001",
+  "txnAmt": "1050",
+  "token": null,
+  "status": "SUCCESS",
+  "statusDesc": "Transaction successful."
+}`;
+
+export const CONNECTIPS_VALIDATE_FAILED = `{
+  "merchantId": 902,
+  "appId": "MER-902-APP-1",
+  "referenceId": "ord42txn001",
+  "txnAmt": "1050",
+  "status": "FAILED",
+  "statusDesc": "Transaction failed / declined."
+}`;
+
+export const CONNECTIPS_VALIDATE_ERROR = `{
+  "merchantId": 902,
+  "appId": "MER-902-APP-1",
+  "referenceId": "unknown-txn",
+  "txnAmt": "1050",
+  "status": "ERROR",
+  "statusDesc": "Transaction not found / incomplete."
+}`;
+
+export const CONNECTIPS_TXN_DETAIL = `{
+  "merchantId": 902,
+  "appId": "MER-902-APP-1",
+  "referenceId": "ord42txn001",
+  "txnAmt": 1050,
+  "status": "SUCCESS",
+  "txnId": 998877,
+  "creditStatus": "000",
+  "txnCrncy": "NPR",
+  "remarks": "Pro plan",
+  "particulars": "Pro plan"
+}`;
+
 export const SDK_VERIFY_CONFIRMED = `{
   "status": "confirmed",
   "providerRef": "bZQLD9wbdAi789cZ5GvUdF",
@@ -262,7 +347,7 @@ export type ResponseSample = {
   id: string;
   label: string;
   kind: "success" | "error" | "info";
-  gateway: "esewa" | "khalti" | "sdk";
+  gateway: "esewa" | "khalti" | "connectips" | "sdk";
   json: string;
   note: string;
 };
@@ -443,6 +528,70 @@ export const RESPONSE_SAMPLES: ResponseSample[] = [
     gateway: "khalti",
     json: KHALTI_VALIDATION_ERROR,
     note: "Typed GatewayApiError with upstream body.",
+  },
+  {
+    id: "connectips-initiate-ok",
+    label: "connectIPS initiate (form)",
+    kind: "success",
+    gateway: "connectips",
+    json: CONNECTIPS_INITIATE_SUCCESS,
+    note: "method POST + formFields — same HTML auto-submit pattern as eSewa. TXNAMT is paisa.",
+  },
+  {
+    id: "connectips-callback",
+    label: "connectIPS callback TXNID",
+    kind: "info",
+    gateway: "connectips",
+    json: CONNECTIPS_CALLBACK,
+    note: "Only TXNID is appended — untrusted. Always call validatetxn.",
+  },
+  {
+    id: "connectips-callback-fail",
+    label: "connectIPS failure return",
+    kind: "error",
+    gateway: "connectips",
+    json: CONNECTIPS_CALLBACK_FAILURE,
+    note: "Point NCHL failure URL at …/return?outcome=failure for cancel detection.",
+  },
+  {
+    id: "connectips-validate-req",
+    label: "connectIPS validatetxn request",
+    kind: "info",
+    gateway: "connectips",
+    json: CONNECTIPS_VALIDATE_REQUEST,
+    note: "Basic Auth APPID:password + RSA token over MERCHANTID,APPID,REFERENCEID,TXNAMT.",
+  },
+  {
+    id: "connectips-validate-ok",
+    label: "connectIPS validatetxn SUCCESS",
+    kind: "success",
+    gateway: "connectips",
+    json: CONNECTIPS_VALIDATE_SUCCESS,
+    note: "Only SUCCESS maps to confirmed / deliver service.",
+  },
+  {
+    id: "connectips-validate-failed",
+    label: "connectIPS validatetxn FAILED",
+    kind: "error",
+    gateway: "connectips",
+    json: CONNECTIPS_VALIDATE_FAILED,
+    note: "Maps to failed.",
+  },
+  {
+    id: "connectips-validate-error",
+    label: "connectIPS validatetxn ERROR",
+    kind: "info",
+    gateway: "connectips",
+    json: CONNECTIPS_VALIDATE_ERROR,
+    note: "Maps to pending (not found / incomplete) — re-poll; do not fulfill.",
+  },
+  {
+    id: "connectips-detail",
+    label: "connectIPS gettxndetail",
+    kind: "info",
+    gateway: "connectips",
+    json: CONNECTIPS_TXN_DETAIL,
+    note: "Optional enrichment after SUCCESS. creditStatus 000 / 999 / DEFER noted in NCHL docs.",
   },
   {
     id: "sdk-callback-ok",

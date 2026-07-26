@@ -1,6 +1,7 @@
 import { ConfigError } from "../core/errors";
 import type { PaymentGateway } from "../core/PaymentGateway";
 import type { GatewayName, NepalPayConfig, PaymentMode } from "../core/types";
+import { ConnectIpsGateway } from "../gateways/connectips/ConnectIpsGateway";
 import { EsewaGateway } from "../gateways/esewa/EsewaGateway";
 import { KhaltiGateway } from "../gateways/khalti/KhaltiGateway";
 
@@ -49,11 +50,28 @@ const factories = new Map<GatewayName, GatewayFactory>([
       });
     },
   ],
+  [
+    "connectips",
+    (ctx) => {
+      if (!ctx.config.connectips) {
+        throw new ConfigError(
+          "connectips config is required to use the connectIPS gateway",
+        );
+      }
+      return new ConnectIpsGateway({
+        mode: ctx.mode,
+        config: ctx.config.connectips,
+        fetchImpl: ctx.fetchImpl,
+        timeoutMs: ctx.timeoutMs,
+        retries: ctx.retries,
+      });
+    },
+  ],
 ]);
 
 /**
- * Register an additional gateway (Fonepay, ConnectIPS, …) without forking the SDK.
- * Built-in `esewa` / `khalti` can also be overridden for tests.
+ * Register an additional gateway (Fonepay, IME Pay, …) without forking the SDK.
+ * Built-ins can also be overridden for tests.
  */
 export function registerGateway(
   name: GatewayName,
@@ -63,7 +81,7 @@ export function registerGateway(
 }
 
 export function unregisterGateway(name: GatewayName): boolean {
-  if (name === "esewa" || name === "khalti") {
+  if (name === "esewa" || name === "khalti" || name === "connectips") {
     // Keep builtins; allow override via registerGateway only.
     return false;
   }

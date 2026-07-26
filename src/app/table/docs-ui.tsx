@@ -4,6 +4,7 @@ import Link from "next/link";
 import { type ReactNode, useCallback, useEffect, useState } from "react";
 
 import { CodeBlock } from "@/components/code-block";
+import { useScrollNavToActive } from "@/components/docs/use-scroll-nav-to-active";
 import { cn } from "@/lib/utils";
 import { DOC_NAV, type NavItem, RIGHT_TOC } from "./nav";
 
@@ -82,6 +83,7 @@ function NavLink({
   return (
     <a
       href={`#${item.id}`}
+      data-nav-id={item.id}
       aria-current={active ? "location" : undefined}
       className={cn(
         "group relative block rounded-sm transition-colors",
@@ -206,6 +208,8 @@ export function DocToc({
 export function DocsShell({ children }: { children: ReactNode }) {
   const ids = DOC_NAV.map((n) => n.id);
   const activeId = useActiveSection(ids);
+  useScrollNavToActive(activeId, '[data-docs-sidebar="left"]');
+  useScrollNavToActive(activeId, '[data-docs-sidebar="right"]');
 
   const scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -214,13 +218,19 @@ export function DocsShell({ children }: { children: ReactNode }) {
   return (
     <div className="docs-shell min-h-full bg-page">
       <div className="mx-auto flex w-full max-w-[88rem] gap-4 px-4 py-6 sm:px-6 sm:py-8 lg:gap-8 lg:py-10 xl:gap-10">
-        <aside className="sticky top-20 hidden h-[calc(100vh-6rem)] w-52 shrink-0 overflow-y-auto lg:block xl:w-56">
+        <aside
+          data-docs-sidebar="left"
+          className="sticky top-20 hidden h-[calc(100vh-6rem)] w-52 shrink-0 overflow-y-auto lg:block xl:w-56"
+        >
           <DocSidebar activeId={activeId} />
         </aside>
 
         <main className="min-w-0 flex-1 pb-12 sm:pb-24">{children}</main>
 
-        <aside className="sticky top-20 hidden h-[calc(100vh-6rem)] w-44 shrink-0 overflow-y-auto xl:block">
+        <aside
+          data-docs-sidebar="right"
+          className="sticky top-20 hidden h-[calc(100vh-6rem)] w-44 shrink-0 overflow-y-auto xl:block"
+        >
           <DocToc activeId={activeId} />
           <button
             type="button"
@@ -328,7 +338,7 @@ export function PropsTable({
                 {row.type}
               </td>
               <td className="px-3 py-2.5 align-top font-mono text-[12px] whitespace-nowrap text-tertiary">
-                {row.default ?? "—"}
+                {row.default ?? "â€”"}
               </td>
               <td className="px-3 py-2.5 align-top text-[13px] leading-relaxed text-secondary">
                 {row.description}

@@ -188,8 +188,8 @@ export function IconClose(props: IconProps) {
 }
 
 /**
- * Launcher glyph: stylized "Aa" + slider.
- * Button provides fill/ring via CSS vars; SVG uses currentColor.
+ * Universal Symbol of Access launcher mark.
+ * Circle + ring + outstretched figure; fill/glyph from CSS `currentColor` / button vars.
  */
 export function IconLauncher(props: IconProps) {
   const { width = 56, height = 56, ...rest } = props;
@@ -202,40 +202,32 @@ export function IconLauncher(props: IconProps) {
       aria-hidden
       {...rest}
     >
-      <path
-        d="M16 44 L25.5 16 L35 44"
+      <circle
+        cx="32"
+        cy="32"
+        r="23.5"
         stroke="currentColor"
         strokeWidth="3.5"
+        fill="none"
+      />
+      <circle cx="32" cy="17.5" r="4.75" fill="currentColor" />
+      {/* Horizontal outstretched arms */}
+      <rect
+        x="12.5"
+        y="25.25"
+        width="39"
+        height="5.5"
+        rx="2.75"
+        fill="currentColor"
+      />
+      {/* Torso + A-frame legs */}
+      <path
+        d="M32 30.5v9.25M32 39.75 21.5 52.25M32 39.75 42.5 52.25"
+        stroke="currentColor"
+        strokeWidth="5.25"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path
-        d="M19.5 33.5h11"
-        stroke="currentColor"
-        strokeWidth="3.25"
-        strokeLinecap="round"
-      />
-      <circle
-        cx="45"
-        cy="35"
-        r="8"
-        stroke="currentColor"
-        strokeWidth="3.25"
-        fill="none"
-      />
-      <path
-        d="M53 26.5v17"
-        stroke="currentColor"
-        strokeWidth="3.25"
-        strokeLinecap="round"
-      />
-      <path
-        d="M12 51h40"
-        stroke="currentColor"
-        strokeWidth="4"
-        strokeLinecap="round"
-      />
-      <circle cx="40" cy="51" r="5" fill="currentColor" />
     </svg>
   );
 }

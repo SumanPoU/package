@@ -55,7 +55,8 @@ import "@itzsa/a11y-toolbar/styles.css";
 | `hotkey` | `{ altKey?, key, ... } \| null` | `Alt+A` | Pass `null` to disable |
 | `onChange` | `(prefs) => void` | — | Fired after preference updates |
 | `launcherLabel` | `string` | `"Accessibility tools"` | Launcher accessible name |
-| `position` | `A11yToolbarPosition` | `"bottom-right"` | `bottom-*` / `top-*` / `middle-*` / `*-center` |
+| `position` | `A11yToolbarPosition` | `"bottom-right"` | Launcher placement: `bottom-*` / `top-*` / `middle-*` / `*-center` |
+| `panelAlign` | `"auto" \| "left" \| "right" \| "center"` | `"auto"` | Panel horizontal edge; `"auto"` follows the launcher |
 | `offset` | `string` | `"1.25rem"` | Gap from viewport edge |
 | `launcherSize` | `string` | `"3.5rem"` | Floating button size |
 | `theme` | `A11yToolbarTheme` | itzsa green | Accent, header, launcher colors, font, focus |
@@ -65,7 +66,8 @@ import "@itzsa/a11y-toolbar/styles.css";
 
 ```tsx
 <A11yToolbar
-  position="top-left" // or bottom-center, middle-right, …
+  position="bottom-center" // launcher icon
+  panelAlign="left" // panel flush left — or "right" | "center" | "auto"
   offset="1rem"
   launcherSize="3rem"
   theme={{
@@ -79,6 +81,10 @@ import "@itzsa/a11y-toolbar/styles.css";
   }}
 />
 ```
+
+`position` controls the **launcher**. `panelAlign` controls the **panel** horizontally
+while the vertical edge still tracks `position` (e.g. bottom-center icon + left panel
+opens above the bottom edge, flush left).
 
 ## Features (v1)
 

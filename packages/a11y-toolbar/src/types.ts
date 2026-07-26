@@ -41,6 +41,22 @@ export type A11yToolbarPosition =
   | "middle-right";
 
 /**
+ * Horizontal placement of the open panel, independent of the launcher.
+ * - `"auto"` — follow the launcher (corners / center / beside middle edges)
+ * - `"left"` / `"right"` — flush to that viewport edge (`left: 0` / `right: 0` + offset)
+ * - `"center"` — horizontally centered
+ */
+export type A11yPanelAlign = "auto" | "left" | "right" | "center";
+
+/** Resolved panel align class (after expanding `"auto"`). */
+export type A11yResolvedPanelAlign =
+  | "left"
+  | "right"
+  | "center"
+  | "beside-left"
+  | "beside-right";
+
+/**
  * Theme tokens for chrome (header, accents, focus, type, launcher).
  * Prefer host CSS variables (e.g. `var(--accent)`) so light/dark stay in sync.
  * Defaults match the itzsa brand green with WCAG-safe header foreground.

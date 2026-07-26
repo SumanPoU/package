@@ -25,7 +25,8 @@ import "@itzsa/a11y-toolbar/styles.css";
 
 // 3. Mount once from a Client Component, outside the content root
 <A11yToolbar
-  position="bottom-right"
+  position="bottom-center"
+  panelAlign="left"
   offset="1.25rem"
   launcherSize="3.5rem"
   theme={{
@@ -102,9 +103,14 @@ export default function A11yToolbarDocsPage() {
             assist features. Panel sections: Display, Motion &amp; assist.
           </li>
           <li>
-            Configure <code className="font-mono">position</code> and{" "}
-            <code className="font-mono">theme</code> (itzsa accent, Outfit font)
-            so the toolbar tracks your brand tokens.
+            Configure <code className="font-mono">position</code> (launcher),{" "}
+            <code className="font-mono">panelAlign</code> (panel edge:{" "}
+            <code className="font-mono">auto</code> /{" "}
+            <code className="font-mono">left</code> /{" "}
+            <code className="font-mono">right</code> /{" "}
+            <code className="font-mono">center</code>), and{" "}
+            <code className="font-mono">theme</code> so the toolbar tracks your
+            brand tokens.
           </li>
         </ul>
       </section>

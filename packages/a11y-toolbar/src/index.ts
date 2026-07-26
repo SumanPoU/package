@@ -1,7 +1,12 @@
 "use client";
 
 export type { A11yToolbarProps } from "./A11yToolbar";
-export { A11yToolbar, hasActiveA11yPreferences } from "./A11yToolbar";
+export {
+  A11yToolbar,
+  hasActiveA11yPreferences,
+  resolvePanelAlign,
+  resolvePanelStyle,
+} from "./A11yToolbar";
 export {
   A11Y_ATTRS,
   applyA11yPreferences,
@@ -57,7 +62,9 @@ export {
 export type {
   A11yFeatureFlags,
   A11yHotkey,
+  A11yPanelAlign,
   A11yPreferences,
+  A11yResolvedPanelAlign,
   A11yToolbarPosition,
   A11yToolbarTheme,
   ApplyA11yOptions,

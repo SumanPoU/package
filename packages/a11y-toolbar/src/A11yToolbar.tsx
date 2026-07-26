@@ -41,7 +41,9 @@ import { ToolCard } from "./ToolCard";
 import type {
   A11yFeatureFlags,
   A11yHotkey,
+  A11yPanelAlign,
   A11yPreferences,
+  A11yResolvedPanelAlign,
   A11yToolbarPosition,
   A11yToolbarTheme,
   FeatureId,
@@ -67,10 +69,20 @@ export type A11yToolbarProps = {
   style?: CSSProperties;
   launcherLabel?: string;
   /**
-   * Screen placement for the floating launcher (+ panel nearby).
+   * Screen placement for the floating launcher.
    * Corners, edge centers, or middle sides.
    */
   position?: A11yToolbarPosition;
+  /**
+   * Horizontal placement of the panel, independent of the launcher.
+   * `"auto"` (default) follows the icon; `"left"` / `"right"` / `"center"`
+   * pin the panel to that edge (or center) while vertical edge still tracks `position`.
+   *
+   * @example
+   * // Icon bottom-center, panel flush left
+   * <A11yToolbar position="bottom-center" panelAlign="left" />
+   */
+  panelAlign?: A11yPanelAlign;
   /** Distance from viewport edge (e.g. `1.25rem`, `20px`). */
   offset?: string;
   /** Launcher button size (e.g. `3.5rem`, `56px`). */
@@ -88,6 +100,89 @@ function isEnabled(
   id: FeatureId,
 ): boolean {
   return flags?.[id] !== false;
+}
+
+/** Expand `panelAlign` (+ launcher `position`) into a CSS class token. */
+export function resolvePanelAlign(
+  position: A11yToolbarPosition,
+  panelAlign: A11yPanelAlign = "auto",
+): A11yResolvedPanelAlign {
+  if (panelAlign !== "auto") return panelAlign;
+  switch (position) {
+    case "bottom-left":
+    case "top-left":
+      return "left";
+    case "bottom-right":
+    case "top-right":
+      return "right";
+    case "bottom-center":
+    case "top-center":
+      return "center";
+    case "middle-left":
+      return "beside-left";
+    case "middle-right":
+      return "beside-right";
+  }
+}
+
+const PANEL_GAP = "0.75rem";
+const EDGE_LEFT = "max(var(--itzsa-a11y-offset), env(safe-area-inset-left))";
+const EDGE_RIGHT = "max(var(--itzsa-a11y-offset), env(safe-area-inset-right))";
+const EDGE_TOP = "max(var(--itzsa-a11y-offset), env(safe-area-inset-top))";
+const EDGE_BOTTOM =
+  "max(var(--itzsa-a11y-offset), env(safe-area-inset-bottom))";
+
+/**
+ * Inline insets for the panel — driven by props so placement cannot desync
+ * from CSS class order / stale builds missing align rules.
+ */
+export function resolvePanelStyle(
+  position: A11yToolbarPosition,
+  panelAlign: A11yPanelAlign = "auto",
+): CSSProperties {
+  const align = resolvePanelAlign(position, panelAlign);
+
+  const vertical: CSSProperties = position.startsWith("bottom")
+    ? {
+        top: "auto",
+        bottom: `calc(var(--itzsa-a11y-launcher-size) + ${PANEL_GAP} + ${EDGE_BOTTOM})`,
+        marginBlock: 0,
+        height: "auto",
+      }
+    : position.startsWith("top")
+      ? {
+          bottom: "auto",
+          top: `calc(var(--itzsa-a11y-launcher-size) + ${PANEL_GAP} + ${EDGE_TOP})`,
+          marginBlock: 0,
+          height: "auto",
+        }
+      : {
+          top: 0,
+          bottom: 0,
+          marginBlock: "auto",
+          height: "fit-content",
+        };
+
+  const horizontal: CSSProperties =
+    align === "left"
+      ? { left: EDGE_LEFT, right: "auto", marginInline: 0 }
+      : align === "right"
+        ? { right: EDGE_RIGHT, left: "auto", marginInline: 0 }
+        : align === "center"
+          ? { left: 0, right: 0, marginInline: "auto" }
+          : align === "beside-left"
+            ? {
+                left: `calc(${EDGE_LEFT} + var(--itzsa-a11y-launcher-size) + ${PANEL_GAP})`,
+                right: "auto",
+                marginInline: 0,
+              }
+            : {
+                right: `calc(${EDGE_RIGHT} + var(--itzsa-a11y-launcher-size) + ${PANEL_GAP})`,
+                left: "auto",
+                marginInline: 0,
+              };
+
+  return { ...vertical, ...horizontal };
 }
 
 function resolveThemeStyle(
@@ -136,6 +231,7 @@ export function A11yToolbar({
   style,
   launcherLabel = "Accessibility tools",
   position = "bottom-right",
+  panelAlign = "auto",
   offset,
   launcherSize,
   accentColor,
@@ -244,12 +340,21 @@ export function A11yToolbar({
     ...style,
   };
 
+  const resolvedPanelAlign = resolvePanelAlign(position, panelAlign);
+  const panelStyle = resolvePanelStyle(position, panelAlign);
+
   return (
     <div
-      className={["itzsa-a11y-root", `itzsa-a11y-pos-${position}`, className]
+      className={[
+        "itzsa-a11y-root",
+        `itzsa-a11y-pos-${position}`,
+        `itzsa-a11y-panel-align-${resolvedPanelAlign}`,
+        className,
+      ]
         .filter(Boolean)
         .join(" ")}
       style={rootStyle}
+      data-panel-align={resolvedPanelAlign}
       {...{ [A11Y_TOOLBAR_ATTR]: "" }}
     >
       <button
@@ -287,6 +392,8 @@ export function A11yToolbar({
             aria-modal="true"
             aria-labelledby={titleId}
             className="itzsa-a11y-panel"
+            style={panelStyle}
+            data-panel-align={resolvedPanelAlign}
           >
             <div className="itzsa-a11y-header">
               <h2 id={titleId} className="itzsa-a11y-title">

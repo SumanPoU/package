@@ -55,7 +55,9 @@ export {
 export type {
   A11yFeatureFlags,
   A11yHotkey,
+  A11yPanelAlign,
   A11yPreferences,
+  A11yResolvedPanelAlign,
   A11yToolbarPosition,
   A11yToolbarTheme,
   ApplyA11yOptions,

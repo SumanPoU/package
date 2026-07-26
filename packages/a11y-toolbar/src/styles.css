@@ -23,11 +23,11 @@
     var(--font-outfit), "Outfit", system-ui, -apple-system, "Segoe UI",
     sans-serif;
   --itzsa-a11y-space: 8px;
-  --itzsa-a11y-launcher-size: 3.5rem;
+  --itzsa-a11y-launcher-size: 3.75rem;
   --itzsa-a11y-launcher-bg: var(--itzsa-a11y-toolbar-accent);
   --itzsa-a11y-launcher-fg: #ffffff;
   --itzsa-a11y-launcher-ring: #ffffff;
-  --itzsa-a11y-launcher-radius: 14px;
+  --itzsa-a11y-launcher-radius: 999px;
   --itzsa-a11y-font-scale: 1;
   --itzsa-a11y-letter-spacing: 0em;
   --itzsa-a11y-word-spacing: 0em;
@@ -94,73 +94,68 @@
   transform: translateY(-50%);
 }
 
-.itzsa-a11y-pos-bottom-right .itzsa-a11y-panel {
-  right: max(var(--itzsa-a11y-offset), env(safe-area-inset-right));
-  bottom: calc(
-    var(--itzsa-a11y-launcher-size) + 0.75rem + env(safe-area-inset-bottom)
-  );
-  left: auto;
-  top: auto;
-}
-.itzsa-a11y-pos-bottom-left .itzsa-a11y-panel {
-  left: max(var(--itzsa-a11y-offset), env(safe-area-inset-left));
-  bottom: calc(
-    var(--itzsa-a11y-launcher-size) + 0.75rem + env(safe-area-inset-bottom)
-  );
-  right: auto;
-  top: auto;
-}
+/* Panel vertical edge follows launcher `position` */
+.itzsa-a11y-pos-bottom-right .itzsa-a11y-panel,
+.itzsa-a11y-pos-bottom-left .itzsa-a11y-panel,
 .itzsa-a11y-pos-bottom-center .itzsa-a11y-panel {
-  left: 50%;
   bottom: calc(
-    var(--itzsa-a11y-launcher-size) + 0.75rem + env(safe-area-inset-bottom)
+    var(--itzsa-a11y-launcher-size) +
+    0.75rem +
+    max(var(--itzsa-a11y-offset), env(safe-area-inset-bottom))
   );
-  right: auto;
   top: auto;
-  transform: translateX(-50%);
 }
-.itzsa-a11y-pos-top-right .itzsa-a11y-panel {
-  right: max(var(--itzsa-a11y-offset), env(safe-area-inset-right));
-  top: calc(
-    var(--itzsa-a11y-launcher-size) + 0.75rem + env(safe-area-inset-top)
-  );
-  left: auto;
-  bottom: auto;
-}
-.itzsa-a11y-pos-top-left .itzsa-a11y-panel {
-  left: max(var(--itzsa-a11y-offset), env(safe-area-inset-left));
-  top: calc(
-    var(--itzsa-a11y-launcher-size) + 0.75rem + env(safe-area-inset-top)
-  );
-  right: auto;
-  bottom: auto;
-}
+.itzsa-a11y-pos-top-right .itzsa-a11y-panel,
+.itzsa-a11y-pos-top-left .itzsa-a11y-panel,
 .itzsa-a11y-pos-top-center .itzsa-a11y-panel {
-  left: 50%;
   top: calc(
-    var(--itzsa-a11y-launcher-size) + 0.75rem + env(safe-area-inset-top)
+    var(--itzsa-a11y-launcher-size) +
+    0.75rem +
+    max(var(--itzsa-a11y-offset), env(safe-area-inset-top))
   );
-  right: auto;
   bottom: auto;
-  transform: translateX(-50%);
 }
-.itzsa-a11y-pos-middle-left .itzsa-a11y-panel {
-  left: calc(
-    var(--itzsa-a11y-launcher-size) + 0.75rem + env(safe-area-inset-left)
-  );
-  top: 50%;
-  right: auto;
-  bottom: auto;
-  transform: translateY(-50%);
-}
+.itzsa-a11y-pos-middle-left .itzsa-a11y-panel,
 .itzsa-a11y-pos-middle-right .itzsa-a11y-panel {
-  right: calc(
-    var(--itzsa-a11y-launcher-size) + 0.75rem + env(safe-area-inset-right)
-  );
-  top: 50%;
+  top: 0;
+  bottom: 0;
+  margin-block: auto;
+  height: fit-content;
+}
+
+/* Panel horizontal via `panelAlign` (also set inline from props) */
+.itzsa-a11y-panel-align-left .itzsa-a11y-panel {
+  left: max(var(--itzsa-a11y-offset), env(safe-area-inset-left));
+  right: auto;
+  margin-inline: 0;
+}
+.itzsa-a11y-panel-align-right .itzsa-a11y-panel {
+  right: max(var(--itzsa-a11y-offset), env(safe-area-inset-right));
   left: auto;
-  bottom: auto;
-  transform: translateY(-50%);
+  margin-inline: 0;
+}
+.itzsa-a11y-panel-align-center .itzsa-a11y-panel {
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+}
+.itzsa-a11y-panel-align-beside-left .itzsa-a11y-panel {
+  left: calc(
+    max(var(--itzsa-a11y-offset), env(safe-area-inset-left)) +
+    var(--itzsa-a11y-launcher-size) +
+    0.75rem
+  );
+  right: auto;
+  margin-inline: 0;
+}
+.itzsa-a11y-panel-align-beside-right .itzsa-a11y-panel {
+  right: calc(
+    max(var(--itzsa-a11y-offset), env(safe-area-inset-right)) +
+    var(--itzsa-a11y-launcher-size) +
+    0.75rem
+  );
+  left: auto;
+  margin-inline: 0;
 }
 
 .itzsa-a11y-launcher {
@@ -203,8 +198,7 @@
 .itzsa-a11y-launcher[data-active="true"] {
   box-shadow:
     var(--itzsa-a11y-toolbar-shadow),
-    0 0 0 3px
-      color-mix(in srgb, var(--itzsa-a11y-launcher-bg) 40%, transparent);
+    0 0 0 3px color-mix(in srgb, var(--itzsa-a11y-launcher-bg) 40%, transparent);
 }
 
 .itzsa-a11y-launcher-dot {
@@ -256,14 +250,13 @@
     opacity: 1;
   }
 }
+/* Opacity-only so position transforms (launcher) / layout centering stay put */
 @keyframes itzsa-a11y-panel-in {
   from {
     opacity: 0;
-    transform: translateY(8px) scale(0.98);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
   }
 }
 
@@ -370,9 +363,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  min-height: 4.65rem;
-  padding: 0.55rem 0.4rem 0.5rem;
+  gap: 5px;
+  min-height: 5rem;
+  padding: 0.6rem 0.45rem 0.55rem;
   border: 2px solid transparent;
   border-radius: var(--itzsa-a11y-toolbar-radius);
   background: var(--itzsa-a11y-toolbar-card);
@@ -415,7 +408,7 @@
   box-shadow:
     0 1px 2px rgba(15, 23, 42, 0.06),
     inset 0 0 0 1px
-      color-mix(in srgb, var(--itzsa-a11y-toolbar-accent) 22%, transparent);
+    color-mix(in srgb, var(--itzsa-a11y-toolbar-accent) 22%, transparent);
 }
 .itzsa-a11y-card:focus-visible[data-active="true"],
 .itzsa-a11y-card:focus-visible[aria-pressed="true"] {
@@ -423,26 +416,26 @@
   outline-offset: 2px;
   box-shadow:
     inset 0 0 0 1px
-      color-mix(in srgb, var(--itzsa-a11y-toolbar-accent) 22%, transparent),
+    color-mix(in srgb, var(--itzsa-a11y-toolbar-accent) 22%, transparent),
     0 0 0 1px #fff;
 }
 .itzsa-a11y-card-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.7rem;
+  height: 1.7rem;
   color: var(--itzsa-a11y-toolbar-icon);
 }
 .itzsa-a11y-card-icon svg {
-  width: 1.35rem;
-  height: 1.35rem;
+  width: 1.55rem;
+  height: 1.55rem;
 }
 .itzsa-a11y-card-label {
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   font-weight: 600;
   line-height: 1.2;
-  max-width: 8.5rem;
+  max-width: 9rem;
   letter-spacing: 0.01em;
 }
 /* Pill / dash step indicators (not circular dots) */

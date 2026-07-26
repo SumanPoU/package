@@ -5,14 +5,15 @@ import "@itzsa/a11y-toolbar/styles.css";
 
 /**
  * Site-wide mount — keep outside `[data-a11y-content]`.
- * Position / size / colors are prop-driven for host branding.
+ * `position` = launcher · `panelAlign` = panel edge (left / right / center / auto).
  */
 export function SiteA11yToolbar() {
   return (
     <A11yToolbar
-      position="bottom-right"
+      position="bottom-center"
+      panelAlign="left"
       offset="1.25rem"
-      launcherSize="3.5rem"
+      launcherSize="3.75rem"
       theme={{
         accent: "var(--accent)",
         header: "var(--accent)",

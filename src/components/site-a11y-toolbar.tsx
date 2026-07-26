@@ -1,11 +1,11 @@
 "use client";
 
-import { A11yToolbar } from "@itzsa/a11y-toolbar";
+import { A11yToolbar, NE_MESSAGES } from "@itzsa/a11y-toolbar";
 import "@itzsa/a11y-toolbar/styles.css";
 
 /**
  * Site-wide mount — keep outside `[data-a11y-content]`.
- * `position` = launcher · `panelAlign` = panel edge (left / right / center / auto).
+ * Fonts: English → Outfit, Nepali → Poppins (via package defaults + CSS vars).
  */
 export function SiteA11yToolbar() {
   return (
@@ -14,6 +14,8 @@ export function SiteA11yToolbar() {
       panelAlign="left"
       offset="1.25rem"
       launcherSize="3.75rem"
+      defaultLocale="en"
+      locales={{ ne: NE_MESSAGES }}
       theme={{
         accent: "var(--accent)",
         header: "var(--accent)",
@@ -23,8 +25,6 @@ export function SiteA11yToolbar() {
         launcher: "var(--accent)",
         launcherForeground: "#ffffff",
         launcherRing: "#ffffff",
-        fontFamily:
-          'var(--font-outfit), "Outfit", system-ui, -apple-system, sans-serif',
       }}
     />
   );

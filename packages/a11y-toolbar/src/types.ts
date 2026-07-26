@@ -75,8 +75,16 @@ export type A11yToolbarTheme = {
   icon?: string;
   /** Focus ring for launcher, cards, header buttons (non-text ≥3:1). */
   focusRing?: string;
-  /** Panel font stack — e.g. `var(--font-outfit), Outfit, system-ui, sans-serif`. */
+  /**
+   * Force one font stack for **all** locales.
+   * Prefer `fontFamilyByLocale` when English/Nepali need different faces.
+   */
   fontFamily?: string;
+  /**
+   * Per-locale font stacks. Defaults: `en` → Outfit, `ne` → Poppins.
+   * Merged over built-ins; ignored when `fontFamily` is set.
+   */
+  fontFamilyByLocale?: Record<string, string>;
   /** Floating launcher button fill (defaults to accent). */
   launcher?: string;
   /** Launcher glyph color (Aa + slider) — default `#ffffff`. */

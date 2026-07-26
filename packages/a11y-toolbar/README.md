@@ -54,13 +54,77 @@ import "@itzsa/a11y-toolbar/styles.css";
 | `features` | `Partial<Record<FeatureId, boolean>>` | all on | Set `false` to hide a control |
 | `hotkey` | `{ altKey?, key, ... } \| null` | `Alt+A` | Pass `null` to disable |
 | `onChange` | `(prefs) => void` | — | Fired after preference updates |
-| `launcherLabel` | `string` | `"Accessibility tools"` | Launcher accessible name |
+| `launcherLabel` | `string` | locale message | Override launcher accessible name |
 | `position` | `A11yToolbarPosition` | `"bottom-right"` | Launcher placement: `bottom-*` / `top-*` / `middle-*` / `*-center` |
 | `panelAlign` | `"auto" \| "left" \| "right" \| "center"` | `"auto"` | Panel horizontal edge; `"auto"` follows the launcher |
 | `offset` | `string` | `"1.25rem"` | Gap from viewport edge |
 | `launcherSize` | `string` | `"3.5rem"` | Floating button size |
+| `panelMaxHeight` | `string` | `min(40rem, 100dvh - 6rem)` | Panel max height (`"32rem"`, `"70dvh"`, …) |
+| `panelHeight` | `string` | `auto` | Fixed panel height (still capped by `panelMaxHeight`) |
 | `theme` | `A11yToolbarTheme` | itzsa green | Accent, header, launcher colors, font, focus |
 | `accentColor` | `string` | — | Deprecated shorthand for accent + header |
+| `locale` | `string` | — | Controlled locale (sync with Zustand / Redux / app i18n) |
+| `defaultLocale` | `string` | `"en"` | Uncontrolled initial locale |
+| `onLocaleChange` | `(locale) => void` | — | Language switch / host sync callback |
+| `messages` | `A11yMessagesPartial` | — | Deep-partial overrides on the active locale |
+| `locales` | `Record<string, A11yMessagesPartial>` | — | Extra dictionaries (`en` is built-in) |
+| `availableLocales` | `string[]` | `en` + keys of `locales` | Codes shown in the language switcher |
+
+## Internationalization
+
+Default language is **English**. Pass extra dictionaries and (optionally) sync
+with your app store:
+
+```tsx
+import { A11yToolbar, NE_MESSAGES } from "@itzsa/a11y-toolbar";
+
+// Controlled — same source of truth as next-intl / Zustand / Redux
+const locale = useAppLocale();
+const setLocale = useSetAppLocale();
+
+<A11yToolbar
+  locale={locale}
+  onLocaleChange={setLocale}
+  locales={{ ne: NE_MESSAGES }}
+  messages={{ panelTitle: "Site accessibility" }} // optional last-wins overrides
+/>
+```
+
+**Resolution:** `en` → `locales[active]` → `messages` prop (deep partial).
+
+**Accessibility:** the open panel sets `lang={locale}` (WCAG 3.1.2). Changing
+language announces `languageChanged` in the **new** locale via the live region.
+Step announcements use **Arabic numerals** (`3 of 4`) in every locale.
+
+**FOUC:** FOUC script sets `data-a11y-locale` on `<html>` from
+`${storageKey}:locale`. Translated chrome strings resolve in React — for
+SSR-safe copy with no flash, pass controlled `locale` from the host (same
+pattern as syncing app i18n state). Uncontrolled mode reads storage on first
+client render.
+
+**RTL / `dir`:** not in v1 (Nepali/Hindi are LTR). Deferred if Arabic/Urdu/Hebrew
+are added later.
+
+**Dev warning:** incomplete `locales.*` keys that still equal English log a
+`console.warn` in non-production builds. Built-in `NE_MESSAGES` is complete.
+
+**Fonts by locale:** English defaults to Outfit; Nepali defaults to Poppins
+(with Devanagari fallbacks). Override with props:
+
+```tsx
+theme={{
+  // Force one stack for every locale:
+  // fontFamily: 'var(--font-outfit), Outfit, sans-serif',
+
+  // Or per locale (merged over built-ins):
+  fontFamilyByLocale: {
+    en: 'var(--font-outfit), "Outfit", system-ui, sans-serif',
+    ne: 'var(--font-poppins), "Poppins", "Noto Sans Devanagari", sans-serif',
+  },
+}}
+```
+
+Load the faces in the host app (`next/font`: `--font-outfit`, `--font-poppins`).
 
 ## Placement & colors
 
@@ -70,14 +134,14 @@ import "@itzsa/a11y-toolbar/styles.css";
   panelAlign="left" // panel flush left — or "right" | "center" | "auto"
   offset="1rem"
   launcherSize="3rem"
+  locales={{ ne: NE_MESSAGES }}
   theme={{
     accent: "var(--accent)",
     header: "var(--accent)",
     headerForeground: "var(--accent-fg)",
-    launcher: "#1d9e75", // button fill
-    launcherForeground: "#ffffff", // Aa + slider
-    launcherRing: "#ffffff", // outer contrast ring
-    fontFamily: 'var(--font-outfit), "Outfit", system-ui, sans-serif',
+    launcher: "#1d9e75",
+    launcherForeground: "#ffffff",
+    launcherRing: "#ffffff",
   }}
 />
 ```

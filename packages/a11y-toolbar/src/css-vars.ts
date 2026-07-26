@@ -31,6 +31,8 @@ export const CSS_VAR = {
   launcherFg: "--itzsa-a11y-launcher-fg",
   launcherRing: "--itzsa-a11y-launcher-ring",
   launcherRadius: "--itzsa-a11y-launcher-radius",
+  panelMaxHeight: "--itzsa-a11y-panel-max-height",
+  panelHeight: "--itzsa-a11y-panel-height",
 } as const;
 
 /** Effect vars written by apply / FOUC (cleanup list). */

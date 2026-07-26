@@ -28,6 +28,31 @@ export {
   WORD_SPACING_EM,
 } from "./effect-values";
 export { getA11yFoucScript } from "./fouc-script";
+export type {
+  A11yLocaleDictionaries,
+  A11yLocaleFontMap,
+  A11yMessages,
+  A11yMessagesPartial,
+} from "./i18n";
+export {
+  clearStoredLocale,
+  collectFallbackPaths,
+  DEFAULT_LOCALE_FONTS,
+  deepMergeMessages,
+  EN_MESSAGES,
+  formatAnnounceStep,
+  formatAnnounceToggle,
+  formatLevelFallback,
+  getStoredLocale,
+  listAvailableLocales,
+  localeStorageKey,
+  NE_MESSAGES,
+  NE_MESSAGES_DEMO,
+  resolveLocaleFont,
+  resolveLocaleName,
+  resolveMessages,
+  setStoredLocale,
+} from "./i18n";
 export {
   cycleStep,
   isPreferencesEqual,

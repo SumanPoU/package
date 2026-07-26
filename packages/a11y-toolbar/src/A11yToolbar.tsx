@@ -8,7 +8,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { ANNOUNCE_RESET, announceStep, announceToggle } from "./announce";
 import {
   clearA11yPreferences,
   flushApplyA11yPreferences,
@@ -17,6 +16,20 @@ import {
 import { CSS_VAR } from "./css-vars";
 import { A11yPanelErrorBoundary } from "./ErrorBoundary";
 import { useFocusTrap, useHotkey, useIdSafe } from "./hooks";
+import {
+  type A11yLocaleDictionaries,
+  type A11yMessagesPartial,
+  formatAnnounceStep,
+  formatAnnounceToggle,
+  formatLevelFallback,
+  getStoredLocale,
+  listAvailableLocales,
+  localeStorageKey,
+  resolveLocaleFont,
+  resolveLocaleName,
+  resolveMessages,
+  setStoredLocale,
+} from "./i18n";
 import { IconClose, IconLauncher, IconReset, resolveIcon } from "./icons";
 import {
   cycleStep,
@@ -67,32 +80,43 @@ export type A11yToolbarProps = {
   onChange?: (prefs: A11yPreferences) => void;
   className?: string;
   style?: CSSProperties;
+  /**
+   * Override launcher accessible name.
+   * Defaults to the active locale’s `launcherLabel` message.
+   */
   launcherLabel?: string;
-  /**
-   * Screen placement for the floating launcher.
-   * Corners, edge centers, or middle sides.
-   */
   position?: A11yToolbarPosition;
-  /**
-   * Horizontal placement of the panel, independent of the launcher.
-   * `"auto"` (default) follows the icon; `"left"` / `"right"` / `"center"`
-   * pin the panel to that edge (or center) while vertical edge still tracks `position`.
-   *
-   * @example
-   * // Icon bottom-center, panel flush left
-   * <A11yToolbar position="bottom-center" panelAlign="left" />
-   */
   panelAlign?: A11yPanelAlign;
-  /** Distance from viewport edge (e.g. `1.25rem`, `20px`). */
   offset?: string;
-  /** Launcher button size (e.g. `3.5rem`, `56px`). */
   launcherSize?: string;
   /**
-   * @deprecated Prefer `theme.accent` / `theme.launcher`.
+   * Panel max height (e.g. `"32rem"`, `"70dvh"`).
+   * Default `min(40rem, calc(100dvh - 6rem))`.
    */
+  panelMaxHeight?: string;
+  /**
+   * Fixed panel height (e.g. `"28rem"`). When set, the panel uses this height
+   * and still respects `panelMaxHeight` as a ceiling.
+   */
+  panelHeight?: string;
+  /** @deprecated Prefer `theme.accent` / `theme.launcher`. */
   accentColor?: string;
-  /** Dynamic chrome + launcher colors (accent, header, launcher, font, focus). */
   theme?: A11yToolbarTheme;
+  /**
+   * Controlled locale — sync with Zustand / Redux / next-intl / app i18n.
+   * When set, the host owns persistence (toolbar will not write `:locale` storage).
+   */
+  locale?: string;
+  /** Uncontrolled initial locale. Default `"en"`. */
+  defaultLocale?: string;
+  /** Called when the user picks a language (and whenever locale should update). */
+  onLocaleChange?: (locale: string) => void;
+  /** Deep-partial overrides merged last (on top of active locale). */
+  messages?: A11yMessagesPartial;
+  /** Extra dictionaries; missing keys fall back to English. */
+  locales?: A11yLocaleDictionaries;
+  /** Codes in the switcher. Default: `en` + keys of `locales`. */
+  availableLocales?: string[];
 };
 
 function isEnabled(
@@ -132,10 +156,7 @@ const EDGE_TOP = "max(var(--itzsa-a11y-offset), env(safe-area-inset-top))";
 const EDGE_BOTTOM =
   "max(var(--itzsa-a11y-offset), env(safe-area-inset-bottom))";
 
-/**
- * Inline insets for the panel — driven by props so placement cannot desync
- * from CSS class order / stale builds missing align rules.
- */
+/** Inline insets for the panel — driven by props. */
 export function resolvePanelStyle(
   position: A11yToolbarPosition,
   panelAlign: A11yPanelAlign = "auto",
@@ -190,6 +211,9 @@ function resolveThemeStyle(
   accentColor: string | undefined,
   offset: string | undefined,
   launcherSize: string | undefined,
+  locale: string,
+  panelMaxHeight?: string,
+  panelHeight?: string,
 ): CSSProperties {
   const accent = theme?.accent ?? accentColor ?? DEFAULT_A11Y_THEME.accent;
   const header = theme?.header ?? accentColor ?? accent;
@@ -197,7 +221,10 @@ function resolveThemeStyle(
     theme?.headerForeground ?? DEFAULT_A11Y_THEME.headerForeground;
   const icon = theme?.icon ?? accent;
   const focus = theme?.focusRing ?? DEFAULT_A11Y_THEME.focusRing;
-  const font = theme?.fontFamily ?? DEFAULT_A11Y_THEME.fontFamily;
+  const font = resolveLocaleFont(locale, {
+    fontFamily: theme?.fontFamily,
+    fontFamilyByLocale: theme?.fontFamilyByLocale,
+  });
   const launcher = theme?.launcher ?? accent;
   const launcherFg =
     theme?.launcherForeground ?? DEFAULT_A11Y_THEME.launcherForeground;
@@ -215,8 +242,23 @@ function resolveThemeStyle(
     [CSS_VAR.launcherRing]: launcherRing,
     ...(offset ? { [CSS_VAR.offset]: offset } : null),
     ...(launcherSize ? { [CSS_VAR.launcherSize]: launcherSize } : null),
+    ...(panelMaxHeight ? { [CSS_VAR.panelMaxHeight]: panelMaxHeight } : null),
+    ...(panelHeight ? { [CSS_VAR.panelHeight]: panelHeight } : null),
     fontFamily: font,
   } as CSSProperties;
+}
+
+function pickInitialLocale(
+  storageKey: string,
+  defaultLocale: string,
+  available: string[],
+): string {
+  if (typeof window === "undefined") {
+    return available.includes(defaultLocale) ? defaultLocale : "en";
+  }
+  const stored = getStoredLocale(storageKey);
+  if (stored && available.includes(stored)) return stored;
+  return available.includes(defaultLocale) ? defaultLocale : "en";
 }
 
 export function A11yToolbar({
@@ -229,18 +271,32 @@ export function A11yToolbar({
   onChange,
   className,
   style,
-  launcherLabel = "Accessibility tools",
+  launcherLabel: launcherLabelProp,
   position = "bottom-right",
   panelAlign = "auto",
   offset,
   launcherSize,
+  panelMaxHeight,
+  panelHeight,
   accentColor,
   theme,
+  locale: localeProp,
+  defaultLocale = "en",
+  onLocaleChange,
+  messages,
+  locales,
+  availableLocales,
 }: A11yToolbarProps) {
   const titleId = useIdSafe("a11y-title");
+  const languageId = useIdSafe("a11y-language");
   const panelId = titleId.replace("a11y-title", "a11y-panel");
   const panelRef = useRef<HTMLDivElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
+
+  const available = useMemo(
+    () => listAvailableLocales(locales, availableLocales),
+    [locales, availableLocales],
+  );
 
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
   const open = openProp ?? uncontrolledOpen;
@@ -251,6 +307,58 @@ export function A11yToolbar({
     },
     [onOpenChange, openProp],
   );
+
+  const [uncontrolledLocale, setUncontrolledLocale] = useState(() =>
+    pickInitialLocale(storageKey, defaultLocale, available),
+  );
+
+  // Keep uncontrolled locale valid if availableLocales shrink.
+  useEffect(() => {
+    if (localeProp !== undefined) return;
+    if (!available.includes(uncontrolledLocale)) {
+      const fallback = available.includes(defaultLocale)
+        ? defaultLocale
+        : (available[0] ?? "en");
+      setUncontrolledLocale(fallback);
+      setStoredLocale(fallback, storageKey);
+    }
+  }, [available, defaultLocale, localeProp, storageKey, uncontrolledLocale]);
+
+  const activeLocaleCode =
+    localeProp !== undefined
+      ? available.includes(localeProp)
+        ? localeProp
+        : (available[0] ?? "en")
+      : uncontrolledLocale;
+
+  const setLocale = useCallback(
+    (next: string) => {
+      if (!available.includes(next)) return;
+      onLocaleChange?.(next);
+      if (localeProp === undefined) {
+        setUncontrolledLocale(next);
+        setStoredLocale(next, storageKey);
+      }
+      // Controlled: host updates `locale` from onLocaleChange (Zustand / Redux / etc.).
+    },
+    [available, localeProp, onLocaleChange, storageKey],
+  );
+
+  const t = useMemo(
+    () =>
+      resolveMessages({
+        locale: activeLocaleCode,
+        locales,
+        messages,
+        warnFallbacks: true,
+      }),
+    [activeLocaleCode, locales, messages],
+  );
+
+  // Mirror locale onto <html> for hosts / FOUC attribute parity (WCAG lang is on panel).
+  useEffect(() => {
+    document.documentElement.setAttribute("data-a11y-locale", activeLocaleCode);
+  }, [activeLocaleCode]);
 
   const [prefs, setPrefs] = useState<A11yPreferences>(() =>
     typeof window === "undefined"
@@ -273,24 +381,33 @@ export function A11yToolbar({
 
   useEffect(() => {
     const onStorage = (event: StorageEvent) => {
-      if (event.key !== storageKey) return;
-      const next =
-        event.newValue == null
-          ? resetPreferences()
-          : migrate(
-              (() => {
-                try {
-                  return JSON.parse(event.newValue) as unknown;
-                } catch {
-                  return null;
-                }
-              })(),
-            ).values;
-      setPrefs((prev) => (isPreferencesEqual(prev, next) ? prev : next));
+      if (event.key === storageKey) {
+        const next =
+          event.newValue == null
+            ? resetPreferences()
+            : migrate(
+                (() => {
+                  try {
+                    return JSON.parse(event.newValue) as unknown;
+                  } catch {
+                    return null;
+                  }
+                })(),
+              ).values;
+        setPrefs((prev) => (isPreferencesEqual(prev, next) ? prev : next));
+      }
+      if (
+        localeProp === undefined &&
+        event.key === localeStorageKey(storageKey) &&
+        event.newValue
+      ) {
+        const next = event.newValue.trim();
+        if (available.includes(next)) setUncontrolledLocale(next);
+      }
     };
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
-  }, [storageKey]);
+  }, [storageKey, localeProp, available]);
 
   useFocusTrap(open, panelRef, () => setOpen(false));
 
@@ -317,12 +434,19 @@ export function A11yToolbar({
   const onActivate = (id: FeatureId) => {
     const def = getFeatureDef(id);
     if (!def) return;
+    const title = t.features[id].title;
     if (isSteppedFeature(id)) {
       const next = cycleStep(prefs, id);
-      update(next, announceStep(id, next[id] as number));
+      const level = next[id] as number;
+      const levels = t.levels[id];
+      const name = levels[level] ?? formatLevelFallback(t, level + 1);
+      update(
+        next,
+        formatAnnounceStep(t, title, name, level + 1, levels.length),
+      );
     } else if (isToggleFeature(id)) {
       const next = toggleFeature(prefs, id);
-      update(next, announceToggle(id, next[id]));
+      update(next, formatAnnounceToggle(t, title, next[id]));
     }
   };
 
@@ -332,16 +456,39 @@ export function A11yToolbar({
     clearA11yPreferences();
     scheduleApplyA11yPreferences(next, {}, 0);
     flushApplyA11yPreferences();
-    update(next, ANNOUNCE_RESET);
+    update(next, t.resetAnnouncement);
+  };
+
+  const onLanguageChange = (next: string) => {
+    if (next === activeLocaleCode) return;
+    setLocale(next);
+    // Announce in the *new* locale (resolve immediately for the message).
+    const nextMessages = resolveMessages({
+      locale: next,
+      locales,
+      messages,
+      warnFallbacks: false,
+    });
+    setAnnouncement(nextMessages.languageChanged);
   };
 
   const rootStyle: CSSProperties = {
-    ...resolveThemeStyle(theme, accentColor, offset, launcherSize),
+    ...resolveThemeStyle(
+      theme,
+      accentColor,
+      offset,
+      launcherSize,
+      activeLocaleCode,
+      panelMaxHeight,
+      panelHeight,
+    ),
     ...style,
   };
 
   const resolvedPanelAlign = resolvePanelAlign(position, panelAlign);
   const panelStyle = resolvePanelStyle(position, panelAlign);
+  const showLanguageSwitcher = available.length > 1;
+  const launcherLabel = launcherLabelProp ?? t.launcherLabel;
 
   return (
     <div
@@ -355,6 +502,7 @@ export function A11yToolbar({
         .join(" ")}
       style={rootStyle}
       data-panel-align={resolvedPanelAlign}
+      data-locale={activeLocaleCode}
       {...{ [A11Y_TOOLBAR_ATTR]: "" }}
     >
       <button
@@ -366,6 +514,7 @@ export function A11yToolbar({
         aria-controls={open ? panelId : undefined}
         aria-label={launcherLabel}
         data-active={active ? "true" : "false"}
+        suppressHydrationWarning
         onClick={() => setOpen(!open)}
       >
         <IconLauncher />
@@ -381,7 +530,7 @@ export function A11yToolbar({
           <button
             type="button"
             className="itzsa-a11y-overlay"
-            aria-label="Close accessibility tools"
+            aria-label={t.closeOverlay}
             tabIndex={-1}
             onClick={() => setOpen(false)}
           />
@@ -394,17 +543,40 @@ export function A11yToolbar({
             className="itzsa-a11y-panel"
             style={panelStyle}
             data-panel-align={resolvedPanelAlign}
+            lang={t.locale}
           >
             <div className="itzsa-a11y-header">
               <h2 id={titleId} className="itzsa-a11y-title">
-                Accessibility Tools
+                {t.panelTitle}
               </h2>
               <div className="itzsa-a11y-header-actions">
+                {showLanguageSwitcher ? (
+                  <div className="itzsa-a11y-lang">
+                    <label
+                      htmlFor={languageId}
+                      className="itzsa-a11y-lang-label"
+                    >
+                      {t.language}
+                    </label>
+                    <select
+                      id={languageId}
+                      className="itzsa-a11y-lang-select"
+                      value={activeLocaleCode}
+                      onChange={(event) => onLanguageChange(event.target.value)}
+                    >
+                      {available.map((code) => (
+                        <option key={code} value={code} lang={code}>
+                          {resolveLocaleName(code, locales)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : null}
                 <button
                   type="button"
                   className="itzsa-a11y-icon-btn"
-                  aria-label="Reset all settings"
-                  title="Reset all settings"
+                  aria-label={t.resetAll}
+                  title={t.resetAll}
                   onClick={onReset}
                 >
                   <IconReset />
@@ -412,8 +584,8 @@ export function A11yToolbar({
                 <button
                   type="button"
                   className="itzsa-a11y-icon-btn"
-                  aria-label="Close"
-                  title="Close"
+                  aria-label={t.close}
+                  title={t.close}
                   onClick={() => setOpen(false)}
                 >
                   <IconClose />
@@ -421,10 +593,11 @@ export function A11yToolbar({
               </div>
             </div>
 
-            <A11yPanelErrorBoundary>
+            <A11yPanelErrorBoundary label={t.panelError}>
               <div className="itzsa-a11y-body">
                 {sections.map((section) => {
                   const SectionIcon = resolveIcon(section.iconId);
+                  const sectionTitle = t.sections[section.id];
                   return (
                     <section
                       key={section.id}
@@ -438,17 +611,29 @@ export function A11yToolbar({
                         <span className="itzsa-a11y-section-icon" aria-hidden>
                           <SectionIcon />
                         </span>
-                        {section.title}
+                        {sectionTitle}
                       </h3>
                       <div className="itzsa-a11y-grid">
                         {section.features.map((feature) => {
                           const id = feature.id;
+                          const title = t.features[id].title;
                           if (feature.kind === "stepped") {
+                            const value = prefs[
+                              id as SteppedFeatureId
+                            ] as number;
+                            const levels = t.levels[id as SteppedFeatureId];
+                            const levelName =
+                              levels[value] ??
+                              formatLevelFallback(t, value + 1);
                             return (
                               <ToolCard
                                 key={id}
                                 feature={feature}
-                                value={prefs[id as SteppedFeatureId] as number}
+                                title={title}
+                                value={value}
+                                levelName={levelName}
+                                onLabel={t.on}
+                                offLabel={t.off}
                                 onActivate={() => onActivate(id)}
                               />
                             );
@@ -457,8 +642,11 @@ export function A11yToolbar({
                             <ToolCard
                               key={id}
                               feature={feature}
+                              title={title}
                               value={prefs[id as ToggleFeatureId] ? 1 : 0}
                               pressed={Boolean(prefs[id as ToggleFeatureId])}
+                              onLabel={t.on}
+                              offLabel={t.off}
                               onActivate={() => onActivate(id)}
                             />
                           );

@@ -13,7 +13,7 @@ export const metadata: Metadata = buildMetadata({
   keywords: ["accessibility", "a11y", "toolbar", "preferences"],
 });
 
-const USAGE = `import { A11yToolbar } from "@itzsa/a11y-toolbar";
+const USAGE = `import { A11yToolbar, NE_MESSAGES } from "@itzsa/a11y-toolbar";
 import { getA11yFoucScript } from "@itzsa/a11y-toolbar/headless";
 import "@itzsa/a11y-toolbar/styles.css";
 
@@ -24,9 +24,12 @@ import "@itzsa/a11y-toolbar/styles.css";
 <main data-a11y-content>{children}</main>
 
 // 3. Mount once from a Client Component, outside the content root
+// Sync with Zustand/Redux: pass locale + onLocaleChange from your store
 <A11yToolbar
   position="bottom-center"
   panelAlign="left"
+  defaultLocale="en"
+  locales={{ ne: NE_MESSAGES }}
   offset="1.25rem"
   launcherSize="3.5rem"
   theme={{
@@ -36,7 +39,8 @@ import "@itzsa/a11y-toolbar/styles.css";
     launcher: "var(--accent)",
     launcherForeground: "#ffffff",
     launcherRing: "#ffffff",
-    fontFamily: 'var(--font-outfit), "Outfit", system-ui, sans-serif',
+    fontFamily:
+      'var(--font-outfit), "Outfit", system-ui, sans-serif',
   }}
 />`;
 
@@ -103,14 +107,13 @@ export default function A11yToolbarDocsPage() {
             assist features. Panel sections: Display, Motion &amp; assist.
           </li>
           <li>
-            Configure <code className="font-mono">position</code> (launcher),{" "}
-            <code className="font-mono">panelAlign</code> (panel edge:{" "}
-            <code className="font-mono">auto</code> /{" "}
-            <code className="font-mono">left</code> /{" "}
-            <code className="font-mono">right</code> /{" "}
-            <code className="font-mono">center</code>), and{" "}
-            <code className="font-mono">theme</code> so the toolbar tracks your
-            brand tokens.
+            Configure <code className="font-mono">position</code>,{" "}
+            <code className="font-mono">panelAlign</code>,{" "}
+            <code className="font-mono">locales</code> /{" "}
+            <code className="font-mono">locale</code> (sync with app state), and{" "}
+            <code className="font-mono">theme</code>. English is default; pass
+            dictionaries for more languages — the panel sets{" "}
+            <code className="font-mono">lang</code> for screen readers.
           </li>
         </ul>
       </section>
@@ -118,9 +121,9 @@ export default function A11yToolbarDocsPage() {
       <section className="mt-10">
         <h2 className="text-lg font-semibold text-primary">Try it</h2>
         <p className="mt-2 text-[14px] text-secondary">
-          Use the floating accessibility button (bottom-right), or press{" "}
-          <kbd className="font-mono text-primary">Alt+A</kbd>. Changes apply to
-          this page&apos;s content immediately.
+          Use the floating accessibility button, or press{" "}
+          <kbd className="font-mono text-primary">Alt+A</kbd>. Open the panel
+          and switch Language (English / नेपाली) in the header.
         </p>
       </section>
     </div>

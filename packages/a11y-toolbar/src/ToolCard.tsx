@@ -1,41 +1,41 @@
 "use client";
 
-import { STEP_LEVEL_LABELS } from "./effect-values";
 import { resolveIcon } from "./icons";
 import type { A11yFeatureDef } from "./registry";
-import type { SteppedFeatureId } from "./types";
 
 export type ToolCardProps = {
   feature: A11yFeatureDef;
+  /** Localized feature title (from resolved messages). */
+  title: string;
   /** Current step index (0-based) or 0/1 for toggles. */
   value: number;
   pressed?: boolean;
+  /** Localized level name for stepped features. */
+  levelName?: string | null;
+  onLabel: string;
+  offLabel: string;
   onActivate: () => void;
 };
 
 export function ToolCard({
   feature,
+  title,
   value,
   pressed = false,
+  levelName = null,
+  onLabel,
+  offLabel,
   onActivate,
 }: ToolCardProps) {
   const Icon = resolveIcon(feature.iconId);
-  const { title } = feature.labels;
   const kind = feature.kind;
   const steps = feature.levels ?? 0;
   const active = kind === "stepped" ? value > 0 : pressed;
 
-  const levelName =
-    kind === "stepped"
-      ? (STEP_LEVEL_LABELS[feature.id as SteppedFeatureId]?.[value] ??
-        `Level ${value + 1}`)
-      : null;
-
-  // Visible UI is icon + title + dashes; state stays in the accessible name.
   const accessibleName =
     kind === "toggle"
-      ? `${title}, ${pressed ? "on" : "off"}`
-      : `${title}, ${levelName}`;
+      ? `${title}, ${pressed ? onLabel : offLabel}`
+      : `${title}, ${levelName ?? ""}`;
 
   return (
     <button

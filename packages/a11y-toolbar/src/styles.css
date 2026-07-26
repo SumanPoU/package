@@ -35,6 +35,8 @@
   --itzsa-a11y-saturation: 1;
   --itzsa-a11y-guide-height: 48px;
   --itzsa-a11y-offset: 1.25rem;
+  --itzsa-a11y-panel-max-height: min(40rem, calc(100dvh - 6rem));
+  --itzsa-a11y-panel-height: auto;
 }
 
 .itzsa-a11y-root {
@@ -230,7 +232,8 @@
   display: flex;
   flex-direction: column;
   width: min(23.5rem, calc(100vw - 1.5rem));
-  max-height: min(40rem, calc(100dvh - 6rem));
+  height: var(--itzsa-a11y-panel-height, auto);
+  max-height: var(--itzsa-a11y-panel-max-height);
   overflow: hidden;
   border-radius: var(--itzsa-a11y-toolbar-radius);
   background: var(--itzsa-a11y-toolbar-bg);
@@ -280,6 +283,45 @@
   display: flex;
   align-items: center;
   gap: 0.1rem;
+}
+.itzsa-a11y-lang {
+  display: inline-flex;
+  align-items: center;
+  max-width: 7.5rem;
+  margin-inline-end: 0.15rem;
+}
+.itzsa-a11y-lang-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.itzsa-a11y-lang-select {
+  max-width: 100%;
+  height: 2.15rem;
+  padding: 0 0.45rem;
+  border: 1px solid
+    color-mix(in srgb, var(--itzsa-a11y-toolbar-header-fg) 35%, transparent);
+  border-radius: 0.45rem;
+  background: color-mix(
+    in srgb,
+    var(--itzsa-a11y-toolbar-header-fg) 10%,
+    transparent
+  );
+  color: inherit;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.itzsa-a11y-lang-select:focus-visible {
+  outline: 3px solid var(--itzsa-a11y-toolbar-focus);
+  outline-offset: 2px;
 }
 .itzsa-a11y-icon-btn {
   display: inline-flex;

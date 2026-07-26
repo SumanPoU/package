@@ -116,7 +116,7 @@ export function PropsTable({
                 {row.type}
               </td>
               <td className="bg-card px-3 py-2.5 align-top font-mono text-[12px] whitespace-nowrap text-tertiary">
-                {row.default ?? "—"}
+                {row.default ?? "-"}
               </td>
               <td className="min-w-0 bg-card px-3 py-2.5 align-top text-[13px] leading-relaxed break-words text-secondary">
                 {row.description}

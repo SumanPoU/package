@@ -104,7 +104,7 @@ export function PropsTable({
                 {row.type}
               </td>
               <td className="px-3 py-2.5 align-top font-mono text-[12px] whitespace-nowrap text-tertiary">
-                {row.default ?? "—"}
+                {row.default ?? "-"}
               </td>
               <td className="px-3 py-2.5 align-top text-[13px] leading-relaxed text-secondary">
                 {row.description}

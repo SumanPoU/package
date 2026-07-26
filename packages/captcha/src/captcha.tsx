@@ -536,7 +536,7 @@ export const Captcha = forwardRef<CaptchaHandle, CaptchaProps>(function Captcha(
           width={width}
           height={height}
           className={cn(
-            "select-none rounded-md border border-border bg-white dark:bg-zinc-900",
+            "select-none rounded-md border border-border bg-card",
             canvasClassName,
           )}
           aria-hidden
@@ -547,7 +547,7 @@ export const Captcha = forwardRef<CaptchaHandle, CaptchaProps>(function Captcha(
             onClick={() => refresh()}
             disabled={disabled || isLoading}
             className={cn(
-              "inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-border bg-white text-secondary transition-colors hover:bg-muted hover:text-primary disabled:opacity-50 dark:bg-zinc-900",
+              "inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-border bg-card text-secondary transition-colors hover:bg-muted hover:text-primary disabled:opacity-50",
               refreshClassName,
             )}
             title={messages.refreshLabel}
@@ -583,7 +583,7 @@ export const Captcha = forwardRef<CaptchaHandle, CaptchaProps>(function Captcha(
         aria-busy={isLoading || undefined}
         aria-describedby={describedBy}
         className={cn(
-          "bg-white tracking-[0.3em] dark:bg-zinc-900",
+          "bg-card tracking-[0.3em]",
           "placeholder:tracking-normal",
           status === "valid" &&
             "border-green-600 focus-visible:ring-green-600/30",

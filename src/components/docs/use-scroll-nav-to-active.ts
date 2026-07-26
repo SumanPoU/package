@@ -1,45 +1,72 @@
 "use client";
 
-import { useEffect } from "react";
+import { type RefObject, useEffect, useLayoutEffect } from "react";
 
 /**
- * When the active docs section changes, keep that nav link visible inside
- * the sticky left/right sidebar scroller (does not move the page).
+ * Keep the active docs nav link visible inside a sticky overflow sidebar.
+ * Uses a ref (not document.querySelector) so every package page scrolls reliably.
  */
 export function useScrollNavToActive(
   activeId: string,
-  sidebarSelector: string,
+  sidebarRef: RefObject<HTMLElement | null>,
 ): void {
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!activeId) return;
 
-    // Defer so layout has painted after section highlight updates.
-    const frame = requestAnimationFrame(() => {
-      const sidebar = document.querySelector(sidebarSelector);
-      if (!(sidebar instanceof HTMLElement)) return;
+    const sidebar = sidebarRef.current;
+    if (!sidebar) return;
 
-      const link = sidebar.querySelector(`[data-nav-id="${activeId}"]`);
-      if (!(link instanceof HTMLElement)) return;
+    const link = sidebar.querySelector<HTMLElement>(
+      `[data-nav-id="${activeId.replace(/"/g, "")}"]`,
+    );
+    if (!link) return;
 
+    const sidebarRect = sidebar.getBoundingClientRect();
+    const linkRect = link.getBoundingClientRect();
+    const pad = 20;
+    const inView =
+      linkRect.top >= sidebarRect.top + pad &&
+      linkRect.bottom <= sidebarRect.bottom - pad;
+
+    if (inView) return;
+
+    // Position active item ~30% from the top of the sidebar scroller.
+    const delta =
+      linkRect.top -
+      sidebarRect.top -
+      sidebar.clientHeight * 0.3 +
+      linkRect.height / 2;
+
+    sidebar.scrollTo({
+      top: Math.max(0, sidebar.scrollTop + delta),
+      behavior: "smooth",
+    });
+  }, [activeId, sidebarRef]);
+
+  // Hash navigation (clicking a nav link / landing with #section).
+  useEffect(() => {
+    const onHash = () => {
+      const id = window.location.hash.replace(/^#/, "");
+      if (!id) return;
+      const sidebar = sidebarRef.current;
+      if (!sidebar) return;
+      const link = sidebar.querySelector<HTMLElement>(
+        `[data-nav-id="${id.replace(/"/g, "")}"]`,
+      );
+      if (!link) return;
       const sidebarRect = sidebar.getBoundingClientRect();
       const linkRect = link.getBoundingClientRect();
-      const pad = 16;
-
-      if (linkRect.top < sidebarRect.top + pad) {
-        sidebar.scrollBy({
-          top: linkRect.top - sidebarRect.top - pad,
-          behavior: "smooth",
-        });
-        return;
-      }
-      if (linkRect.bottom > sidebarRect.bottom - pad) {
-        sidebar.scrollBy({
-          top: linkRect.bottom - sidebarRect.bottom + pad,
-          behavior: "smooth",
-        });
-      }
-    });
-
-    return () => cancelAnimationFrame(frame);
-  }, [activeId, sidebarSelector]);
+      const delta =
+        linkRect.top -
+        sidebarRect.top -
+        sidebar.clientHeight * 0.3 +
+        linkRect.height / 2;
+      sidebar.scrollTo({
+        top: Math.max(0, sidebar.scrollTop + delta),
+        behavior: "smooth",
+      });
+    };
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, [sidebarRef]);
 }

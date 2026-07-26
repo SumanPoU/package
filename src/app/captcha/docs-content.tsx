@@ -111,10 +111,10 @@ export function DocsContent() {
             with a server check for sensitive flows.
           </p>
           <div className="flex flex-wrap gap-2 pt-1 text-xs text-secondary">
-            <span className="pkg rounded-md border-[0.5px] border-border bg-white px-2 py-1 text-[12px] dark:bg-card">
+            <span className="pkg rounded-md border-[0.5px] border-border bg-card px-2 py-1 text-[12px]">
               @itzsa/captcha
             </span>
-            <span className="rounded-md border-[0.5px] border-border bg-white px-2 py-1 dark:bg-card">
+            <span className="rounded-md border-[0.5px] border-border bg-card px-2 py-1">
               registry → components/itzsa/captcha
             </span>
           </div>
@@ -125,7 +125,7 @@ export function DocsContent() {
             <a
               key={item.id}
               href={`#${item.id}`}
-              className="rounded-md border-[0.5px] border-border bg-white px-2.5 py-1 text-xs text-secondary hover:text-accent dark:bg-card"
+              className="rounded-md border-[0.5px] border-border bg-card px-2.5 py-1 text-xs text-secondary hover:text-accent"
             >
               {item.label}
             </a>
@@ -137,10 +137,10 @@ export function DocsContent() {
           title="Live demo"
           description="Same API as production — try charset mode, length, and a simulated bad API response."
         >
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex min-w-0 flex-wrap items-center gap-3">
             <fieldset
               aria-label="Charset mode"
-              className="flex rounded-md border-[0.5px] border-border bg-white p-0.5 dark:bg-card"
+              className="flex rounded-md border-[0.5px] border-border bg-card p-0.5"
             >
               {MODES.map((m) => (
                 <button
@@ -179,7 +179,7 @@ export function DocsContent() {
             </label>
             <button
               type="button"
-              className="rounded-md border-[0.5px] border-border bg-white px-2.5 py-1 text-xs text-secondary hover:text-primary dark:bg-card"
+              className="rounded-md border-[0.5px] border-border bg-card px-2.5 py-1 text-xs text-secondary hover:text-primary"
               onClick={() =>
                 setDemoError("API error: captcha rejected by server (429).")
               }
@@ -187,7 +187,7 @@ export function DocsContent() {
               Simulate bad API
             </button>
           </div>
-          <div className="rounded-md border-[0.5px] border-border bg-white p-5 dark:bg-card">
+          <div className="min-w-0 overflow-hidden rounded-lg border-[0.5px] border-border bg-card p-4 sm:p-5">
             <Captcha
               key={`${mode}-${length}`}
               ref={captchaRef}
@@ -195,15 +195,17 @@ export function DocsContent() {
               charsetMode={mode}
               error={demoError}
               onVerified={handleCaptchaVerified}
-              className="max-w-sm"
+              className="w-full max-w-sm"
             />
-            <p className="mt-3 text-sm text-secondary">
-              onVerified →{" "}
+            <p className="mt-4 break-words text-sm leading-relaxed text-secondary [overflow-wrap:anywhere]">
+              <span className="text-tertiary">onVerified</span>
+              {" → "}
               <span className="font-medium text-primary">
                 {verified ? "true" : "false"}
               </span>
-              {" · "}
-              validate() →{" "}
+              <span className="text-tertiary">{" · "}</span>
+              <span className="text-tertiary">validate()</span>
+              {" → "}
               <span className="font-medium text-primary">
                 {verified ? "true" : "false"}
               </span>

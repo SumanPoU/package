@@ -11,7 +11,15 @@ import {
 } from "../src";
 
 describe("convert", () => {
-  it("maps BS epoch 2000-01-01 to AD 1943-04-14", () => {
+  it("maps BS epoch 1970-01-01 to AD 1913-04-13", () => {
+    expect(bsToAdParts("1970-01-01")).toEqual({
+      year: 1913,
+      month: 4,
+      day: 13,
+    });
+  });
+
+  it("keeps legacy BS 2000-01-01 ↔ AD 1943-04-14", () => {
     expect(bsToAdParts("2000-01-01")).toEqual({
       year: 1943,
       month: 4,
@@ -37,6 +45,8 @@ describe("convert", () => {
 
   it("round-trips across month/year edges", () => {
     const samples = [
+      "1970-01-01",
+      "1985-06-15",
       "2000-01-01",
       "2079-12-30",
       "2080-01-01",

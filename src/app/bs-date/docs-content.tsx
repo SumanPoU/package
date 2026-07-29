@@ -125,7 +125,7 @@ export function DocsContent() {
               headless
             </span>
             <span className="rounded-md border-[0.5px] border-border bg-card px-2 py-1">
-              BS 2000–2100
+              BS 1970–2100
             </span>
             <span className="rounded-md border-[0.5px] border-border bg-card px-2 py-1">
               en / ne
@@ -279,7 +279,7 @@ export function DocsContent() {
                     BS year range
                   </td>
                   <td className="px-3 py-2.5">
-                    2000–2100 inclusive (extend via{" "}
+                    1970–2100 inclusive (extend via{" "}
                     <code className="font-mono text-[12px] text-primary">
                       extendCalendarData
                     </code>
@@ -290,7 +290,7 @@ export function DocsContent() {
                   <td className="px-3 py-2.5 font-medium text-primary">
                     Epoch
                   </td>
-                  <td className="px-3 py-2.5">BS 2000-01-01 ↔ AD 1943-04-14</td>
+                  <td className="px-3 py-2.5">BS 1970-01-01 ↔ AD 1913-04-13</td>
                 </tr>
                 <tr className="border-b-[0.5px] border-border">
                   <td className="px-3 py-2.5 font-medium text-primary">

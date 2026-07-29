@@ -27,9 +27,11 @@ describe("format", () => {
     );
   });
 
-  it("getBsMonthName", () => {
+  it("getBsMonthName long and short", () => {
     expect(getBsMonthName(1, "en")).toBe("Baisakh");
+    expect(getBsMonthName(1, "en", "short")).toBe("Bai");
     expect(getBsMonthName(1, "ne")).toBe("बैशाख");
+    expect(getBsMonthName(3, "en")).toBe("Ashadh");
   });
 });
 

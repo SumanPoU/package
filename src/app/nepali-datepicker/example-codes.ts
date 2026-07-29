@@ -90,12 +90,47 @@ export function DateTimeExample() {
         value={value}
         onChange={setValue}
         locale="ne"
-        minuteStep={5}
+        minuteStep={1}
+        displayFormat="time-date-single-no-bs"
         minDateTime="2080-01-01 00:00"
         maxDateTime="2090-12-30 23:59"
         placeholder="मिति र समय"
       />
-      <p>value: {value || "—"}</p>
+      <p>value: {value || "-"}</p>
+    </div>
+  );
+}`;
+
+export const LIVE_CLOCK_EXAMPLE_CODE = `"use client";
+
+import { useState } from "react";
+import {
+  NEPALI_DATETIME_DISPLAY_FORMATS,
+  type NepaliDateTimeDisplayFormat,
+  NepaliLiveClock,
+} from "@itzsa/nepali-datepicker";
+import "@itzsa/nepali-datepicker/styles.css";
+
+export function LiveClockExample() {
+  const [format, setFormat] = useState<NepaliDateTimeDisplayFormat>(
+    "time-date-two-line-seconds",
+  );
+
+  return (
+    <div>
+      <select
+        value={format}
+        onChange={(e) =>
+          setFormat(e.target.value as NepaliDateTimeDisplayFormat)
+        }
+      >
+        {NEPALI_DATETIME_DISPLAY_FORMATS.map((id) => (
+          <option key={id} value={id}>
+            {id}
+          </option>
+        ))}
+      </select>
+      <NepaliLiveClock format={format} locale="ne" />
     </div>
   );
 }`;

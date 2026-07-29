@@ -12,7 +12,12 @@ import {
   todayBs,
 } from "./convert";
 import { cn } from "./lib/utils";
-import { getMonthName, getWeekdayNames, localizeDigits } from "./locale";
+import {
+  createLocaleHelpers,
+  type DateLabelOverrides,
+  type LabelForm,
+  localizeDigits,
+} from "./locale";
 import { Chevron } from "./popover-utils";
 import type { DateParts, Locale } from "./types";
 
@@ -32,6 +37,12 @@ export type CalendarMonthProps = {
   year: number;
   month: number;
   locale: Locale;
+  /** Header / month-grid label length. Default `"long"`. */
+  monthFormat?: LabelForm;
+  /** Weekday row label length. Default `"short"`. */
+  weekdayFormat?: LabelForm;
+  /** Optional month/weekday label overrides. */
+  labels?: DateLabelOverrides;
   isDisabledDay: (parts: DateParts) => boolean;
   getModifiers: (parts: DateParts) => DayModifiers;
   onDayClick: (parts: DateParts) => void;
@@ -49,6 +60,9 @@ export function CalendarMonth({
   year,
   month,
   locale,
+  monthFormat = "long",
+  weekdayFormat = "short",
+  labels,
   isDisabledDay,
   getModifiers,
   onDayClick,
@@ -61,7 +75,11 @@ export function CalendarMonth({
   onMonthTitleClick,
   onYearTitleClick,
 }: CalendarMonthProps) {
-  const weekdays = getWeekdayNames(locale);
+  const loc = React.useMemo(
+    () => createLocaleHelpers(locale, labels),
+    [locale, labels],
+  );
+  const weekdays = loc.getWeekdayNames(weekdayFormat);
   const daysInMonth = getDaysInBsMonth(year, month);
   const startWeekday = getBsWeekday(year, month, 1);
 
@@ -90,11 +108,11 @@ export function CalendarMonth({
                 className="itzsa-ndp-title-btn"
                 onClick={onMonthTitleClick}
               >
-                {getMonthName(month, locale)}
+                {loc.getMonthName(month, monthFormat)}
               </button>
             ) : (
               <span className="itzsa-ndp-title-static">
-                {getMonthName(month, locale)}
+                {loc.getMonthName(month, monthFormat)}
               </span>
             )}
             {onYearTitleClick ? (
@@ -185,6 +203,13 @@ export type SingleCalendarPanelProps = {
   today: DateParts;
   minYear?: number;
   maxYear?: number;
+  /** Calendar header month label. Default `"long"`. */
+  monthFormat?: LabelForm;
+  /** Weekday row. Default `"short"`. */
+  weekdayFormat?: LabelForm;
+  /** Month picker chip labels. Default `"short"` (fits the 12-cell grid). */
+  monthPickerFormat?: LabelForm;
+  labels?: DateLabelOverrides;
   isDisabledDay: (parts: DateParts) => boolean;
   onDayClick: (parts: DateParts) => void;
   onToday?: () => void;
@@ -200,6 +225,10 @@ export function SingleCalendarPanel({
   today,
   minYear = BS_MIN_YEAR,
   maxYear = BS_MAX_YEAR,
+  monthFormat = "long",
+  weekdayFormat = "short",
+  monthPickerFormat = "short",
+  labels,
   isDisabledDay,
   onDayClick,
   onToday,
@@ -207,6 +236,10 @@ export function SingleCalendarPanel({
   showClear = false,
 }: SingleCalendarPanelProps) {
   const [mode, setMode] = React.useState<ViewMode>("days");
+  const loc = React.useMemo(
+    () => createLocaleHelpers(locale, labels),
+    [locale, labels],
+  );
 
   const yearStart = Math.floor(view.year / 12) * 12;
   const years = Array.from({ length: 12 }, (_, i) => yearStart + i).filter(
@@ -236,6 +269,9 @@ export function SingleCalendarPanel({
           year={view.year}
           month={view.month}
           locale={locale}
+          monthFormat={monthFormat}
+          weekdayFormat={weekdayFormat}
+          labels={labels}
           isDisabledDay={isDisabledDay}
           getModifiers={(parts) => ({
             selected:
@@ -295,7 +331,7 @@ export function SingleCalendarPanel({
                     setMode("days");
                   }}
                 >
-                  {getMonthName(month, locale)}
+                  {loc.getMonthName(month, monthPickerFormat)}
                 </button>
               );
             })}

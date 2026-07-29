@@ -7,6 +7,7 @@ import { createIsDisabledDay, SingleCalendarPanel } from "./calendar-panel";
 import { BS_MAX_YEAR, BS_MIN_YEAR, clampBsDate, todayBs } from "./convert";
 import { formatTypedBsDate, parseDateString, toDateString } from "./format";
 import { cn, mergeRefs } from "./lib/utils";
+import type { DateLabelOverrides, LabelForm } from "./locale";
 import {
   CalendarIcon,
   useDismissOnOutside,
@@ -31,6 +32,10 @@ export type EditableNepaliDatePickerProps = {
   onChange?: (value: string) => void;
   onSelect?: (value: string) => void;
   locale?: Locale;
+  monthFormat?: LabelForm;
+  weekdayFormat?: LabelForm;
+  monthPickerFormat?: LabelForm;
+  labels?: DateLabelOverrides;
   minDate?: string;
   maxDate?: string;
   minYear?: number;
@@ -68,6 +73,10 @@ export const EditableNepaliDatePicker = React.forwardRef<
     onChange,
     onSelect,
     locale = "en",
+    monthFormat = "long",
+    weekdayFormat = "short",
+    monthPickerFormat = "short",
+    labels,
     minDate,
     maxDate,
     minYear = BS_MIN_YEAR,
@@ -216,6 +225,10 @@ export const EditableNepaliDatePicker = React.forwardRef<
               today={today}
               minYear={minYear}
               maxYear={maxYear}
+              monthFormat={monthFormat}
+              weekdayFormat={weekdayFormat}
+              monthPickerFormat={monthPickerFormat}
+              labels={labels}
               isDisabledDay={isDisabledDay}
               onDayClick={pickParts}
               showClear={Boolean(localValue)}

@@ -7,6 +7,7 @@ import { createIsDisabledDay, SingleCalendarPanel } from "./calendar-panel";
 import { BS_MAX_YEAR, BS_MIN_YEAR, clampBsDate, todayBs } from "./convert";
 import { formatBsLabel, parseDateString, toDateString } from "./format";
 import { cn } from "./lib/utils";
+import type { DateLabelOverrides, LabelForm } from "./locale";
 import {
   CalendarIcon,
   useDismissOnOutside,
@@ -33,6 +34,14 @@ export type NepaliDatePickerProps = {
   locale?: Locale;
   /** Digits/locale for the input display. Default matches `locale`. */
   valueLocale?: Locale;
+  /** Header month name length. Default `"long"`. */
+  monthFormat?: LabelForm;
+  /** Weekday row length. Default `"short"`. */
+  weekdayFormat?: LabelForm;
+  /** Month-picker chip length. Default `"short"`. */
+  monthPickerFormat?: LabelForm;
+  /** Override built-in month/weekday label dictionaries. */
+  labels?: DateLabelOverrides;
   /** Minimum selectable BS date `YYYY-MM-DD`. */
   minDate?: string;
   /** Maximum selectable BS date `YYYY-MM-DD`. */
@@ -81,6 +90,10 @@ export const NepaliDatePicker = React.forwardRef<
     onSelect,
     locale = "ne",
     valueLocale,
+    monthFormat = "long",
+    weekdayFormat = "short",
+    monthPickerFormat = "short",
+    labels,
     minDate,
     maxDate,
     minYear = BS_MIN_YEAR,
@@ -210,6 +223,10 @@ export const NepaliDatePicker = React.forwardRef<
               today={today}
               minYear={minYear}
               maxYear={maxYear}
+              monthFormat={monthFormat}
+              weekdayFormat={weekdayFormat}
+              monthPickerFormat={monthPickerFormat}
+              labels={labels}
               isDisabledDay={isDisabledDay}
               onDayClick={pickParts}
               showClear={Boolean(value)}

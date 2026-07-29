@@ -15,6 +15,7 @@ import {
 } from "./convert";
 import { formatBsLabel, parseDateString, toDateString } from "./format";
 import { cn } from "./lib/utils";
+import type { DateLabelOverrides, LabelForm } from "./locale";
 import {
   CalendarIcon,
   Chevron,
@@ -40,6 +41,9 @@ export type NepaliDateRangePickerProps = {
   onChange?: (range: BsDateRange) => void;
   locale?: Locale;
   valueLocale?: Locale;
+  monthFormat?: LabelForm;
+  weekdayFormat?: LabelForm;
+  labels?: DateLabelOverrides;
   minDate?: string;
   maxDate?: string;
   minYear?: number;
@@ -87,6 +91,9 @@ export function NepaliDateRangePicker({
   onChange,
   locale = "ne",
   valueLocale,
+  monthFormat = "long",
+  weekdayFormat = "short",
+  labels,
   minDate,
   maxDate,
   minYear = BS_MIN_YEAR,
@@ -342,6 +349,9 @@ export function NepaliDateRangePicker({
                 year={leftView.year}
                 month={leftView.month}
                 locale={locale}
+                monthFormat={monthFormat}
+                weekdayFormat={weekdayFormat}
+                labels={labels}
                 isDisabledDay={isDisabledDay}
                 getModifiers={getModifiers}
                 onDayClick={onDayClick}
@@ -355,6 +365,9 @@ export function NepaliDateRangePicker({
                   year={rightView.year}
                   month={rightView.month}
                   locale={locale}
+                  monthFormat={monthFormat}
+                  weekdayFormat={weekdayFormat}
+                  labels={labels}
                   isDisabledDay={isDisabledDay}
                   getModifiers={getModifiers}
                   onDayClick={onDayClick}

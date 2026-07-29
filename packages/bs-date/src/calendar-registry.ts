@@ -6,15 +6,15 @@ import {
 } from "./data/calendar-data";
 import type { BsCalendarData } from "./engine-types";
 
-/** Bundled Panchanga tables (BS 2000–2100). */
+/** Bundled Panchanga tables (BS 1970–2100). */
 export const DEFAULT_CALENDAR_DATA: BsCalendarData = {
   minYear: BS_MIN_YEAR,
   maxYear: BS_MAX_YEAR,
   epochAd: BS_EPOCH_AD,
   monthDays: BS_MONTH_DAYS,
-  version: "2000-2100",
+  version: "1970-2100",
   source:
-    "Community-verified Nepal Panchanga tables (shared with @itzsa/nepali-datepicker)",
+    "BS 1970–1999 RLE-expanded community tables; 2000–2100 verified Panchanga (shared with @itzsa/nepali-datepicker)",
 };
 
 export function getCalendarMeta(

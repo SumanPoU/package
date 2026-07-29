@@ -8,9 +8,12 @@ import {
   EditableNepaliDatePicker,
   formatBsLabel,
   isCompleteBsDate,
+  NEPALI_DATETIME_DISPLAY_FORMATS,
   NepaliDatePicker,
   NepaliDateRangePicker,
+  type NepaliDateTimeDisplayFormat,
   NepaliDateTimePicker,
+  NepaliLiveClock,
   parseDateString,
   toDateString,
   toDateTimeString,
@@ -109,7 +112,8 @@ export function DateTimeExample() {
           value={value}
           onChange={setValue}
           locale="ne"
-          minuteStep={5}
+          minuteStep={1}
+          displayFormat="time-date-single-no-bs"
           minDateTime="2080-01-01 00:00"
           maxDateTime="2090-12-30 23:59"
           placeholder="मिति र समय"
@@ -121,6 +125,44 @@ export function DateTimeExample() {
       <p className="text-[12px] text-secondary">
         Bounds: <code className="font-mono text-primary">2080-01-01 00:00</code>{" "}
         → <code className="font-mono text-primary">2090-12-30 23:59</code>
+      </p>
+    </div>
+  );
+}
+
+export function LiveClockExample() {
+  const [format, setFormat] = useState<NepaliDateTimeDisplayFormat>(
+    "time-date-two-line-seconds",
+  );
+
+  return (
+    <div className="flex flex-col gap-4 rounded-md border-[0.5px] border-border bg-card p-4">
+      <div className="flex flex-col gap-1.5">
+        <FieldLabel htmlFor="ndp-live-format">Display format</FieldLabel>
+        <select
+          id="ndp-live-format"
+          className="h-9 rounded-md border-[0.5px] border-border bg-page px-2 text-sm text-primary"
+          value={format}
+          onChange={(e) =>
+            setFormat(e.target.value as NepaliDateTimeDisplayFormat)
+          }
+        >
+          {NEPALI_DATETIME_DISPLAY_FORMATS.map((id) => (
+            <option key={id} value={id}>
+              {id}
+            </option>
+          ))}
+        </select>
+      </div>
+      <NepaliLiveClock
+        format={format}
+        locale="ne"
+        className="rounded-md border-[0.5px] border-border bg-page px-3 py-3"
+      />
+      <p className="text-[12px] text-secondary">
+        Live BS clock — ticks every second. Swap{" "}
+        <code className="font-mono text-primary">format</code> for the presets
+        above (two-line, dmyw, time-only, …).
       </p>
     </div>
   );

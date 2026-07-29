@@ -44,14 +44,30 @@ import { NepaliDateTimePicker } from "@itzsa/nepali-datepicker";
 <NepaliDateTimePicker
   value={dateTime}
   onChange={setDateTime}
-  placeholder="मिति र समय"
+  locale="ne"
+  minuteStep={1}
+  displayFormat="time-date-single-no-bs"
   minDateTime="2080-01-01 00:00"
   maxDateTime="2090-12-30 23:59"
-  minuteStep={5}
 />
 ```
 
 Canonical value: `YYYY-MM-DD HH:mm` (optional seconds with `withSeconds`).
+`minuteStep` defaults to **1** (every minute).
+
+### Live Nepali clock
+
+```tsx
+import { NepaliLiveClock } from "@itzsa/nepali-datepicker";
+
+<NepaliLiveClock format="time-date-two-line-seconds" locale="ne" />
+<NepaliLiveClock format="dmyw" />
+<NepaliLiveClock format="date-only" bsPrefix={false} />
+```
+
+Presets: `time-date-two-line`, `time-date-two-line-seconds`, `time-date-single`,
+`time-date-single-no-bs`, `time-only`, `date-only`, `dmyw`, `date-only-no-bs`,
+`time-date-bare`. Or format once with `formatNepaliDateTimeDisplay(parts, format)`.
 
 ### Date range
 
@@ -83,7 +99,7 @@ adToBs(2025, 4, 14);  // { year: 2082, month: 1, day: 1 }
 
 For headless apps (no React), depend on `@itzsa/bs-date` directly.
 
-Calendar data: **BS 2000–2100** (shared with `@itzsa/bs-date`).
+Calendar data: **BS 1970–2100** (shared with `@itzsa/bs-date`).
 
 ## Styling via props
 

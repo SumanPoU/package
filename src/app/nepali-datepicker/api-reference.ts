@@ -47,7 +47,7 @@ export const PICKER_PROPS: PropRow[] = [
   {
     name: "minYear / maxYear",
     type: "number",
-    default: "2000 / 2100",
+    default: "1970 / 2100",
     description: "Year picker bounds within supported calendar data.",
   },
   {
@@ -153,14 +153,21 @@ export const DATETIME_PROPS: PropRow[] = [
   {
     name: "minuteStep",
     type: "number",
-    default: "5",
-    description: "Minute list increment (1–30).",
+    default: "1",
+    description: "Minute list increment (1 = every minute; also 5 / 15 / 30).",
   },
   {
     name: "withSeconds",
     type: "boolean",
     default: "false",
     description: "Show seconds column and include :ss in the value.",
+  },
+  {
+    name: "displayFormat",
+    type: 'NepaliDateTimeDisplayFormat | "compact"',
+    default: "time-date-single-no-bs (ne)",
+    description:
+      "How the closed input renders the selection (Nepali live-clock presets or compact).",
   },
   {
     name: "placeholder",
@@ -171,6 +178,39 @@ export const DATETIME_PROPS: PropRow[] = [
     name: "classNames / vars / style",
     type: "…",
     description: "Same styling API as NepaliDatePicker.",
+  },
+];
+
+export const LIVE_CLOCK_PROPS: PropRow[] = [
+  {
+    name: "format",
+    type: "NepaliDateTimeDisplayFormat",
+    default: "time-date-two-line",
+    description:
+      "Preset: time-date-two-line(-seconds), time-date-single(-no-bs), time-only, date-only(-no-bs), dmyw, time-date-bare.",
+  },
+  {
+    name: "locale",
+    type: '"ne" | "en"',
+    default: "ne",
+    description: "Month/weekday/period labels and Devanagari digits.",
+  },
+  {
+    name: "value",
+    type: "DateTimeParts",
+    description: "Controlled parts. Omit to track the live clock.",
+  },
+  {
+    name: "tickMs",
+    type: "number",
+    default: "1000",
+    description: "Live update interval. 0 freezes after first paint.",
+  },
+  {
+    name: "hour12 / withSeconds / timePrefix / bsPrefix / periodLabels",
+    type: "…",
+    description:
+      "Fine-grained display overrides (see formatNepaliDateTimeDisplay).",
   },
 ];
 

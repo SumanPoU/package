@@ -16,6 +16,11 @@ import {
 } from "./datetime";
 import { formatBsDateTimeLabel } from "./format";
 import { cn } from "./lib/utils";
+import {
+  formatNepaliDateTimeDisplay,
+  type NepaliDateTimeDisplayFormat,
+} from "./live-display";
+import type { DateLabelOverrides, LabelForm } from "./locale";
 import { localizeDigits } from "./locale";
 import {
   CalendarIcon,
@@ -38,6 +43,10 @@ export type NepaliDateTimePickerProps = {
   onSelect?: (value: string) => void;
   locale?: Locale;
   valueLocale?: Locale;
+  monthFormat?: LabelForm;
+  weekdayFormat?: LabelForm;
+  monthPickerFormat?: LabelForm;
+  labels?: DateLabelOverrides;
   /**
    * Minimum — date-only (`YYYY-MM-DD` → start of day) or full
    * `YYYY-MM-DD HH:mm`.
@@ -53,10 +62,18 @@ export type NepaliDateTimePickerProps = {
   maxDate?: string;
   minYear?: number;
   maxYear?: number;
-  /** Minute increment. Default `5`. */
+  /**
+   * Minute increment in the scroller. Default `1` (every minute).
+   * Use `5` / `15` for coarser steps.
+   */
   minuteStep?: number;
   /** Include seconds in value / UI. Default `false`. */
   withSeconds?: boolean;
+  /**
+   * How the closed input (and popover preview) render the selection.
+   * Default `"time-date-single-no-bs"` for Nepali locale, else compact label.
+   */
+  displayFormat?: NepaliDateTimeDisplayFormat | "compact";
   /** Close after Confirm. Default `true`. */
   closeOnSelect?: boolean;
   todayIfEmpty?: boolean;
@@ -84,13 +101,17 @@ function TimeColumn({
   locale,
   disabledValues,
   onPick,
+  formatValue,
+  hideLabel,
 }: {
   label: string;
-  values: number[];
-  selected: number;
+  values: readonly (number | string)[];
+  selected: number | string;
   locale: Locale;
-  disabledValues?: Set<number>;
-  onPick: (n: number) => void;
+  disabledValues?: Set<number | string>;
+  onPick: (n: number | string) => void;
+  formatValue?: (v: number | string) => string;
+  hideLabel?: boolean;
 }) {
   const listRef = React.useRef<HTMLDivElement>(null);
 
@@ -98,19 +119,27 @@ function TimeColumn({
     const root = listRef.current;
     if (!root) return;
     const el = root.querySelector<HTMLElement>("[data-selected]");
-    el?.scrollIntoView({ block: "center" });
-  }, []);
+    el?.scrollIntoView({ block: "center", inline: "nearest" });
+  }, [selected]);
 
   return (
     <div className="itzsa-ndp-time-col">
-      <p className="itzsa-ndp-time-col-label">{label}</p>
-      <div ref={listRef} className="itzsa-ndp-time-list" role="listbox">
+      {hideLabel ? null : <p className="itzsa-ndp-time-col-label">{label}</p>}
+      <div
+        ref={listRef}
+        className="itzsa-ndp-time-list"
+        role="listbox"
+        aria-label={label}
+      >
         {values.map((n) => {
           const disabled = disabledValues?.has(n) ?? false;
           const isSel = n === selected;
+          const text =
+            formatValue?.(n) ??
+            (typeof n === "number" ? localizeDigits(pad2(n), locale) : n);
           return (
             <button
-              key={n}
+              key={String(n)}
               type="button"
               role="option"
               aria-selected={isSel}
@@ -123,7 +152,7 @@ function TimeColumn({
               )}
               onClick={() => onPick(n)}
             >
-              {localizeDigits(pad2(n), locale)}
+              {text}
             </button>
           );
         })}
@@ -136,6 +165,40 @@ function pad2(n: number): string {
   return n < 10 ? `0${n}` : String(n);
 }
 
+function hour24To12(hour: number): { hour12: number; period: "am" | "pm" } {
+  const period = hour >= 12 ? "pm" : "am";
+  const mod = hour % 12;
+  return { hour12: mod === 0 ? 12 : mod, period };
+}
+
+function hour12To24(hour12: number, period: "am" | "pm"): number {
+  if (period === "am") return hour12 === 12 ? 0 : hour12;
+  return hour12 === 12 ? 12 : hour12 + 12;
+}
+
+/** Picker display: time + date, no "नेपाली समय" / period labels. */
+function formatDisplay(
+  parts: DateTimeParts,
+  locale: Locale,
+  displayFormat: NepaliDateTimeDisplayFormat | "compact",
+  withSeconds: boolean,
+  labels?: DateLabelOverrides,
+): string {
+  if (displayFormat === "compact") {
+    return formatBsDateTimeLabel(parts, locale, { withSeconds });
+  }
+  return formatNepaliDateTimeDisplay(parts, displayFormat, {
+    locale,
+    withSeconds,
+    labels,
+    timePrefix: false,
+    showPeriod: false,
+  }).text.replace(/\n/g, " · ");
+}
+
+const HOURS_12 = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] as const;
+const PERIODS = ["am", "pm"] as const;
+
 export const NepaliDateTimePicker = React.forwardRef<
   HTMLInputElement,
   NepaliDateTimePickerProps
@@ -147,14 +210,19 @@ export const NepaliDateTimePicker = React.forwardRef<
     onSelect,
     locale = "ne",
     valueLocale,
+    monthFormat = "long",
+    weekdayFormat = "short",
+    monthPickerFormat = "short",
+    labels,
     minDateTime,
     minDate,
     maxDateTime,
     maxDate,
     minYear = BS_MIN_YEAR,
     maxYear = BS_MAX_YEAR,
-    minuteStep = 5,
+    minuteStep = 1,
     withSeconds = false,
+    displayFormat,
     closeOnSelect = true,
     todayIfEmpty = true,
     placeholder,
@@ -176,8 +244,12 @@ export const NepaliDateTimePicker = React.forwardRef<
   forwardedRef,
 ) {
   const displayLocale = valueLocale ?? locale;
+  const resolvedDisplayFormat: NepaliDateTimeDisplayFormat | "compact" =
+    displayFormat ??
+    (displayLocale === "ne" ? "time-date-single-no-bs" : "compact");
   const rootStyle = mergePickerStyle(vars, style);
   const panelStyle = mergePickerStyle(vars, popoverStyle);
+  const step = Math.max(1, Math.min(30, Math.floor(minuteStep)));
 
   const isControlled = valueProp !== undefined;
   const [uncontrolled, setUncontrolled] = React.useState(defaultValue);
@@ -215,8 +287,8 @@ export const NepaliDateTimePicker = React.forwardRef<
   const popoverRef = React.useRef<HTMLDivElement>(null);
   const portalReady = usePortalReady();
   const { pos } = useFloatingPopover(open, rootRef, {
-    minWidth: 320,
-    estimatedHeight: 420,
+    minWidth: 360,
+    estimatedHeight: 460,
   });
 
   React.useImperativeHandle(
@@ -234,7 +306,7 @@ export const NepaliDateTimePicker = React.forwardRef<
     const next = clampDateTime(
       {
         ...base,
-        minute: snapMinute(base.minute, minuteStep),
+        minute: snapMinute(base.minute, step),
         second: withSeconds ? (base.second ?? 0) : 0,
       },
       minBound,
@@ -246,7 +318,7 @@ export const NepaliDateTimePicker = React.forwardRef<
     open,
     maxBound,
     minBound,
-    minuteStep,
+    step,
     nowDt,
     selected,
     todayIfEmpty,
@@ -298,36 +370,41 @@ export const NepaliDateTimePicker = React.forwardRef<
     });
   };
 
-  const hours = Array.from({ length: 24 }, (_, i) => i);
-  const minutes = Array.from(
-    { length: Math.floor(60 / Math.max(1, minuteStep)) },
-    (_, i) => i * Math.max(1, minuteStep),
-  );
-  const seconds = Array.from({ length: 60 }, (_, i) => i);
+  const { hour12, period } = hour24To12(draft.hour);
 
-  const disabledHours = React.useMemo(() => {
-    const set = new Set<number>();
-    for (const h of hours) {
+  const minutes = React.useMemo(
+    () => Array.from({ length: Math.floor(60 / step) }, (_, i) => i * step),
+    [step],
+  );
+  const seconds = React.useMemo(
+    () => Array.from({ length: 60 }, (_, i) => i),
+    [],
+  );
+
+  const disabledHour12 = React.useMemo(() => {
+    const set = new Set<number | string>();
+    for (const h12 of HOURS_12) {
+      const h24 = hour12To24(h12, period);
       const probe: DateTimeParts = {
         ...draft,
-        hour: h,
+        hour: h24,
         minute: 0,
         second: 0,
       };
       const hi: DateTimeParts = {
         ...draft,
-        hour: h,
+        hour: h24,
         minute: 59,
         second: 59,
       };
-      if (minBound && compareDateTimeParts(hi, minBound) < 0) set.add(h);
-      if (maxBound && compareDateTimeParts(probe, maxBound) > 0) set.add(h);
+      if (minBound && compareDateTimeParts(hi, minBound) < 0) set.add(h12);
+      if (maxBound && compareDateTimeParts(probe, maxBound) > 0) set.add(h12);
     }
     return set;
-  }, [draft, minBound, maxBound, hours]);
+  }, [draft, minBound, maxBound, period]);
 
   const disabledMinutes = React.useMemo(() => {
-    const set = new Set<number>();
+    const set = new Set<number | string>();
     for (const m of minutes) {
       const probe: DateTimeParts = {
         ...draft,
@@ -345,9 +422,49 @@ export const NepaliDateTimePicker = React.forwardRef<
     return set;
   }, [draft, minBound, maxBound, minutes]);
 
+  const disabledPeriods = React.useMemo(() => {
+    const set = new Set<number | string>();
+    for (const p of PERIODS) {
+      const h24 = hour12To24(hour12, p);
+      const probe: DateTimeParts = {
+        ...draft,
+        hour: h24,
+        minute: 0,
+        second: 0,
+      };
+      const hi: DateTimeParts = {
+        ...draft,
+        hour: h24,
+        minute: 59,
+        second: 59,
+      };
+      if (minBound && compareDateTimeParts(hi, minBound) < 0) set.add(p);
+      if (maxBound && compareDateTimeParts(probe, maxBound) > 0) set.add(p);
+    }
+    return set;
+  }, [draft, minBound, maxBound, hour12]);
+
   const displayValue = selected
-    ? formatBsDateTimeLabel(selected, displayLocale, { withSeconds })
+    ? formatDisplay(
+        selected,
+        displayLocale,
+        resolvedDisplayFormat,
+        withSeconds,
+        labels,
+      )
     : "";
+
+  const draftPreview = formatNepaliDateTimeDisplay(
+    draft,
+    withSeconds ? "time-date-two-line-seconds" : "time-date-two-line",
+    {
+      locale,
+      labels,
+      timePrefix: false,
+      showPeriod: false,
+      bsPrefix: false,
+    },
+  );
 
   const popover =
     open && portalReady
@@ -364,7 +481,7 @@ export const NepaliDateTimePicker = React.forwardRef<
               position: "fixed",
               top: pos.top,
               left: pos.left,
-              width: Math.max(pos.width, 320),
+              width: Math.max(pos.width, withSeconds ? 440 : 400),
               zIndex: 50,
               ...panelStyle,
             }}
@@ -372,48 +489,92 @@ export const NepaliDateTimePicker = React.forwardRef<
             aria-modal="false"
             aria-label="Nepali date and time"
           >
-            <div className="itzsa-ndp-datetime-layout">
-              <SingleCalendarPanel
-                locale={locale}
-                view={view}
-                onViewChange={setView}
-                selected={dateTimeToDateParts(draft)}
-                today={todayDate}
-                minYear={minYear}
-                maxYear={maxYear}
-                isDisabledDay={isDisabledDay}
-                onDayClick={onDayClick}
-              />
-              <div className="itzsa-ndp-time-panel">
-                <p className="itzsa-ndp-time-heading">
-                  {locale === "ne" ? "समय" : "Time"}
+            <div className="itzsa-ndp-datetime-preview" aria-live="polite">
+              {draftPreview.lines.map((line) => (
+                <p key={line} className="itzsa-ndp-datetime-preview-line">
+                  {line}
                 </p>
-                <div className="itzsa-ndp-time-cols">
+              ))}
+            </div>
+
+            <div className="itzsa-ndp-datetime-layout">
+              <div className="itzsa-ndp-datetime-calendar">
+                <SingleCalendarPanel
+                  locale={locale}
+                  view={view}
+                  onViewChange={setView}
+                  selected={dateTimeToDateParts(draft)}
+                  today={todayDate}
+                  minYear={minYear}
+                  maxYear={maxYear}
+                  monthFormat={monthFormat}
+                  weekdayFormat={weekdayFormat}
+                  monthPickerFormat={monthPickerFormat}
+                  labels={labels}
+                  isDisabledDay={isDisabledDay}
+                  onDayClick={onDayClick}
+                />
+              </div>
+
+              <div className="itzsa-ndp-time-panel">
+                <div
+                  className={cn(
+                    "itzsa-ndp-time-wheel",
+                    withSeconds && "has-seconds",
+                  )}
+                >
                   <TimeColumn
                     label={locale === "ne" ? "घण्टा" : "Hour"}
-                    values={hours}
-                    selected={draft.hour}
+                    hideLabel
+                    values={HOURS_12}
+                    selected={hour12}
                     locale={locale}
-                    disabledValues={disabledHours}
-                    onPick={(hour) => setDraftClamped({ ...draft, hour })}
+                    disabledValues={disabledHour12}
+                    onPick={(h) =>
+                      setDraftClamped({
+                        ...draft,
+                        hour: hour12To24(Number(h), period),
+                      })
+                    }
                   />
                   <TimeColumn
                     label={locale === "ne" ? "मिनेट" : "Min"}
+                    hideLabel
                     values={minutes}
-                    selected={snapMinute(draft.minute, minuteStep)}
+                    selected={snapMinute(draft.minute, step)}
                     locale={locale}
                     disabledValues={disabledMinutes}
-                    onPick={(minute) => setDraftClamped({ ...draft, minute })}
+                    onPick={(minute) =>
+                      setDraftClamped({ ...draft, minute: Number(minute) })
+                    }
                   />
                   {withSeconds ? (
                     <TimeColumn
                       label={locale === "ne" ? "सेकेन्ड" : "Sec"}
+                      hideLabel
                       values={seconds}
                       selected={draft.second ?? 0}
                       locale={locale}
-                      onPick={(second) => setDraftClamped({ ...draft, second })}
+                      onPick={(second) =>
+                        setDraftClamped({ ...draft, second: Number(second) })
+                      }
                     />
                   ) : null}
+                  <TimeColumn
+                    label="AM/PM"
+                    hideLabel
+                    values={PERIODS}
+                    selected={period}
+                    locale={locale}
+                    disabledValues={disabledPeriods}
+                    formatValue={(v) => (v === "am" ? "AM" : "PM")}
+                    onPick={(p) =>
+                      setDraftClamped({
+                        ...draft,
+                        hour: hour12To24(hour12, p as "am" | "pm"),
+                      })
+                    }
+                  />
                 </div>
               </div>
             </div>
@@ -427,7 +588,7 @@ export const NepaliDateTimePicker = React.forwardRef<
                   const t = clampDateTime(
                     {
                       ...now,
-                      minute: snapMinute(now.minute, minuteStep),
+                      minute: snapMinute(now.minute, step),
                       second: withSeconds ? now.second : 0,
                     },
                     minBound,

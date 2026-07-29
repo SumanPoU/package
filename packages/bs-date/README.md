@@ -113,8 +113,8 @@ stay O(1) as calendars grow.
 
 | Topic | Detail |
 | --- | --- |
-| **BS year range** | **2000–2100** (inclusive); extend with `extendCalendarData` |
-| **Epoch** | BS `2000-01-01` ↔ AD `1943-04-14` |
+| **BS year range** | **1970–2100** (inclusive); extend with `extendCalendarData` |
+| **Epoch** | BS `1970-01-01` ↔ AD `1913-04-13` |
 | **Timezones** | Calendar-date math only (UTC civil day counting). `bsToAd` returns a local-midnight `Date` for the civil AD date — not a zoned instant |
 | **Holidays** | Bundled list is **sample data** (`asOf: 2026-07`). Official gazettes change yearly; banks/gov/private orgs differ — **always** override with `setHolidayCalendar` or an engine for payroll |
 

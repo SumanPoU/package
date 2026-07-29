@@ -20,7 +20,7 @@ export type BsYearMonthDays =
 
 /**
  * Pluggable BS calendar table.
- * Ship your own years beyond the bundled 2000–2100 range without forking.
+ * Ship your own years beyond the bundled 1970–2100 range without forking.
  */
 export type BsCalendarData = {
   /** Inclusive min BS year present in `monthDays`. */
@@ -29,7 +29,7 @@ export type BsCalendarData = {
   maxYear: number;
   /**
    * AD civil date of BS `minYear-01-01`.
-   * Bundled default: BS 2000-01-01 ↔ AD 1943-04-14.
+   * Bundled default: BS 1970-01-01 ↔ AD 1913-04-13.
    */
   epochAd: AdDate;
   /** year → 12 month lengths */

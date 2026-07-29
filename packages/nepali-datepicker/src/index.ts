@@ -39,13 +39,34 @@ export {
   toDateString,
 } from "./format";
 export { cn, mergeRefs } from "./lib/utils";
-
+export type {
+  FormattedNepaliDateTime,
+  NepaliDateTimeDisplayFormat,
+  NepaliDateTimeDisplayOptions,
+} from "./live-display";
 export {
+  formatNepaliDateTimeDisplay,
+  NEPALI_DATETIME_DISPLAY_FORMATS,
+} from "./live-display";
+export type {
+  DateLabelOverrides,
+  LabelForm,
+  LocaleHelpers,
+  LocaleNameSet,
+} from "./locale";
+export {
+  createLocaleHelpers,
   getMonthName,
+  getMonthNames,
+  getWeekdayName,
   getWeekdayNames,
   localizeDigits,
+  MONTH_NAMES_EN,
+  MONTH_NAMES_NE,
   NEPALI_MONTH_NAMES_EN,
   NEPALI_MONTH_NAMES_NE,
+  WEEKDAY_LABELS_EN,
+  WEEKDAY_LABELS_NE,
   WEEKDAY_NAMES_EN,
   WEEKDAY_NAMES_NE,
 } from "./locale";
@@ -58,6 +79,8 @@ export type { NepaliDateTimePickerProps } from "./nepali-date-time-picker";
 export { NepaliDateTimePicker } from "./nepali-date-time-picker";
 export type { NepaliDatePickerProps } from "./nepali-datepicker";
 export { NepaliDatePicker } from "./nepali-datepicker";
+export type { NepaliLiveClockProps } from "./nepali-live-clock";
+export { NepaliLiveClock } from "./nepali-live-clock";
 export type {
   NepaliDatePickerClassNames,
   NepaliDatePickerVars,

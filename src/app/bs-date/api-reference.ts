@@ -159,7 +159,7 @@ export const ENGINE_API: PropRow[] = [
   {
     name: "DEFAULT_CALENDAR_DATA",
     type: "BsCalendarData",
-    description: "Bundled Panchanga tables BS 2000–2100.",
+    description: "Bundled Panchanga tables BS 1970–2100.",
   },
   {
     name: "extendCalendarData",

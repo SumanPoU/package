@@ -7,6 +7,7 @@ import {
   DATETIME_PROPS,
   EDITABLE_PROPS,
   HELPER_API,
+  LIVE_CLOCK_PROPS,
   PICKER_PROPS,
   RANGE_PROPS,
 } from "./api-reference";
@@ -23,6 +24,7 @@ import {
   DATETIME_EXAMPLE_CODE,
   EDITABLE_EXAMPLE_CODE,
   HELPERS_EXAMPLE_CODE,
+  LIVE_CLOCK_EXAMPLE_CODE,
   LOCALE_EXAMPLE_CODE,
   RANGE_EXAMPLE_CODE,
   STYLED_EXAMPLE_CODE,
@@ -33,6 +35,7 @@ import {
   DateTimeExample,
   EditableExample,
   HelpersExample,
+  LiveClockExample,
   LocaleExample,
   RangeExample,
   StyledExample,
@@ -129,7 +132,7 @@ export function DocsContent() {
               single · editable · datetime · range
             </span>
             <span className="rounded-md border-[0.5px] border-border bg-card px-2 py-1">
-              BS 2000–2100
+              BS 1970–2100
             </span>
           </div>
         </header>
@@ -170,7 +173,7 @@ export function DocsContent() {
           <Callout title="vs jQuery NepaliDatePicker">
             You do <strong>not</strong> need to port that plugin’s compressed
             month codec or special-case patches. This package uses explicit BS
-            month-length tables (2000–2100) plus{" "}
+            month-length tables (1970–2100) plus{" "}
             <code className="font-mono text-primary">validateBsDate</code> /{" "}
             <code className="font-mono text-primary">minDate</code> /{" "}
             <code className="font-mono text-primary">maxDate</code> — same job,
@@ -185,7 +188,7 @@ export function DocsContent() {
         >
           <CodeBlock code={VALIDATE_CODE} />
           <Callout title="What we validate">
-            Integer year/month/day, year in 2000–2100, month 1–12, day within
+            Integer year/month/day, year in 1970–2100, month 1–12, day within
             that month’s length. Incomplete typed strings fail{" "}
             <code className="font-mono text-primary">isCompleteBsDate</code>{" "}
             until the user finishes a real calendar day.
@@ -224,10 +227,21 @@ export function DocsContent() {
               id="example-datetime"
               level={3}
               title="Date & time"
-              description="Pick a BS date plus hour/minute. Use minDateTime / maxDateTime for bounds."
+              description="Pick a BS date plus every minute (minuteStep={1}). Preview uses Nepali live-clock style."
             >
               <ExampleDemo code={DATETIME_EXAMPLE_CODE}>
                 <DateTimeExample />
+              </ExampleDemo>
+            </DocSection>
+
+            <DocSection
+              id="example-live-clock"
+              level={3}
+              title="Live Nepali clock"
+              description="Show the current BS date/time in configurable formats (two-line, dmyw, time-only, with/without वि सं)."
+            >
+              <ExampleDemo code={LIVE_CLOCK_EXAMPLE_CODE}>
+                <LiveClockExample />
               </ExampleDemo>
             </DocSection>
 
@@ -319,11 +333,23 @@ export function DocsContent() {
               id="props-datetime"
               level={3}
               title="NepaliDateTimePicker"
-              description="Value is YYYY-MM-DD HH:mm. Confirm applies date + time together."
+              description="Value is YYYY-MM-DD HH:mm. Confirm applies date + time together. Default minuteStep is 1."
             >
               <PropsTable
                 caption="NepaliDateTimePickerProps"
                 rows={DATETIME_PROPS}
+              />
+            </DocSection>
+
+            <DocSection
+              id="props-live-clock"
+              level={3}
+              title="NepaliLiveClock"
+              description="Live or controlled Nepali BS date/time display with format presets."
+            >
+              <PropsTable
+                caption="NepaliLiveClockProps"
+                rows={LIVE_CLOCK_PROPS}
               />
             </DocSection>
 
@@ -375,7 +401,7 @@ export function DocsContent() {
             range picker).
           </p>
           <Callout title="Calendar data range">
-            Tables cover BS 2000–2100. Outside that range, conversion helpers
+            Tables cover BS 1970–2100. Outside that range, conversion helpers
             throw <code className="font-mono text-primary">RangeError</code>.
           </Callout>
           <p className="text-sm text-secondary">

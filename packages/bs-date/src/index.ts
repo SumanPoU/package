@@ -43,13 +43,20 @@ export {
   BsParseError,
   BsRangeError,
 } from "./errors";
-
+export type { LabelForm } from "./format";
 export {
   BS_MONTH_NAMES_EN,
+  BS_MONTH_NAMES_EN_SHORT,
   BS_MONTH_NAMES_NE,
+  BS_MONTH_NAMES_NE_SHORT,
+  BS_WEEKDAY_NAMES_EN,
+  BS_WEEKDAY_NAMES_EN_SHORT,
+  BS_WEEKDAY_NAMES_NE,
+  BS_WEEKDAY_NAMES_NE_SHORT,
   formatBs,
   formatBsIso,
   getBsMonthName,
+  getBsWeekdayName,
   toNepaliNumerals,
 } from "./format";
 export {

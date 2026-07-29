@@ -15,9 +15,9 @@ describe("engine / scalability", () => {
 
   it("exposes calendar meta", () => {
     const meta = getCalendarMeta();
-    expect(meta.minYear).toBe(2000);
+    expect(meta.minYear).toBe(1970);
     expect(meta.maxYear).toBe(2100);
-    expect(meta.yearCount).toBe(101);
+    expect(meta.yearCount).toBe(131);
   });
 
   it("isolates holiday calendars per engine", () => {
@@ -66,6 +66,6 @@ describe("engine / scalability", () => {
       month: 1,
       day: 1,
     });
-    expect(engine.getMeta().minYear).toBe(2000);
+    expect(engine.getMeta().minYear).toBe(1970);
   });
 });

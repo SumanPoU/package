@@ -54,6 +54,7 @@ export {
   setStoredLocale,
 } from "./i18n";
 export {
+  adjustStep,
   cycleStep,
   isPreferencesEqual,
   resetPreferences,
@@ -74,6 +75,17 @@ export {
   isToggleFeature,
   SECTION_META,
 } from "./registry";
+export type {
+  A11yKeyCombo,
+  A11yShortcutAction,
+  A11yShortcutDef,
+} from "./shortcuts";
+export {
+  DEFAULT_A11Y_SHORTCUTS,
+  formatShortcutLabel,
+  mergeA11yShortcuts,
+  resolveA11yShortcuts,
+} from "./shortcuts";
 export {
   clearStoredPreferences,
   getStoredPreferences,

@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 import { A11Y_TOOLBAR_ATTR } from "./types";
 
 /**
- * Horizontal reading band (Astral / Sienna style) that follows the pointer.
+ * Horizontal reading band that follows the pointer.
  * Mounted outside the dialog; excluded from toolbar chrome hit-testing.
  */
 export function ReadingGuide({ active }: { active: boolean }) {

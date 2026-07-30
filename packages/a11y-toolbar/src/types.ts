@@ -57,9 +57,13 @@ export type A11yResolvedPanelAlign =
   | "beside-right";
 
 /**
- * Theme tokens for chrome (header, accents, focus, type, launcher).
- * Prefer host CSS variables (e.g. `var(--accent)`) so light/dark stay in sync.
+ * Theme tokens for chrome (header, accents, focus, type, launcher) and optional
+ * effect tokens (cursor, reading guide). Prefer host CSS variables
+ * (e.g. `var(--accent)`) so light/dark stay in sync.
  * Defaults match the itzsa brand green with WCAG-safe header foreground.
+ *
+ * Every token maps to a `--itzsa-a11y-*` CSS custom property — you can also set
+ * those directly via the `style` prop or a host stylesheet.
  */
 export type A11yToolbarTheme = {
   /** Primary accent — icons, steps, pressed borders (default `#1d9e75`). */
@@ -93,6 +97,31 @@ export type A11yToolbarTheme = {
   launcherForeground?: string;
   /** Thin outer ring for contrast on busy pages — default `#ffffff`. */
   launcherRing?: string;
+  /** Launcher corner radius (default `999px`). */
+  launcherRadius?: string;
+  /** Panel shell background. */
+  background?: string;
+  /** Feature card background. */
+  card?: string;
+  /** Panel body text color. */
+  foreground?: string;
+  /** Muted labels / secondary text. */
+  muted?: string;
+  /** Borders (cards, dividers). */
+  border?: string;
+  /** Panel + launcher shadow. */
+  shadow?: string;
+  /** Panel corner radius. */
+  radius?: string;
+  /** Stacking order for chrome (default `2147483000`). */
+  zIndex?: string | number;
+  /**
+   * Bigger-cursor value: `url("…") 2 2` (keyword fallback `auto` is in CSS).
+   * Applied when the Bigger Cursor preference is on.
+   */
+  cursor?: string;
+  /** Reading-guide band height (e.g. `"48px"`). */
+  guideHeight?: string;
 };
 
 /** itzsa brand defaults (aligned with docs site `--accent` / `--accent-fg`). */
@@ -132,7 +161,7 @@ export type A11yPreferences = {
   biggerCursor: boolean;
   hideImages: boolean;
   pauseAnimations: boolean;
-  /** Horizontal reading band that follows the pointer (Astral/Sienna-style). */
+  /** Horizontal reading band that follows the pointer. */
   readingGuide: boolean;
   /** Emphasize anchors for low-vision scanning. */
   highlightLinks: boolean;

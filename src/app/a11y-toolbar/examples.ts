@@ -39,6 +39,93 @@ const a11yFouc = getA11yFoucScript();
   }}
 />`;
 
+export const REACT_NEXT = `// app/layout.tsx — Server Component
+import { getA11yFoucScript } from "@itzsa/a11y-toolbar/headless";
+import { A11yToolbarClient } from "./a11y-toolbar-client";
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const a11yFouc = getA11yFoucScript();
+  return (
+    <html lang="en">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: a11yFouc }} />
+      </head>
+      <body>
+        <main data-a11y-content>{children}</main>
+        <A11yToolbarClient />
+      </body>
+    </html>
+  );
+}
+
+// a11y-toolbar-client.tsx
+"use client";
+import { A11yToolbar, NE_MESSAGES } from "@itzsa/a11y-toolbar";
+import "@itzsa/a11y-toolbar/styles.css";
+
+export function A11yToolbarClient() {
+  return (
+    <A11yToolbar
+      position="bottom-center"
+      panelAlign="left"
+      locales={{ ne: NE_MESSAGES }}
+    />
+  );
+}`;
+
+export const REACT_VITE = `// main.tsx — Vite + React
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { A11yToolbar, NE_MESSAGES } from "@itzsa/a11y-toolbar";
+import { getA11yFoucScript } from "@itzsa/a11y-toolbar/headless";
+import "@itzsa/a11y-toolbar/styles.css";
+import App from "./App";
+
+// FOUC bootstrap before first paint
+const boot = document.createElement("script");
+boot.textContent = getA11yFoucScript();
+document.head.appendChild(boot);
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <div data-a11y-content>
+      <App />
+    </div>
+    <A11yToolbar
+      position="bottom-right"
+      locales={{ ne: NE_MESSAGES }}
+    />
+  </StrictMode>,
+);`;
+
+export const SHORTCUTS_EXAMPLE = `import {
+  A11yToolbar,
+  DEFAULT_A11Y_SHORTCUTS,
+  mergeA11yShortcuts,
+} from "@itzsa/a11y-toolbar";
+
+// Defaults: Alt+A panel, Alt+Shift+R reset, Alt+Shift± text size, …
+<A11yToolbar />
+
+// Remap panel toggle only (feature shortcuts stay)
+<A11yToolbar hotkey={{ altKey: true, shiftKey: true, key: "a" }} />
+
+// Panel hotkey only — no feature shortcuts
+<A11yToolbar shortcuts={false} />
+
+// Scalable custom map
+<A11yToolbar
+  shortcuts={mergeA11yShortcuts(DEFAULT_A11Y_SHORTCUTS, [
+    { id: "reset", keys: null }, // remove
+    {
+      id: "textSizeInc",
+      keys: { altKey: true, key: "]" },
+      action: { type: "feature", feature: "textSize", mode: "inc" },
+      label: "Increase text size",
+    },
+  ])}
+/>`;
+
 export const FEATURES_FLAG = `<A11yToolbar
   features={{
     colorFilter: false,
@@ -46,6 +133,43 @@ export const FEATURES_FLAG = `<A11yToolbar
     readingGuide: false,
   }}
 />`;
+
+export const THEME_EXAMPLE = `import { A11yToolbar, CSS_VAR } from "@itzsa/a11y-toolbar";
+
+// 1) theme prop — each token maps to --itzsa-a11y-*
+<A11yToolbar
+  theme={{
+    accent: "var(--accent)",
+    header: "#15805f",
+    headerForeground: "#ffffff",
+    background: "#e8eaef",
+    card: "#f7f6f4",
+    foreground: "#1a1a1a",
+    muted: "#4b4b4b",
+    radius: "8px",
+    launcherRadius: "999px",
+    // Bigger cursor asset (applied on <html> when preference is on)
+    cursor: 'url("/cursors/big.svg") 2 2',
+    guideHeight: "56px",
+  }}
+/>
+
+// 2) style prop — same CSS variables, any token
+<A11yToolbar
+  style={{
+    [CSS_VAR.toolbarAccent]: "#0f766e",
+    [CSS_VAR.toolbarRadius]: "12px",
+    [CSS_VAR.launcherSize]: "3.25rem",
+  }}
+/>
+
+// 3) Host stylesheet — override on :root / html
+/*
+:root {
+  --itzsa-a11y-toolbar-accent: #0f766e;
+  --itzsa-a11y-cursor: url("/cursors/big.svg") 2 2;
+}
+*/`;
 
 export const I18N_SYNC = `// Controlled locale — same source of truth as Zustand / Redux / next-intl
 const locale = useAppLocale();
@@ -67,6 +191,11 @@ export const WP_HTML = `<!-- itzsa CDN (hosted on docs site) -->
     panelAlign: "left",
     contentRoot: "main", // or true for <body>
     locales: { ne: ItzsaA11yToolbar.NE_MESSAGES },
+    // Optional: remap shortcuts
+    // shortcuts: ItzsaA11yToolbar.mergeA11yShortcuts(
+    //   ItzsaA11yToolbar.DEFAULT_A11Y_SHORTCUTS,
+    //   [{ id: "reset", keys: null }],
+    // ),
   });
 </script>`;
 

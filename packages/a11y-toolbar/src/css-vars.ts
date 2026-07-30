@@ -33,6 +33,8 @@ export const CSS_VAR = {
   launcherRadius: "--itzsa-a11y-launcher-radius",
   panelMaxHeight: "--itzsa-a11y-panel-max-height",
   panelHeight: "--itzsa-a11y-panel-height",
+  /** Bigger cursor: `url(...) x y` (keyword fallback is in CSS). */
+  cursor: "--itzsa-a11y-cursor",
 } as const;
 
 /** Effect vars written by apply / FOUC (cleanup list). */

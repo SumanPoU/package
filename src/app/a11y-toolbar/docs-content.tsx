@@ -12,6 +12,8 @@ import {
   PLACEMENT_PROPS,
   THEME_PROPS,
   TOOLBAR_PROPS,
+  WCAG_CRITERIA,
+  WCAG_PRINCIPLES,
 } from "./api-reference";
 import {
   Callout,
@@ -27,10 +29,15 @@ import {
   I18N_SYNC,
   JSDELIVR_CSS,
   JSDELIVR_JS,
+  REACT_NEXT,
+  REACT_VITE,
+  SHORTCUTS_EXAMPLE,
   STARTER,
+  THEME_EXAMPLE,
   WP_HTML,
   WP_PHP,
 } from "./examples";
+import { A11yHowItWorksFlowchart } from "./how-it-works";
 import { DOC_NAV } from "./nav";
 
 export function DocsContent() {
@@ -122,6 +129,14 @@ export function DocsContent() {
         </DocSection>
 
         <DocSection
+          id="how-it-works"
+          title="How it works"
+          description="FOUC bootstrap, content-root scoping, and chrome design — preference updates flow to HTML attrs and CSS tokens."
+        >
+          <A11yHowItWorksFlowchart />
+        </DocSection>
+
+        <DocSection
           id="getting-started"
           title="Getting started"
           description="Three pieces: FOUC script in head, SSR content wrapper, Client Component mount outside that wrapper."
@@ -131,6 +146,43 @@ export function DocsContent() {
             Use the floating accessibility button, or press{" "}
             <kbd className="font-mono text-primary">Alt+A</kbd>. Open Language
             in the header to switch English / नेपाली.
+          </Callout>
+
+          <div className="mt-8 flex flex-col gap-10">
+            <DocSection
+              id="example-react"
+              level={3}
+              title="React (Next.js)"
+              description="FOUC in the root layout Server Component; mount the toolbar from a Client Component outside data-a11y-content."
+            >
+              <CodeBlock code={REACT_NEXT} language="tsx" />
+            </DocSection>
+            <DocSection
+              id="example-vite"
+              level={3}
+              title="Vite + React"
+              description="Inject the FOUC bootstrap before createRoot, wrap the app in data-a11y-content, mount A11yToolbar as a sibling."
+            >
+              <CodeBlock code={REACT_VITE} language="tsx" />
+            </DocSection>
+          </div>
+        </DocSection>
+
+        <DocSection
+          id="shortcuts"
+          title="Keyboard shortcuts"
+          description="Scalable registry: defaults cover panel + common features. Remap with mergeA11yShortcuts, or pass shortcuts={false} for panel-only."
+        >
+          <CodeBlock code={SHORTCUTS_EXAMPLE} language="tsx" />
+          <Callout title="Defaults">
+            <kbd className="font-mono text-primary">Alt+A</kbd> panel ·{" "}
+            <kbd className="font-mono text-primary">Alt+Shift+R</kbd> reset ·{" "}
+            <kbd className="font-mono text-primary">Alt+Shift+=/−</kbd> text
+            size ·{" "}
+            <kbd className="font-mono text-primary">Alt+Shift+C/M/G/L/D</kbd>{" "}
+            contrast / pause / guide / links / dyslexia aid. Ignored while focus
+            is in inputs. Feature shortcuts respect{" "}
+            <code className="font-mono text-accent">features</code> flags.
           </Callout>
         </DocSection>
 
@@ -170,7 +222,7 @@ export function DocsContent() {
               id="props-toolbar"
               level={3}
               title="A11yToolbar"
-              description="Core open state, storage, hotkey, and feature flags."
+              description="Core open state, storage, shortcuts/hotkey, and feature flags."
             >
               <PropsTable caption="A11yToolbarProps" rows={TOOLBAR_PROPS} />
             </DocSection>
@@ -178,10 +230,21 @@ export function DocsContent() {
             <DocSection
               id="props-theme"
               level={3}
-              title="theme"
-              description="Chrome colors and fonts. Header pair defaults clear ~4.9:1; keep brand accent for launcher/icons."
+              title="theme & styles"
+              description="Chrome and effect tokens via theme, style, or host CSS variables. Header pair defaults clear ~4.9:1."
             >
-              <PropsTable caption="A11yToolbarTheme" rows={THEME_PROPS} />
+              <PropsTable
+                caption="A11yToolbarTheme + style"
+                rows={THEME_PROPS}
+              />
+              <CodeBlock code={THEME_EXAMPLE} language="tsx" />
+              <Callout title="Bigger cursor asset">
+                <code className="font-mono text-accent">theme.cursor</code> is
+                written onto{" "}
+                <code className="font-mono text-accent">&lt;html&gt;</code> so
+                the larger pointer applies page-wide as soon as the preference
+                is on (including while the panel is open).
+              </Callout>
             </DocSection>
 
             <DocSection
@@ -215,9 +278,34 @@ export function DocsContent() {
         </DocSection>
 
         <DocSection
+          id="wcag"
+          title="Web accessibility (WCAG)"
+          description="The toolbar chrome follows WCAG 2.2 POUR principles and related success criteria. It does not certify the host site."
+        >
+          <Callout title="Principle first">
+            WCAG is organized as{" "}
+            <strong className="font-medium text-primary">POUR</strong> —
+            Perceivable, Operable, Understandable, Robust. Preference controls
+            map to those principles; semantic HTML and keyboard paths in your
+            app remain required.
+          </Callout>
+          <PropsTable caption="POUR mapping" rows={WCAG_PRINCIPLES} />
+          <PropsTable
+            caption="Success criteria the chrome targets"
+            rows={WCAG_CRITERIA}
+          />
+          <Callout title="What this package is not">
+            Enabling the toolbar does not make an inaccessible page
+            WCAG-compliant. Use it as visitor preference chrome alongside a
+            sound base UI — headings, labels, focus order, and contrast in your
+            own components.
+          </Callout>
+        </DocSection>
+
+        <DocSection
           id="behavior"
-          title="Behavior & a11y"
-          description="Chrome patterns grounded in WCAG / APG. See package BEHAVIOR.md for control-level detail."
+          title="Behavior & patterns"
+          description="APG-aligned dialog / toggle behavior. See package BEHAVIOR.md for control-level detail."
         >
           <PropsTable caption="Behavior" rows={BEHAVIOR_ROWS} />
           <Callout title="Known risks">

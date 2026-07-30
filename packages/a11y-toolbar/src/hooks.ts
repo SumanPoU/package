@@ -103,6 +103,72 @@ export function useHotkey(
   }, [hotkey, enabled]);
 }
 
+/**
+ * Multi-binding shortcut bus — used by the toolbar for panel + feature keys.
+ * First matching binding wins (registry order).
+ */
+export function useA11yShortcuts(
+  bindings: readonly {
+    keys: {
+      altKey?: boolean;
+      ctrlKey?: boolean;
+      metaKey?: boolean;
+      shiftKey?: boolean;
+      key: string;
+    };
+  }[],
+  onMatch: (index: number) => void,
+  enabled: boolean,
+) {
+  const onMatchRef = useRef(onMatch);
+  onMatchRef.current = onMatch;
+  const bindingsRef = useRef(bindings);
+  bindingsRef.current = bindings;
+
+  useEffect(() => {
+    if (!enabled || bindings.length === 0) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (
+        target &&
+        (target.isContentEditable ||
+          target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.tagName === "SELECT")
+      ) {
+        return;
+      }
+
+      const list = bindingsRef.current;
+      for (let i = 0; i < list.length; i++) {
+        const keys = list[i]!.keys;
+        const key =
+          event.key.length === 1 ? event.key.toLowerCase() : event.key;
+        const want = keys.key.length === 1 ? keys.key.toLowerCase() : keys.key;
+        const keyNorm =
+          key === "+" || event.code === "Equal" || event.code === "NumpadAdd"
+            ? "="
+            : key === "_"
+              ? "-"
+              : key;
+        const wantNorm = want === "+" ? "=" : want;
+        if (keyNorm !== wantNorm && key !== want) continue;
+        if (Boolean(keys.altKey) !== event.altKey) continue;
+        if (Boolean(keys.ctrlKey) !== event.ctrlKey) continue;
+        if (Boolean(keys.metaKey) !== event.metaKey) continue;
+        if (Boolean(keys.shiftKey) !== event.shiftKey) continue;
+        event.preventDefault();
+        onMatchRef.current(i);
+        return;
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [bindings, enabled]);
+}
+
 export function useIdSafe(prefix: string): string {
   const id = useId();
   return `${prefix}-${id.replace(/:/g, "")}`;

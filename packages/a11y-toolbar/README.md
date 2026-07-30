@@ -1,9 +1,8 @@
 # @itzsa/a11y-toolbar
 
-Inspired by open widgets such as [Sienna](https://github.com/bennyluk/Sienna-Accessibility-Widget),
-[Astral](https://github.com/verto-health/astral-accessibility), and
-[accessibility-widgets](https://github.com/sinanisler/accessibility-widgets) —
-with a React/npm API, SSR FOUC split, and WCAG-grounded control behavior.
+Floating accessibility preference toolbar for React — text size, contrast,
+spacing, motion, and reading aids. React/npm API, SSR FOUC split, keyboard
+shortcuts, and WCAG-grounded control behavior.
 
 > **Note for integrators.** This package helps visitors customize presentation.
 > It does **not** make an inaccessible site WCAG-compliant. Semantic HTML,
@@ -21,16 +20,15 @@ import { getA11yFoucScript } from "@itzsa/a11y-toolbar/headless";
 import "@itzsa/a11y-toolbar/styles.css";
 ```
 
-## Quick start
+## Quick start (React)
 
-1. **SSR a content wrapper** so FOUC prevention works (attrs on `<html>`,
-   effects under `[data-a11y-content]`):
+1. **SSR a content wrapper** so FOUC prevention works:
 
 ```tsx
 <main data-a11y-content>{children}</main>
 ```
 
-2. **Inline FOUC script** in `<head>` (same pattern as theme bootstrap):
+2. **Inline FOUC script** in `<head>`:
 
 ```tsx
 <script
@@ -42,6 +40,128 @@ import "@itzsa/a11y-toolbar/styles.css";
 
 ```tsx
 <A11yToolbar />
+```
+
+### Next.js (App Router)
+
+```tsx
+// app/layout.tsx (Server Component)
+import { getA11yFoucScript } from "@itzsa/a11y-toolbar/headless";
+
+export default function RootLayout({ children }) {
+  const a11yFouc = getA11yFoucScript();
+  return (
+    <html lang="en">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: a11yFouc }} />
+      </head>
+      <body>
+        <main data-a11y-content>{children}</main>
+        <A11yToolbarClient />
+      </body>
+    </html>
+  );
+}
+```
+
+```tsx
+// components/A11yToolbarClient.tsx
+"use client";
+import { A11yToolbar, NE_MESSAGES } from "@itzsa/a11y-toolbar";
+import "@itzsa/a11y-toolbar/styles.css";
+
+export function A11yToolbarClient() {
+  return (
+    <A11yToolbar
+      position="bottom-center"
+      panelAlign="left"
+      locales={{ ne: NE_MESSAGES }}
+    />
+  );
+}
+```
+
+### Vite + React
+
+```tsx
+// main.tsx
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { A11yToolbar, NE_MESSAGES } from "@itzsa/a11y-toolbar";
+import { getA11yFoucScript } from "@itzsa/a11y-toolbar/headless";
+import "@itzsa/a11y-toolbar/styles.css";
+import App from "./App";
+
+// FOUC bootstrap before paint
+const s = document.createElement("script");
+s.textContent = getA11yFoucScript();
+document.head.appendChild(s);
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <div data-a11y-content>
+      <App />
+    </div>
+    <A11yToolbar
+      position="bottom-right"
+      locales={{ ne: NE_MESSAGES }}
+      // Optional: custom shortcuts (see below)
+    />
+  </StrictMode>,
+);
+```
+
+```html
+<!-- index.html — mark a content root early if you prefer -->
+<body>
+  <div id="root"></div>
+</body>
+```
+
+## Keyboard shortcuts
+
+Shortcuts are registry-driven and scalable — add bindings without forking the UI.
+
+| Shortcut | Action |
+| --- | --- |
+| `Alt+A` | Toggle panel |
+| `Alt+Shift+R` | Reset all preferences |
+| `Alt+Shift++` / `=` | Increase text size |
+| `Alt+Shift+-` | Decrease text size |
+| `Alt+Shift+C` | Cycle contrast |
+| `Alt+Shift+M` | Toggle pause animations |
+| `Alt+Shift+G` | Toggle reading guide |
+| `Alt+Shift+L` | Toggle highlight links |
+| `Alt+Shift+D` | Toggle reading spacing aid |
+
+Ignored while focus is in `input` / `textarea` / `select` / `contenteditable`.
+Feature shortcuts respect `features={{ …: false }}` (disabled features are skipped).
+
+```tsx
+import {
+  A11yToolbar,
+  DEFAULT_A11Y_SHORTCUTS,
+  mergeA11yShortcuts,
+} from "@itzsa/a11y-toolbar";
+
+// Remap panel toggle + keep feature defaults
+<A11yToolbar hotkey={{ altKey: true, shiftKey: true, key: "a" }} />
+
+// Disable feature shortcuts; keep panel hotkey only
+<A11yToolbar shortcuts={false} hotkey={{ altKey: true, key: "a" }} />
+
+// Full custom map (scalable)
+<A11yToolbar
+  shortcuts={mergeA11yShortcuts(DEFAULT_A11Y_SHORTCUTS, [
+    { id: "reset", keys: null }, // remove reset shortcut
+    {
+      id: "textSizeInc",
+      keys: { altKey: true, key: "]" },
+      action: { type: "feature", feature: "textSize", mode: "inc" },
+      label: "Increase text size",
+    },
+  ])}
+/>
 ```
 
 ## WordPress / CDN (minified drop-in)
@@ -78,61 +198,17 @@ https://cdn.jsdelivr.net/npm/@itzsa/a11y-toolbar@VERSION/dist/a11y-toolbar.min.j
     />
   </head>
   <body>
-    <main data-a11y-content>
-      <!-- your site content -->
-    </main>
+    <main data-a11y-content><!-- your site --></main>
     <script src="https://itzsa.acharya-suman.com.np/cdn/a11y-toolbar/a11y-toolbar.min.js"></script>
     <script>
       ItzsaA11yToolbar.mount({
         position: "bottom-center",
-        panelAlign: "left",
-        locales: { ne: ItzsaA11yToolbar.NE_MESSAGES },
-        // contentRoot: true, // optional — stamps data-a11y-content on <body>
+        contentRoot: "main",
       });
     </script>
   </body>
 </html>
 ```
-
-### WordPress (`functions.php`)
-
-```php
-add_action('wp_enqueue_scripts', function () {
-  $base = get_stylesheet_directory_uri() . '/vendor/itzsa-a11y';
-  wp_enqueue_style('itzsa-a11y', $base . '/a11y-toolbar.min.css', [], '0.0.0');
-  wp_enqueue_script('itzsa-a11y', $base . '/a11y-toolbar.min.js', [], '0.0.0', true);
-  wp_add_inline_script('itzsa-a11y', <<<'JS'
-ItzsaA11yToolbar.mount({
-  position: "bottom-right",
-  contentRoot: "main", // or true for document.body
-  theme: { header: "#15805f", headerForeground: "#ffffff" }
-});
-JS, 'after');
-});
-
-// FOUC in <head> — enqueue a tiny inline script early:
-add_action('wp_head', function () {
-  // Prefer printing getA11yFoucScript() output from a build step.
-  // Fallback: mark content root only (prefs apply after JS).
-}, 1);
-
-add_filter('body_class', function ($classes) {
-  // Ensure a content root if you use contentRoot: true in mount()
-  return $classes;
-});
-```
-
-Copy files from `node_modules/@itzsa/a11y-toolbar/dist/` after `pnpm add @itzsa/a11y-toolbar`
-(or from a GitHub release / CDN once published).
-
-API on the global:
-
-| Method | Description |
-| --- | --- |
-| `mount(options?)` | Render the toolbar (options = React props + `target` / `contentRoot`) |
-| `unmount()` | Remove the toolbar |
-| `getA11yFoucScript(storageKey?)` | Returns the FOUC inline script string |
-| `NE_MESSAGES` / `EN_MESSAGES` | Locale dictionaries |
 
 ## Props
 
@@ -142,33 +218,41 @@ API on the global:
 | `defaultOpen` | `boolean` | `false` | Uncontrolled initial open |
 | `open` / `onOpenChange` | controlled | — | Control panel visibility |
 | `features` | `Partial<Record<FeatureId, boolean>>` | all on | Set `false` to hide a control |
-| `hotkey` | `{ altKey?, key, ... } \| null` | `Alt+A` | Pass `null` to disable |
+| `hotkey` | `{ altKey?, key, ... } \| null` | `Alt+A` | Panel toggle; syncs into shortcut map |
+| `shortcuts` | `A11yShortcutDef[] \| false` | defaults | Full shortcut registry; `false` = panel only |
 | `onChange` | `(prefs) => void` | — | Fired after preference updates |
 | `launcherLabel` | `string` | locale message | Override launcher accessible name |
-| `position` | `A11yToolbarPosition` | `"bottom-right"` | Launcher placement: `bottom-*` / `top-*` / `middle-*` / `*-center` |
-| `panelAlign` | `"auto" \| "left" \| "right" \| "center"` | `"auto"` | Panel horizontal edge; `"auto"` follows the launcher |
-| `offset` | `string` | `"1.25rem"` | Gap from viewport edge |
-| `launcherSize` | `string` | `"3.5rem"` | Floating button size |
-| `panelMaxHeight` | `string` | `min(40rem, 100dvh - 6rem)` | Panel max height (`"32rem"`, `"70dvh"`, …) |
-| `panelHeight` | `string` | `auto` | Fixed panel height (still capped by `panelMaxHeight`) |
-| `theme` | `A11yToolbarTheme` | itzsa green | Accent, header, launcher colors, font, focus |
-| `accentColor` | `string` | — | Deprecated shorthand for accent + header |
-| `locale` | `string` | — | Controlled locale (sync with Zustand / Redux / app i18n) |
-| `defaultLocale` | `string` | `"en"` | Uncontrolled initial locale |
-| `onLocaleChange` | `(locale) => void` | — | Language switch / host sync callback |
-| `messages` | `A11yMessagesPartial` | — | Deep-partial overrides on the active locale |
-| `locales` | `Record<string, A11yMessagesPartial>` | — | Extra dictionaries (`en` is built-in) |
-| `availableLocales` | `string[]` | `en` + keys of `locales` | Codes shown in the language switcher |
+| `position` | `A11yToolbarPosition` | `"bottom-right"` | Launcher placement |
+| `panelAlign` | `"auto" \| "left" \| "right" \| "center"` | `"auto"` | Panel horizontal edge |
+| `theme` | `A11yToolbarTheme` | itzsa green | Chrome + effect tokens (`accent`, `background`, `cursor`, …) → `--itzsa-a11y-*` |
+| `style` | `CSSProperties` | — | Same CSS variables via `CSS_VAR` or host `:root` overrides |
+| `locale` / `defaultLocale` / `onLocaleChange` | i18n | — | Controlled or uncontrolled locale |
+| `locales` / `messages` | dictionaries | — | Extra / override copy |
+
+### Theme / custom styles
+
+Every chrome token maps to a namespaced CSS variable. Prefer the `theme` prop, or set vars on `:root`:
+
+```tsx
+import { A11yToolbar, CSS_VAR } from "@itzsa/a11y-toolbar";
+
+<A11yToolbar
+  theme={{
+    accent: "var(--accent)",
+    background: "#e8eaef",
+    cursor: 'url("/cursors/big.svg") 2 2',
+  }}
+  style={{ [CSS_VAR.toolbarRadius]: "12px" }}
+/>
+```
+
+`theme.cursor` / `theme.guideHeight` are synced onto `<html>` so page-wide effects (bigger cursor, reading guide height) pick them up immediately.
 
 ## Internationalization
-
-Default language is **English**. Pass extra dictionaries and (optionally) sync
-with your app store:
 
 ```tsx
 import { A11yToolbar, NE_MESSAGES } from "@itzsa/a11y-toolbar";
 
-// Controlled — same source of truth as next-intl / Zustand / Redux
 const locale = useAppLocale();
 const setLocale = useSetAppLocale();
 
@@ -176,122 +260,17 @@ const setLocale = useSetAppLocale();
   locale={locale}
   onLocaleChange={setLocale}
   locales={{ ne: NE_MESSAGES }}
-  messages={{ panelTitle: "Site accessibility" }} // optional last-wins overrides
+  messages={{ panelTitle: "Site accessibility" }}
 />
 ```
-
-**Resolution:** `en` → `locales[active]` → `messages` prop (deep partial).
-
-**Accessibility:** the open panel sets `lang={locale}` (WCAG 3.1.2). Changing
-language announces `languageChanged` in the **new** locale via the live region.
-Step announcements use **Arabic numerals** (`3 of 4`) in every locale.
-
-**FOUC:** FOUC script sets `data-a11y-locale` on `<html>` from
-`${storageKey}:locale`. Translated chrome strings resolve in React — for
-SSR-safe copy with no flash, pass controlled `locale` from the host (same
-pattern as syncing app i18n state). Uncontrolled mode reads storage on first
-client render.
-
-**RTL / `dir`:** not in v1 (Nepali/Hindi are LTR). Deferred if Arabic/Urdu/Hebrew
-are added later.
-
-**Dev warning:** incomplete `locales.*` keys that still equal English log a
-`console.warn` in non-production builds. Built-in `NE_MESSAGES` is complete.
-
-**Fonts by locale:** English defaults to Outfit; Nepali defaults to Poppins
-(with Devanagari fallbacks). Override with props:
-
-```tsx
-theme={{
-  // Force one stack for every locale:
-  // fontFamily: 'var(--font-outfit), Outfit, sans-serif',
-
-  // Or per locale (merged over built-ins):
-  fontFamilyByLocale: {
-    en: 'var(--font-outfit), "Outfit", system-ui, sans-serif',
-    ne: 'var(--font-poppins), "Poppins", "Noto Sans Devanagari", sans-serif',
-  },
-}}
-```
-
-Load the faces in the host app (`next/font`: `--font-outfit`, `--font-poppins`).
-
-## Placement & colors
-
-```tsx
-<A11yToolbar
-  position="bottom-center" // launcher icon
-  panelAlign="left" // panel flush left — or "right" | "center" | "auto"
-  offset="1rem"
-  launcherSize="3rem"
-  locales={{ ne: NE_MESSAGES }}
-  theme={{
-    accent: "var(--accent)",
-    header: "#15805f", // darker than accent — white text clears 4.5:1
-    headerForeground: "#ffffff",
-    launcher: "#1d9e75",
-    launcherForeground: "#ffffff",
-    launcherRing: "#ffffff",
-  }}
-/>
-```
-
-`position` controls the **launcher**. `panelAlign` controls the **panel** horizontally
-while the vertical edge still tracks `position` (e.g. bottom-center icon + left panel
-opens above the bottom edge, flush left).
-
-## Features (v1)
-
-Defined in `A11Y_FEATURE_REGISTRY` — UI renders by mapping the registry.
-
-**Display:** Text Size, Text Spacing, Line Height, Font Selection, Text Align,
-Dyslexia Friendly, High Contrast, Color Filter, Saturation, Hide Images,
-Highlight Links.
-
-**Motion & assist:** Pause Animations, Bigger Cursor, Reading Guide.
-
-**Text size** uses `zoom` on `[data-a11y-content]` so Tailwind `text-*` / `px`
-utilities scale (parent `font-size` alone is not enough).
-
-**Motion model:** `paused = toggle || prefers-reduced-motion`. The toggle never
-re-enables motion when the OS preference is `reduce`.
-
-**CSS variables** use the `--itzsa-a11y-*` namespace (see repo `STANDARDS.md`).
-
-Engineering detail: see [`IMPLEMENTATION.md`](./IMPLEMENTATION.md) and
-[`BEHAVIOR.md`](./BEHAVIOR.md) (per-control WCAG/ARIA spec).
-
-Color Filter / Saturation are **presentation aids**, not clinically validated
-color-vision correction tools.
-
-## Hotkey (Alt+A)
-
-Default opens the panel. Ignored while focus is in `input` / `textarea` /
-`select` / `contenteditable`. Disable with `hotkey={null}` or remap via prop —
-document this in your app if extensions or AT claim the combo.
-
-### Acceptance criterion (must pass before locking Alt+A as shipped default)
-
-- [ ] With **NVDA** (Windows): press Alt+A on a page with the toolbar mounted;
-      the panel opens (or focuses) and NVDA does not swallow the key for its own
-      command. If NVDA intercepts Alt+A, change the default hotkey (e.g. Alt+Shift+A)
-      before release and update this README.
-
-JAWS often remaps Alt+letter shortcuts; treat JAWS conflicts as a known risk and
-prefer documenting `hotkey` override rather than blocking ship solely on JAWS.
-
-## Bigger cursor
-
-v1 ships a **32×32 SVG** data-URI cursor (Safari-safe size band). Pass/fail
-spike criteria remain in [`IMPLEMENTATION.md`](./IMPLEMENTATION.md).
 
 ## Architecture notes
 
 - Preferences persist as `{ schemaVersion, values }` (legacy blobs auto-migrate)
-- Attrs + `--itzsa-a11y-*` CSS variables → `<html>` (DOM writes debounced ~50ms)
+- Attrs + `--itzsa-a11y-*` CSS variables → `<html>`
 - Effects → `[data-a11y-content]` only (toolbar uses `data-a11y-toolbar`)
-- Content wrapper **must** be in SSR HTML for FOUC script to matter
-- Feature metadata lives in `A11Y_FEATURE_REGISTRY` (React-free; icons via `iconId`)
+- Feature metadata lives in `A11Y_FEATURE_REGISTRY`
+- Shortcuts live in `DEFAULT_A11Y_SHORTCUTS` / `mergeA11yShortcuts`
 
 ## Headless helpers
 
@@ -304,7 +283,7 @@ import {
 } from "@itzsa/a11y-toolbar/headless";
 ```
 
-Import FOUC / apply helpers from **`@itzsa/a11y-toolbar/headless`** in Server Components (e.g. `layout.tsx`). The root entry is a Client Component module.
+Import FOUC / apply helpers from **`@itzsa/a11y-toolbar/headless`** in Server Components.
 
 ## License
 

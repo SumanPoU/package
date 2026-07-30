@@ -79,7 +79,17 @@ describe("announce copy", () => {
 
 describe("CSS contracts (styles.css)", () => {
   it("Bigger Cursor includes required keyword fallback `auto`", () => {
-    expect(stylesCss).toMatch(/cursor:\s*url\([^)]+\)\s*2\s*2,\s*auto/s);
+    expect(stylesCss).toMatch(/cursor:\s*var\(--itzsa-a11y-cursor\),\s*auto/s);
+  });
+
+  it("Bigger Cursor is not forced back to pointer on toolbar chrome", () => {
+    const biggerBlock = stylesCss.slice(
+      stylesCss.indexOf("Bigger cursor"),
+      stylesCss.indexOf("Pause animations"),
+    );
+    expect(biggerBlock).not.toMatch(
+      /\[data-a11y-toolbar\][\s\S]*cursor:\s*pointer/,
+    );
   });
 
   it("Pause Animations kill-list includes scroll-behavior", () => {

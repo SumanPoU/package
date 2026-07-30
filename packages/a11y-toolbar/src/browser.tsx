@@ -102,4 +102,16 @@ export function unmount(): void {
 
 export { EN_MESSAGES, getA11yFoucScript, NE_MESSAGES };
 
+export {
+  DEFAULT_A11Y_SHORTCUTS,
+  formatShortcutLabel,
+  mergeA11yShortcuts,
+  resolveA11yShortcuts,
+} from "./shortcuts";
+
 export type { A11yToolbarProps };
+export type {
+  A11yKeyCombo,
+  A11yShortcutAction,
+  A11yShortcutDef,
+} from "./shortcuts";

@@ -15,6 +15,22 @@ export function cycleStep<K extends SteppedFeatureId>(
   return { ...prefs, [key]: next };
 }
 
+/** Clamp stepped features up/down (for keyboard shortcuts). */
+export function adjustStep<K extends SteppedFeatureId>(
+  prefs: A11yPreferences,
+  key: K,
+  delta: 1 | -1,
+): A11yPreferences {
+  const max = STEP_COUNT[key];
+  const cur = prefs[key] as number;
+  const next = Math.max(
+    0,
+    Math.min(max - 1, cur + delta),
+  ) as A11yPreferences[K];
+  if (next === prefs[key]) return prefs;
+  return { ...prefs, [key]: next };
+}
+
 export function toggleFeature(
   prefs: A11yPreferences,
   key: ToggleFeatureId,

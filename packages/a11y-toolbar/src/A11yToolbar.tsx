@@ -15,7 +15,7 @@ import {
 } from "./apply";
 import { CSS_VAR } from "./css-vars";
 import { A11yPanelErrorBoundary } from "./ErrorBoundary";
-import { useFocusTrap, useHotkey, useIdSafe } from "./hooks";
+import { useA11yShortcuts, useFocusTrap, useIdSafe } from "./hooks";
 import {
   type A11yLocaleDictionaries,
   type A11yMessagesPartial,
@@ -32,6 +32,7 @@ import {
 } from "./i18n";
 import { IconClose, IconLauncher, IconReset, resolveIcon } from "./icons";
 import {
+  adjustStep,
   cycleStep,
   isPreferencesEqual,
   resetPreferences,
@@ -44,6 +45,8 @@ import {
   isSteppedFeature,
   isToggleFeature,
 } from "./registry";
+import type { A11yShortcutDef } from "./shortcuts";
+import { resolveA11yShortcuts } from "./shortcuts";
 import {
   clearStoredPreferences,
   getStoredPreferences,
@@ -76,7 +79,19 @@ export type A11yToolbarProps = {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   features?: A11yFeatureFlags;
+  /**
+   * Toggle the panel (default Alt+A). Pass `null` to disable.
+   * Prefer `shortcuts` for the full shortcut map; `hotkey` still overrides
+   * the built-in `togglePanel` binding when `shortcuts` is omitted.
+   */
   hotkey?: A11yHotkey;
+  /**
+   * Keyboard shortcuts for panel + features.
+   * - omit → defaults (`DEFAULT_A11Y_SHORTCUTS`, with `hotkey` applied)
+   * - `false` → only `hotkey` panel toggle (if set)
+   * - array → full custom list (scalable — add bindings without forking UI)
+   */
+  shortcuts?: readonly A11yShortcutDef[] | false;
   onChange?: (prefs: A11yPreferences) => void;
   className?: string;
   style?: CSSProperties;
@@ -240,6 +255,23 @@ function resolveThemeStyle(
     [CSS_VAR.launcherBg]: launcher,
     [CSS_VAR.launcherFg]: launcherFg,
     [CSS_VAR.launcherRing]: launcherRing,
+    ...(theme?.background ? { [CSS_VAR.toolbarBg]: theme.background } : null),
+    ...(theme?.card ? { [CSS_VAR.toolbarCard]: theme.card } : null),
+    ...(theme?.foreground ? { [CSS_VAR.toolbarFg]: theme.foreground } : null),
+    ...(theme?.muted ? { [CSS_VAR.toolbarMuted]: theme.muted } : null),
+    ...(theme?.border ? { [CSS_VAR.toolbarBorder]: theme.border } : null),
+    ...(theme?.shadow ? { [CSS_VAR.toolbarShadow]: theme.shadow } : null),
+    ...(theme?.radius ? { [CSS_VAR.toolbarRadius]: theme.radius } : null),
+    ...(theme?.zIndex != null
+      ? { [CSS_VAR.toolbarZ]: String(theme.zIndex) }
+      : null),
+    ...(theme?.launcherRadius
+      ? { [CSS_VAR.launcherRadius]: theme.launcherRadius }
+      : null),
+    ...(theme?.cursor ? { [CSS_VAR.cursor]: theme.cursor } : null),
+    ...(theme?.guideHeight
+      ? { [CSS_VAR.guideHeight]: theme.guideHeight }
+      : null),
     ...(offset ? { [CSS_VAR.offset]: offset } : null),
     ...(launcherSize ? { [CSS_VAR.launcherSize]: launcherSize } : null),
     ...(panelMaxHeight ? { [CSS_VAR.panelMaxHeight]: panelMaxHeight } : null),
@@ -268,6 +300,7 @@ export function A11yToolbar({
   onOpenChange,
   features,
   hotkey = DEFAULT_HOTKEY,
+  shortcuts: shortcutsProp,
   onChange,
   className,
   style,
@@ -301,11 +334,12 @@ export function A11yToolbar({
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
   const open = openProp ?? uncontrolledOpen;
   const setOpen = useCallback(
-    (next: boolean) => {
-      onOpenChange?.(next);
-      if (openProp === undefined) setUncontrolledOpen(next);
+    (next: boolean | ((prev: boolean) => boolean)) => {
+      const resolved = typeof next === "function" ? next(open) : next;
+      onOpenChange?.(resolved);
+      if (openProp === undefined) setUncontrolledOpen(resolved);
     },
-    [onOpenChange, openProp],
+    [onOpenChange, openProp, open],
   );
 
   const [uncontrolledLocale, setUncontrolledLocale] = useState(() =>
@@ -373,6 +407,23 @@ export function A11yToolbar({
     onChange?.(prefs);
   }, [prefs, storageKey, onChange]);
 
+  // Effect tokens (cursor / guide) must live on <html> so page-wide CSS sees them.
+  useEffect(() => {
+    const root = document.documentElement;
+    const applied: string[] = [];
+    if (theme?.cursor) {
+      root.style.setProperty(CSS_VAR.cursor, theme.cursor);
+      applied.push(CSS_VAR.cursor);
+    }
+    if (theme?.guideHeight) {
+      root.style.setProperty(CSS_VAR.guideHeight, theme.guideHeight);
+      applied.push(CSS_VAR.guideHeight);
+    }
+    return () => {
+      for (const prop of applied) root.style.removeProperty(prop);
+    };
+  }, [theme?.cursor, theme?.guideHeight]);
+
   useEffect(() => {
     return () => {
       flushApplyA11yPreferences();
@@ -411,10 +462,92 @@ export function A11yToolbar({
 
   useFocusTrap(open, panelRef, () => setOpen(false));
 
-  useHotkey(
-    hotkey,
-    () => {
-      setOpen(!open);
+  const shortcutBindings = useMemo(
+    () =>
+      resolveA11yShortcuts({
+        shortcuts: shortcutsProp,
+        hotkey,
+      }),
+    [shortcutsProp, hotkey],
+  );
+
+  const update = useCallback((next: A11yPreferences, message: string) => {
+    setPrefs(next);
+    setAnnouncement(message);
+  }, []);
+
+  const onActivate = useCallback(
+    (id: FeatureId) => {
+      const def = getFeatureDef(id);
+      if (!def) return;
+      if (!isEnabled(features, id)) return;
+      const title = t.features[id].title;
+      if (isSteppedFeature(id)) {
+        const next = cycleStep(prefs, id);
+        const level = next[id] as number;
+        const levels = t.levels[id];
+        const name = levels[level] ?? formatLevelFallback(t, level + 1);
+        update(
+          next,
+          formatAnnounceStep(t, title, name, level + 1, levels.length),
+        );
+      } else if (isToggleFeature(id)) {
+        const next = toggleFeature(prefs, id);
+        update(next, formatAnnounceToggle(t, title, next[id]));
+      }
+    },
+    [features, prefs, t, update],
+  );
+
+  const onReset = useCallback(() => {
+    const next = resetPreferences();
+    clearStoredPreferences(storageKey);
+    clearA11yPreferences();
+    scheduleApplyA11yPreferences(next, {}, 0);
+    flushApplyA11yPreferences();
+    update(next, t.resetAnnouncement);
+  }, [storageKey, t.resetAnnouncement, update]);
+
+  useA11yShortcuts(
+    shortcutBindings,
+    (index) => {
+      const binding = shortcutBindings[index];
+      if (!binding) return;
+      const { action } = binding;
+      if (action.type === "togglePanel") {
+        setOpen((prev) => !prev);
+        return;
+      }
+      if (action.type === "reset") {
+        onReset();
+        return;
+      }
+      if (action.type === "feature") {
+        const { feature, mode } = action;
+        if (!isEnabled(features, feature)) return;
+        const title = t.features[feature].title;
+        if (mode === "inc" || mode === "dec") {
+          if (!isSteppedFeature(feature)) return;
+          const next = adjustStep(prefs, feature, mode === "inc" ? 1 : -1);
+          if (next === prefs) return;
+          const level = next[feature] as number;
+          const levels = t.levels[feature];
+          const name = levels[level] ?? formatLevelFallback(t, level + 1);
+          update(
+            next,
+            formatAnnounceStep(t, title, name, level + 1, levels.length),
+          );
+          return;
+        }
+        if (mode === "toggle") {
+          if (!isToggleFeature(feature)) return;
+          const next = toggleFeature(prefs, feature);
+          update(next, formatAnnounceToggle(t, title, next[feature]));
+          return;
+        }
+        // cycle
+        onActivate(feature);
+      }
     },
     true,
   );
@@ -425,39 +558,6 @@ export function A11yToolbar({
   );
 
   const active = hasActiveA11yPreferences(prefs);
-
-  const update = useCallback((next: A11yPreferences, message: string) => {
-    setPrefs(next);
-    setAnnouncement(message);
-  }, []);
-
-  const onActivate = (id: FeatureId) => {
-    const def = getFeatureDef(id);
-    if (!def) return;
-    const title = t.features[id].title;
-    if (isSteppedFeature(id)) {
-      const next = cycleStep(prefs, id);
-      const level = next[id] as number;
-      const levels = t.levels[id];
-      const name = levels[level] ?? formatLevelFallback(t, level + 1);
-      update(
-        next,
-        formatAnnounceStep(t, title, name, level + 1, levels.length),
-      );
-    } else if (isToggleFeature(id)) {
-      const next = toggleFeature(prefs, id);
-      update(next, formatAnnounceToggle(t, title, next[id]));
-    }
-  };
-
-  const onReset = () => {
-    const next = resetPreferences();
-    clearStoredPreferences(storageKey);
-    clearA11yPreferences();
-    scheduleApplyA11yPreferences(next, {}, 0);
-    flushApplyA11yPreferences();
-    update(next, t.resetAnnouncement);
-  };
 
   const onLanguageChange = (next: string) => {
     if (next === activeLocaleCode) return;

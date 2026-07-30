@@ -41,7 +41,14 @@ export const TOOLBAR_PROPS: PropRow[] = [
     type: "{ altKey?, ctrlKey?, metaKey?, shiftKey?, key } | null",
     default: "{ altKey: true, key: 'a' }",
     description:
-      "Keyboard shortcut to toggle the panel. Ignored while focus is in inputs. Pass null to disable. Document overrides if AT claims the combo.",
+      "Panel toggle shortcut. Synced into the shortcuts registry when shortcuts is omitted. Pass null to disable the panel binding.",
+  },
+  {
+    name: "shortcuts",
+    type: "A11yShortcutDef[] | false",
+    default: "DEFAULT_A11Y_SHORTCUTS",
+    description:
+      "Full keyboard map (panel + features). false = panel hotkey only. Use mergeA11yShortcuts to override by id. Scalable — add bindings without forking UI.",
   },
   {
     name: "onChange",
@@ -150,6 +157,16 @@ export const THEME_PROPS: PropRow[] = [
       "Focus ring for launcher, cards, header controls (non-text ≥3:1 intent).",
   },
   {
+    name: "background / card / foreground / muted",
+    type: "string",
+    description: "Panel shell, feature cards, body text, secondary labels.",
+  },
+  {
+    name: "border / shadow / radius / zIndex",
+    type: "string | number",
+    description: "Chrome geometry and stacking.",
+  },
+  {
     name: "fontFamily",
     type: "string",
     description:
@@ -162,22 +179,96 @@ export const THEME_PROPS: PropRow[] = [
       "Per-locale fonts. Defaults: en → Outfit, ne → Poppins (+ Devanagari fallbacks).",
   },
   {
-    name: "launcher",
+    name: "launcher / launcherForeground / launcherRing / launcherRadius",
     type: "string",
-    default: "accent",
-    description: "Floating launcher fill.",
+    description: "Floating launcher fill, glyph, ring, and corner radius.",
   },
   {
-    name: "launcherForeground",
+    name: "cursor",
     type: "string",
-    default: '"#ffffff"',
-    description: "Launcher glyph color.",
+    description:
+      'Bigger-cursor CSS value, e.g. url("…") 2 2. Synced onto <html> so it applies page-wide when the preference is on.',
   },
   {
-    name: "launcherRing",
+    name: "guideHeight",
     type: "string",
-    default: '"#ffffff"',
-    description: "Thin outer ring for contrast on busy pages.",
+    description: 'Reading-guide band height (e.g. "48px").',
+  },
+  {
+    name: "style (prop)",
+    type: "CSSProperties",
+    description:
+      "Pass any --itzsa-a11y-* custom property via CSS_VAR helpers, or set the same vars on :root in host CSS.",
+  },
+];
+
+export const WCAG_PRINCIPLES: PropRow[] = [
+  {
+    name: "Perceivable",
+    type: "POUR",
+    description:
+      "Text size, contrast, color filters, saturation, hide images, highlight links, bigger cursor, reading guide — presentation alternatives without removing content.",
+  },
+  {
+    name: "Operable",
+    type: "POUR",
+    description:
+      "Keyboard shortcuts, focus trap, Esc to close, real buttons, pause animations (also respects prefers-reduced-motion).",
+  },
+  {
+    name: "Understandable",
+    type: "POUR",
+    description:
+      "Panel lang={locale} (3.1.2), live-region announcements for level/toggle changes, predictable reset.",
+  },
+  {
+    name: "Robust",
+    type: "POUR",
+    description:
+      "ARIA dialog / toggle patterns (APG), versioned storage schema, FOUC attrs before paint so AT and CSS see the same state.",
+  },
+];
+
+export const WCAG_CRITERIA: PropRow[] = [
+  {
+    name: "1.4.3 / 1.4.11 Contrast",
+    type: "Level AA",
+    description:
+      "Default header pair targets ≥4.5:1 text; focus rings target ≥3:1 non-text. Hosts must verify launcher ring on their background.",
+  },
+  {
+    name: "1.4.12 Text spacing",
+    type: "Level AA",
+    description:
+      "Max letter / word / line presets meet WCAG spacing floors (see effect-values.ts).",
+  },
+  {
+    name: "2.1.1 Keyboard",
+    type: "Level A",
+    description:
+      "All controls are buttons; shortcuts skip editable fields; panel closes with Escape.",
+  },
+  {
+    name: "2.2.2 Pause / 2.3.3 Motion",
+    type: "Level A / AAA",
+    description:
+      "Pause Animations kills transitions/animations under the content root; additive with prefers-reduced-motion.",
+  },
+  {
+    name: "2.4.7 Focus Visible",
+    type: "Level AA",
+    description: "Visible focus ring on launcher, cards, and header controls.",
+  },
+  {
+    name: "3.1.2 Language of Parts",
+    type: "Level AA",
+    description: "Dialog sets lang to the active locale when i18n is used.",
+  },
+  {
+    name: "4.1.2 Name, Role, Value",
+    type: "Level A",
+    description:
+      "Launcher exposes expanded/controls; toggles use aria-pressed; dialog labelled by title.",
   },
 ];
 
@@ -292,7 +383,8 @@ export const MOTION_FEATURES: PropRow[] = [
   {
     name: "biggerCursor",
     type: "toggle",
-    description: "32×32 SVG cursor with CSS keyword fallback.",
+    description:
+      "32×32 SVG cursor (keyword fallback auto). Applies page-wide immediately — including over the open panel/overlay.",
   },
   {
     name: "readingGuide",
@@ -323,6 +415,12 @@ export const BROWSER_API: PropRow[] = [
     type: "A11yMessages",
     description:
       "Locale dictionaries for locales: { ne: ItzsaA11yToolbar.NE_MESSAGES }.",
+  },
+  {
+    name: "DEFAULT_A11Y_SHORTCUTS / mergeA11yShortcuts",
+    type: "registry helpers",
+    description:
+      "Same shortcut map as the React API — pass shortcuts: ItzsaA11yToolbar.mergeA11yShortcuts(...) in mount().",
   },
   {
     name: "options.target",

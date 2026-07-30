@@ -1,76 +1,30 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { InstallCommand } from "@/components/install-command";
 import { Button } from "@/components/ui/button";
+import { buildMetadata, PACKAGE_CATALOG, SITE_DESCRIPTION } from "@/lib/seo";
 
-const PACKAGES = [
-  {
-    href: "/table",
-    name: "Table",
-    pkg: "@itzsa/table",
-    blurb: "Data tables with selection, export, and actions.",
-  },
-  {
-    href: "/nepali-input",
-    name: "Nepali Input",
-    pkg: "@itzsa/nepali-input",
-    blurb: "Unicode & Preeti transliteration fields.",
-  },
-  {
-    href: "/nepali-datepicker",
-    name: "Datepicker",
-    pkg: "@itzsa/nepali-datepicker",
-    blurb: "Bikram Sambat date, datetime, and range.",
-  },
-  {
-    href: "/bs-date",
-    name: "BS Date",
-    pkg: "@itzsa/bs-date",
-    blurb: "Headless BS convert, arithmetic, holidays.",
-  },
-  {
-    href: "/nrb-forex",
-    name: "NRB Forex",
-    pkg: "@itzsa/nrb-forex",
-    blurb: "Official NRB rates — fetch, cache, convert.",
-  },
-  {
-    href: "/nepal-pay",
-    name: "Nepal Pay",
-    pkg: "@itzsa/nepal-pay",
-    blurb: "eSewa + Khalti with mandatory verify.",
-  },
-  {
-    href: "/a11y-toolbar",
-    name: "A11y Toolbar",
-    pkg: "@itzsa/a11y-toolbar",
-    blurb: "Site reading aids — size, contrast, motion.",
-  },
-  {
-    href: "/captcha",
-    name: "Captcha",
-    pkg: "@itzsa/captcha",
-    blurb: "Canvas captcha — npm or itzsa registry.",
-  },
-  {
-    href: "/nepal-geo",
-    name: "Nepal Geo",
-    pkg: "@itzsa/nepal-geo",
-    blurb: "Province → district → local → ward selects.",
-  },
-  {
-    href: "/editor",
-    name: "Editor",
-    pkg: "@itzsa/editor",
-    blurb: "Rich text with optional Nepali tooling.",
-  },
-  {
-    href: "/registry",
-    name: "Registry",
-    pkg: "shadcn registry",
-    blurb: "Install components via the registry.",
-  },
-] as const;
+export const metadata: Metadata = buildMetadata({
+  title: "itzsa — React & TypeScript packages for Nepal",
+  description: SITE_DESCRIPTION,
+  path: "/",
+  keywords: [
+    "itzsa npm",
+    "react component library nepal",
+    "nepali ui components",
+    "bikram sambat",
+    "esewa khalti",
+    "nrb forex",
+    "react datatable",
+    "accessibility toolbar",
+    "math captcha",
+    ...PACKAGE_CATALOG.flatMap((p) => [
+      p.packageName,
+      p.shortName.toLowerCase(),
+    ]),
+  ],
+});
 
 function GitHubIcon({ className }: { className?: string }) {
   return (
@@ -102,25 +56,24 @@ export default function Home() {
       <section className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-6 pt-8 pb-6 sm:gap-6 sm:pt-12 sm:pb-10">
         <div className="home-hero-in flex flex-col gap-5">
           <p className="text-[11px] font-medium tracking-[0.18em] text-secondary uppercase">
-            Component library
+            npm packages · @itzsa
           </p>
           <h1 className="text-5xl font-medium tracking-tight text-primary sm:text-6xl">
             itzsa
           </h1>
           <p className="max-w-xl text-base leading-relaxed text-secondary sm:text-lg">
-            React packages for Nepal-ready product UI — tables, Nepali input,
-            Bikram Sambat dates, geography selects, and a rich editor.
+            Open-source React and TypeScript packages for Nepal-ready product UI
+            — tables, Nepali input, Bikram Sambat, payments, forex, captcha,
+            accessibility, geography, and editor. Install from npm.
           </p>
           <div className="flex flex-wrap items-center gap-3 pt-1">
             <Button variant="primary" asChild>
               <a
-                href="https://github.com/sumanpou"
+                href="https://www.npmjs.com/org/itzsa"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2"
               >
-                <GitHubIcon />
-                GitHub
+                Browse on npm
               </a>
             </Button>
             <Button variant="outline" asChild>
@@ -128,12 +81,14 @@ export default function Home() {
                 href="https://github.com/SumanPoU/package"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="inline-flex items-center gap-2"
               >
-                View monorepo
+                <GitHubIcon />
+                Monorepo
               </a>
             </Button>
             <Button variant="outline" asChild>
-              <Link href="/nepal-geo">Explore Nepal Geo</Link>
+              <Link href="/table">Start with Table</Link>
             </Button>
           </div>
         </div>
@@ -177,27 +132,47 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-3xl px-6 pb-8">
-        <h2 className="mb-4 text-[11px] font-medium tracking-[0.16em] text-tertiary uppercase">
-          Packages
+      <section
+        className="mx-auto w-full max-w-3xl px-6 pb-8"
+        aria-labelledby="packages-heading"
+      >
+        <h2
+          id="packages-heading"
+          className="mb-4 text-[11px] font-medium tracking-[0.16em] text-tertiary uppercase"
+        >
+          Packages on npm
         </h2>
         <ul className="home-grid-in grid gap-3 sm:grid-cols-2">
-          {PACKAGES.map((item) => (
-            <li key={item.href}>
+          {PACKAGE_CATALOG.map((item) => (
+            <li key={item.path}>
               <Link
-                href={item.href}
+                href={item.path}
                 className="group flex h-full flex-col gap-1.5 rounded-xl border-[0.5px] border-border bg-card px-4 py-3.5 no-underline transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-accent/40"
               >
                 <span className="text-[15px] font-medium tracking-tight text-primary group-hover:text-accent">
-                  {item.name}
+                  {item.shortName}
                 </span>
-                <span className="pkg text-[12px]">{item.pkg}</span>
+                <span className="pkg text-[12px]">{item.packageName}</span>
                 <span className="text-[13px] leading-snug text-secondary">
                   {item.blurb}
                 </span>
               </Link>
             </li>
           ))}
+          <li>
+            <Link
+              href="/registry"
+              className="group flex h-full flex-col gap-1.5 rounded-xl border-[0.5px] border-border bg-card px-4 py-3.5 no-underline transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-accent/40"
+            >
+              <span className="text-[15px] font-medium tracking-tight text-primary group-hover:text-accent">
+                Registry
+              </span>
+              <span className="pkg text-[12px]">shadcn registry</span>
+              <span className="text-[13px] leading-snug text-secondary">
+                Install components via the registry CLI.
+              </span>
+            </Link>
+          </li>
         </ul>
       </section>
 
@@ -206,47 +181,21 @@ export default function Home() {
           Install
         </h2>
         <div className="flex flex-col gap-4">
+          {PACKAGE_CATALOG.map((pkg) => (
+            <div key={pkg.packageName} className="flex flex-col gap-2">
+              <p className="text-[13px] text-secondary">
+                {pkg.shortName}{" "}
+                <span className="pkg text-[12px]">{pkg.packageName}</span>
+              </p>
+              <InstallCommand packages={pkg.packageName} />
+            </div>
+          ))}
           <div className="flex flex-col gap-2">
-            <p className="text-[13px] text-secondary">Table</p>
-            <InstallCommand packages="@itzsa/table" />
-          </div>
-          <div className="flex flex-col gap-2">
-            <p className="text-[13px] text-secondary">Nepali Input</p>
-            <InstallCommand packages="@itzsa/nepali-input" />
-          </div>
-          <div className="flex flex-col gap-2">
-            <p className="text-[13px] text-secondary">Datepicker</p>
-            <InstallCommand packages="@itzsa/nepali-datepicker" />
-          </div>
-          <div className="flex flex-col gap-2">
-            <p className="text-[13px] text-secondary">BS Date (headless)</p>
-            <InstallCommand packages="@itzsa/bs-date" />
-          </div>
-          <div className="flex flex-col gap-2">
-            <p className="text-[13px] text-secondary">NRB Forex (headless)</p>
-            <InstallCommand packages="@itzsa/nrb-forex" />
-          </div>
-          <div className="flex flex-col gap-2">
-            <p className="text-[13px] text-secondary">Nepal Pay (headless)</p>
-            <InstallCommand packages="@itzsa/nepal-pay" />
-          </div>
-          <div className="flex flex-col gap-2">
-            <p className="text-[13px] text-secondary">Captcha</p>
-            <InstallCommand packages="@itzsa/captcha" />
-          </div>
-          <div className="flex flex-col gap-2">
-            <p className="text-[13px] text-secondary">Nepal Geo</p>
-            <InstallCommand packages="@itzsa/nepal-geo" />
-          </div>
-          <div className="flex flex-col gap-2">
-            <p className="text-[13px] text-secondary">Nepal Geo Data</p>
+            <p className="text-[13px] text-secondary">
+              Nepal Geo Data{" "}
+              <span className="pkg text-[12px]">@itzsa/nepal-geo-data</span>
+            </p>
             <InstallCommand packages="@itzsa/nepal-geo-data" />
-          </div>
-          <div className="flex flex-col gap-2">
-            <p className="text-[13px] text-secondary">Editor</p>
-            <InstallCommand
-              packages={["@itzsa/editor", "@itzsa/nepali-input"]}
-            />
           </div>
         </div>
       </section>

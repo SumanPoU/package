@@ -19,7 +19,8 @@
     }
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "files": [
     "dist",
@@ -58,6 +59,8 @@
     "react",
     "verification",
     "bodmas",
+    "bot-prevention",
+    "human-verification",
     "itzsa"
   ],
   "homepage": "https://itzsa.acharya-suman.com.np/captcha",

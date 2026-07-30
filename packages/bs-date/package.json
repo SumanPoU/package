@@ -16,7 +16,8 @@
     }
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "files": [
     "dist",
@@ -43,7 +44,10 @@
     "calendar",
     "conversion",
     "date-arithmetic",
+    "ad-to-bs",
+    "bs-to-ad",
     "headless",
+    "holidays",
     "itzsa"
   ],
   "homepage": "https://itzsa.acharya-suman.com.np/bs-date",

@@ -20,7 +20,8 @@
     "./styles.css": "./src/styles.css"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "files": [
     "dist",
@@ -59,7 +60,9 @@
     "date-range",
     "calendar",
     "react",
-    "nepal"
+    "nepal",
+    "nepali-calendar",
+    "itzsa"
   ],
   "homepage": "https://itzsa.acharya-suman.com.np/nepali-datepicker",
   "bugs": {

@@ -20,7 +20,8 @@
     "./styles.css": "./src/styles.css"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "files": [
     "dist",
@@ -61,7 +62,9 @@
     "local-level",
     "geography",
     "select",
-    "react"
+    "cascade",
+    "react",
+    "itzsa"
   ],
   "homepage": "https://itzsa.acharya-suman.com.np/nepal-geo",
   "bugs": {

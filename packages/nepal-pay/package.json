@@ -19,7 +19,8 @@
     }
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "files": [
     "dist",
@@ -48,6 +49,8 @@
     "epay",
     "kpg-2",
     "npr",
+    "payment-gateway",
+    "payment-sdk",
     "itzsa"
   ],
   "homepage": "https://itzsa.acharya-suman.com.np/nepal-pay",

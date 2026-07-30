@@ -1,36 +1,67 @@
 import {
   absoluteUrl,
-  PACKAGE_ROUTES,
+  githubPackageUrl,
+  npmPackageUrl,
+  PACKAGE_CATALOG,
   SITE_AUTHOR,
   SITE_DESCRIPTION,
   SITE_NAME,
   SITE_URL,
 } from "@/lib/seo";
 
+/** Site-wide JSON-LD: WebSite, Organization, ItemList of packages (packages first). */
 export function JsonLd() {
-  const software = PACKAGE_ROUTES.flatMap((r) => {
-    if (!("packageName" in r) || !r.packageName) return [];
-    return [
-      {
-        "@type": "SoftwareApplication" as const,
-        name: r.packageName,
-        applicationCategory: "DeveloperApplication",
-        operatingSystem: "Web",
-        url: absoluteUrl(r.path),
-        description: r.description,
-        author: {
-          "@type": "Person" as const,
-          name: SITE_AUTHOR.name,
-          url: SITE_AUTHOR.url,
-        },
-        offers: {
-          "@type": "Offer" as const,
-          price: "0",
-          priceCurrency: "USD",
-        },
+  const itemList = {
+    "@type": "ItemList" as const,
+    "@id": `${SITE_URL}/#packages`,
+    name: `${SITE_NAME} npm packages`,
+    description:
+      "Installable React and TypeScript packages published as @itzsa/* on npm.",
+    numberOfItems: PACKAGE_CATALOG.length,
+    itemListOrder: "https://schema.org/ItemListOrderAscending",
+    itemListElement: PACKAGE_CATALOG.map((pkg, index) => ({
+      "@type": "ListItem" as const,
+      position: index + 1,
+      name: pkg.packageName,
+      url: absoluteUrl(pkg.path),
+      description: pkg.description,
+      item: {
+        "@type": "SoftwareSourceCode" as const,
+        name: pkg.packageName,
+        description: pkg.description,
+        url: absoluteUrl(pkg.path),
+        codeRepository: githubPackageUrl(pkg.packageName),
+        programmingLanguage: ["TypeScript", "JavaScript"],
+        runtimePlatform: "Node.js",
+        downloadUrl: npmPackageUrl(pkg.packageName),
+        license: "https://opensource.org/licenses/MIT",
+        author: { "@id": `${SITE_URL}/#person` },
       },
-    ];
-  });
+    })),
+  };
+
+  const softwareApps = PACKAGE_CATALOG.map((pkg) => ({
+    "@type": "SoftwareApplication" as const,
+    name: pkg.packageName,
+    applicationCategory: "DeveloperApplication",
+    operatingSystem: "Web",
+    url: absoluteUrl(pkg.path),
+    downloadUrl: npmPackageUrl(pkg.packageName),
+    softwareVersion: "latest",
+    description: pkg.description,
+    keywords: pkg.keywords.join(", "),
+    author: {
+      "@type": "Person" as const,
+      name: SITE_AUTHOR.name,
+      url: SITE_AUTHOR.url,
+    },
+    offers: {
+      "@type": "Offer" as const,
+      price: "0",
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+    },
+  }));
 
   const data = {
     "@context": "https://schema.org",
@@ -41,8 +72,8 @@ export function JsonLd() {
         url: SITE_URL,
         name: SITE_NAME,
         description: SITE_DESCRIPTION,
-        publisher: { "@id": `${SITE_URL}/#person` },
-        inLanguage: "en",
+        publisher: { "@id": `${SITE_URL}/#organization` },
+        inLanguage: ["en", "ne"],
       },
       {
         "@type": "Person",
@@ -58,9 +89,10 @@ export function JsonLd() {
         url: SITE_URL,
         logo: absoluteUrl("/opengraph-image"),
         founder: { "@id": `${SITE_URL}/#person` },
-        sameAs: [SITE_AUTHOR.github],
+        sameAs: [SITE_AUTHOR.github, "https://www.npmjs.com/org/itzsa"],
       },
-      ...software,
+      itemList,
+      ...softwareApps,
     ],
   };
 

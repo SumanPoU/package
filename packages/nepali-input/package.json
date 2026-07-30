@@ -20,7 +20,8 @@
     "./styles.css": "./src/styles.css"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "files": [
     "dist",
@@ -57,7 +58,9 @@
     "react",
     "input",
     "textarea",
-    "transliteration"
+    "transliteration",
+    "roman-to-nepali",
+    "itzsa"
   ],
   "homepage": "https://itzsa.acharya-suman.com.np/nepali-input",
   "bugs": {

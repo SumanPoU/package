@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Noto_Sans_Devanagari } from "next/font/google";
 import type { CSSProperties } from "react";
 
-import { buildMetadata } from "@/lib/seo";
+import { PackageJsonLd } from "@/components/package-json-ld";
+import { buildPackageMetadata, getPackageByPath } from "@/lib/seo";
 
 import { DocsContent } from "./docs-content";
 
@@ -13,20 +14,9 @@ const notoDevanagari = Noto_Sans_Devanagari({
   variable: "--font-noto-devanagari",
 });
 
-export const metadata: Metadata = buildMetadata({
-  title: "@itzsa/nepali-datepicker — BS Datepicker",
-  description:
-    "Nepali (Bikram Sambat) date, datetime, and range pickers for React with validation, AD↔BS helpers, and styling API.",
-  path: "/nepali-datepicker",
-  packageName: "@itzsa/nepali-datepicker",
-  keywords: [
-    "bikram sambat",
-    "nepali calendar",
-    "bs datepicker",
-    "datetime",
-    "date range",
-  ],
-});
+const entry = getPackageByPath("/nepali-datepicker")!;
+
+export const metadata: Metadata = buildPackageMetadata(entry);
 
 export default function NepaliDatepickerDocsPage() {
   return (
@@ -39,6 +29,7 @@ export default function NepaliDatepickerDocsPage() {
         } as CSSProperties
       }
     >
+      <PackageJsonLd entry={entry} />
       <DocsContent />
     </div>
   );

@@ -3,7 +3,12 @@ import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 function secret(): string {
   const s = process.env.CAPTCHA_HMAC_SECRET?.trim();
   if (s && s.length >= 16) return s;
-  // Docs / local fallback — set CAPTCHA_HMAC_SECRET in production.
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "[itzsa captcha] CAPTCHA_HMAC_SECRET must be set (≥16 chars) in production.",
+    );
+  }
+  // Local / docs fallback only — never used when NODE_ENV=production.
   return "itzsa-captcha-dev-secret-change-me";
 }
 

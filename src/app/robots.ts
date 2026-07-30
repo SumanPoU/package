@@ -8,7 +8,13 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/", "/_next/"],
+        disallow: [
+          "/api/",
+          "/_next/",
+          "/nepal-pay/return",
+          "/nepal-pay/khalti-return",
+          "/nepal-pay/connectips-return",
+        ],
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,

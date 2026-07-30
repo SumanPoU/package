@@ -20,7 +20,8 @@
     "./styles.css": "./src/styles.css"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "files": [
     "dist",
@@ -66,6 +67,10 @@
     "pagination",
     "sorting",
     "export",
+    "csv",
+    "excel",
+    "tree-data",
+    "row-selection",
     "typescript",
     "itzsa"
   ],

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Noto_Sans_Devanagari } from "next/font/google";
 import type { CSSProperties } from "react";
 
-import { buildMetadata } from "@/lib/seo";
+import { PackageJsonLd } from "@/components/package-json-ld";
+import { buildPackageMetadata, getPackageByPath } from "@/lib/seo";
 
 import { DocsContent } from "./docs-content";
 
@@ -13,20 +14,9 @@ const notoDevanagari = Noto_Sans_Devanagari({
   variable: "--font-noto-devanagari",
 });
 
-export const metadata: Metadata = buildMetadata({
-  title: "@itzsa/bs-date — Bikram Sambat date logic",
-  description:
-    "Headless Bikram Sambat convert, arithmetic, format, and holidays — pluggable calendar engines, no React. Install with pnpm add @itzsa/bs-date.",
-  path: "/bs-date",
-  packageName: "@itzsa/bs-date",
-  keywords: [
-    "bikram sambat",
-    "nepali date",
-    "bs calendar",
-    "ad to bs",
-    "headless",
-  ],
-});
+const entry = getPackageByPath("/bs-date")!;
+
+export const metadata: Metadata = buildPackageMetadata(entry);
 
 export default function BsDateDocsPage() {
   return (
@@ -39,6 +29,7 @@ export default function BsDateDocsPage() {
         } as CSSProperties
       }
     >
+      <PackageJsonLd entry={entry} />
       <DocsContent />
     </div>
   );

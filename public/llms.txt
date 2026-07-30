@@ -1,0 +1,30 @@
+# itzsa
+
+> Open-source React and TypeScript packages for Nepal-ready product UIs.
+> Docs: https://itzsa.acharya-suman.com.np
+> npm org: https://www.npmjs.com/org/itzsa
+> Monorepo: https://github.com/SumanPoU/package
+
+## Packages
+
+- [@itzsa/table](https://itzsa.acharya-suman.com.np/table): React DataTable
+- [@itzsa/nepali-datepicker](https://itzsa.acharya-suman.com.np/nepali-datepicker): Bikram Sambat datepicker
+- [@itzsa/nepali-input](https://itzsa.acharya-suman.com.np/nepali-input): Nepali Unicode / Preeti input
+- [@itzsa/bs-date](https://itzsa.acharya-suman.com.np/bs-date): Headless BS date logic
+- [@itzsa/nepal-pay](https://itzsa.acharya-suman.com.np/nepal-pay): eSewa, Khalti, ConnectIPS
+- [@itzsa/nrb-forex](https://itzsa.acharya-suman.com.np/nrb-forex): NRB forex rates
+- [@itzsa/a11y-toolbar](https://itzsa.acharya-suman.com.np/a11y-toolbar): Accessibility preference toolbar
+- [@itzsa/captcha](https://itzsa.acharya-suman.com.np/captcha): Math / slider / canvas captcha
+- [@itzsa/nepal-geo](https://itzsa.acharya-suman.com.np/nepal-geo): Nepal geography selects
+- [@itzsa/nepal-geo-data](https://www.npmjs.com/package/@itzsa/nepal-geo-data): Nepal geo dataset
+- [@itzsa/editor](https://itzsa.acharya-suman.com.np/editor): TipTap rich text editor
+
+## Install
+
+```bash
+pnpm add @itzsa/table
+```
+
+## Security
+
+See https://github.com/SumanPoU/package/blob/main/SECURITY.md

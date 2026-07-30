@@ -16,7 +16,8 @@
     }
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "files": [
     "dist",
@@ -42,7 +43,9 @@
     "ward",
     "local-level",
     "geography",
-    "data"
+    "data",
+    "json",
+    "itzsa"
   ],
   "homepage": "https://itzsa.acharya-suman.com.np/nepal-geo",
   "bugs": {

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Noto_Sans_Devanagari } from "next/font/google";
 import type { CSSProperties } from "react";
 
-import { buildMetadata } from "@/lib/seo";
+import { PackageJsonLd } from "@/components/package-json-ld";
+import { buildPackageMetadata, getPackageByPath } from "@/lib/seo";
 
 import { DocsContent } from "./docs-content";
 
@@ -13,14 +14,9 @@ const notoDevanagari = Noto_Sans_Devanagari({
   variable: "--font-noto-devanagari",
 });
 
-export const metadata: Metadata = buildMetadata({
-  title: "@itzsa/nepali-input — Nepali Input",
-  description:
-    "React Input and Textarea that transliterate Latin keystrokes to Nepali Devanagari using Unicode or Preeti layouts. Full props and examples.",
-  path: "/nepali-input",
-  packageName: "@itzsa/nepali-input",
-  keywords: ["nepali", "preeti", "unicode", "devanagari", "transliteration"],
-});
+const entry = getPackageByPath("/nepali-input")!;
+
+export const metadata: Metadata = buildPackageMetadata(entry);
 
 export default function NepaliInputDocsPage() {
   return (
@@ -33,6 +29,7 @@ export default function NepaliInputDocsPage() {
         } as CSSProperties
       }
     >
+      <PackageJsonLd entry={entry} />
       <DocsContent />
     </div>
   );

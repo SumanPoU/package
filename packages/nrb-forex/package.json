@@ -28,7 +28,8 @@
     }
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "files": [
     "dist",
@@ -54,6 +55,8 @@
     "exchange-rate",
     "npr",
     "rastra-bank",
+    "currency-converter",
+    "fx",
     "itzsa"
   ],
   "homepage": "https://itzsa.acharya-suman.com.np/nrb-forex",

@@ -19,7 +19,8 @@
     "./styles.css": "./src/styles.css"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "files": [
     "dist",
@@ -72,9 +73,14 @@
     "tiptap",
     "rich-text",
     "editor",
+    "wysiwyg",
     "nepali",
     "preeti",
-    "react"
+    "react",
+    "html-sanitization",
+    "prosemirror",
+    "typescript",
+    "itzsa"
   ],
   "homepage": "https://itzsa.acharya-suman.com.np/editor",
   "bugs": {

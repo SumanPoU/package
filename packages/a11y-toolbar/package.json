@@ -1,7 +1,7 @@
 {
   "name": "@itzsa/a11y-toolbar",
   "version": "0.0.0",
-  "description": "Accessible site preference toolbar — text size, contrast, motion, and related reading aids applied via CSS on a content root",
+  "description": "Accessible React preference toolbar — text size, contrast, motion, read aloud (TTS), WCAG chrome, FOUC-safe SSR",
   "license": "MIT",
   "sideEffects": [
     "**/*.css",
@@ -36,7 +36,8 @@
     "./a11y-toolbar.min.js": "./dist/a11y-toolbar.min.js"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "files": [
     "dist",
@@ -71,10 +72,15 @@
     "accessibility",
     "a11y",
     "toolbar",
+    "wcag",
+    "read-aloud",
+    "text-to-speech",
     "preferences",
     "react",
     "wordpress",
     "cdn",
+    "dyslexia",
+    "contrast-mode",
     "itzsa"
   ],
   "homepage": "https://itzsa.acharya-suman.com.np/a11y-toolbar",

@@ -136,6 +136,90 @@ export const CHROME_PROPS: PropRow[] = [
   },
 ];
 
+export const MATH_PROPS: PropRow[] = [
+  {
+    name: "difficulty",
+    type: '"easy" | "medium" | "hard" | "bodmas"',
+    default: '"easy"',
+    description:
+      "Preset operators / range / term count. Answers always use BODMAS evaluation.",
+  },
+  {
+    name: "layout",
+    type: '"stack" | "inline"',
+    default: '"stack"',
+    description:
+      "stack = prompt then input; inline = prompt + refresh + input + verify on one row. Override further with rowClassName / *ClassName.",
+  },
+  {
+    name: "autoRefreshOnInvalid",
+    type: "boolean",
+    default: "true",
+    description:
+      "Load a new problem after a wrong answer (keeps attempt count until maxAttempts).",
+  },
+  {
+    name: "operators",
+    type: 'Array<"+" | "-" | "*" | "/">',
+    description: "Override the operator pool from the difficulty preset.",
+  },
+  {
+    name: "operandRange",
+    type: "{ min: number; max: number }",
+    description: "Inclusive min/max for leaf operands.",
+  },
+  {
+    name: "termCount",
+    type: "2 | 3 | 4",
+    description: "Number of operands (3+ may parenthesize).",
+  },
+  {
+    name: "showBodmasCaution / bodmasCaution",
+    type: "boolean / string",
+    default: "false / built-in",
+    description: "Opt-in BODMAS / PEMDAS note under the prompt.",
+  },
+  {
+    name: "serverChallenge / onRequestChallenge",
+    type: "{ prompt, token } / () => void",
+    description:
+      "Secure mode: display a server-issued prompt; skip local answer checks; verify() must call your API. Refresh asks the host for a new challenge.",
+  },
+  {
+    name: "showVerifyButton",
+    type: "boolean",
+    default: "true",
+    description: "Show the Verify control (Enter also submits).",
+  },
+  {
+    name: "className / rowClassName / promptClassName / inputClassName / …",
+    type: "string",
+    description:
+      "CSS hooks: root, row, prompt, input, refresh, verify, status, counter, error, caution. Also data-itzsa-math-* attributes.",
+  },
+];
+
+export const SLIDER_PROPS: PropRow[] = [
+  {
+    name: "targetMin / targetMax",
+    type: "number",
+    default: "90 / 100",
+    description: "Inclusive success zone (%). Release inside the zone to pass.",
+  },
+  {
+    name: "maxAttempts",
+    type: "number",
+    default: "5",
+    description: "Failed releases before status becomes locked.",
+  },
+  {
+    name: "verify",
+    type: "(payload) => boolean | Promise<boolean>",
+    description:
+      "Optional server check after a successful slide. Return false or throw on failure.",
+  },
+];
+
 export const HANDLE_ROWS: PropRow[] = [
   {
     name: "refresh()",

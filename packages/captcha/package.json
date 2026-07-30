@@ -1,7 +1,7 @@
 {
   "name": "@itzsa/captcha",
   "version": "0.1.0",
-  "description": "Canvas captcha for React — configurable length, theme, noise, and verification callbacks",
+  "description": "React captcha components — canvas text, math (BODMAS), and slider puzzles with shared verify / attempt APIs",
   "license": "MIT",
   "sideEffects": false,
   "engines": {
@@ -52,9 +52,12 @@
   },
   "keywords": [
     "captcha",
+    "math-captcha",
+    "slider-captcha",
     "canvas",
     "react",
     "verification",
+    "bodmas",
     "itzsa"
   ],
   "homepage": "https://itzsa.acharya-suman.com.np/captcha",

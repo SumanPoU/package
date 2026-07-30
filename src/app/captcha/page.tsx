@@ -5,12 +5,21 @@ import { buildMetadata } from "@/lib/seo";
 import { DocsContent } from "./docs-content";
 
 export const metadata: Metadata = buildMetadata({
-  title: "@itzsa/captcha — Canvas captcha",
+  title: "@itzsa/captcha — Client & server trust models",
   description:
-    "React canvas captcha with configurable length, theme, noise, and verification callbacks. npm or itzsa shadcn registry.",
+    "Company-standard React captcha: client generate+verify for UX friction, or server-issued challenges for login/checkout. Text, math (BODMAS), slider.",
   path: "/captcha",
   packageName: "@itzsa/captcha",
-  keywords: ["captcha", "canvas", "verification", "react", "itzsa"],
+  keywords: [
+    "captcha",
+    "math captcha",
+    "slider captcha",
+    "server captcha",
+    "bodmas",
+    "bot prevention",
+    "react",
+    "itzsa",
+  ],
 });
 
 export default function CaptchaDocsPage() {

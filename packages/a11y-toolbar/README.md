@@ -271,6 +271,9 @@ const setLocale = useSetAppLocale();
 - Effects → `[data-a11y-content]` only (toolbar uses `data-a11y-toolbar`)
 - Feature metadata lives in `A11Y_FEATURE_REGISTRY`
 - Shortcuts live in `DEFAULT_A11Y_SHORTCUTS` / `mergeA11yShortcuts`
+- **Read Aloud** (`readAloud` + `speechRate`): click-to-speak under the content
+  root via Web Speech API; panel exposes pause/resume/stop and a 0.5–2 rate
+  slider. Listener is scoped to `[data-a11y-content]` only.
 
 ## Headless helpers
 

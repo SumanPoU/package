@@ -16,6 +16,8 @@ export const DEFAULT_PREFERENCES: A11yPreferences = {
   pauseAnimations: false,
   readingGuide: false,
   highlightLinks: false,
+  readAloud: false,
+  speechRate: 1,
 };
 
 /** Derived from A11Y_FEATURE_REGISTRY — do not duplicate step counts elsewhere. */

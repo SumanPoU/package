@@ -24,6 +24,12 @@ export type A11yMessages = {
   on: string;
   off: string;
   levelFallback: string;
+  /** Read Aloud panel controls. */
+  readAloudPause: string;
+  readAloudResume: string;
+  readAloudStop: string;
+  readAloudRate: string;
+  readAloudUnsupported: string;
   /**
    * Stepped announce template.
    * Tokens: `{title}`, `{name}`, `{current}`, `{total}` — `{current}`/`{total}` are Arabic digits.
@@ -50,6 +56,11 @@ export type A11yMessagesPartial = {
   on?: string;
   off?: string;
   levelFallback?: string;
+  readAloudPause?: string;
+  readAloudResume?: string;
+  readAloudStop?: string;
+  readAloudRate?: string;
+  readAloudUnsupported?: string;
   announceStep?: string;
   sections?: Partial<Record<A11ySectionId, string>>;
   features?: Partial<

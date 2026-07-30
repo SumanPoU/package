@@ -1001,3 +1001,66 @@ html[data-a11y-highlight-links="1"] [data-a11y-content] a {
   text-decoration: underline !important;
   text-underline-offset: 2px !important;
 }
+
+/*
+ * Read Aloud — click-to-speak affordance under content root.
+ * data-a11y-reading is reserved for v2 follow-along highlight.
+ */
+html[data-a11y-read-aloud="1"] [data-a11y-content]
+  :is(p, h1, h2, h3, h4, h5, h6, li, blockquote) {
+  cursor: pointer;
+}
+html[data-a11y-read-aloud="1"]
+  [data-a11y-content]
+  :is(p, h1, h2, h3, h4, h5, h6, li, blockquote):hover {
+  outline: 2px solid
+    color-mix(in srgb, var(--itzsa-a11y-toolbar-accent) 55%, transparent);
+  outline-offset: 2px;
+}
+
+.itzsa-a11y-read-aloud {
+  margin: calc(var(--itzsa-a11y-space) * 2);
+  padding: calc(var(--itzsa-a11y-space) * 1.5);
+  border-radius: var(--itzsa-a11y-toolbar-radius);
+  background: var(--itzsa-a11y-toolbar-card);
+  color: var(--itzsa-a11y-toolbar-fg);
+}
+.itzsa-a11y-read-aloud-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--itzsa-a11y-space) * 1);
+}
+.itzsa-a11y-read-aloud-btn {
+  flex: 1 1 auto;
+  min-height: 2.25rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid
+    color-mix(in srgb, var(--itzsa-a11y-toolbar-accent) 35%, transparent);
+  border-radius: var(--itzsa-a11y-toolbar-radius);
+  background: var(--itzsa-a11y-toolbar-bg);
+  color: var(--itzsa-a11y-toolbar-fg);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+.itzsa-a11y-read-aloud-btn:focus-visible {
+  outline: 3px solid var(--itzsa-a11y-toolbar-focus);
+  outline-offset: 2px;
+}
+.itzsa-a11y-read-aloud-rate {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: calc(var(--itzsa-a11y-space) * 1.25);
+  font-size: 0.8125rem;
+  color: var(--itzsa-a11y-toolbar-muted);
+}
+.itzsa-a11y-read-aloud-rate input[type="range"] {
+  width: 100%;
+  accent-color: var(--itzsa-a11y-toolbar-accent);
+}
+.itzsa-a11y-read-aloud-note {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--itzsa-a11y-toolbar-muted);
+}

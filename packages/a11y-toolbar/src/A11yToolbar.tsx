@@ -38,6 +38,7 @@ import {
   resetPreferences,
   toggleFeature,
 } from "./preferences";
+import { ReadAloudControls, ReadAloudListener } from "./ReadAloud";
 import { ReadingGuide } from "./ReadingGuide";
 import {
   getFeatureDef,
@@ -47,6 +48,7 @@ import {
 } from "./registry";
 import type { A11yShortcutDef } from "./shortcuts";
 import { resolveA11yShortcuts } from "./shortcuts";
+import { clampSpeechRate, isSpeechSynthesisSupported } from "./speech";
 import {
   clearStoredPreferences,
   getStoredPreferences,
@@ -624,6 +626,11 @@ export function A11yToolbar({
       </button>
 
       <ReadingGuide active={prefs.readingGuide} />
+      <ReadAloudListener
+        active={prefs.readAloud}
+        rate={prefs.speechRate}
+        lang={activeLocaleCode}
+      />
 
       {open ? (
         <>
@@ -755,6 +762,26 @@ export function A11yToolbar({
                     </section>
                   );
                 })}
+                {prefs.readAloud && isEnabled(features, "readAloud") ? (
+                  <ReadAloudControls
+                    rate={prefs.speechRate}
+                    onRateChange={(next) => {
+                      const speechRate = clampSpeechRate(next);
+                      update(
+                        { ...prefs, speechRate },
+                        `${t.readAloudRate}: ${speechRate.toFixed(1)}×`,
+                      );
+                    }}
+                    labels={{
+                      pause: t.readAloudPause,
+                      resume: t.readAloudResume,
+                      stop: t.readAloudStop,
+                      rate: t.readAloudRate,
+                      unsupported: t.readAloudUnsupported,
+                    }}
+                    supported={isSpeechSynthesisSupported()}
+                  />
+                ) : null}
               </div>
             </A11yPanelErrorBoundary>
 

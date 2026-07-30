@@ -152,6 +152,17 @@ export function IconHighlightLinks(props: IconProps) {
   );
 }
 
+/** Speaker / read-aloud mark. */
+export function IconReadAloud(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M4 9v6h3.5L12 19V5L7.5 9H4z" />
+      <path d="M15.5 9.5a3.5 3.5 0 0 1 0 5" />
+      <path d="M17.5 7a6 6 0 0 1 0 10" />
+    </svg>
+  );
+}
+
 export function IconSectionDisplay(props: IconProps) {
   return (
     <svg {...base({ ...props, width: 16, height: 16 })}>
@@ -251,6 +262,7 @@ export const FEATURE_ICONS: Record<FeatureId, (p: IconProps) => ReactElement> =
     pauseAnimations: IconPause,
     readingGuide: IconReadingGuide,
     highlightLinks: IconHighlightLinks,
+    readAloud: IconReadAloud,
   };
 
 export const SECTION_ICONS = {

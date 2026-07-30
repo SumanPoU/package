@@ -28,6 +28,7 @@ const ATTR = {
   pauseAnimations: "data-a11y-pause-animations",
   readingGuide: "data-a11y-reading-guide",
   highlightLinks: "data-a11y-highlight-links",
+  readAloud: "data-a11y-read-aloud",
   zoomSupport: "data-a11y-zoom-support",
 } as const;
 

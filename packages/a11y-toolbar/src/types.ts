@@ -26,7 +26,8 @@ export type ToggleFeatureId =
   | "hideImages"
   | "pauseAnimations"
   | "readingGuide"
-  | "highlightLinks";
+  | "highlightLinks"
+  | "readAloud";
 
 export type FeatureId = SteppedFeatureId | ToggleFeatureId;
 
@@ -165,6 +166,13 @@ export type A11yPreferences = {
   readingGuide: boolean;
   /** Emphasize anchors for low-vision scanning. */
   highlightLinks: boolean;
+  /** Click-to-speak mode under `[data-a11y-content]`. */
+  readAloud: boolean;
+  /**
+   * Web Speech rate (0.5–2). Companion to `readAloud` — not a registry stepped
+   * feature (float slider). Persisted with preferences.
+   */
+  speechRate: number;
 };
 
 export type A11yHotkey = {

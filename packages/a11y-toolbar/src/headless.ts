@@ -70,6 +70,21 @@ export {
   isToggleFeature,
   SECTION_META,
 } from "./registry";
+export type { ReadSpeechOptions } from "./speech";
+export {
+  clampSpeechRate,
+  isSpeechSynthesisSupported,
+  pauseReading,
+  READ_ALOUD_SELECTOR,
+  readElement,
+  readText,
+  resumeReading,
+  SPEECH_RATE_DEFAULT,
+  SPEECH_RATE_MAX,
+  SPEECH_RATE_MIN,
+  SPEECH_RATE_STEP,
+  stopReading,
+} from "./speech";
 export {
   clearStoredPreferences,
   getStoredPreferences,

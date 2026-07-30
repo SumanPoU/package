@@ -1,5 +1,6 @@
 import { DEFAULT_PREFERENCES, STEP_COUNT } from "./defaults";
 import { A11Y_FEATURE_REGISTRY } from "./registry";
+import { clampSpeechRate } from "./speech";
 import type {
   A11yPreferences,
   SteppedFeatureId,
@@ -35,6 +36,11 @@ export function normalizePreferences(raw: unknown): A11yPreferences {
       next[id] = Boolean(src[id]) as never;
     }
   }
+
+  next.speechRate = clampSpeechRate(
+    src.speechRate,
+    DEFAULT_PREFERENCES.speechRate,
+  );
 
   return next;
 }

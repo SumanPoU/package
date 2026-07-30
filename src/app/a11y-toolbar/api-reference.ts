@@ -207,7 +207,7 @@ export const WCAG_PRINCIPLES: PropRow[] = [
     name: "Perceivable",
     type: "POUR",
     description:
-      "Text size, contrast, color filters, saturation, hide images, highlight links, bigger cursor, reading guide — presentation alternatives without removing content.",
+      "Text size, contrast, color filters, saturation, hide images, highlight links, bigger cursor, reading guide, read aloud — presentation / assist alternatives without removing content.",
   },
   {
     name: "Operable",
@@ -390,6 +390,12 @@ export const MOTION_FEATURES: PropRow[] = [
     name: "readingGuide",
     type: "toggle",
     description: "Horizontal reading band that follows the pointer.",
+  },
+  {
+    name: "readAloud",
+    type: "toggle",
+    description:
+      "Click-to-speak on p/h1–h6/li/blockquote under data-a11y-content. Panel exposes pause/resume/stop + speechRate (0.5–2).",
   },
 ];
 

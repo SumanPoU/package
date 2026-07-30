@@ -17,6 +17,11 @@ export const EN_MESSAGES: A11yMessages = {
   on: "on",
   off: "off",
   levelFallback: "Level {n}",
+  readAloudPause: "Pause",
+  readAloudResume: "Resume",
+  readAloudStop: "Stop",
+  readAloudRate: "Speech rate",
+  readAloudUnsupported: "Text-to-speech is not available in this browser.",
   announceStep: "{title}: {name} ({current} of {total})",
   sections: {
     display: "Display",
@@ -78,6 +83,10 @@ export const EN_MESSAGES: A11yMessages = {
     readingGuide: {
       title: "Reading Guide",
       description: "Follow-along reading band",
+    },
+    readAloud: {
+      title: "Read Aloud",
+      description: "Click text to hear it spoken",
     },
   },
   levels: {

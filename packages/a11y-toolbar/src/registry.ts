@@ -260,6 +260,18 @@ export const A11Y_FEATURE_REGISTRY: readonly A11yFeatureDef[] = [
     apply: (root, value) => setBool(root, "data-a11y-reading-guide", value),
     ariaAnnounce: (value) => announceToggle("Reading Guide", Boolean(value)),
   },
+  {
+    id: "readAloud",
+    section: "motion-assist",
+    kind: "toggle",
+    labels: {
+      title: "Read Aloud",
+      description: "Click text to hear it spoken",
+    },
+    iconId: "readAloud",
+    apply: (root, value) => setBool(root, "data-a11y-read-aloud", value),
+    ariaAnnounce: (value) => announceToggle("Read Aloud", Boolean(value)),
+  },
 ] as const;
 
 export const SECTION_META: Record<

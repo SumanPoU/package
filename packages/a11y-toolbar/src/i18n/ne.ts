@@ -16,6 +16,11 @@ export const NE_MESSAGES: A11yMessages = {
   on: "चालु",
   off: "बन्द",
   levelFallback: "स्तर {n}",
+  readAloudPause: "रोक्नुहोस्",
+  readAloudResume: "जारी राख्नुहोस्",
+  readAloudStop: "बन्द गर्नुहोस्",
+  readAloudRate: "बोलीको गति",
+  readAloudUnsupported: "यो ब्राउजरमा पाठ-देखि-वाणी उपलब्ध छैन।",
   announceStep: "{title}: {name} ({current} मध्ये {total})",
   sections: {
     display: "प्रदर्शन",
@@ -77,6 +82,10 @@ export const NE_MESSAGES: A11yMessages = {
     readingGuide: {
       title: "रिडिङ गाइड",
       description: "पढाइसँगै जाने ब्यान्ड",
+    },
+    readAloud: {
+      title: "आवाजमा पढ्नुहोस्",
+      description: "पाठ क्लिक गरेर सुन्नुहोस्",
     },
   },
   levels: {

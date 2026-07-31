@@ -25,7 +25,8 @@
   "files": [
     "dist",
     "src/styles.css",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "generate:data": "node scripts/generate-data.mjs",

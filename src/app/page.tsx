@@ -16,6 +16,8 @@ export const metadata: Metadata = buildMetadata({
     "bikram sambat",
     "esewa khalti",
     "nrb forex",
+    "fenegosida",
+    "nepal gold rate",
     "react datatable",
     "accessibility toolbar",
     "math captcha",
@@ -63,8 +65,8 @@ export default function Home() {
           </h1>
           <p className="max-w-xl text-base leading-relaxed text-secondary sm:text-lg">
             Open-source React and TypeScript packages for Nepal-ready product UI
-            — tables, Nepali input, Bikram Sambat, payments, forex, captcha,
-            accessibility, geography, and editor. Install from npm.
+            — tables, Nepali input, Bikram Sambat, payments, forex, metal rates,
+            captcha, accessibility, geography, and editor. Install from npm.
           </p>
           <div className="flex flex-wrap items-center gap-3 pt-1">
             <Button variant="primary" asChild>

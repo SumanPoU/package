@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Metal {
+  GOLD
+  SILVER
+}
+
+enum Source {
+  API
+  SCRAPE
+}
+
+/// Rates are stored encrypted (AES-256-GCM). Plaintext never persists.
+model RateEntry {
+  id              String   @id @default(cuid())
+  date            DateTime @db.Date
+  metal           Metal
+  series          String   @default("DOMESTIC") @db.VarChar(64)
+  /// AES-GCM blob: v1.<iv>.<tag>.<ciphertext>
+  gmRateEnc       String
+  gmRateIntegrity String
+  tolaRateEnc     String
+  tolaRateIntegrity String
+  /// HMAC over date|metal|series|gm|tola (tamper detection)
+  rowIntegrity    String
+  source          Source
+  fetchedAt       DateTime @default(now())
+  createdAt       DateTime @default(now())
+
+  @@unique([date, metal, series])
+  @@index([date])
+  @@index([metal, series, date])
+  @@map("rate_entries")
+}
+
+model IngestLog {
+  id          String   @id @default(cuid())
+  runAt       DateTime @default(now())
+  sourceUsed  Source
+  success     Boolean
+  errorMsg    String?
+  /// Sanitized audit JSON only — never secrets/headers
+  rawResponse Json?
+
+  @@map("ingest_logs")
+}

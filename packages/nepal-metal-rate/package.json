@@ -1,0 +1,75 @@
+{
+  "name": "@itzsa/nepal-metal-rate",
+  "version": "0.0.0",
+  "description": "Nepal gold/silver rates — client for itzsa (or compatible) API; server ingest from FeNeGoSiDA with encrypt-at-rest",
+  "license": "MIT",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.mjs"
+    },
+    "./server": {
+      "types": "./dist/server/index.d.ts",
+      "import": "./dist/server/index.mjs",
+      "require": "./dist/server/index.js",
+      "default": "./dist/server/index.mjs"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "prisma",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "prisma generate && tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "dev": "tsup --watch",
+    "prisma:generate": "prisma generate",
+    "prisma:validate": "prisma validate",
+    "audit": "pnpm audit --prod --audit-level=high",
+    "prepublishOnly": "pnpm run typecheck && pnpm run test && pnpm run build"
+  },
+  "dependencies": {
+    "@prisma/client": "6.19.3",
+    "cheerio": "1.2.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "prisma": "6.19.3",
+    "tsup": "^8.5.0",
+    "typescript": "^5",
+    "vitest": "^3.2.4"
+  },
+  "keywords": [
+    "nepal",
+    "gold",
+    "silver",
+    "fenegosida",
+    "metal-rate",
+    "bullion",
+    "itzsa"
+  ],
+  "homepage": "https://itzsa.acharya-suman.com.np/nepal-metal-rate",
+  "bugs": {
+    "url": "https://github.com/SumanPoU/package/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SumanPoU/package.git",
+    "directory": "packages/nepal-metal-rate"
+  }
+}

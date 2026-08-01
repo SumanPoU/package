@@ -6,7 +6,7 @@ export const SITE_URL = "https://itzsa.acharya-suman.com.np";
 export const SITE_NAME = "itzsa";
 
 export const SITE_DESCRIPTION =
-  "Open-source React + TypeScript packages for Nepal-ready UIs — DataTable, Nepali input, Bikram Sambat datepicker, BS date math, NRB forex, eSewa/Khalti/ConnectIPS payments, captcha, accessibility toolbar, geography selects, and TipTap editor. Install from npm: @itzsa/*.";
+  "Open-source React + TypeScript packages for Nepal-ready UIs — DataTable, Nepali input, Bikram Sambat datepicker, BS date math, NRB forex, FeNeGoSiDA metal rates, eSewa/Khalti/ConnectIPS payments, captcha, accessibility toolbar, geography selects, and TipTap editor. Install from npm: @itzsa/*.";
 
 export const SITE_AUTHOR = {
   name: "Suman Acharya",
@@ -150,6 +150,25 @@ export const PACKAGE_CATALOG: readonly PackageSeoEntry[] = [
       "npr",
       "currency converter nepal",
       "fx api",
+    ],
+    priority: 0.92,
+  },
+  {
+    path: "/nepal-metal-rate",
+    packageName: "@itzsa/nepal-metal-rate",
+    shortName: "Metal Rate",
+    title: "@itzsa/nepal-metal-rate — FeNeGoSiDA gold & silver",
+    description:
+      "FeNeGoSiDA gold/silver rate ingestion — pluggable API + scrape sources, Zod validation, Prisma persistence, daily cron. pnpm add @itzsa/nepal-metal-rate.",
+    blurb: "Gold & silver rates from FeNeGoSiDA.",
+    keywords: [
+      "fenegosida",
+      "nepal gold rate",
+      "nepal silver rate",
+      "bullion",
+      "metal rate",
+      "gold price nepal",
+      "tola rate",
     ],
     priority: 0.92,
   },

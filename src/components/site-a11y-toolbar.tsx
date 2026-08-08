@@ -2,12 +2,16 @@
 
 import { A11yToolbar, NE_MESSAGES } from "@itzsa/a11y-toolbar";
 import "@itzsa/a11y-toolbar/styles.css";
+import { usePathname } from "next/navigation";
 
 /**
  * Site-wide mount — keep outside `[data-a11y-content]`.
- * Fonts: English → Outfit, Nepali → Poppins (via package defaults + CSS vars).
+ * Hidden on the fullscreen page-builder create route.
  */
 export function SiteA11yToolbar() {
+  const pathname = usePathname();
+  if (pathname.startsWith("/page-builder/create")) return null;
+
   return (
     <A11yToolbar
       position="bottom-center"
@@ -18,8 +22,6 @@ export function SiteA11yToolbar() {
       locales={{ ne: NE_MESSAGES }}
       theme={{
         accent: "var(--accent)",
-        // Header pair must clear 4.5:1 — do not reuse --accent / --accent-fg here
-        // (--accent #1d9e75 with --accent-fg #04342c ≈ 4.05:1).
         header: "#15805f",
         headerForeground: "#ffffff",
         icon: "var(--accent)",

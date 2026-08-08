@@ -1,8 +1,14 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const YEAR = new Date().getFullYear();
 
 export function SiteFooter() {
+  const pathname = usePathname();
+  if (pathname.startsWith("/page-builder/create")) return null;
+
   return (
     <footer className="site-footer mt-auto border-t-[0.5px] border-border bg-page">
       <div className="mx-auto flex w-full max-w-[88rem] flex-col gap-6 px-4 py-10 sm:px-6 md:flex-row md:items-end md:justify-between">

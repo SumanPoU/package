@@ -214,6 +214,25 @@ export const PACKAGE_CATALOG: readonly PackageSeoEntry[] = [
     priority: 0.92,
   },
   {
+    path: "/page-builder",
+    packageName: "@itzsa/page-builder",
+    shortName: "Page Builder",
+    title: "@itzsa/page-builder — Visual page builder",
+    description:
+      "Drag-and-drop React page builder with locale-aware content, author CSS/JS, canvas/preview/open parity. pnpm add @itzsa/page-builder.",
+    blurb: "Visual pages — canvas, preview, locales.",
+    keywords: [
+      "page builder",
+      "drag and drop",
+      "visual editor",
+      "react page builder",
+      "block editor",
+      "i18n page builder",
+      "webflow alternative",
+    ],
+    priority: 0.95,
+  },
+  {
     path: "/editor",
     packageName: "@itzsa/editor",
     shortName: "Editor",

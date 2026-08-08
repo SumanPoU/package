@@ -1,0 +1,77 @@
+{
+  "name": "@itzsa/page-builder",
+  "version": "0.0.0",
+  "description": "Drag-and-drop visual page builder — primitives, canvas, editor chrome, preview, author CSS/JS",
+  "license": "MIT",
+  "sideEffects": [
+    "**/*.css",
+    "./src/styles.css",
+    "./dist/index.css"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.mjs"
+    },
+    "./styles.css": "./src/styles.css"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "src/styles.css",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "pnpm run typecheck && pnpm run test && pnpm run build"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "dependencies": {
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tsup": "^8.5.0",
+    "typescript": "^5",
+    "vitest": "^3.2.4"
+  },
+  "keywords": [
+    "page-builder",
+    "drag-and-drop",
+    "visual-editor",
+    "blocks",
+    "i18n",
+    "react",
+    "itzsa"
+  ],
+  "homepage": "https://itzsa.acharya-suman.com.np/page-builder",
+  "bugs": {
+    "url": "https://github.com/SumanPoU/package/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SumanPoU/package.git",
+    "directory": "packages/page-builder"
+  }
+}

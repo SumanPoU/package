@@ -18,6 +18,7 @@ const LINKS = [
   { href: "/captcha", label: "Captcha" },
   { href: "/nepal-geo", label: "Nepal Geo" },
   { href: "/editor", label: "Editor" },
+  { href: "/page-builder", label: "Page Builder" },
   { href: "/registry", label: "Registry" },
 ] as const;
 
@@ -38,6 +39,10 @@ function GitHubIcon({ className }: { className?: string }) {
 
 export function SiteNav() {
   const pathname = usePathname();
+
+  if (pathname.startsWith("/page-builder/create")) {
+    return null;
+  }
 
   return (
     <header className="site-header sticky top-0 z-40 border-b-[0.5px] border-border bg-page/95 backdrop-blur-sm">

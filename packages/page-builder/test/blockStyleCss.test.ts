@@ -77,4 +77,31 @@ describe("composePageCss", () => {
     expect(css).toContain("max-width:639px");
     expect(css).toContain("display:none");
   });
+
+  it("emits canvas device attribute rules for tablet overrides", () => {
+    const page: Page = {
+      id: "p1",
+      schemaVersion: PAGE_SCHEMA_VERSION,
+      meta: {},
+      blocks: [
+        {
+          id: "btn",
+          type: "button",
+          props: {},
+          responsiveStyle: {
+            tablet: {
+              backgroundColor: "#a91e1e",
+              borderStyle: "dashed",
+              borderWidth: "1px",
+            },
+          },
+        },
+      ],
+    };
+    const { css } = composePageCss(page);
+    expect(css).toContain('[data-pb-device="tablet"] .b-btn{');
+    expect(css).toContain("background-color:#a91e1e");
+    expect(css).toContain("border-style:dashed");
+    expect(css).toContain("@media(min-width:640px) and (max-width:1023px)");
+  });
 });

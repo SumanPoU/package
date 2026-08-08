@@ -47,6 +47,10 @@ export type BlockStyle = {
   borderRadius?: string;
   boxShadow?: string;
   opacity?: string;
+  /** Author CSS id on the block root (Advanced). */
+  cssId?: string;
+  /** Extra author classes on the block root (Advanced). */
+  cssClasses?: string;
 };
 
 const PADDING_PRESET: Record<string, string> = {
@@ -61,6 +65,15 @@ const FONT_WEIGHT: Record<string, string> = {
   reg: "400",
   semi: "600",
   bold: "700",
+  "100": "100",
+  "200": "200",
+  "300": "300",
+  "400": "400",
+  "500": "500",
+  "600": "600",
+  "700": "700",
+  "800": "800",
+  "900": "900",
 };
 
 const BG_PRESET: Record<string, string> = {
@@ -248,9 +261,12 @@ export const collectBlockStyleCssRules = (block: Block): string[] => {
     const merged = mergeStyle(base, override);
     const decls = buildStyleDeclarations(merged, block.type);
     if (!decls) continue;
-    rules.push(
-      `${deviceMediaQuery(device)}{${blockSelector(block.id)}{${decls}}}`,
-    );
+    const sel = blockSelector(block.id);
+    // Real breakpoints (Open Page / Preview in a real viewport).
+    rules.push(`${deviceMediaQuery(device)}{${sel}{${decls}}}`);
+    // Canvas device frame is CSS-width only — viewport media queries never
+    // match. Attribute selectors apply when the editor sets data-pb-device.
+    rules.push(`[data-pb-device="${device}"] ${sel}{${decls}}`);
   }
 
   if (block.customCss?.trim()) {

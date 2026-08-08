@@ -12,6 +12,7 @@ import {
   findBlock,
   findBlockPath,
   insertBlock,
+  moveBlockByDelta,
   PAGE_SCHEMA_VERSION,
   type Page,
   registerPrimitives,
@@ -24,7 +25,7 @@ import {
 } from "@itzsa/page-builder";
 import "@itzsa/page-builder/styles.css";
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 import { BlockInspector } from "./block-inspector";
 import { CreateOutline } from "./create-outline";
@@ -44,8 +45,11 @@ function toSlug(name: string) {
 
 const localeConfig = createDefaultLocaleConfig();
 
+/** Stable across SSR + hydration — Date.now() here causes data-pb-page mismatch. */
+const DRAFT_PAGE_ID = "page-draft";
+
 const emptyPage = (): Page => ({
-  id: `page-${Date.now().toString(36)}`,
+  id: DRAFT_PAGE_ID,
   schemaVersion: PAGE_SCHEMA_VERSION,
   revision: "1",
   meta: { title: "Untitled page" },
@@ -65,6 +69,7 @@ export function CreateBuilder() {
   const [device, setDevice] = useState<Device>("desktop");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [leftTab, setLeftTab] = useState<"elements" | "outline">("elements");
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [savedFlash, setSavedFlash] = useState(false);
   const [pageName, setPageName] = useState("Untitled page");
@@ -75,6 +80,8 @@ export function CreateBuilder() {
   const pageSlug = toSlug(pageName);
 
   const history = useBlockHistory({ page, onChange: setPage });
+  const pageRef = useRef(page);
+  pageRef.current = page;
   const clipboard = useClipboard({
     page,
     selectedId,
@@ -144,6 +151,19 @@ export function CreateBuilder() {
       }
     },
     [history, page, selectedId],
+  );
+
+  const handleMoveBlock = useCallback(
+    (id: string, delta: -1 | 1) => {
+      try {
+        const next = moveBlockByDelta(page.blocks, id, delta);
+        if (next === page.blocks) return;
+        history.push({ ...page, blocks: next });
+      } catch {
+        // no-op
+      }
+    },
+    [history, page],
   );
 
   const handleDuplicateBlock = useCallback(
@@ -234,6 +254,7 @@ export function CreateBuilder() {
       registry={registry}
       locale={activeLocale}
       locales={localeConfig.locales}
+      localeConfig={localeConfig}
       device={device}
       onDeviceChange={setDevice}
       onLocaleChange={setActiveLocale}
@@ -255,10 +276,17 @@ export function CreateBuilder() {
         onActiveLocaleChange={setActiveLocale}
         locales={localeConfig.locales}
         page={page}
+        registry={registry}
+        localeConfig={localeConfig}
+        onGlobalCssChange={(globalCss) =>
+          history.push({ ...pageRef.current, globalCss })
+        }
         onSettingsOpen={() => setSettingsOpen(true)}
         onPreview={() => void handlePreview()}
         onPublish={handlePublish}
         savedFlash={savedFlash}
+        sidebarOpen={sidebarOpen}
+        onSidebarOpenChange={setSidebarOpen}
       />
 
       <div className="flex min-h-0 flex-1 overflow-hidden">
@@ -269,6 +297,7 @@ export function CreateBuilder() {
           onStartDragNew={dnd.startDragNew}
           outline={outline}
           inspector={inspector}
+          open={sidebarOpen}
         />
 
         <CanvasArea
@@ -286,6 +315,8 @@ export function CreateBuilder() {
           onSelect={setSelectedId}
           onStartMove={dnd.startDragMove}
           onRemove={handleRemoveBlock}
+          onMoveUp={(id) => handleMoveBlock(id, -1)}
+          onMoveDown={(id) => handleMoveBlock(id, 1)}
           registerRef={dnd.registerRef}
           authorCss={authorCss}
           device={device}

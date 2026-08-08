@@ -120,8 +120,8 @@ function OutlineRow({
         className={cn(
           "group flex w-full items-center gap-0.5 rounded-md py-1.5 pr-1 text-left text-[12px] transition-colors",
           selected
-            ? "bg-blue-50 text-blue-700 ring-1 ring-blue-200"
-            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+            ? "bg-accent/10 text-accent ring-1 ring-accent/25"
+            : "text-muted-foreground hover:bg-muted hover:text-foreground",
           hidden && "opacity-45",
         )}
       >
@@ -133,7 +133,7 @@ function OutlineRow({
               e.stopPropagation();
               setOpen((v) => !v);
             }}
-            className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-gray-400 hover:bg-gray-100"
+            className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-muted-foreground hover:bg-card"
           >
             {open ? (
               <ChevronDown className="h-3 w-3" />
@@ -150,18 +150,21 @@ function OutlineRow({
           onClick={() => onSelect(block.id)}
           className="flex min-w-0 flex-1 items-center gap-1.5"
         >
-          <span className="w-3.5 shrink-0 text-right text-[10px] text-gray-300 select-none">
+          <span className="w-3.5 shrink-0 text-right text-[10px] text-muted-foreground/50 select-none">
             {index + 1}
           </span>
           <Icon
             className={cn(
               "h-3.5 w-3.5 shrink-0",
-              selected ? "text-blue-600" : "text-gray-400",
+              selected ? "text-accent" : "text-muted-foreground",
             )}
           />
           <span className="truncate font-medium capitalize">{label}</span>
           {hidden ? (
-            <EyeOff className="h-3 w-3 shrink-0 text-gray-400" aria-hidden />
+            <EyeOff
+              className="h-3 w-3 shrink-0 text-muted-foreground"
+              aria-hidden
+            />
           ) : null}
         </button>
 
@@ -173,7 +176,7 @@ function OutlineRow({
               e.stopPropagation();
               onToggleHidden(block.id);
             }}
-            className="rounded p-1 text-gray-400 hover:bg-white hover:text-blue-600"
+            className="rounded p-1 text-muted-foreground hover:bg-card hover:text-accent"
           >
             {hidden ? (
               <Eye className="h-3 w-3" />
@@ -188,7 +191,7 @@ function OutlineRow({
               e.stopPropagation();
               onDuplicate(block.id);
             }}
-            className="rounded p-1 text-gray-400 hover:bg-white hover:text-blue-600"
+            className="rounded p-1 text-muted-foreground hover:bg-card hover:text-accent"
           >
             <Copy className="h-3 w-3" />
           </button>

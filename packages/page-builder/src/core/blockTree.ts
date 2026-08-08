@@ -220,6 +220,27 @@ export const moveBlock = (
   return insertBlock(without, path.block, newParentId, index);
 };
 
+/**
+ * Move a block one step among its siblings (`-1` up, `+1` down).
+ * No-op (returns same tree) when already at the edge.
+ */
+export const moveBlockByDelta = (
+  blocks: Block[],
+  id: string,
+  delta: -1 | 1,
+): Block[] => {
+  const path = findBlockPath(blocks, id);
+  if (!path) {
+    throw new Error(`moveBlockByDelta: block "${id}" not found`);
+  }
+  const siblings = path.parent?.children ?? blocks;
+  const nextIndex = path.index + delta;
+  if (nextIndex < 0 || nextIndex >= siblings.length) {
+    return blocks;
+  }
+  return moveBlock(blocks, id, path.parent?.id ?? null, nextIndex);
+};
+
 export const createBlockId = createId;
 
 /** Child ids of a container, or root list when `containerId === "root"`. */

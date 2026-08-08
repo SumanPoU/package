@@ -8,14 +8,22 @@ export const headingDefinition: BlockDefinition = {
   type: "heading",
   label: "Heading",
   category: "basic",
-  defaultProps: { level: "h2" },
+  defaultProps: {
+    level: "h2",
+    href: "",
+    openInNewWindow: false,
+    nofollow: false,
+  },
   defaultI18nProps: { en: { title: "Heading" } },
   translatableProps: ["title"],
-  sharedProps: ["level"],
+  sharedProps: ["level", "href", "openInNewWindow", "nofollow"],
   propsSchema: z
     .object({
       level: z.enum(["h1", "h2", "h3", "h4", "h5", "h6"]).optional(),
       title: z.string().optional(),
+      href: z.string().optional(),
+      openInNewWindow: z.boolean().optional(),
+      nofollow: z.boolean().optional(),
     })
     .passthrough(),
   render: HeadingElement,

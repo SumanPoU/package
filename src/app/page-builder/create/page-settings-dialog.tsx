@@ -140,8 +140,8 @@ export function PageSettingsDialog({
                 onClick={() => onStatusChange(!status)}
                 className={
                   status
-                    ? "relative h-5 w-9 rounded-full bg-blue-600 transition-colors"
-                    : "relative h-5 w-9 rounded-full bg-gray-300 transition-colors"
+                    ? "relative h-5 w-9 rounded-full bg-accent transition-colors"
+                    : "relative h-5 w-9 rounded-full bg-muted-foreground/30 transition-colors"
                 }
               >
                 <span

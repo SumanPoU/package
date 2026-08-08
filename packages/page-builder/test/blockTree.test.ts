@@ -8,6 +8,7 @@ import {
   findBlockPath,
   insertBlock,
   moveBlock,
+  moveBlockByDelta,
   removeBlock,
   updateBlock,
 } from "../src/index";
@@ -73,6 +74,20 @@ describe("blockTree", () => {
 
     expect(() => moveBlock(tree, "a", "c")).toThrow(/descendant/);
     expect(() => moveBlock(tree, "a", "a")).toThrow(/itself/);
+  });
+
+  it("moveBlockByDelta reorders siblings", () => {
+    let tree: Block[] = [
+      block("a", "heading"),
+      block("b", "text"),
+      block("c", "button"),
+    ];
+    tree = moveBlockByDelta(tree, "b", -1);
+    expect(tree.map((b) => b.id)).toEqual(["b", "a", "c"]);
+    tree = moveBlockByDelta(tree, "b", -1);
+    expect(tree.map((b) => b.id)).toEqual(["b", "a", "c"]);
+    tree = moveBlockByDelta(tree, "a", 1);
+    expect(tree.map((b) => b.id)).toEqual(["b", "c", "a"]);
   });
 
   it("cloneBlock regenerates ids deeply and preserves i18nProps", () => {

@@ -3,6 +3,7 @@ import {
   createBlockFromDefinition,
   findBlock,
   insertBlock,
+  moveBlockByDelta,
   removeBlock,
   updateBlock,
 } from "../core/blockTree";
@@ -184,6 +185,19 @@ export const PageBuilder = ({
     [history, page, selectedId, setSelectedId],
   );
 
+  const handleMoveBlock = useCallback(
+    (id: string, delta: -1 | 1) => {
+      try {
+        const next = moveBlockByDelta(page.blocks, id, delta);
+        if (next === page.blocks) return;
+        history.push({ ...page, blocks: next });
+      } catch {
+        // no-op
+      }
+    },
+    [history, page],
+  );
+
   return (
     <div className="pb-root" data-pb-editor="">
       <div className="pb-toolbar" role="toolbar" aria-label="Page builder">
@@ -274,6 +288,8 @@ export const PageBuilder = ({
           onSelect={setSelectedId}
           onStartMove={dnd.startDragMove}
           onRemove={handleRemoveBlock}
+          onMoveUp={(id) => handleMoveBlock(id, -1)}
+          onMoveDown={(id) => handleMoveBlock(id, 1)}
           registerRef={dnd.registerRef}
           authorCss={authorCss}
         />

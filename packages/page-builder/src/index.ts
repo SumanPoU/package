@@ -80,6 +80,7 @@ export {
   insertBlock,
   isDescendant,
   moveBlock,
+  moveBlockByDelta,
   removeBlock,
   updateBlock,
 } from "./core/blockTree";

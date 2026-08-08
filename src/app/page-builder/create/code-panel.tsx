@@ -1,111 +1,275 @@
 "use client";
 
-import type { Block } from "@itzsa/page-builder";
 import {
+  type Block,
+  type BlockRegistry,
   blockSelector,
-  collectBlockStyleCssRules,
-  composePageCss,
+  type LocaleConfig,
+  type Page,
 } from "@itzsa/page-builder";
 import { Braces, Check, Copy } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useLayoutEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
+import { formatCss, formatJson } from "./format-code";
+import {
+  serializeBlockCss,
+  serializeBlockHtml,
+  serializePageBodyHtml,
+  serializePageCss,
+  serializePageHtml,
+  serializePageJson,
+} from "./serialize-markup";
 
-export type CodePanelProps = {
-  block: Block;
-  pageCss?: string;
+type PageTab = "css" | "html" | "full" | "global" | "json";
+type BlockTab = "css" | "html" | "json";
+
+const CodeTabs = <T extends string>({
+  tabs,
+  value,
+  onChange,
+}: {
+  tabs: { id: T; label: string }[];
+  value: T;
+  onChange: (v: T) => void;
+}) => (
+  <div className="flex flex-wrap rounded border border-gray-200 p-0.5">
+    {tabs.map((t) => (
+      <button
+        key={t.id}
+        type="button"
+        onClick={() => onChange(t.id)}
+        className={cn(
+          "rounded px-2 py-0.5 text-[10px] font-medium",
+          value === t.id
+            ? "bg-gray-900 text-white"
+            : "text-gray-500 hover:text-gray-800",
+        )}
+      >
+        {t.label}
+      </button>
+    ))}
+  </div>
+);
+
+const CopyButton = ({ text }: { text: string }) => {
+  const [copied, setCopied] = useState(false);
+  return (
+    <button
+      type="button"
+      onClick={async () => {
+        try {
+          await navigator.clipboard.writeText(text);
+          setCopied(true);
+          window.setTimeout(() => setCopied(false), 1200);
+        } catch {
+          // no-op
+        }
+      }}
+      aria-label="Copy code"
+      className="flex h-6 w-6 items-center justify-center rounded border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-700"
+    >
+      {copied ? (
+        <Check className="h-3 w-3 text-emerald-500" />
+      ) : (
+        <Copy className="h-3 w-3" />
+      )}
+    </button>
+  );
 };
 
-type CodeTab = "css" | "json";
+const CodePre = ({
+  children,
+  className,
+}: {
+  children: string;
+  className?: string;
+}) => (
+  <pre
+    className={cn(
+      "overflow-auto rounded-lg border border-gray-800 bg-[#0b1220] p-3 font-mono text-[10px] leading-relaxed whitespace-pre text-emerald-300/95 shadow-inner",
+      className,
+    )}
+  >
+    {children}
+  </pre>
+);
 
-export function BlockCodePanel({ block }: CodePanelProps) {
-  const [tab, setTab] = useState<CodeTab>("css");
-  const [copied, setCopied] = useState(false);
+export function BlockCodePanel({
+  block,
+  registry,
+  localeConfig,
+  locale,
+}: {
+  block: Block;
+  registry: BlockRegistry;
+  localeConfig: LocaleConfig;
+  locale: string;
+}) {
+  const [tab, setTab] = useState<BlockTab>("css");
+  const [html, setHtml] = useState("<!-- rendering… -->");
 
-  const css = useMemo(
-    () =>
-      collectBlockStyleCssRules(block).join("\n\n") || "/* no styles yet */",
-    [block],
-  );
-  const json = useMemo(() => JSON.stringify(block, null, 2), [block]);
-  const text = tab === "css" ? css : json;
+  const css = useMemo(() => serializeBlockCss(block), [block]);
+  const json = useMemo(() => formatJson(block), [block]);
 
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1200);
-    } catch {
-      // no-op
-    }
-  };
+  useLayoutEffect(() => {
+    setHtml(serializeBlockHtml(block, registry, localeConfig, locale));
+  }, [block, registry, localeConfig, locale]);
+
+  const text = tab === "css" ? css : tab === "html" ? html : json;
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1 text-[11px] text-gray-500">
-          <Braces className="h-3.5 w-3.5 text-gray-400" />
-          <span className="font-mono text-[10px] text-blue-500">
-            {blockSelector(block.id)}
-          </span>
-        </div>
-        <div className="flex items-center gap-1">
-          <div className="flex rounded border border-gray-200 p-0.5">
-            {(
-              [
-                ["css", "CSS"],
-                ["json", "JSON"],
-              ] as const
-            ).map(([id, label]) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => setTab(id)}
-                className={cn(
-                  "rounded px-2 py-0.5 text-[10px] font-medium",
-                  tab === id
-                    ? "bg-gray-900 text-white"
-                    : "text-gray-500 hover:text-gray-800",
-                )}
-              >
-                {label}
-              </button>
-            ))}
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1 text-[11px] text-gray-500">
+            <Braces className="h-3.5 w-3.5 shrink-0 text-gray-400" />
+            <span
+              className="block truncate font-mono text-[10px] text-accent"
+              title={blockSelector(block.id)}
+            >
+              {blockSelector(block.id)}
+            </span>
           </div>
-          <button
-            type="button"
-            onClick={() => void handleCopy()}
-            aria-label="Copy code"
-            className="flex h-6 w-6 items-center justify-center rounded border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-700"
-          >
-            {copied ? (
-              <Check className="h-3 w-3 text-emerald-500" />
-            ) : (
-              <Copy className="h-3 w-3" />
-            )}
-          </button>
         </div>
+        <CopyButton text={text} />
       </div>
-      <pre className="max-h-56 overflow-auto rounded-lg border border-gray-800 bg-[#0b1220] p-3 font-mono text-[10px] leading-relaxed text-emerald-300/95 shadow-inner">
-        {text}
-      </pre>
+      <CodeTabs
+        value={tab}
+        onChange={setTab}
+        tabs={[
+          { id: "css", label: "CSS" },
+          { id: "html", label: "HTML" },
+          { id: "json", label: "JSON" },
+        ]}
+      />
+      <CodePre className="max-h-56">{text}</CodePre>
       <p className="text-[10px] text-gray-400">
-        Live CSS for this block (style + custom + visibility). Same rules used
-        by canvas, preview, and open page.
+        Formatted {tab.toUpperCase()} for this block. CSS matches canvas /
+        preview / open page.
       </p>
     </div>
   );
 }
 
-/** Optional full-page CSS dump for the header code drawer. */
 export function PageCodePanel({
   page,
+  registry,
+  localeConfig,
+  activeLocale,
+  onGlobalCssChange,
 }: {
-  page: Parameters<typeof composePageCss>[0];
+  page: Page;
+  registry: BlockRegistry;
+  localeConfig: LocaleConfig;
+  activeLocale: string;
+  onGlobalCssChange: (css: string) => void;
 }) {
-  const { css } = useMemo(() => composePageCss(page), [page]);
+  const [tab, setTab] = useState<PageTab>("full");
+  const [fullHtml, setFullHtml] = useState("<!-- rendering… -->");
+  const [bodyHtml, setBodyHtml] = useState("<!-- rendering… -->");
+
+  const css = useMemo(() => serializePageCss(page), [page]);
+  const json = useMemo(() => serializePageJson(page), [page]);
+  const globalRaw = page.globalCss ?? "";
+
+  useLayoutEffect(() => {
+    setFullHtml(serializePageHtml(page, registry, localeConfig, activeLocale));
+    setBodyHtml(
+      serializePageBodyHtml(page, registry, localeConfig, activeLocale),
+    );
+  }, [page, registry, localeConfig, activeLocale]);
+
+  const combinedView = `/* —— CSS —— */\n${css}\n\n/* —— HTML —— */\n${bodyHtml}`;
+
+  const text =
+    tab === "css"
+      ? css
+      : tab === "html"
+        ? bodyHtml
+        : tab === "full"
+          ? fullHtml
+          : tab === "json"
+            ? json
+            : formatCss(globalRaw);
+
+  const copyText = tab === "global" ? globalRaw : text;
+
   return (
-    <pre className="max-h-[70vh] overflow-auto rounded-lg border border-gray-800 bg-[#0b1220] p-4 font-mono text-[11px] leading-relaxed text-emerald-300/95">
-      {css || "/* empty page CSS */"}
-    </pre>
+    <div className="flex min-h-0 flex-1 flex-col gap-3">
+      <div className="flex items-center justify-between gap-2">
+        <CodeTabs
+          value={tab}
+          onChange={setTab}
+          tabs={[
+            { id: "full", label: "HTML + CSS" },
+            { id: "html", label: "HTML" },
+            { id: "css", label: "CSS" },
+            { id: "json", label: "JSON" },
+            { id: "global", label: "Global CSS" },
+          ]}
+        />
+        <CopyButton text={tab === "html" ? combinedView : copyText} />
+      </div>
+
+      {tab === "global" ? (
+        <div className="flex min-h-0 flex-1 flex-col gap-2">
+          <textarea
+            value={globalRaw}
+            onChange={(e) => onGlobalCssChange(e.target.value)}
+            spellCheck={false}
+            aria-label="Global page CSS"
+            placeholder={`/* Page-wide CSS — applied live on the canvas */\n[data-pb-page] {\n  font-family: system-ui, sans-serif;\n}\n\n.b-YOUR_BLOCK_ID {\n  color: tomato;\n}`}
+            className="min-h-[280px] flex-1 resize-y rounded-lg border border-border bg-[#0b1220] p-3 font-mono text-[11px] leading-relaxed text-emerald-300/95 outline-none focus:border-accent"
+          />
+          <p className="text-[10px] text-gray-500">
+            Global CSS applies to the whole page (unscoped). Prefer{" "}
+            <code className="rounded bg-gray-100 px-1">[data-pb-page]</code> or{" "}
+            <code className="rounded bg-gray-100 px-1">.b-*</code> selectors.
+            Changes apply immediately on the canvas.
+          </p>
+          {globalRaw.trim() ? (
+            <details className="rounded border border-gray-100 bg-gray-50 p-2">
+              <summary className="cursor-pointer text-[11px] font-medium text-gray-600">
+                Formatted preview
+              </summary>
+              <CodePre className="mt-2 max-h-40">
+                {formatCss(globalRaw)}
+              </CodePre>
+            </details>
+          ) : null}
+        </div>
+      ) : tab === "html" ? (
+        <>
+          <div className="grid min-h-0 flex-1 gap-2 md:grid-cols-2">
+            <div className="flex min-h-0 flex-col gap-1">
+              <span className="text-[10px] font-medium tracking-wide text-gray-400 uppercase">
+                CSS
+              </span>
+              <CodePre className="max-h-[50vh] flex-1">{css}</CodePre>
+            </div>
+            <div className="flex min-h-0 flex-col gap-1">
+              <span className="text-[10px] font-medium tracking-wide text-gray-400 uppercase">
+                HTML
+              </span>
+              <CodePre className="max-h-[50vh] flex-1">{bodyHtml}</CodePre>
+            </div>
+          </div>
+          <p className="text-[10px] text-gray-500">
+            CSS and HTML side by side. Copy includes both sections.
+          </p>
+        </>
+      ) : (
+        <>
+          <CodePre className="max-h-[60vh] flex-1">{text}</CodePre>
+          <p className="text-[10px] text-gray-500">
+            {tab === "css"
+              ? "Composed page CSS (global + all block styles), formatted."
+              : tab === "json"
+                ? "Canonical Page JSON (schema-validated document that Save / Publish persists)."
+                : "Full document with embedded <style> — same blocks as canvas / Open Page."}
+          </p>
+        </>
+      )}
+    </div>
   );
 }

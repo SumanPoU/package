@@ -161,7 +161,11 @@ export type CreateLeftSidebarProps = {
   onStartDragNew: (type: string, e: React.PointerEvent) => void;
   outline: React.ReactNode;
   inspector: React.ReactNode | null;
+  /** When false, sidebar is hidden (toggle lives in the header). */
+  open?: boolean;
 };
+
+const SIDEBAR_WIDTH = "w-[272px]";
 
 export function CreateLeftSidebar({
   registry,
@@ -170,18 +174,31 @@ export function CreateLeftSidebar({
   onStartDragNew,
   outline,
   inspector,
+  open = true,
 }: CreateLeftSidebarProps) {
+  if (!open) return null;
+
   if (inspector) {
     return (
-      <aside className="flex w-[300px] shrink-0 flex-col overflow-hidden border-r border-gray-200/80 bg-white shadow-[1px_0_0_rgb(0_0_0/0.02)]">
+      <aside
+        className={cn(
+          "flex shrink-0 flex-col overflow-hidden border-r border-gray-200/80 bg-white shadow-[1px_0_0_rgb(0_0_0/0.02)]",
+          SIDEBAR_WIDTH,
+        )}
+      >
         {inspector}
       </aside>
     );
   }
 
   return (
-    <aside className="flex w-[300px] shrink-0 flex-col overflow-hidden border-r border-gray-200/80 bg-white shadow-[1px_0_0_rgb(0_0_0/0.02)]">
-      <div className="border-b border-gray-100 px-2.5 pt-2 pb-2">
+    <aside
+      className={cn(
+        "flex shrink-0 flex-col overflow-hidden border-r border-gray-200/80 bg-white shadow-[1px_0_0_rgb(0_0_0/0.02)]",
+        SIDEBAR_WIDTH,
+      )}
+    >
+      <div className="border-b border-gray-100 px-2 pt-2 pb-2">
         <div className="flex h-8 w-full gap-0.5 rounded-lg bg-gray-100/80 p-1">
           <button
             type="button"

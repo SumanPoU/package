@@ -1,4 +1,5 @@
 import type { BlockContentFieldsProps } from "../../core/types";
+import { LinkFields } from "../LinkFields";
 
 export const HeadingContentFields = ({
   block,
@@ -63,6 +64,11 @@ export const HeadingContentFields = ({
           onChange={(e) => handleTitle(e.target.value)}
         />
       </label>
+      <LinkFields
+        block={block}
+        onChange={onChange}
+        idPrefix={`pb-heading-${block.id}`}
+      />
     </div>
   );
 };

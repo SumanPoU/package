@@ -53,6 +53,7 @@ const nextConfig: NextConfig = {
     "@itzsa/nepal-geo-data",
     "@itzsa/a11y-toolbar",
     "@itzsa/captcha",
+    "@itzsa/page-builder",
   ],
   // Monorepo includes apps/registry; pin Turbopack root so Next resolves from here.
   // Use posix-relative aliases — Turbopack on Windows rejects absolute `E:\...` paths
@@ -65,6 +66,10 @@ const nextConfig: NextConfig = {
         "./packages/a11y-toolbar/src/styles.css",
       "@itzsa/a11y-toolbar": "./packages/a11y-toolbar/src/index.ts",
       "@itzsa/captcha": "./packages/captcha/src/index.ts",
+      // Source alias so Code-panel createRoot + canvas share one React instance.
+      "@itzsa/page-builder/styles.css":
+        "./packages/page-builder/src/styles.css",
+      "@itzsa/page-builder": "./packages/page-builder/src/index.ts",
     },
   },
   async headers() {

@@ -1,4 +1,5 @@
 import type { BlockContentFieldsProps } from "../../core/types";
+import { LinkFields } from "../LinkFields";
 
 export const ButtonContentFields = ({
   block,
@@ -9,7 +10,6 @@ export const ButtonContentFields = ({
     typeof block.i18nProps?.[locale]?.label === "string"
       ? (block.i18nProps[locale]!.label as string)
       : "";
-  const href = typeof block.props.href === "string" ? block.props.href : "";
 
   const handleLabel = (value: string) => {
     const i18nProps = { ...(block.i18nProps ?? {}) };
@@ -18,9 +18,9 @@ export const ButtonContentFields = ({
   };
 
   return (
-    <div>
-      <label htmlFor={`pb-btn-label-${block.id}`}>
-        Label
+    <div className="pb-content-fields">
+      <label className="pb-field" htmlFor={`pb-btn-label-${block.id}`}>
+        <span className="pb-field-label">Label</span>
         <input
           id={`pb-btn-label-${block.id}`}
           type="text"
@@ -29,18 +29,11 @@ export const ButtonContentFields = ({
           onChange={(e) => handleLabel(e.target.value)}
         />
       </label>
-      <label htmlFor={`pb-btn-href-${block.id}`}>
-        Link URL
-        <input
-          id={`pb-btn-href-${block.id}`}
-          type="url"
-          value={href}
-          aria-label="Button href"
-          onChange={(e) =>
-            onChange({ props: { ...block.props, href: e.target.value } })
-          }
-        />
-      </label>
+      <LinkFields
+        block={block}
+        onChange={onChange}
+        idPrefix={`pb-btn-${block.id}`}
+      />
     </div>
   );
 };

@@ -23,12 +23,12 @@ export function CompactSelect({
   return (
     <div
       className={cn(
-        "inline-flex h-6 items-center gap-0.5 rounded border border-gray-200 bg-white pl-1 pr-0.5 text-gray-600 shadow-sm",
+        "inline-flex h-6 items-center gap-0.5 rounded border border-border bg-card pl-1 pr-0.5 text-muted-foreground shadow-sm",
         className,
       )}
     >
       {leading ? (
-        <span className="flex shrink-0 text-gray-400" aria-hidden>
+        <span className="flex shrink-0 text-muted-foreground" aria-hidden>
           {leading}
         </span>
       ) : null}
@@ -36,9 +36,9 @@ export function CompactSelect({
         value={value}
         aria-label={ariaLabel}
         onChange={(e) => onChange(e.target.value)}
-        className="h-5 max-w-[88px] cursor-pointer appearance-none border-0 bg-transparent py-0 pr-4 pl-0.5 text-[10px] font-medium text-gray-600 outline-none"
+        className="h-5 max-w-[88px] cursor-pointer appearance-none border-0 bg-transparent py-0 pr-4 pl-0.5 text-[10px] font-medium text-foreground outline-none"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239b9a93' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
           backgroundRepeat: "no-repeat",
           backgroundPosition: "right 2px center",
         }}

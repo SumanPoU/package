@@ -21,6 +21,8 @@ export type CanvasAreaProps = {
   onSelect: (id: string) => void;
   onStartMove: (blockId: string, type: string, e: React.PointerEvent) => void;
   onRemove: (id: string) => void;
+  onMoveUp: (id: string) => void;
+  onMoveDown: (id: string) => void;
   registerRef: (id: string, el: HTMLElement | null) => void;
   authorCss?: string;
   device?: "desktop" | "tablet" | "mobile";
@@ -42,26 +44,29 @@ export const CanvasArea = ({
   onSelect,
   onStartMove,
   onRemove,
+  onMoveUp,
+  onMoveDown,
   registerRef,
   authorCss,
   device = "desktop",
   pageSlug = "page",
 }: CanvasAreaProps) => {
-  const renderChrome = (block: Block, depth: number) => {
+  const renderChrome = (block: Block, depth: number, siblings: Block[]) => {
     const def = registry.get(block.type);
     const isContainer = Boolean(def?.isContainer);
     const Render = def?.render ?? FallbackBlock;
     const resolved = resolveProps(block, activeLocale, localeConfig);
+    const index = siblings.findIndex((b) => b.id === block.id);
 
     const childNodes = isContainer
-      ? (block.children ?? []).map((child, index) => (
+      ? (block.children ?? []).map((child, childIndex) => (
           <div key={child.id}>
             {drag &&
             hover?.containerId === block.id &&
-            hover.index === index ? (
+            hover.index === childIndex ? (
               <div className="pb-drop-indicator" aria-hidden />
             ) : null}
-            {renderChrome(child, depth + 1)}
+            {renderChrome(child, depth + 1, block.children ?? [])}
           </div>
         ))
       : null;
@@ -107,11 +112,15 @@ export const CanvasArea = ({
         drag={drag}
         hover={hover}
         depth={depth}
+        canMoveUp={index > 0}
+        canMoveDown={index >= 0 && index < siblings.length - 1}
         onSelect={onSelect}
         onStartMove={onStartMove}
         onRemove={onRemove}
+        onMoveUp={onMoveUp}
+        onMoveDown={onMoveDown}
         registerRef={registerRef}
-        renderChild={renderChrome}
+        renderChild={(child, d) => renderChrome(child, d, block.children ?? [])}
       >
         {content}
       </BlockChrome>
@@ -143,6 +152,7 @@ export const CanvasArea = ({
           data-dropzone="root"
           data-pb-page={page.id}
           data-pb-surface="canvas"
+          data-pb-device={device}
           lang={activeLocale}
           className={[
             "pb-canvas-root",
@@ -165,9 +175,6 @@ export const CanvasArea = ({
                 ▦
               </div>
               <p>Drag a widget here to get started</p>
-              <p className="pb-canvas-empty-hint">
-                Pick any element from the left panel
-              </p>
             </div>
           ) : null}
 
@@ -186,7 +193,7 @@ export const CanvasArea = ({
 
           {page.blocks.map((block, index) => (
             <div key={block.id}>
-              {renderChrome(block, 0)}
+              {renderChrome(block, 0, page.blocks)}
               {drag &&
               hover?.containerId === "root" &&
               hover.index === index + 1 ? (

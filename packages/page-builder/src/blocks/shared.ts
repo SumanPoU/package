@@ -26,3 +26,23 @@ export const containerBackgroundStyle = (
 
 export const asString = (value: unknown, fallback = ""): string =>
   typeof value === "string" ? value : fallback;
+
+/** Map author link flags → anchor target/rel (noopener when new window). */
+export const linkTargetRel = (
+  props: Record<string, unknown>,
+): { target?: "_blank"; rel?: string } => {
+  const openNew = Boolean(props.openInNewWindow);
+  const nofollow = Boolean(props.nofollow);
+  const relParts: string[] = [];
+  if (openNew) {
+    relParts.push("noopener", "noreferrer");
+  }
+  if (nofollow) {
+    relParts.push("nofollow");
+  }
+  const rel = relParts.length ? [...new Set(relParts)].join(" ") : undefined;
+  return {
+    ...(openNew ? { target: "_blank" as const } : {}),
+    ...(rel ? { rel } : {}),
+  };
+};

@@ -5,6 +5,7 @@
 @source "../../packages/nepali-datepicker/src";
 @source "../../packages/nepal-geo/src";
 @source "../../packages/captcha/src";
+@source "../../packages/page-builder/src";
 @import "../../packages/table/src/styles.css";
 @import "../../packages/nepali-input/src/styles.css";
 @import "../../packages/editor/src/styles.css";

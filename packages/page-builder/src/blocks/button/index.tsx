@@ -8,14 +8,16 @@ export const buttonDefinition: BlockDefinition = {
   type: "button",
   label: "Button",
   category: "basic",
-  defaultProps: { href: "" },
+  defaultProps: { href: "", openInNewWindow: false, nofollow: false },
   defaultI18nProps: { en: { label: "Button" } },
   translatableProps: ["label"],
-  sharedProps: ["href"],
+  sharedProps: ["href", "openInNewWindow", "nofollow"],
   propsSchema: z
     .object({
       label: z.string().optional(),
       href: z.string().optional(),
+      openInNewWindow: z.boolean().optional(),
+      nofollow: z.boolean().optional(),
     })
     .passthrough(),
   render: ButtonElement,

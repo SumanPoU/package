@@ -16,6 +16,23 @@ export type ComposeCssResult = {
  * Block rules use `.b-{id}` (see `blockClassName`); custom CSS accepts
  * declaration-only input or `.element` as a shortcut for that selector.
  */
+/** Drop `@import` only — keep remaining CSS so url() warnings don't blank the page. */
+const stripImportAtRules = (css: string): string =>
+  css.replace(/@import\b[^;]*;?/gi, "").trim();
+
+const pushAuthorCss = (
+  raw: string,
+  options: CssParseOptions,
+  errors: CssParseError[],
+  chunks: string[],
+) => {
+  const sanitized = stripImportAtRules(raw);
+  if (!sanitized) return;
+  const parsed = parseAuthorCss(sanitized, options);
+  errors.push(...parsed.errors);
+  chunks.push(sanitized);
+};
+
 export const composePageCss = (
   page: Page,
   options: CssParseOptions = {},
@@ -24,15 +41,11 @@ export const composePageCss = (
   const chunks: string[] = [];
 
   if (page.globalCss?.trim()) {
-    const parsed = parseAuthorCss(page.globalCss, options);
-    errors.push(...parsed.errors);
-    if (parsed.ok) chunks.push(parsed.css.trim());
+    pushAuthorCss(page.globalCss, options, errors, chunks);
   }
 
   for (const rule of collectAllBlockStyleCss(page.blocks)) {
-    const parsed = parseAuthorCss(rule, options);
-    errors.push(...parsed.errors);
-    if (parsed.ok && parsed.css.trim()) chunks.push(parsed.css.trim());
+    pushAuthorCss(rule, options, errors, chunks);
   }
 
   return { css: chunks.filter(Boolean).join("\n\n"), errors };
@@ -46,9 +59,7 @@ export const composeBlockCss = (
   const errors: CssParseError[] = [];
   const chunks: string[] = [];
   for (const rule of formatCustomCssRules(customCss, blockId)) {
-    const parsed = parseAuthorCss(rule, options);
-    errors.push(...parsed.errors);
-    if (parsed.ok && parsed.css.trim()) chunks.push(parsed.css.trim());
+    pushAuthorCss(rule, options, errors, chunks);
   }
   return { css: chunks.join("\n"), errors };
 };

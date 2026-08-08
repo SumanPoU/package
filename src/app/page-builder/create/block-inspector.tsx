@@ -7,6 +7,7 @@ import {
   type Device,
   type DimValue,
   getBlockStyle,
+  type LocaleConfig,
   type LocaleDefinition,
   type SpacingBox,
 } from "@itzsa/page-builder";
@@ -38,11 +39,20 @@ import { DeviceSelect, LocaleSelect, UnitSelect } from "./inspector-controls";
 
 type PanelTab = "content" | "style" | "advanced";
 
+/** Shared chip / toggle selected state — theme accent, not hardcoded blue. */
+const chipSelected =
+  "border-accent bg-accent/10 text-accent shadow-[0_0_0_1px_color-mix(in_oklab,var(--accent)_20%,transparent)]";
+const chipIdle =
+  "border-border text-muted-foreground hover:bg-muted hover:text-foreground";
+const fieldInput =
+  "h-7 w-full rounded border border-border bg-card px-2 text-[11px] text-foreground outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground focus:border-accent focus:ring-1 focus:ring-accent/25";
+
 export type BlockInspectorProps = {
   block: Block;
   registry: BlockRegistry;
   locale: string;
   locales: LocaleDefinition[];
+  localeConfig: LocaleConfig;
   device: Device;
   onDeviceChange: (device: Device) => void;
   onLocaleChange: (locale: string) => void;
@@ -64,18 +74,26 @@ const Section = ({
   title,
   children,
   defaultOpen = true,
+  alt = false,
 }: {
   title: string;
   children: React.ReactNode;
   defaultOpen?: boolean;
+  /** Alternating zebra background for Style rows */
+  alt?: boolean;
 }) => {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border-b border-gray-100">
+    <div
+      className={cn(
+        "border-b border-gray-100",
+        alt ? "bg-[#f6f7f9]" : "bg-white",
+      )}
+    >
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between px-3 py-2 text-left text-[11px] font-semibold tracking-wider text-gray-600 uppercase hover:bg-gray-50"
+        className="flex w-full items-center justify-between px-3 py-2 text-left text-[11px] font-semibold tracking-wider text-gray-600 uppercase hover:bg-black/[0.02]"
       >
         {title}
         <span className="text-gray-300">{open ? "▾" : "▸"}</span>
@@ -86,25 +104,10 @@ const Section = ({
 };
 
 const FieldLabel = ({ children }: { children: React.ReactNode }) => (
-  <div className="text-[11px] tracking-wide text-gray-400 uppercase">
+  <div className="text-[11px] tracking-wide text-muted-foreground uppercase">
     {children}
   </div>
 );
-
-const COLOR_SWATCHES = [
-  "#000000",
-  "#111827",
-  "#374151",
-  "#6b7280",
-  "#ffffff",
-  "#ef4444",
-  "#f97316",
-  "#eab308",
-  "#22c55e",
-  "#3b82f6",
-  "#8b5cf6",
-  "#ec4899",
-];
 
 const ColorField = ({
   label,
@@ -123,64 +126,88 @@ const ColorField = ({
         value={value && /^#/.test(value) ? value.slice(0, 7) : "#ffffff"}
         aria-label={label}
         onChange={(e) => onChange(e.target.value)}
-        className="h-7 w-7 cursor-pointer rounded border border-gray-200 bg-white p-0.5"
+        className="h-7 w-7 cursor-pointer rounded border border-border bg-card p-0.5"
       />
       <input
         value={value ?? ""}
         placeholder="#000000"
         onChange={(e) => onChange(e.target.value)}
-        className="h-7 flex-1 rounded border border-gray-200 px-2 font-mono text-[11px] outline-none focus:border-gray-400"
+        className={cn(fieldInput, "flex-1 font-mono")}
       />
       {value ? (
         <button
           type="button"
           aria-label={`Clear ${label}`}
           onClick={() => onChange("")}
-          className="text-[10px] text-gray-400 hover:text-gray-600"
+          className="text-[10px] text-muted-foreground hover:text-foreground"
         >
           Clear
         </button>
       ) : null}
     </div>
-    <div className="flex flex-wrap gap-1">
-      {COLOR_SWATCHES.map((c) => (
-        <button
-          key={c}
-          type="button"
-          title={c}
-          aria-label={c}
-          onClick={() => onChange(c)}
-          className="h-4 w-4 rounded-sm border border-black/10"
-          style={{ backgroundColor: c }}
-        />
-      ))}
-    </div>
   </div>
 );
+
+const nudgeNumericString = (raw: string, delta: number): string => {
+  const trimmed = raw.trim();
+  const base =
+    trimmed === "" || trimmed === "—" ? 0 : Number.parseFloat(trimmed);
+  if (!Number.isFinite(base)) return raw;
+  const next = base + delta;
+  return Number.isInteger(next)
+    ? String(next)
+    : String(Math.round(next * 100) / 100);
+};
 
 const DimField = ({
   label,
   value,
   onChange,
+  device,
+  onDeviceChange,
   units = ["px", "%", "rem", "vw", "auto"],
 }: {
   label: string;
   value?: DimValue;
   onChange: (v: DimValue) => void;
+  device?: Device;
+  onDeviceChange?: (device: Device) => void;
   units?: DimValue["unit"][];
 }) => {
   const dim = value ?? { value: "", unit: "px" };
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (dim.unit === "auto") return;
+    if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+    e.preventDefault();
+    const step = e.shiftKey ? 10 : 1;
+    const delta = e.key === "ArrowUp" ? step : -step;
+    onChange({
+      ...dim,
+      value: nudgeNumericString(dim.value ?? "", delta),
+    });
+  };
+
   return (
     <div className="space-y-1.5">
-      <FieldLabel>{label}</FieldLabel>
+      <div className="flex items-center justify-between gap-2">
+        <FieldLabel>{label}</FieldLabel>
+        {device && onDeviceChange ? (
+          <DeviceSelect value={device} onChange={onDeviceChange} />
+        ) : null}
+      </div>
       <div className="flex gap-1">
         <input
           value={dim.unit === "auto" ? "" : (dim.value ?? "")}
           disabled={dim.unit === "auto"}
           placeholder={dim.unit === "auto" ? "auto" : "—"}
+          inputMode="decimal"
           aria-label={label}
           onChange={(e) => onChange({ ...dim, value: e.target.value })}
-          className="h-7 flex-1 rounded border border-gray-200 px-2 text-[11px] outline-none focus:border-gray-400 disabled:bg-gray-50"
+          onKeyDown={handleKeyDown}
+          className={cn(
+            fieldInput,
+            "flex-1 disabled:bg-muted disabled:opacity-70",
+          )}
         />
         <select
           value={dim.unit ?? "px"}
@@ -191,7 +218,7 @@ const DimField = ({
               unit: e.target.value as DimValue["unit"],
             })
           }
-          className="h-7 rounded border border-gray-200 px-1 text-[10px]"
+          className="h-7 rounded border border-border bg-card px-1 text-[10px] text-foreground outline-none focus:border-accent"
         >
           {units.map((u) => (
             <option key={u} value={u}>
@@ -222,22 +249,12 @@ const IconToggle = ({
     onClick={onClick}
     className={cn(
       "flex h-7 w-7 items-center justify-center rounded border transition-colors",
-      active
-        ? "border-blue-300 bg-blue-50 text-blue-600"
-        : "border-gray-200 text-gray-400 hover:bg-gray-50",
+      active ? chipSelected : chipIdle,
     )}
   >
     {children}
   </button>
 );
-
-const DeviceToggles = ({
-  device,
-  onChange,
-}: {
-  device: Device;
-  onChange: (d: Device) => void;
-}) => <DeviceSelect value={device} onChange={onChange} />;
 
 const FourDimInput = ({
   label,
@@ -250,7 +267,7 @@ const FourDimInput = ({
   value: SpacingBox;
   onChange: (v: SpacingBox) => void;
   device: Device;
-  onDeviceChange: (d: Device) => void;
+  onDeviceChange: (device: Device) => void;
 }) => {
   const box = { ...emptySpacing(), ...value };
   const setSide = (side: "t" | "r" | "b" | "l", raw: string) => {
@@ -264,12 +281,23 @@ const FourDimInput = ({
     onChange(next);
   };
 
+  const handleSideKeyDown = (
+    side: "t" | "r" | "b" | "l",
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+    e.preventDefault();
+    const step = e.shiftKey ? 10 : 1;
+    const delta = e.key === "ArrowUp" ? step : -step;
+    setSide(side, nudgeNumericString(box[side] ?? "", delta));
+  };
+
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between gap-2">
         <FieldLabel>{label}</FieldLabel>
         <div className="flex items-center gap-1">
-          <DeviceToggles device={device} onChange={onDeviceChange} />
+          <DeviceSelect value={device} onChange={onDeviceChange} />
           <UnitSelect
             value={box.unit ?? "px"}
             aria-label={`${label} unit`}
@@ -284,7 +312,10 @@ const FourDimInput = ({
             type="button"
             aria-label={box.linked ? "Unlink sides" : "Link sides"}
             onClick={() => onChange({ ...box, linked: !box.linked })}
-            className="flex h-6 w-6 items-center justify-center rounded border border-gray-200 text-gray-400 hover:bg-gray-50"
+            className={cn(
+              "flex h-6 w-6 items-center justify-center rounded border transition-colors",
+              box.linked ? chipSelected : chipIdle,
+            )}
           >
             {box.linked ? (
               <Link2 className="h-3 w-3" />
@@ -298,13 +329,15 @@ const FourDimInput = ({
         {(["t", "r", "b", "l"] as const).map((side) => (
           <div key={side} className="space-y-0.5">
             <input
-              value={box[side] ?? ""}
+              value={box[side] === "—" ? "" : (box[side] ?? "")}
               placeholder="—"
+              inputMode="decimal"
               aria-label={`${label} ${side}`}
               onChange={(e) => setSide(side, e.target.value)}
-              className="h-7 w-full rounded border border-gray-200 px-1 text-center text-[11px] outline-none focus:border-gray-400"
+              onKeyDown={(e) => handleSideKeyDown(side, e)}
+              className={cn(fieldInput, "px-1 text-center")}
             />
-            <div className="text-center text-[9px] text-gray-400 uppercase">
+            <div className="text-center text-[9px] text-muted-foreground uppercase">
               {side}
             </div>
           </div>
@@ -319,6 +352,7 @@ export function BlockInspector({
   registry,
   locale,
   locales,
+  localeConfig,
   device,
   onDeviceChange,
   onLocaleChange,
@@ -393,8 +427,8 @@ export function BlockInspector({
               className={cn(
                 "h-6 rounded-md text-[11px] font-medium capitalize",
                 tab === id
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-500 hover:text-gray-700",
+                  ? "bg-card text-accent shadow-sm"
+                  : "text-muted-foreground hover:text-foreground",
               )}
             >
               {id}
@@ -417,7 +451,7 @@ export function BlockInspector({
               />
             </div>
             {ContentFields ? (
-              <div className="space-y-3 text-[12px] [&_input]:h-8 [&_input]:w-full [&_input]:rounded [&_input]:border [&_input]:border-gray-200 [&_input]:px-2 [&_label]:mb-1 [&_label]:block [&_select]:h-8 [&_select]:w-full [&_select]:rounded [&_select]:border [&_select]:border-gray-200 [&_textarea]:w-full [&_textarea]:rounded [&_textarea]:border [&_textarea]:border-gray-200 [&_textarea]:px-2 [&_textarea]:py-1 [&_.pb-field-label]:mb-1 [&_.pb-field-label]:block [&_.pb-field-label]:text-[11px] [&_.pb-field-label]:tracking-wide [&_.pb-field-label]:text-gray-400 [&_.pb-field-label]:uppercase [&_.pb-field]:mb-3">
+              <div className="pb-host-content-fields space-y-3 text-[12px] [&_input[type=text]]:h-8 [&_input[type=text]]:w-full [&_input[type=text]]:rounded [&_input[type=text]]:border [&_input[type=text]]:border-gray-200 [&_input[type=text]]:px-2 [&_input[type=url]]:h-8 [&_input[type=url]]:w-full [&_input[type=url]]:rounded [&_input[type=url]]:border [&_input[type=url]]:border-gray-200 [&_input[type=url]]:px-2 [&_select]:h-8 [&_select]:w-full [&_select]:rounded [&_select]:border [&_select]:border-gray-200 [&_textarea]:w-full [&_textarea]:rounded [&_textarea]:border [&_textarea]:border-gray-200 [&_textarea]:px-2 [&_textarea]:py-1">
                 <ContentFields
                   block={block}
                   locale={locale}
@@ -434,12 +468,6 @@ export function BlockInspector({
 
         {tab === "style" ? (
           <div>
-            <div className="flex items-center justify-between gap-2 border-b border-gray-100 px-3 py-2">
-              <span className="text-[11px] tracking-wide text-gray-400 uppercase">
-                Screen
-              </span>
-              <DeviceSelect value={device} onChange={onDeviceChange} />
-            </div>
             <Section title="Layout">
               <div className="space-y-1.5">
                 <FieldLabel>Align</FieldLabel>
@@ -489,8 +517,8 @@ export function BlockInspector({
                       className={cn(
                         "rounded border py-1 text-[11px] capitalize transition-colors",
                         (activeStyle.paddingY ?? "none") === p
-                          ? "border-blue-300 bg-blue-50 text-blue-600"
-                          : "border-gray-200 text-gray-400 hover:bg-gray-50",
+                          ? chipSelected
+                          : chipIdle,
                       )}
                     >
                       {p === "none" ? "None" : p}
@@ -517,8 +545,8 @@ export function BlockInspector({
                           className={cn(
                             "rounded border py-1.5 text-[11px] transition-colors",
                             activeStyle.widthMode === w
-                              ? "border-blue-300 bg-blue-50 text-blue-600"
-                              : "border-gray-200 text-gray-400 hover:bg-gray-50",
+                              ? chipSelected
+                              : chipIdle,
                           )}
                         >
                           {label}
@@ -526,15 +554,62 @@ export function BlockInspector({
                       ))}
                     </div>
                     {activeStyle.widthMode === "boxed" ? (
-                      <input
-                        value={activeStyle.boxedMaxWidth ?? ""}
-                        placeholder="1140px"
-                        aria-label="Boxed max width"
-                        onChange={(e) =>
-                          patchStyle({ boxedMaxWidth: e.target.value })
-                        }
-                        className="mt-1 h-7 w-full rounded border border-gray-200 px-2 text-[11px] outline-none focus:border-gray-400"
-                      />
+                      <div className="mt-2 space-y-1.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[10px] text-gray-400">
+                            Content width
+                          </span>
+                          <span className="font-mono text-[11px] text-gray-600">
+                            {(() => {
+                              const raw =
+                                activeStyle.boxedMaxWidth?.trim() || "1140px";
+                              const n = Number.parseInt(raw, 10);
+                              return Number.isFinite(n) ? `${n}px` : "1140px";
+                            })()}
+                          </span>
+                        </div>
+                        <input
+                          type="range"
+                          min={320}
+                          max={1600}
+                          step={10}
+                          value={(() => {
+                            const raw =
+                              activeStyle.boxedMaxWidth?.trim() || "1140px";
+                            const n = Number.parseInt(raw, 10);
+                            return Number.isFinite(n) ? n : 1140;
+                          })()}
+                          aria-label="Boxed content width"
+                          onChange={(e) =>
+                            patchStyle({
+                              boxedMaxWidth: `${e.target.value}px`,
+                            })
+                          }
+                          className="w-full accent-accent"
+                        />
+                        <div className="flex gap-1">
+                          <input
+                            value={
+                              activeStyle.boxedMaxWidth?.replace(/px$/i, "") ??
+                              "1140"
+                            }
+                            inputMode="numeric"
+                            aria-label="Boxed max width value"
+                            onChange={(e) => {
+                              const digits = e.target.value.replace(/\D/g, "");
+                              patchStyle({
+                                boxedMaxWidth: digits
+                                  ? `${digits}px`
+                                  : "1140px",
+                              });
+                            }}
+                            className="h-7 flex-1 rounded border border-gray-200 px-2 text-[11px] outline-none focus:border-gray-400"
+                          />
+                          <span className="inline-flex h-7 items-center rounded border border-gray-200 px-2 text-[10px] font-medium text-gray-500">
+                            px
+                          </span>
+                        </div>
+                      </div>
                     ) : null}
                   </div>
 
@@ -607,47 +682,47 @@ export function BlockInspector({
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <FieldLabel>Gap</FieldLabel>
-                      <DeviceToggles
-                        device={styleDevice}
-                        onChange={onDeviceChange}
-                      />
-                    </div>
+                    <FieldLabel>Gap</FieldLabel>
                     <input
                       value={activeStyle.gap ?? ""}
                       placeholder="e.g. 16px"
                       aria-label="Gap"
                       onChange={(e) => patchStyle({ gap: e.target.value })}
-                      className="h-7 w-full rounded border border-gray-200 px-2 text-[11px] outline-none focus:border-gray-400"
+                      className="h-7 w-full rounded border border-border bg-card px-2 text-[11px] outline-none focus:border-accent focus:ring-1 focus:ring-accent/25"
                     />
                   </div>
                 </div>
               ) : null}
 
-              <div className="space-y-3 border-t border-gray-100 pt-3">
+              <div className="space-y-3 border-t border-border pt-3">
                 <DimField
                   label="Width"
                   value={activeStyle.width}
                   onChange={(width) => patchStyle({ width })}
+                  device={styleDevice}
+                  onDeviceChange={onDeviceChange}
                   units={["px", "%", "vw", "auto"]}
                 />
                 <DimField
                   label="Height"
                   value={activeStyle.height}
                   onChange={(height) => patchStyle({ height })}
+                  device={styleDevice}
+                  onDeviceChange={onDeviceChange}
                   units={["px", "%", "vh", "auto"]}
                 />
                 <DimField
                   label="Min height"
                   value={activeStyle.minHeight}
                   onChange={(minHeight) => patchStyle({ minHeight })}
+                  device={styleDevice}
+                  onDeviceChange={onDeviceChange}
                   units={["px", "%", "vh", "auto"]}
                 />
               </div>
             </Section>
 
-            <Section title="Typography">
+            <Section title="Typography" alt>
               <div className="space-y-1.5">
                 <FieldLabel>Font family</FieldLabel>
                 <select
@@ -668,20 +743,30 @@ export function BlockInspector({
                 </select>
               </div>
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2">
                   <FieldLabel>Font size</FieldLabel>
-                  <DeviceToggles
-                    device={styleDevice}
-                    onChange={onDeviceChange}
-                  />
+                  <DeviceSelect value={styleDevice} onChange={onDeviceChange} />
                 </div>
                 <div className="flex gap-1">
                   <input
                     value={activeStyle.fontSize ?? ""}
                     placeholder="inherit"
+                    inputMode="decimal"
                     aria-label="Font size"
                     onChange={(e) => patchStyle({ fontSize: e.target.value })}
-                    className="h-7 flex-1 rounded border border-gray-200 px-2 text-[11px] outline-none focus:border-gray-400"
+                    onKeyDown={(e) => {
+                      if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+                      e.preventDefault();
+                      const step = e.shiftKey ? 10 : 1;
+                      const delta = e.key === "ArrowUp" ? step : -step;
+                      patchStyle({
+                        fontSize: nudgeNumericString(
+                          activeStyle.fontSize ?? "",
+                          delta,
+                        ),
+                      });
+                    }}
+                    className={cn(fieldInput, "flex-1")}
                   />
                   <select
                     value={activeStyle.fontSizeUnit ?? "px"}
@@ -689,7 +774,7 @@ export function BlockInspector({
                     onChange={(e) =>
                       patchStyle({ fontSizeUnit: e.target.value })
                     }
-                    className="h-7 rounded border border-gray-200 px-1 text-[10px]"
+                    className="h-7 rounded border border-border bg-card px-1 text-[10px] outline-none focus:border-accent"
                   >
                     {["px", "rem", "em", "%"].map((u) => (
                       <option key={u} value={u}>
@@ -701,29 +786,43 @@ export function BlockInspector({
               </div>
               <div className="space-y-1.5">
                 <FieldLabel>Font weight</FieldLabel>
-                <div className="grid grid-cols-4 gap-1">
+                <div className="grid grid-cols-5 gap-1">
                   {(
                     [
-                      ["thin", "Thin"],
-                      ["reg", "Reg"],
-                      ["semi", "Semi"],
-                      ["bold", "Bold"],
+                      ["100", "100"],
+                      ["200", "200"],
+                      ["300", "300"],
+                      ["400", "400"],
+                      ["500", "500"],
+                      ["600", "600"],
+                      ["700", "700"],
+                      ["800", "800"],
+                      ["900", "900"],
                     ] as const
-                  ).map(([id, label]) => (
-                    <button
-                      key={id}
-                      type="button"
-                      onClick={() => patchStyle({ fontWeight: id })}
-                      className={cn(
-                        "rounded border py-1 text-[11px] transition-colors",
-                        activeStyle.fontWeight === id
-                          ? "border-blue-300 bg-blue-50 text-blue-600"
-                          : "border-gray-200 text-gray-400 hover:bg-gray-50",
-                      )}
-                    >
-                      {label}
-                    </button>
-                  ))}
+                  ).map(([id, label]) => {
+                    const aliases: Record<string, string> = {
+                      thin: "300",
+                      reg: "400",
+                      semi: "600",
+                      bold: "700",
+                    };
+                    const current =
+                      aliases[activeStyle.fontWeight ?? ""] ??
+                      activeStyle.fontWeight;
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        onClick={() => patchStyle({ fontWeight: id })}
+                        className={cn(
+                          "rounded border py-1 font-mono text-[10px] transition-colors",
+                          current === id ? chipSelected : chipIdle,
+                        )}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -768,8 +867,8 @@ export function BlockInspector({
                       className={cn(
                         "rounded border py-1 text-[11px] transition-colors",
                         (activeStyle.textTransform ?? "none") === id
-                          ? "border-blue-300 bg-blue-50 text-blue-600"
-                          : "border-gray-200 text-gray-400 hover:bg-gray-50",
+                          ? chipSelected
+                          : chipIdle,
                       )}
                     >
                       {label}
@@ -807,8 +906,8 @@ export function BlockInspector({
                       className={cn(
                         "flex flex-col items-center gap-1 rounded border py-2 text-[11px] transition-colors",
                         activeStyle.bg === id && !activeStyle.backgroundColor
-                          ? "border-blue-300 bg-blue-50"
-                          : "border-gray-200 hover:bg-gray-50",
+                          ? chipSelected
+                          : chipIdle,
                       )}
                     >
                       <span className={cn("h-3 w-6 rounded", swatch)} />
@@ -829,7 +928,7 @@ export function BlockInspector({
               />
             </Section>
 
-            <Section title="Border">
+            <Section title="Border" alt>
               <div className="space-y-1.5">
                 <FieldLabel>Style</FieldLabel>
                 <div className="flex flex-wrap gap-1">
@@ -843,8 +942,8 @@ export function BlockInspector({
                       className={cn(
                         "rounded border px-2 py-0.5 text-[10px] capitalize transition-colors",
                         (activeStyle.borderStyle ?? "none") === st
-                          ? "border-blue-300 bg-blue-50 text-blue-600"
-                          : "border-gray-200 text-gray-400 hover:bg-gray-50",
+                          ? chipSelected
+                          : chipIdle,
                       )}
                     >
                       {st}
@@ -863,7 +962,7 @@ export function BlockInspector({
                       onChange={(e) =>
                         patchStyle({ borderWidth: e.target.value })
                       }
-                      className="h-7 w-full rounded border border-gray-200 px-2 text-[11px] outline-none focus:border-gray-400"
+                      className={fieldInput}
                     />
                   </div>
                   <ColorField
@@ -880,7 +979,7 @@ export function BlockInspector({
                   placeholder="0px"
                   aria-label="Border radius"
                   onChange={(e) => patchStyle({ borderRadius: e.target.value })}
-                  className="h-7 w-full rounded border border-gray-200 px-2 text-[11px] outline-none focus:border-gray-400"
+                  className={fieldInput}
                 />
               </div>
             </Section>
@@ -913,7 +1012,7 @@ export function BlockInspector({
                       opacity: e.target.value === "100" ? "" : e.target.value,
                     })
                   }
-                  className="w-full accent-blue-600"
+                  className="w-full accent-accent"
                 />
               </div>
               <div className="space-y-1.5">
@@ -934,8 +1033,8 @@ export function BlockInspector({
                       className={cn(
                         "rounded border py-1.5 text-[11px] transition-colors",
                         (activeStyle.boxShadow ?? "") === val
-                          ? "border-blue-300 bg-blue-50 text-blue-600"
-                          : "border-gray-200 text-gray-400 hover:bg-gray-50",
+                          ? chipSelected
+                          : chipIdle,
                       )}
                     >
                       {label}
@@ -949,7 +1048,52 @@ export function BlockInspector({
 
         {tab === "advanced" ? (
           <div>
-            <Section title="Visibility">
+            <Section title="CSS ID / Classes">
+              <p className="text-[11px] text-gray-500 italic">
+                You can use your custom css id or classes from here.
+              </p>
+              <label className="flex items-center gap-2">
+                <span className="w-24 shrink-0 text-[11px] text-gray-500">
+                  CSS ID
+                </span>
+                <input
+                  type="text"
+                  value={getBlockStyle(block).cssId ?? ""}
+                  aria-label="CSS ID"
+                  onChange={(e) =>
+                    onChange({
+                      style: {
+                        ...getBlockStyle(block),
+                        cssId: e.target.value.trim() || undefined,
+                      },
+                    })
+                  }
+                  className="h-8 flex-1 rounded border border-gray-200 px-2 text-[12px] outline-none focus:border-accent focus:ring-1 focus:ring-accent/25"
+                />
+              </label>
+              <label className="flex items-center gap-2">
+                <span className="w-24 shrink-0 text-[11px] text-gray-500">
+                  CSS Classes
+                </span>
+                <input
+                  type="text"
+                  value={getBlockStyle(block).cssClasses ?? ""}
+                  aria-label="CSS Classes"
+                  placeholder="my-class another-class"
+                  onChange={(e) =>
+                    onChange({
+                      style: {
+                        ...getBlockStyle(block),
+                        cssClasses: e.target.value.trim() || undefined,
+                      },
+                    })
+                  }
+                  className="h-8 flex-1 rounded border border-gray-200 px-2 text-[12px] outline-none focus:border-accent focus:ring-1 focus:ring-accent/25"
+                />
+              </label>
+            </Section>
+
+            <Section title="Visibility" alt>
               <div className="flex gap-1.5">
                 {(
                   [
@@ -969,7 +1113,7 @@ export function BlockInspector({
                       className={cn(
                         "flex items-center gap-1.5 rounded border px-2.5 py-1 text-[11px] transition-colors",
                         visible
-                          ? "border-blue-200 bg-white text-gray-600"
+                          ? "border-accent/40 bg-card text-foreground"
                           : "border-dashed border-gray-200 bg-gray-50 text-gray-300 line-through",
                       )}
                     >
@@ -984,7 +1128,7 @@ export function BlockInspector({
             <Section title="Custom CSS">
               <div className="overflow-hidden rounded border border-gray-800 bg-gray-900">
                 <div className="px-2.5 py-1 font-mono text-[10px] text-gray-400">
-                  <span className="text-blue-300">.b-{block.id}</span>
+                  <span className="text-accent">.b-{block.id}</span>
                   <span className="text-gray-500"> {"{"}</span>
                 </div>
                 <textarea
@@ -1002,13 +1146,13 @@ export function BlockInspector({
                   {"}"}
                 </div>
               </div>
-              <p className="text-[10px] text-gray-500">
+              <p className="text-[10px] leading-relaxed text-gray-500">
                 Enter CSS declarations only, or a full rule using{" "}
                 <code className="rounded bg-gray-100 px-1 py-0.5">
                   .element
                 </code>{" "}
                 as a shortcut for{" "}
-                <code className="rounded bg-gray-100 px-1 py-0.5">
+                <code className="inline-block max-w-full break-all rounded bg-gray-100 px-1 py-0.5">
                   .b-{block.id}
                 </code>
                 .
@@ -1016,7 +1160,12 @@ export function BlockInspector({
             </Section>
 
             <Section title="Code" defaultOpen={false}>
-              <BlockCodePanel block={block} />
+              <BlockCodePanel
+                block={block}
+                registry={registry}
+                localeConfig={localeConfig}
+                locale={locale}
+              />
             </Section>
           </div>
         ) : null}

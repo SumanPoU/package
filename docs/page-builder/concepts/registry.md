@@ -44,4 +44,12 @@ registry.types();
 
 ## Extension
 
-Hosts register bundled definitions before mounting the editor (Model A). Namespaced tenant/plugin types and capability gates are Phase 14. Model B data-driven specs are Phase 16. Remote `eval` / `new Function` of render code is forbidden forever (ADR-12).
+Hosts register bundled definitions before mounting the editor (**Model A** — see [register-custom-block](../guides/register-custom-block.md)):
+
+- Non-core types must be namespaced (`tenant:…` / `plugin:…`)
+- `registerBlock` runs namespace + collision + optional capability checks
+- Unknown types at render use `FallbackBlock` (tree-preserving)
+
+Model B data-driven specs are Phase 16. Remote `eval` / `new Function` of render code is forbidden forever (ADR-12).
+
+Repeaters / CMS loops: [data-binding](./data-binding.md).

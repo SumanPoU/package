@@ -7,7 +7,9 @@ import {
   removeBlock,
   updateBlock,
 } from "../core/blockTree";
+import type { PageBuilderCapabilities } from "../core/capabilities";
 import { composePageCss } from "../core/customCssComposer";
+import type { FetchDataSource } from "../core/dataBinding";
 import type { BlockRegistry } from "../core/registry";
 import type { Block, LocaleConfig, Page } from "../core/types";
 import type { RenderContext } from "../core/visibilityResolve";
@@ -19,13 +21,7 @@ import { useClipboard } from "./hooks/useClipboard";
 import { useDragAndDrop } from "./hooks/useDragAndDrop";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 
-export type PageBuilderCapabilities = {
-  allowCustomCss?: boolean;
-  allowCustomJs?: boolean;
-  allowRegisterPluginBlocks?: boolean;
-  allowDynamicBlockDefs?: boolean;
-  allowDataBinding?: boolean;
-};
+export type { PageBuilderCapabilities };
 
 export type PageBuilderProps = {
   page: Page;
@@ -42,6 +38,7 @@ export type PageBuilderProps = {
   onOpenPage?: (page: Page) => void | Promise<void>;
   capabilities?: PageBuilderCapabilities;
   renderContext?: Partial<RenderContext>;
+  fetchDataSource?: FetchDataSource;
   selectedId?: string | null;
   onSelectedIdChange?: (id: string | null) => void;
   /** Optional title shown in toolbar. */
@@ -60,6 +57,7 @@ export const PageBuilder = ({
   onOpenPage,
   capabilities,
   renderContext,
+  fetchDataSource,
   selectedId: controlledSelectedId,
   onSelectedIdChange,
   title = "Page builder",
@@ -267,10 +265,13 @@ export const PageBuilder = ({
           onLeftTabChange={setLeftTab}
           onSelect={setSelectedId}
           onStartDragNew={dnd.startDragNew}
+          onStartDragPreset={dnd.startDragPreset}
           onInsertType={handleInsertType}
           onChangeBlock={handleChangeBlock}
           onRemoveBlock={handleRemoveBlock}
           allowCustomCss={capabilities?.allowCustomCss !== false}
+          allowCustomJs={capabilities?.allowCustomJs !== false}
+          allowDataBinding={capabilities?.allowDataBinding !== false}
         />
 
         <CanvasArea
@@ -292,6 +293,8 @@ export const PageBuilder = ({
           onMoveDown={(id) => handleMoveBlock(id, 1)}
           registerRef={dnd.registerRef}
           authorCss={authorCss}
+          capabilities={capabilities}
+          fetchDataSource={fetchDataSource}
         />
       </div>
 

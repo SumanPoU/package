@@ -1,6 +1,4 @@
-export type DragPayload =
-  | { kind: "new"; type: string; label: string }
-  | { kind: "move"; blockId: string; type: string };
+import type { DragPayload } from "../hooks/useDragAndDrop";
 
 export type DragGhostProps = {
   drag: DragPayload;
@@ -9,7 +7,8 @@ export type DragGhostProps = {
 
 /** Floating label that follows the pointer while dragging (parent chrome). */
 export const DragGhost = ({ drag, pointer }: DragGhostProps) => {
-  const label = drag.kind === "new" ? drag.label : drag.type;
+  const label =
+    drag.kind === "new" || drag.kind === "preset" ? drag.label : drag.type;
   return (
     <div
       className="pb-drag-ghost"

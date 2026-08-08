@@ -4,12 +4,17 @@ import {
   type Block,
   type BlockRegistry,
   blockSelector,
+  type CustomScript,
   type LocaleConfig,
   type Page,
 } from "@itzsa/page-builder";
 import { Braces, Check, Copy } from "lucide-react";
 import { useLayoutEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
+import {
+  CustomScriptEditor,
+  normalizeCustomScript,
+} from "./custom-script-editor";
 import { formatCss, formatJson } from "./format-code";
 import {
   serializeBlockCss,
@@ -20,7 +25,7 @@ import {
   serializePageJson,
 } from "./serialize-markup";
 
-type PageTab = "css" | "html" | "full" | "global" | "json";
+type PageTab = "css" | "html" | "full" | "global" | "globalJs" | "json";
 type BlockTab = "css" | "html" | "json";
 
 const CodeTabs = <T extends string>({
@@ -157,12 +162,14 @@ export function PageCodePanel({
   localeConfig,
   activeLocale,
   onGlobalCssChange,
+  onGlobalJsChange,
 }: {
   page: Page;
   registry: BlockRegistry;
   localeConfig: LocaleConfig;
   activeLocale: string;
   onGlobalCssChange: (css: string) => void;
+  onGlobalJsChange: (script: CustomScript) => void;
 }) {
   const [tab, setTab] = useState<PageTab>("full");
   const [fullHtml, setFullHtml] = useState("<!-- rendering… -->");
@@ -171,6 +178,7 @@ export function PageCodePanel({
   const css = useMemo(() => serializePageCss(page), [page]);
   const json = useMemo(() => serializePageJson(page), [page]);
   const globalRaw = page.globalCss ?? "";
+  const globalJs = normalizeCustomScript(page.globalJs);
 
   useLayoutEffect(() => {
     setFullHtml(serializePageHtml(page, registry, localeConfig, activeLocale));
@@ -190,9 +198,12 @@ export function PageCodePanel({
           ? fullHtml
           : tab === "json"
             ? json
-            : formatCss(globalRaw);
+            : tab === "globalJs"
+              ? globalJs.code
+              : formatCss(globalRaw);
 
-  const copyText = tab === "global" ? globalRaw : text;
+  const copyText =
+    tab === "global" ? globalRaw : tab === "globalJs" ? globalJs.code : text;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
@@ -206,6 +217,7 @@ export function PageCodePanel({
             { id: "css", label: "CSS" },
             { id: "json", label: "JSON" },
             { id: "global", label: "Global CSS" },
+            { id: "globalJs", label: "Global JS" },
           ]}
         />
         <CopyButton text={tab === "html" ? combinedView : copyText} />
@@ -238,6 +250,14 @@ export function PageCodePanel({
             </details>
           ) : null}
         </div>
+      ) : tab === "globalJs" ? (
+        <CustomScriptEditor
+          value={page.globalJs}
+          onChange={onGlobalJsChange}
+          ariaLabel="Global page JavaScript"
+          hint="Scripts run on Preview / Open Page via composePageJs (CSP sandbox). They are not injected into the editor canvas."
+          minRows={12}
+        />
       ) : tab === "html" ? (
         <>
           <div className="grid min-h-0 flex-1 gap-2 md:grid-cols-2">

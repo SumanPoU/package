@@ -4,6 +4,7 @@ import {
   type Block,
   buildPreviewUrl,
   CanvasArea,
+  type CustomScript,
   cloneBlock,
   composePageCss,
   createDefaultLocaleConfig,
@@ -15,6 +16,9 @@ import {
   moveBlockByDelta,
   PAGE_SCHEMA_VERSION,
   type Page,
+  type PageBuilderCapabilities,
+  type FetchDataSource,
+  registerDynamicBlock,
   registerPrimitives,
   removeBlock,
   updateBlock,
@@ -25,13 +29,38 @@ import {
 } from "@itzsa/page-builder";
 import "@itzsa/page-builder/styles.css";
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { BlockInspector } from "./block-inspector";
 import { CreateOutline } from "./create-outline";
 import { CreateLeftSidebar } from "./create-sidebar";
+import { loadDraftPage, saveDraftPage } from "./draft-store";
 import { type Device, EditorHeader } from "./editor-header";
 import { type PageMetadata, PageSettingsDialog } from "./page-settings-dialog";
+import { DEMO_PROMO_SPEC } from "../demo-promo-spec";
+import { SAMPLE_DATA_SOURCES } from "../sample-data-sources";
+import { SaveConflictDialog } from "./save-conflict-dialog";
+
+const localeConfig = createDefaultLocaleConfig();
+
+const CREATE_CAPABILITIES: PageBuilderCapabilities = {
+  allowCustomCss: true,
+  allowCustomJs: true,
+  allowDataBinding: true,
+  allowDynamicBlockDefs: true,
+  allowRegisterTenantBlocks: true,
+};
+
+/** Host chrome flags (not package capabilities). Flip to hide Code, etc. */
+const CREATE_FEATURES = {
+  showCodePanel: true,
+} as const;
+
+const fetchSampleDataSource: FetchDataSource = async (sourceId) => {
+  const data = SAMPLE_DATA_SOURCES[sourceId];
+  if (!data) return { items: [], state: "empty" };
+  return data;
+};
 
 function toSlug(name: string) {
   return (
@@ -42,8 +71,6 @@ function toSlug(name: string) {
       .replace(/^-|-$/g, "") || "untitled-page"
   );
 }
-
-const localeConfig = createDefaultLocaleConfig();
 
 /** Stable across SSR + hydration — Date.now() here causes data-pb-page mismatch. */
 const DRAFT_PAGE_ID = "page-draft";
@@ -61,6 +88,7 @@ export function CreateBuilder() {
   const registry = useMemo(() => {
     const r = createRegistry();
     registerPrimitives(r);
+    registerDynamicBlock(r, DEMO_PROMO_SPEC);
     return r;
   }, []);
 
@@ -72,16 +100,34 @@ export function CreateBuilder() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [savedFlash, setSavedFlash] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
   const [pageName, setPageName] = useState("Untitled page");
   const [pageNameNp, setPageNameNp] = useState("");
   const [statusActive, setStatusActive] = useState(true);
   const [metadata, setMetadata] = useState<PageMetadata>({});
+  const [conflict, setConflict] = useState<{
+    current: Page;
+    expectedRevision: string | undefined;
+    currentRevision: string | undefined;
+    pending: Page;
+  } | null>(null);
 
   const pageSlug = toSlug(pageName);
 
   const history = useBlockHistory({ page, onChange: setPage });
   const pageRef = useRef(page);
   pageRef.current = page;
+
+  useEffect(() => {
+    const stored = loadDraftPage(DRAFT_PAGE_ID);
+    if (!stored) return;
+    setPage(stored);
+    const title = stored.meta.title;
+    if (typeof title === "string" && title.trim()) setPageName(title);
+    const titleNp = stored.meta.title_np;
+    if (typeof titleNp === "string") setPageNameNp(titleNp);
+    if (stored.meta.status === "inactive") setStatusActive(false);
+  }, []);
   const clipboard = useClipboard({
     page,
     selectedId,
@@ -101,7 +147,11 @@ export function CreateBuilder() {
     : null;
 
   const renderContext = useMemo(
-    () => ({ locale: activeLocale, device }),
+    () => ({
+      locale: activeLocale,
+      device,
+      dataSources: SAMPLE_DATA_SOURCES,
+    }),
     [activeLocale, device],
   );
 
@@ -201,38 +251,78 @@ export function CreateBuilder() {
     [device, handleChangeBlock, page.blocks],
   );
 
-  const flashSaved = () => {
+  const applySavedPage = useCallback((saved: Page) => {
+    setPage(saved);
+    pageRef.current = saved;
+    const title = saved.meta.title;
+    if (typeof title === "string" && title.trim()) setPageName(title);
     setSavedFlash(true);
     window.setTimeout(() => setSavedFlash(false), 1600);
-  };
+  }, []);
 
-  const handlePublish = () => {
-    const revision = String(Number(page.revision ?? "0") + 1);
-    setPage({
-      ...page,
-      revision,
+  const buildPublishPage = useCallback((): Page => {
+    const current = pageRef.current;
+    return {
+      ...current,
       meta: {
-        ...page.meta,
+        ...current.meta,
         title: pageName,
         title_np: pageNameNp,
         status: statusActive ? "active" : "inactive",
         slug: pageSlug,
         ...metadata,
       },
-    });
-    flashSaved();
-  };
+    };
+  }, [metadata, pageName, pageNameNp, pageSlug, statusActive]);
+
+  const handlePublish = useCallback(
+    (opts: { overwrite?: boolean } = {}) => {
+      setIsPublishing(true);
+      try {
+        const pending = buildPublishPage();
+        const result = saveDraftPage(pending, {
+          expectedRevision: pending.revision,
+          overwrite: opts.overwrite,
+        });
+        if (result.ok) {
+          setConflict(null);
+          applySavedPage(result.page);
+          return;
+        }
+        if ("conflict" in result && result.conflict) {
+          setConflict({
+            current: result.current,
+            expectedRevision: result.expectedRevision,
+            currentRevision: result.currentRevision,
+            pending,
+          });
+          return;
+        }
+        window.alert(result.error);
+      } finally {
+        setIsPublishing(false);
+      }
+    },
+    [applySavedPage, buildPublishPage],
+  );
 
   const handlePreview = async () => {
     const session = await createPreviewSession({
-      page: {
-        ...page,
-        meta: { ...page.meta, title: pageName, slug: pageSlug, ...metadata },
-      },
+      page: buildPublishPage(),
       activeLocale,
       store: "sessionStorage",
     });
     router.push(buildPreviewUrl("/page-builder/preview", session.id));
+  };
+
+  const handleOpenPage = async () => {
+    const session = await createPreviewSession({
+      page: buildPublishPage(),
+      activeLocale,
+      store: "sessionStorage",
+      meta: { surface: "open" },
+    });
+    router.push(buildPreviewUrl("/page-builder/open", session.id, "page"));
   };
 
   const outline = (
@@ -261,6 +351,9 @@ export function CreateBuilder() {
       onBack={() => setSelectedId(null)}
       onChange={(patch) => handleChangeBlock(selectedBlock.id, patch)}
       onRemove={() => handleRemoveBlock(selectedBlock.id)}
+      allowCustomCss={CREATE_CAPABILITIES.allowCustomCss !== false}
+      allowCustomJs={CREATE_CAPABILITIES.allowCustomJs !== false}
+      allowDataBinding={CREATE_CAPABILITIES.allowDataBinding !== false}
     />
   ) : null;
 
@@ -281,12 +374,18 @@ export function CreateBuilder() {
         onGlobalCssChange={(globalCss) =>
           history.push({ ...pageRef.current, globalCss })
         }
+        onGlobalJsChange={(globalJs: CustomScript) =>
+          history.push({ ...pageRef.current, globalJs })
+        }
         onSettingsOpen={() => setSettingsOpen(true)}
         onPreview={() => void handlePreview()}
-        onPublish={handlePublish}
+        onOpenPage={() => void handleOpenPage()}
+        onPublish={() => handlePublish()}
+        isPublishing={isPublishing}
         savedFlash={savedFlash}
         sidebarOpen={sidebarOpen}
         onSidebarOpenChange={setSidebarOpen}
+        showCodePanel={CREATE_FEATURES.showCodePanel}
       />
 
       <div className="flex min-h-0 flex-1 overflow-hidden">
@@ -295,6 +394,8 @@ export function CreateBuilder() {
           leftTab={leftTab}
           onLeftTabChange={setLeftTab}
           onStartDragNew={dnd.startDragNew}
+          onStartDragPreset={dnd.startDragPreset}
+          allowDataBinding={CREATE_CAPABILITIES.allowDataBinding !== false}
           outline={outline}
           inspector={inspector}
           open={sidebarOpen}
@@ -321,6 +422,8 @@ export function CreateBuilder() {
           authorCss={authorCss}
           device={device}
           pageSlug={pageSlug}
+          capabilities={CREATE_CAPABILITIES}
+          fetchDataSource={fetchSampleDataSource}
         />
       </div>
 
@@ -330,7 +433,9 @@ export function CreateBuilder() {
           style={{ left: dnd.pointer.x + 10, top: dnd.pointer.y + 10 }}
           aria-hidden
         >
-          {dnd.drag.kind === "new" ? dnd.drag.label : dnd.drag.type}
+          {dnd.drag.kind === "new" || dnd.drag.kind === "preset"
+            ? dnd.drag.label
+            : dnd.drag.type}
         </div>
       ) : null}
 
@@ -348,6 +453,19 @@ export function CreateBuilder() {
         onMetadataChange={(key, value) =>
           setMetadata((m) => ({ ...m, [key]: value }))
         }
+      />
+
+      <SaveConflictDialog
+        open={Boolean(conflict)}
+        expectedRevision={conflict?.expectedRevision}
+        currentRevision={conflict?.currentRevision}
+        onDismiss={() => setConflict(null)}
+        onReload={() => {
+          if (!conflict) return;
+          applySavedPage(conflict.current);
+          setConflict(null);
+        }}
+        onOverwrite={() => handlePublish({ overwrite: true })}
       />
     </div>
   );

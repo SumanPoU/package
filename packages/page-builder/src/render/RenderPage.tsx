@@ -1,5 +1,7 @@
 import type { CSSProperties } from "react";
 
+import type { PageBuilderCapabilities } from "../core/capabilities";
+import type { FetchDataSource } from "../core/dataBinding";
 import type { BlockRegistry } from "../core/registry";
 import type { LocaleConfig, Page } from "../core/types";
 import type { RenderContext, RenderSurface } from "../core/visibilityResolve";
@@ -15,6 +17,8 @@ export type RenderPageProps = {
   className?: string;
   /** Structural only — no decorative engine styles. */
   style?: CSSProperties;
+  capabilities?: PageBuilderCapabilities;
+  fetchDataSource?: FetchDataSource;
 };
 
 export const RenderPage = ({
@@ -26,6 +30,8 @@ export const RenderPage = ({
   surface = "open",
   className,
   style,
+  capabilities,
+  fetchDataSource,
 }: RenderPageProps) => {
   const ctx: RenderContext = {
     device: "desktop",
@@ -50,6 +56,8 @@ export const RenderPage = ({
           activeLocale={activeLocale}
           renderContext={ctx}
           surface={surface}
+          capabilities={capabilities}
+          fetchDataSource={fetchDataSource}
         />
       ))}
     </div>

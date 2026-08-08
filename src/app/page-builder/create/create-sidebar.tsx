@@ -1,6 +1,7 @@
 "use client";
 
 import type { BlockDefinition, BlockRegistry } from "@itzsa/page-builder";
+import { listPresets } from "@itzsa/page-builder";
 import {
   Box,
   ChevronDown,
@@ -9,8 +10,10 @@ import {
   Image as ImageIcon,
   Layers,
   LayoutGrid,
+  LayoutTemplate,
   ListOrdered,
   Minus,
+  PanelsTopLeft,
   Rows3,
   Search,
   Square,
@@ -30,10 +33,18 @@ const ICON_MAP: Record<string, ComponentType<{ className?: string }>> = {
   button: Square,
   list: ListOrdered,
   divider: Minus,
+  spacer: Minus,
+  repeater: ListOrdered,
 };
 
-const CATEGORY_ORDER = ["layout", "basic", "media", "embeds"] as const;
+const PRESET_ICON: Record<string, ComponentType<{ className?: string }>> = {
+  card: LayoutTemplate,
+  hero: PanelsTopLeft,
+};
+
+const CATEGORY_ORDER = ["presets", "layout", "basic", "media", "embeds"] as const;
 const CATEGORY_LABEL: Record<string, string> = {
+  presets: "Presets",
   layout: "Layout",
   basic: "Basic",
   media: "Basic",
@@ -44,23 +55,40 @@ const CATEGORY_LABEL: Record<string, string> = {
 export type CreateElementsPanelProps = {
   registry: BlockRegistry;
   onStartDragNew: (type: string, e: React.PointerEvent) => void;
+  onStartDragPreset: (presetId: string, e: React.PointerEvent) => void;
+  allowDataBinding?: boolean;
 };
 
 export function CreateElementsPanel({
   registry,
   onStartDragNew,
+  onStartDragPreset,
+  allowDataBinding = true,
 }: CreateElementsPanelProps) {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState<Record<string, boolean>>({
+    presets: true,
     layout: true,
     basic: true,
   });
 
+  const q = search.trim().toLowerCase();
+
+  const presets = useMemo(
+    () =>
+      listPresets().filter(
+        (p) =>
+          !q ||
+          p.label.toLowerCase().includes(q) ||
+          p.id.toLowerCase().includes(q),
+      ),
+    [q],
+  );
+
   const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
     return registry
       .list()
-      .filter((d) => d.source === "core")
+      .filter((d) => (allowDataBinding ? true : d.type !== "repeater"))
       .filter(
         (d) =>
           !q ||
@@ -69,7 +97,7 @@ export function CreateElementsPanel({
       )
       .slice()
       .sort((a, b) => a.label.localeCompare(b.label));
-  }, [registry, search]);
+  }, [registry, q, allowDataBinding]);
 
   const groups = useMemo(() => {
     const map = new Map<string, BlockDefinition[]>();
@@ -80,12 +108,16 @@ export function CreateElementsPanel({
       list.push(item);
       map.set(cat, list);
     }
-    return CATEGORY_ORDER.filter((c) => map.has(c)).map((cat) => ({
+    return CATEGORY_ORDER.filter(
+      (c) => c === "presets" || map.has(c),
+    ).map((cat) => ({
       cat,
       label: CATEGORY_LABEL[cat] ?? cat,
       items: map.get(cat) ?? [],
     }));
   }, [filtered]);
+
+  const noResults = filtered.length === 0 && presets.length === 0;
 
   return (
     <>
@@ -104,6 +136,9 @@ export function CreateElementsPanel({
       <div className="flex-1 overflow-y-auto px-2 pb-12">
         {groups.map(({ cat, label, items }) => {
           const isOpen = open[cat] !== false;
+          const showPresets = cat === "presets";
+          if (showPresets && presets.length === 0) return null;
+          if (!showPresets && items.length === 0) return null;
           return (
             <div key={cat} className="border-b border-gray-100">
               <button
@@ -122,29 +157,50 @@ export function CreateElementsPanel({
               </button>
               {isOpen ? (
                 <div className="grid grid-cols-2 gap-1.5 pb-2">
-                  {items.map((def) => {
-                    const Icon = ICON_MAP[def.type] ?? LayoutGrid;
-                    return (
-                      <button
-                        key={def.type}
-                        type="button"
-                        aria-label={`Insert ${def.label}`}
-                        onPointerDown={(e) => onStartDragNew(def.type, e)}
-                        className="flex cursor-grab touch-none select-none flex-col items-center gap-1 rounded border border-gray-100 bg-gray-50 px-1 py-3 text-center transition-colors hover:border-gray-200 hover:bg-white active:cursor-grabbing"
-                      >
-                        <Icon className="h-4 w-4 text-gray-400" />
-                        <span className="text-[11px] text-gray-500">
-                          {def.label}
-                        </span>
-                      </button>
-                    );
-                  })}
+                  {showPresets
+                    ? presets.map((preset) => {
+                        const Icon = PRESET_ICON[preset.id] ?? LayoutGrid;
+                        return (
+                          <button
+                            key={preset.id}
+                            type="button"
+                            aria-label={`Insert ${preset.label} preset`}
+                            title={preset.description}
+                            onPointerDown={(e) =>
+                              onStartDragPreset(preset.id, e)
+                            }
+                            className="flex cursor-grab touch-none select-none flex-col items-center gap-1 rounded border border-accent/20 bg-accent/5 px-1 py-3 text-center transition-colors hover:border-accent/40 hover:bg-white active:cursor-grabbing"
+                          >
+                            <Icon className="h-4 w-4 text-accent" />
+                            <span className="text-[11px] text-gray-600">
+                              {preset.label}
+                            </span>
+                          </button>
+                        );
+                      })
+                    : items.map((def) => {
+                        const Icon = ICON_MAP[def.type] ?? LayoutGrid;
+                        return (
+                          <button
+                            key={def.type}
+                            type="button"
+                            aria-label={`Insert ${def.label}`}
+                            onPointerDown={(e) => onStartDragNew(def.type, e)}
+                            className="flex cursor-grab touch-none select-none flex-col items-center gap-1 rounded border border-gray-100 bg-gray-50 px-1 py-3 text-center transition-colors hover:border-gray-200 hover:bg-white active:cursor-grabbing"
+                          >
+                            <Icon className="h-4 w-4 text-gray-400" />
+                            <span className="text-[11px] text-gray-500">
+                              {def.label}
+                            </span>
+                          </button>
+                        );
+                      })}
                 </div>
               ) : null}
             </div>
           );
         })}
-        {filtered.length === 0 ? (
+        {noResults ? (
           <p className="py-4 text-center text-[11px] text-gray-400">
             No results for &quot;{search}&quot;
           </p>
@@ -159,6 +215,8 @@ export type CreateLeftSidebarProps = {
   leftTab: "elements" | "outline";
   onLeftTabChange: (tab: "elements" | "outline") => void;
   onStartDragNew: (type: string, e: React.PointerEvent) => void;
+  onStartDragPreset: (presetId: string, e: React.PointerEvent) => void;
+  allowDataBinding?: boolean;
   outline: React.ReactNode;
   inspector: React.ReactNode | null;
   /** When false, sidebar is hidden (toggle lives in the header). */
@@ -172,6 +230,8 @@ export function CreateLeftSidebar({
   leftTab,
   onLeftTabChange,
   onStartDragNew,
+  onStartDragPreset,
+  allowDataBinding = true,
   outline,
   inspector,
   open = true,
@@ -231,6 +291,8 @@ export function CreateLeftSidebar({
           <CreateElementsPanel
             registry={registry}
             onStartDragNew={onStartDragNew}
+            onStartDragPreset={onStartDragPreset}
+            allowDataBinding={allowDataBinding}
           />
         </div>
       ) : (

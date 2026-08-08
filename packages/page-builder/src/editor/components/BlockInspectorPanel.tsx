@@ -10,6 +10,8 @@ export type BlockInspectorPanelProps = {
   locale: string;
   onChangeBlock: (id: string, patch: Partial<Block>) => void;
   allowCustomCss?: boolean;
+  allowCustomJs?: boolean;
+  allowDataBinding?: boolean;
 };
 
 /**
@@ -23,6 +25,8 @@ export const BlockInspectorPanel = ({
   locale,
   onChangeBlock,
   allowCustomCss = true,
+  allowCustomJs = true,
+  allowDataBinding = true,
 }: BlockInspectorPanelProps) => {
   if (!selectedId) {
     return (
@@ -51,12 +55,15 @@ export const BlockInspectorPanel = ({
       <h2 className="pb-panel-title">{def?.label ?? block.type}</h2>
       <section aria-label="Content">
         <h3 className="pb-panel-title">Content</h3>
-        {ContentFields ? (
+        {ContentFields &&
+        !(block.type === "repeater" && !allowDataBinding) ? (
           <ContentFields
             block={block}
             locale={locale}
             onChange={(patch) => onChangeBlock(block.id, patch)}
           />
+        ) : block.type === "repeater" && !allowDataBinding ? (
+          <p>Data binding is disabled for this workspace.</p>
         ) : (
           <p>No fields for this block.</p>
         )}
@@ -82,6 +89,14 @@ export const BlockInspectorPanel = ({
           <p className="pb-hint">
             Declarations only, or a full rule using <code>.element</code> for{" "}
             {blockSelector(block.id)}.
+          </p>
+        </section>
+      ) : null}
+      {allowCustomJs ? (
+        <section aria-label="Custom JS" className="pb-field">
+          <h3 className="pb-panel-title">Custom JS</h3>
+          <p className="pb-hint">
+            Author JS is edited in the host Advanced panel when enabled.
           </p>
         </section>
       ) : null}

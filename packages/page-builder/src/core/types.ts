@@ -114,6 +114,10 @@ export type BlockDefinition = {
   canAcceptChild?: (childType: string) => boolean;
   defaultProps: Record<string, unknown>;
   defaultI18nProps?: I18nPropsMap;
+  /** Seed `dataBinding` on insert (repeater) — itemTemplate stays empty; children are the template. */
+  defaultDataBinding?: Omit<DataBinding, "itemTemplate"> & {
+    itemTemplate?: Block[];
+  };
   /** Logical keys stored under `i18nProps[locale]` (e.g. `desc`, not `desc_en`). */
   translatableProps: string[];
   /** Keys that live only on `props` (shared across locales). */

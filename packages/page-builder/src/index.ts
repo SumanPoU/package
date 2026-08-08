@@ -2,12 +2,15 @@ export {
   boxDefinition,
   buttonDefinition,
   containerDefinition,
+  dividerDefinition,
   flexDefinition,
   gridDefinition,
   headingDefinition,
   imageDefinition,
   PRIMITIVE_DEFINITIONS,
   registerPrimitives,
+  repeaterDefinition,
+  spacerDefinition,
   textDefinition,
 } from "./blocks";
 export {
@@ -53,7 +56,10 @@ export {
 } from "./core/blockClassName";
 export {
   assertBlockRegistration,
+  assertRegistrationCapability,
   isNamespacedBlockType,
+  type RegistrationCapabilities,
+  type RegistrationGuardError,
   type RegistrationGuardResult,
   registerBlockGuarded,
 } from "./core/blockRegistrationGuard";
@@ -103,6 +109,43 @@ export {
   composeBlockCss,
   composePageCss,
 } from "./core/customCssComposer";
+export {
+  isCapabilityAllowed,
+  isCustomCssAllowed,
+  isCustomJsAllowed,
+  isDataBindingAllowed,
+} from "./core/capabilities";
+export {
+  applyBindingsToBlock,
+  applyPropsTemplate,
+  type BindingRenderContext,
+  type BindingScope,
+  type BindingSourceData,
+  type BindingSourceState,
+  expandRepeater,
+  type FetchDataSource,
+  getRepeaterTemplate,
+  resolveBindingSource,
+  resolveBindingString,
+  resolveBindingsInValue,
+  resolveTemplateString,
+} from "./core/dataBinding";
+export {
+  createDefinitionFromDynamicSpec,
+  type DynamicBlockSpec,
+  type DynamicTemplateNode,
+  registerDynamicBlock,
+  registerDynamicBlocks,
+} from "./core/dynamicBlock";
+export {
+  assertFieldSpecs,
+  buildPropsSchemaFromFields,
+  createDynamicContentFields,
+  type DynamicFieldSpec,
+  type FieldKind,
+  FIELD_KINDS,
+  isFieldKind,
+} from "./core/fieldAdapterResolve";
 export {
   composePageJs,
   emitScriptTag,
@@ -172,7 +215,19 @@ export {
   resolveVisibility,
   type VisibilityResult,
 } from "./core/visibilityResolve";
+export {
+  CORE_PRESETS,
+  cardPreset,
+  createCardPreset,
+  createHeroPreset,
+  getPreset,
+  heroPreset,
+  listPresets,
+  PRESET_CATEGORY,
+  type PresetDefinition,
+} from "./presets";
 export { CanvasArea } from "./editor/components/CanvasArea";
+export { SelectionOverlay } from "./editor/components/SelectionOverlay";
 export { useBlockHistory } from "./editor/hooks/useBlockHistory";
 export { useClipboard } from "./editor/hooks/useClipboard";
 export {
@@ -186,6 +241,7 @@ export {
   type PageBuilderCapabilities,
   type PageBuilderProps,
 } from "./editor/PageBuilder";
+export type { PageBuilderCapabilities as Capabilities } from "./core/capabilities";
 export {
   buildPreviewUrl,
   type CreatePreviewSessionInput,

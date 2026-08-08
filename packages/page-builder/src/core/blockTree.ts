@@ -271,6 +271,9 @@ export const createBlockFromDefinition = (def: {
   type: string;
   defaultProps: Record<string, unknown>;
   defaultI18nProps?: Block["i18nProps"];
+  defaultDataBinding?: Block["dataBinding"] | Omit<NonNullable<Block["dataBinding"]>, "itemTemplate"> & {
+    itemTemplate?: Block[];
+  };
   isContainer?: boolean;
 }): Block => ({
   id: createId(),
@@ -278,6 +281,15 @@ export const createBlockFromDefinition = (def: {
   props: { ...def.defaultProps },
   i18nProps: def.defaultI18nProps
     ? (JSON.parse(JSON.stringify(def.defaultI18nProps)) as Block["i18nProps"])
+    : undefined,
+  dataBinding: def.defaultDataBinding
+    ? {
+        sourceId: def.defaultDataBinding.sourceId,
+        params: { ...def.defaultDataBinding.params },
+        itemTemplate: def.defaultDataBinding.itemTemplate
+          ? def.defaultDataBinding.itemTemplate.map(cloneBlock)
+          : [],
+      }
     : undefined,
   children: def.isContainer ? [] : undefined,
 });

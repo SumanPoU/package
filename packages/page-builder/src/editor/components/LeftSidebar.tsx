@@ -16,10 +16,13 @@ export type LeftSidebarProps = {
   onLeftTabChange: (tab: "elements" | "outline") => void;
   onSelect: (id: string | null) => void;
   onStartDragNew: (type: string, e: React.PointerEvent) => void;
+  onStartDragPreset?: (presetId: string, e: React.PointerEvent) => void;
   onInsertType: (type: string) => void;
   onChangeBlock: (id: string, patch: Partial<Block>) => void;
   onRemoveBlock: (id: string) => void;
   allowCustomCss?: boolean;
+  allowCustomJs?: boolean;
+  allowDataBinding?: boolean;
 };
 
 /**
@@ -36,10 +39,13 @@ export const LeftSidebar = ({
   onLeftTabChange,
   onSelect,
   onStartDragNew,
+  onStartDragPreset,
   onInsertType,
   onChangeBlock,
   onRemoveBlock,
   allowCustomCss = true,
+  allowCustomJs = true,
+  allowDataBinding = true,
 }: LeftSidebarProps) => {
   if (selectedBlock) {
     return (
@@ -68,6 +74,8 @@ export const LeftSidebar = ({
           locale={locale}
           onChangeBlock={onChangeBlock}
           allowCustomCss={allowCustomCss}
+          allowCustomJs={allowCustomJs}
+          allowDataBinding={allowDataBinding}
         />
       </aside>
     );
@@ -107,7 +115,9 @@ export const LeftSidebar = ({
         <ElementsPanel
           registry={registry}
           onStartDragNew={onStartDragNew}
+          onStartDragPreset={onStartDragPreset}
           onInsertType={onInsertType}
+          allowDataBinding={allowDataBinding}
         />
       ) : (
         <div className="pb-elements-scroll">

@@ -25,6 +25,9 @@ describe("primitives registry", () => {
       "text",
       "image",
       "button",
+      "divider",
+      "spacer",
+      "repeater",
     ]) {
       const def = registry.get(type);
       expect(def, type).toBeDefined();

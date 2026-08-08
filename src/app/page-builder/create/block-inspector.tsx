@@ -35,6 +35,7 @@ import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 
 import { BlockCodePanel } from "./code-panel";
+import { CustomScriptEditor } from "./custom-script-editor";
 import { DeviceSelect, LocaleSelect, UnitSelect } from "./inspector-controls";
 
 type PanelTab = "content" | "style" | "advanced";
@@ -59,6 +60,9 @@ export type BlockInspectorProps = {
   onBack: () => void;
   onChange: (patch: Partial<Block>) => void;
   onRemove: () => void;
+  allowCustomCss?: boolean;
+  allowCustomJs?: boolean;
+  allowDataBinding?: boolean;
 };
 
 const emptySpacing = (): SpacingBox => ({
@@ -359,6 +363,9 @@ export function BlockInspector({
   onBack,
   onChange,
   onRemove,
+  allowCustomCss = true,
+  allowCustomJs = true,
+  allowDataBinding = true,
 }: BlockInspectorProps) {
   const [tab, setTab] = useState<PanelTab>("content");
   const def = registry.get(block.type);
@@ -392,12 +399,63 @@ export function BlockInspector({
   };
 
   const hiddenDevices = block.visibility?.hiddenDevices ?? [];
+  const hiddenLocales = block.visibility?.hiddenLocales ?? [];
   const toggleVisibility = (d: Device) => {
     const next = hiddenDevices.includes(d)
       ? hiddenDevices.filter((x) => x !== d)
       : [...hiddenDevices, d];
     onChange({
       visibility: { ...(block.visibility ?? {}), hiddenDevices: next },
+    });
+  };
+  const toggleHiddenLocale = (code: string) => {
+    const next = hiddenLocales.includes(code)
+      ? hiddenLocales.filter((x) => x !== code)
+      : [...hiddenLocales, code];
+    onChange({
+      visibility: {
+        ...(block.visibility ?? {}),
+        hiddenLocales: next.length ? next : undefined,
+      },
+    });
+  };
+  const patchVisibilityFlag = (
+    key: "hiddenOnCanvas" | "hiddenOnPublish",
+    value: boolean,
+  ) => {
+    onChange({
+      visibility: {
+        ...(block.visibility ?? {}),
+        [key]: value || undefined,
+      },
+    });
+  };
+  const requireLoggedIn = Boolean(
+    block.visibleWhen?.allOf?.some(
+      (p) => p.key === "auth.isLoggedIn" && p.equals === true,
+    ),
+  );
+  const toggleRequireLoggedIn = () => {
+    if (requireLoggedIn) {
+      const allOf = (block.visibleWhen?.allOf ?? []).filter(
+        (p) => !(p.key === "auth.isLoggedIn" && p.equals === true),
+      );
+      onChange({
+        visibleWhen:
+          allOf.length || block.visibleWhen?.anyOf?.length
+            ? { ...block.visibleWhen, allOf: allOf.length ? allOf : undefined }
+            : undefined,
+      });
+      return;
+    }
+    onChange({
+      visibleWhen: {
+        ...block.visibleWhen,
+        allOf: [
+          ...(block.visibleWhen?.allOf ?? []),
+          { key: "auth.isLoggedIn", equals: true },
+        ],
+      },
     });
   };
 
@@ -450,14 +508,19 @@ export function BlockInspector({
                 locales={locales}
               />
             </div>
-            {ContentFields ? (
-              <div className="pb-host-content-fields space-y-3 text-[12px] [&_input[type=text]]:h-8 [&_input[type=text]]:w-full [&_input[type=text]]:rounded [&_input[type=text]]:border [&_input[type=text]]:border-gray-200 [&_input[type=text]]:px-2 [&_input[type=url]]:h-8 [&_input[type=url]]:w-full [&_input[type=url]]:rounded [&_input[type=url]]:border [&_input[type=url]]:border-gray-200 [&_input[type=url]]:px-2 [&_select]:h-8 [&_select]:w-full [&_select]:rounded [&_select]:border [&_select]:border-gray-200 [&_textarea]:w-full [&_textarea]:rounded [&_textarea]:border [&_textarea]:border-gray-200 [&_textarea]:px-2 [&_textarea]:py-1">
+            {ContentFields &&
+            !(block.type === "repeater" && !allowDataBinding) ? (
+              <div className="pb-host-content-fields space-y-3 text-[12px] [&_.pb-media-row_input]:h-8 [&_.pb-media-row_input]:w-auto [&_.pb-media-row_input]:min-w-0 [&_.pb-media-row_input]:flex-1 [&_.pb-media-upload]:h-8 [&_input[type=text]]:h-8 [&_input[type=text]]:w-full [&_input[type=text]]:rounded [&_input[type=text]]:border [&_input[type=text]]:border-gray-200 [&_input[type=text]]:px-2 [&_input[type=url]]:h-8 [&_input[type=url]]:w-full [&_input[type=url]]:rounded [&_input[type=url]]:border [&_input[type=url]]:border-gray-200 [&_input[type=url]]:px-2 [&_select]:h-8 [&_select]:w-full [&_select]:rounded [&_select]:border [&_select]:border-gray-200 [&_textarea]:w-full [&_textarea]:rounded [&_textarea]:border [&_textarea]:border-gray-200 [&_textarea]:px-2 [&_textarea]:py-1">
                 <ContentFields
                   block={block}
                   locale={locale}
                   onChange={onChange}
                 />
               </div>
+            ) : block.type === "repeater" && !allowDataBinding ? (
+              <p className="text-[11px] text-gray-400">
+                Data binding is disabled for this workspace.
+              </p>
             ) : (
               <p className="text-[11px] text-gray-400">
                 No content fields for this block type.
@@ -1052,45 +1115,49 @@ export function BlockInspector({
               <p className="text-[11px] text-gray-500 italic">
                 You can use your custom css id or classes from here.
               </p>
-              <label className="flex items-center gap-2">
-                <span className="w-24 shrink-0 text-[11px] text-gray-500">
-                  CSS ID
-                </span>
-                <input
-                  type="text"
-                  value={getBlockStyle(block).cssId ?? ""}
-                  aria-label="CSS ID"
-                  onChange={(e) =>
-                    onChange({
-                      style: {
-                        ...getBlockStyle(block),
-                        cssId: e.target.value.trim() || undefined,
-                      },
-                    })
-                  }
-                  className="h-8 flex-1 rounded border border-gray-200 px-2 text-[12px] outline-none focus:border-accent focus:ring-1 focus:ring-accent/25"
-                />
-              </label>
-              <label className="flex items-center gap-2">
-                <span className="w-24 shrink-0 text-[11px] text-gray-500">
-                  CSS Classes
-                </span>
-                <input
-                  type="text"
-                  value={getBlockStyle(block).cssClasses ?? ""}
-                  aria-label="CSS Classes"
-                  placeholder="my-class another-class"
-                  onChange={(e) =>
-                    onChange({
-                      style: {
-                        ...getBlockStyle(block),
-                        cssClasses: e.target.value.trim() || undefined,
-                      },
-                    })
-                  }
-                  className="h-8 flex-1 rounded border border-gray-200 px-2 text-[12px] outline-none focus:border-accent focus:ring-1 focus:ring-accent/25"
-                />
-              </label>
+              {allowCustomCss ? (
+                <>
+                  <label className="flex flex-col gap-1">
+                    <span className="text-[11px] text-gray-500">CSS ID</span>
+                    <input
+                      type="text"
+                      value={getBlockStyle(block).cssId ?? ""}
+                      aria-label="CSS ID"
+                      onChange={(e) =>
+                        onChange({
+                          style: {
+                            ...getBlockStyle(block),
+                            cssId: e.target.value.trim() || undefined,
+                          },
+                        })
+                      }
+                      className="h-8 w-full max-w-[11rem] rounded border border-gray-200 px-2 text-[12px] outline-none focus:border-accent focus:ring-1 focus:ring-accent/25"
+                    />
+                  </label>
+                  <label className="flex flex-col gap-1">
+                    <span className="text-[11px] text-gray-500">CSS Classes</span>
+                    <input
+                      type="text"
+                      value={getBlockStyle(block).cssClasses ?? ""}
+                      aria-label="CSS Classes"
+                      placeholder="my-class another-class"
+                      onChange={(e) =>
+                        onChange({
+                          style: {
+                            ...getBlockStyle(block),
+                            cssClasses: e.target.value.trim() || undefined,
+                          },
+                        })
+                      }
+                      className="h-8 w-full max-w-[11rem] rounded border border-gray-200 px-2 text-[12px] outline-none focus:border-accent focus:ring-1 focus:ring-accent/25"
+                    />
+                  </label>
+                </>
+              ) : (
+                <p className="text-[11px] text-gray-400">
+                  Custom CSS classes are disabled for this workspace.
+                </p>
+              )}
             </Section>
 
             <Section title="Visibility" alt>
@@ -1123,8 +1190,77 @@ export function BlockInspector({
                   );
                 })}
               </div>
+
+              <div className="flex flex-col gap-1.5 pt-1">
+                <label className="flex items-center gap-2 text-[11px] text-gray-600">
+                  <input
+                    type="checkbox"
+                    className="pb-check"
+                    checked={Boolean(block.visibility?.hiddenOnCanvas)}
+                    onChange={(e) =>
+                      patchVisibilityFlag("hiddenOnCanvas", e.target.checked)
+                    }
+                  />
+                  Hide on canvas (ghost)
+                </label>
+                <label className="flex items-center gap-2 text-[11px] text-gray-600">
+                  <input
+                    type="checkbox"
+                    className="pb-check"
+                    checked={Boolean(block.visibility?.hiddenOnPublish)}
+                    onChange={(e) =>
+                      patchVisibilityFlag("hiddenOnPublish", e.target.checked)
+                    }
+                  />
+                  Hide on Preview / Open
+                </label>
+                <label className="flex items-center gap-2 text-[11px] text-gray-600">
+                  <input
+                    type="checkbox"
+                    className="pb-check"
+                    checked={requireLoggedIn}
+                    onChange={toggleRequireLoggedIn}
+                  />
+                  Only when logged in
+                </label>
+              </div>
+
+              {locales.length > 1 ? (
+                <div className="flex flex-col gap-1 pt-1">
+                  <span className="text-[11px] text-gray-500">
+                    Hide for locales
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {locales.map((loc) => {
+                      const hidden = hiddenLocales.includes(loc.code);
+                      return (
+                        <button
+                          key={loc.code}
+                          type="button"
+                          aria-pressed={hidden}
+                          title={
+                            hidden
+                              ? `Hidden for ${loc.label}`
+                              : `Visible for ${loc.label}`
+                          }
+                          onClick={() => toggleHiddenLocale(loc.code)}
+                          className={cn(
+                            "rounded border px-2 py-1 text-[11px] transition-colors",
+                            hidden
+                              ? "border-dashed border-gray-200 bg-gray-50 text-gray-300 line-through"
+                              : "border-accent/40 bg-card text-foreground",
+                          )}
+                        >
+                          {loc.code}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
             </Section>
 
+            {allowCustomCss ? (
             <Section title="Custom CSS">
               <div className="overflow-hidden rounded border border-gray-800 bg-gray-900">
                 <div className="px-2.5 py-1 font-mono text-[10px] text-gray-400">
@@ -1158,6 +1294,19 @@ export function BlockInspector({
                 .
               </p>
             </Section>
+            ) : null}
+
+            {allowCustomJs ? (
+            <Section title="Custom JS" defaultOpen={false}>
+              <CustomScriptEditor
+                value={block.customJs}
+                onChange={(customJs) => onChange({ customJs })}
+                ariaLabel="Block custom JavaScript"
+                hint="Runs on Preview / Open Page for this block’s page (composePageJs). Not injected into the editor canvas."
+                minRows={8}
+              />
+            </Section>
+            ) : null}
 
             <Section title="Code" defaultOpen={false}>
               <BlockCodePanel

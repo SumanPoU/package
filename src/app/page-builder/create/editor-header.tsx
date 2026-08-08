@@ -1,6 +1,11 @@
 "use client";
 
-import type { BlockRegistry, LocaleConfig, Page } from "@itzsa/page-builder";
+import type {
+  BlockRegistry,
+  CustomScript,
+  LocaleConfig,
+  Page,
+} from "@itzsa/page-builder";
 import {
   Braces,
   Check,
@@ -31,13 +36,17 @@ export type EditorHeaderProps = {
   registry: BlockRegistry;
   localeConfig: LocaleConfig;
   onGlobalCssChange: (css: string) => void;
+  onGlobalJsChange: (script: CustomScript) => void;
   onSettingsOpen: () => void;
   onPreview: () => void;
+  onOpenPage: () => void;
   onPublish: () => void;
   isPublishing?: boolean;
   savedFlash?: boolean;
   sidebarOpen: boolean;
   onSidebarOpenChange: (open: boolean) => void;
+  /** Host feature: hide the Code (HTML/JSON) button and panel. Default true. */
+  showCodePanel?: boolean;
 };
 
 export function EditorHeader({
@@ -53,13 +62,16 @@ export function EditorHeader({
   registry,
   localeConfig,
   onGlobalCssChange,
+  onGlobalJsChange,
   onSettingsOpen,
   onPreview,
+  onOpenPage,
   onPublish,
   isPublishing = false,
   savedFlash = false,
   sidebarOpen,
   onSidebarOpenChange,
+  showCodePanel = true,
 }: EditorHeaderProps) {
   const [codeOpen, setCodeOpen] = useState(false);
 
@@ -134,25 +146,34 @@ export function EditorHeader({
         </div>
 
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setCodeOpen(true)}
-            title="View HTML / CSS"
-            aria-label="View HTML and CSS"
-            className={cn(
-              "flex h-7 items-center gap-1 rounded-md border border-border px-2 text-[11px] font-medium text-muted-foreground hover:bg-muted hover:text-foreground",
-              codeOpen && "border-accent bg-accent/10 text-accent",
-            )}
-          >
-            <Braces className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Code</span>
-          </button>
+          {showCodePanel ? (
+            <button
+              type="button"
+              onClick={() => setCodeOpen(true)}
+              title="View HTML / CSS"
+              aria-label="View HTML and CSS"
+              className={cn(
+                "flex h-7 items-center gap-1 rounded-md border border-border px-2 text-[11px] font-medium text-muted-foreground hover:bg-muted hover:text-foreground",
+                codeOpen && "border-accent bg-accent/10 text-accent",
+              )}
+            >
+              <Braces className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Code</span>
+            </button>
+          ) : null}
           <button
             type="button"
             onClick={onPreview}
             className="flex h-7 items-center gap-1 rounded-md px-2 text-[12px] text-gray-500 hover:bg-gray-50 hover:text-gray-800"
           >
             <ExternalLink className="h-3.5 w-3.5" /> Preview
+          </button>
+          <button
+            type="button"
+            onClick={onOpenPage}
+            className="flex h-7 items-center gap-1 rounded-md px-2 text-[12px] text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+          >
+            Open Page
           </button>
           <button
             type="button"
@@ -173,7 +194,7 @@ export function EditorHeader({
         </div>
       </header>
 
-      {codeOpen ? (
+      {showCodePanel && codeOpen ? (
         <div
           className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 sm:items-center"
           role="presentation"
@@ -213,6 +234,7 @@ export function EditorHeader({
                 localeConfig={localeConfig}
                 activeLocale={activeLocale}
                 onGlobalCssChange={onGlobalCssChange}
+                onGlobalJsChange={onGlobalJsChange}
               />
             </div>
           </div>

@@ -7,8 +7,11 @@ import {
   loadPreviewSession,
   OpenPageView,
   type Page,
+  registerDynamicBlock,
   registerPrimitives,
 } from "@itzsa/page-builder";
+import { DEMO_PROMO_SPEC } from "../demo-promo-spec";
+import { SAMPLE_DATA_SOURCES } from "../sample-data-sources";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -18,6 +21,7 @@ export default function PageBuilderPreviewPage() {
   const registry = useMemo(() => {
     const r = createRegistry();
     registerPrimitives(r);
+    registerDynamicBlock(r, DEMO_PROMO_SPEC);
     return r;
   }, []);
 
@@ -41,6 +45,15 @@ export default function PageBuilderPreviewPage() {
     });
   }, []);
 
+  const renderContext = useMemo(
+    () => ({
+      locale: activeLocale,
+      device: "desktop" as const,
+      dataSources: SAMPLE_DATA_SOURCES,
+    }),
+    [activeLocale],
+  );
+
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-4 py-8 sm:px-6">
       <div className="flex items-center justify-between gap-3">
@@ -59,7 +72,7 @@ export default function PageBuilderPreviewPage() {
           registry={registry}
           localeConfig={localeConfig}
           activeLocale={activeLocale}
-          renderContext={{ locale: activeLocale, device: "desktop" }}
+          renderContext={renderContext}
         />
       ) : !error ? (
         <p className="text-sm text-secondary">Loading preview…</p>

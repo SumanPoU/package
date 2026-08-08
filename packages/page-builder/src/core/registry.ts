@@ -1,4 +1,8 @@
 import type { BlockDefinition } from "./types";
+import {
+  type RegistrationCapabilities,
+  registerBlockGuarded,
+} from "./blockRegistrationGuard";
 
 export type BlockRegistry = {
   register: (definition: BlockDefinition) => void;
@@ -36,10 +40,14 @@ export const createRegistry = (): BlockRegistry => {
   };
 };
 
-/** Convenience alias matching the architecture naming. */
+/**
+ * Register a block definition with §24 namespace / collision / capability checks.
+ * Prefer this over `registry.register` for host and plugin code.
+ */
 export const registerBlock = (
   registry: BlockRegistry,
   definition: BlockDefinition,
+  capabilities?: RegistrationCapabilities,
 ): void => {
-  registry.register(definition);
+  registerBlockGuarded(registry, definition, capabilities);
 };

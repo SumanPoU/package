@@ -9,6 +9,8 @@ export type BlockChromeProps = {
   drag: DragPayload | null;
   hover: HoverTarget;
   depth: number;
+  /** Hidden by visibility / visibleWhen — still selectable, dimmed chrome. */
+  ghost?: boolean;
   canMoveUp: boolean;
   canMoveDown: boolean;
   onSelect: (id: string) => void;
@@ -31,6 +33,7 @@ export const BlockChrome = ({
   selectedId,
   drag,
   depth,
+  ghost = false,
   canMoveUp,
   canMoveDown,
   onSelect,
@@ -47,10 +50,12 @@ export const BlockChrome = ({
   return (
     <div
       ref={(el) => registerRef(block.id, el)}
+      data-pb-ghost={ghost ? "true" : undefined}
       className={[
         "pb-block-chrome",
         selected ? "pb-block-chrome--selected" : "",
         draggingThis ? "pb-block-chrome--dragging" : "",
+        ghost ? "pb-block-chrome--ghost" : "",
       ]
         .filter(Boolean)
         .join(" ")}
@@ -62,7 +67,9 @@ export const BlockChrome = ({
     >
       {selected ? (
         <div className="pb-block-toolbar pb-block-toolbar--selected">
-          <span className="pb-block-toolbar-label">{label}</span>
+          <span className="pb-block-toolbar-label">
+            {ghost ? `${label} (hidden)` : label}
+          </span>
           <button
             type="button"
             className="pb-block-toolbar-btn"

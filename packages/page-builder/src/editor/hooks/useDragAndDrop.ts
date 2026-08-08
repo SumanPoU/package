@@ -10,9 +10,11 @@ import {
 } from "../../core/blockTree";
 import type { BlockRegistry } from "../../core/registry";
 import type { Block, Page } from "../../core/types";
+import { getPreset } from "../../presets";
 
 export type DragPayload =
   | { kind: "new"; type: string; label: string }
+  | { kind: "preset"; presetId: string; label: string }
   | { kind: "move"; blockId: string; type: string };
 
 export type HoverTarget = { containerId: string; index: number } | null;
@@ -55,6 +57,14 @@ export const useDragAndDrop = ({
     },
     [registry],
   );
+
+  const startDragPreset = useCallback((presetId: string, e: React.PointerEvent) => {
+    const preset = getPreset(presetId);
+    if (!preset) return;
+    e.preventDefault();
+    setDrag({ kind: "preset", presetId, label: preset.label });
+    setPointer({ x: e.clientX, y: e.clientY });
+  }, []);
 
   const startDragMove = useCallback(
     (blockId: string, type: string, e: React.PointerEvent) => {
@@ -140,6 +150,29 @@ export const useDragAndDrop = ({
               }
             }
           }
+        } else if (drag.kind === "preset") {
+          const preset = getPreset(drag.presetId);
+          if (preset) {
+            const parent = parentId ? findBlock(page.blocks, parentId) : null;
+            const parentDef = parent ? registry.get(parent.type) : undefined;
+            const ok =
+              parentId === null || Boolean(parentDef?.isContainer);
+            if (ok) {
+              const block = preset.create();
+              try {
+                const next = insertBlock(
+                  page.blocks,
+                  block,
+                  parentId,
+                  target.index,
+                );
+                push({ ...page, blocks: next });
+                onSelect?.(block.id);
+              } catch {
+                // no-op
+              }
+            }
+          }
         } else if (drag.kind === "move") {
           const intoSelf =
             target.containerId === drag.blockId ||
@@ -190,6 +223,7 @@ export const useDragAndDrop = ({
     canvasRef,
     registerRef,
     startDragNew,
+    startDragPreset,
     startDragMove,
     isDraggingOverRoot,
   };

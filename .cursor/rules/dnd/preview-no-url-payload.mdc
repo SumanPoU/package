@@ -1,0 +1,57 @@
+---
+description: Preview architecture — opaque id/key only, never full page JSON in the URL (ADR-11, §20)
+globs: ["src/preview/**"]
+alwaysApply: false
+---
+
+# Preview Architecture
+
+## The hard rule
+
+Preview URLs may contain ONLY a short opaque `previewId` / `draftId` /
+`secret`. NEVER the serialized `Page` document, in any form — not base64,
+not compressed, not "just for now while I get this working."
+
+This is not a style preference — it's the fix for a real, documented
+failure mode: browser/server URL length limits (roughly 2KB–64KB
+depending on browser/proxy) silently truncate or 414-error on real
+multi-locale pages with CSS and deep trees. "It works in my small demo"
+is not evidence this is safe.
+
+## Forbidden patterns — reject these on sight
+
+- `?data=<base64 entire page>`
+- Hash-routed full JSON documents (`#/preview/<json>`)
+- Any "temporary" URL-embedded payload with a plan to fix it later
+
+## Supported strategies (pick one, or support both)
+
+**A — Draft/Preview API (preferred, shareable across devices):**
+```
+Editor "Preview" → host upsertDraft(page) → draftId
+  → open /preview?draft=<draftId>&secret=…
+  → preview route loads JSON from server → RenderPage
+```
+Host callbacks: `onCreatePreviewDraft?(page) => { draftId }`,
+`onResolvePreviewDraft?(draftId) => page | null`.
+
+**B — Tab-local store (unsaved/instant preview):**
+```
+Editor "Preview" → store payload in sessionStorage or IndexedDB
+  under key `pb-preview:<id>` → open /preview?key=<id>  (id only in URL)
+  → preview page reads store by key → RenderPage
+```
+Use IndexedDB instead of sessionStorage when payload may exceed the
+~5MB sessionStorage quota. The URL still only ever carries the key.
+
+## Renderer
+
+Preview MUST use the same `RenderPage` component as canvas and Open Page
+(see canvas-parity rule file). Do not write a preview-specific renderer.
+
+## Required test
+
+A fixture larger than typical URL limits must still open successfully via
+draft id / store key, and the resulting URL length must stay bounded
+regardless of page size — assert this explicitly, don't just eyeball it
+on a small test fixture.

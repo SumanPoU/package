@@ -1,0 +1,74 @@
+---
+description: Author-owned CSS/JS pipeline rules — composers, no decorative engine CSS, sandboxed JS (ADR-03, ADR-06, §6, §7)
+globs: ["src/core/cssParser*", "src/core/customCssComposer*", "src/core/customJsComposer*", "src/canvas/injectStyles*", "src/canvas/injectScripts*", "**/*.module.css"]
+alwaysApply: false
+---
+
+# Author CSS / JS Pipeline
+
+## The one rule that matters most
+
+**The engine does not decorate pages. Users place their own CSS.** Every
+line of CSS a user sees on their published page must trace back to
+something they wrote in `Block.customCss` or `Page.globalCss`. If you write
+CSS that ships with the engine and affects how a block LOOKS on the page,
+you are violating ADR-03. Stop and flag it instead.
+
+The only engine-authored CSS allowed:
+- Structural attributes with zero visual effect (`data-block-id`, dropzone
+  markers)
+- `styles.module.css` files, and ONLY for editor chrome (sidebars, panels,
+  toolbars) — never anything that affects the page document's look
+
+## Pipeline (never bypass this)
+
+```
+raw author CSS
+  → cssParser        (reject invalid; reject @import, disallowed url(), data: non-image/font)
+  → customCssComposer (per-block: scope to [data-block-id="..."]; global: unscoped)
+  → injectStyles       (canvas iframe AND Open Page <head> — same output, same composer)
+```
+
+```
+raw author JS
+  → shape validation only (isolation is the actual control, not validation)
+  → customJsComposer   (sandbox wrapping)
+  → injectScripts       (canvas iframe or Open Page document — never editor parent)
+```
+
+Never raw-dump author CSS or JS into a `<style>`/`<script>` tag without
+going through the composer. Never write a "quick" inline style injection
+that skips `cssParser`/`customCssComposer` even temporarily.
+
+## CSS composer rejection rules (cssParser)
+
+Reject: `@import`, `url(http…)`/`url(https…)` unless on host allow-list,
+`url(//…)` protocol-relative, `url(data:text/html…)` or
+`url(data:application/javascript…)`, SVG-with-script data URIs, selectors
+targeting `html`/`body`/`iframe`/`parent`/`:root` that look like an escape
+attempt. Allow: `@media`, `url(data:image/...)` / `url(data:font/...)`
+under a size cap.
+
+## Precedence
+
+`block.customCss` (most specific) → optional compiled style panel (if it
+exists) → `Page.globalCss` (least specific, loaded first). Do not change
+this order without an architecture amendment.
+
+## Custom JS
+
+- Runs only inside the canvas iframe or the Open Page document — never in
+  the editor parent.
+- Network access is default-deny (`connect-src` empty/`'none'`). Only
+  enabled via explicit host `allowedConnectOrigins` allow-list, reflected
+  into CSP. Never wildcard `*` in production config.
+- Respect the `enabled` kill switch and `runAt: 'domReady' | 'afterHydration'`.
+- Gated by host capability `allowCustomJs` (default should be treated as
+  stricter/off for low-trust tenants — don't assume it's on).
+
+## Server-side re-validation (§22.6)
+
+Client-side composer output is UX only, not authority. Any `onSave` /
+`onPublish` implementation you write on the host side must re-run the same
+reject rules server-side. Never trust that the editor UI already validated
+it.

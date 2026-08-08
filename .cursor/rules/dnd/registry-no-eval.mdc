@@ -1,0 +1,75 @@
+---
+description: Block registry, registration lifecycle, Model A/B custom blocks, no-eval policy (§8, §24, ADR-12)
+globs: ["src/core/registry*", "src/core/blockRegistrationGuard*", "src/core/fieldAdapterResolve*", "src/core/fallbackBlock*", "src/blocks/**"]
+alwaysApply: false
+---
+
+# Block Registry & Registration
+
+## The registry is the only source of block behavior
+
+- `BlockDefinition` = `{ type, label, icon, category, isContainer?,
+  canAcceptChild?, defaultProps, propsSchema, render, ContentFields,
+  source: 'core' | 'tenant' | 'plugin', capabilities? }`.
+- Consumers (canvas, DnD, inspector) are dispatcher-only. Never write
+  `if (block.type === 'heading') { ... } else if (...)` anywhere outside
+  the registry lookup itself.
+- `Block.type` validation is a LIVE registry `.refine()`, not a frozen
+  static enum. New types must be addable without editing a giant switch or
+  union type elsewhere in the codebase.
+
+## Two registration models — nothing else is allowed
+
+**Model A — client-bundled (default, safe path for real render logic)**
+- Host/plugin imports a module and calls `registerBlock(definition)`
+  BEFORE `<PageBuilder>` mounts.
+- `type` MUST be namespaced: `tenant:…` or `plugin:vendor.block`. Never
+  allow a plugin/tenant type to collide with a core primitive name
+  (`heading`, `box`, `text`, etc.) — this is a `blockRegistrationGuard`
+  error, not a silent override.
+- `render`, `ContentFields`, and `propsSchema` all ship in the same bundle.
+
+**Model B — server-defined, data-driven (no new render code)**
+- Tenant JSON spec = `propsSchema` + a composition tree of EXISTING
+  primitives only, fetched via `fetchDynamicBlocks`.
+- Field specs use `{ key, kind, options?, translatable? }` where `kind` is
+  drawn from the SAME enum documented in
+  `docs/page-builder/api/field-types.md`. An unknown `kind` at
+  registration time is a `blockRegistrationGuard` ERROR — never a silent
+  fallback to a plain-text field.
+- The mapping from `kind` → actual inspector control lives ONLY in
+  `fieldAdapterResolve.ts`. Do not hand-roll a second mapping anywhere else
+  (e.g. inline in a Model B loader). Any new `kind` requires updating
+  `fieldAdapterResolve.ts` AND the doc page in the same change.
+
+**Absolutely forbidden, no exceptions:**
+- `eval()` or `new Function()` of any fetched/remote code as a block
+  `render`.
+- Any "trusted partner" exception that skips the sandbox or the Model A/B
+  distinction.
+- Signed dynamic `import()` of remote render bundles — this is Phase 19,
+  explicitly NOT v1. Do not implement it unless specifically asked to work
+  on that phase.
+
+## Registration lifecycle
+
+- Duplicate `type` on `registerBlock` → loud error. Never silently
+  override an existing registration.
+- Namespace violation → rejected by `blockRegistrationGuard`.
+- Removing a plugin must not crash existing pages that reference its
+  block type.
+- Unknown `type` encountered at render time → `fallbackBlock`: a
+  tree-preserving placeholder ("Unavailable block: <type>"). Never throw,
+  never drop the node's data. Must render identically (same fallback UI)
+  across canvas, preview, and Open Page.
+- Definition version bumps migrate instance data via `schemaVersion` /
+  per-type migration; otherwise instances render via fallback until
+  migrated — never silently coerced into a mismatched shape.
+
+## Capability gating
+
+`allowRegisterPluginBlocks` gates Model A registration in a workspace.
+`allowDynamicBlockDefs` gates Model B. Both come from host-injected
+`capabilities` (ADR-05) — the engine hides registration entry points when
+false, but this is NOT sufficient on its own; the host must also re-check
+server-side before persisting anything that references a gated type.

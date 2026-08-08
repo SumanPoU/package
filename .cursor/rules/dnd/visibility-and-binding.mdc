@@ -1,0 +1,81 @@
+---
+description: Conditional visibility and data-bound repeater rules (§23, §25) — hide is never delete, item-scoped context never leaks
+globs: ["src/core/visibilityResolve*", "src/core/dataBinding*", "src/blocks/repeater/**", "src/editor/components/OutlineTree/**"]
+alwaysApply: false
+---
+
+# Visibility & Data Binding
+
+## Visibility is a render-time predicate, never a tree mutation
+
+- `Block.visibility` (author/device/locale intent) and `Block.visibleWhen`
+  (runtime predicate against `renderContext`) are both evaluated by
+  `visibilityResolve` inside `RenderPage` — identically for canvas
+  (with ghost affordance), preview, and Open Page (full omission).
+- Hiding a block NEVER removes its `children`, props, or any other data.
+  Delete is a distinct, explicit tree mutation (`blockTree.remove`) — do
+  not conflate the two anywhere in the code.
+- Hidden blocks remain visible in the Outline Tree, shown dimmed. Do not
+  filter them out of the outline.
+
+## Evaluation order (centralized in visibilityResolve.ts — don't duplicate)
+
+```
+1. hiddenOnPublish && surface !== 'canvas'  → hide
+2. hiddenOnCanvas && surface === 'canvas'   → ghost
+3. device in hiddenDevices                  → hide/ghost by surface
+4. locale in hiddenLocales                  → hide/ghost by surface
+5. visibleWhen fails                        → hide/ghost by surface
+6. else                                     → show
+```
+Blocks must never special-case this logic themselves — call
+`visibilityResolve`, don't reimplement it.
+
+## Item-scoped context (§23.2.1) — the leak to watch for
+
+- Inside a repeater's `itemTemplate`, predicates evaluate against
+  `{ ...renderContext, item: <current bound item> }` — but this merged
+  context is scoped ONLY to that one expansion pass.
+- Outside a repeater, any predicate referencing `item.*` must evaluate to
+  `false` (fail safe / hidden) — never `undefined`-crash, never leak an
+  `item` from a sibling repeater's expansion.
+- `visibilityResolve` itself does not construct the merged context — it
+  only reads whatever `renderContext` object it's given. The merging
+  happens in `dataBinding.ts` during expansion. Keep that separation; don't
+  have `visibilityResolve` reach into binding internals.
+
+## Data binding (§25) — repeater + DataSource, not monolithic widgets
+
+- CMS loops (e.g. "blog cards") are built as: `repeater` block with
+  `dataBinding: { sourceId, params, itemTemplate: Block[] }`, where
+  `itemTemplate` is an ordinary primitive tree (`box` > `image` > `heading`
+  > `text` > `button`), never a locked composite type.
+- Binding tokens (`{{item.title}}`, `{{item.image}}`) resolve to strings/
+  URLs typed by the DataSource's `itemSchema`. Unknown tokens resolve to
+  empty string — never leak a raw `{{...}}` into an XSS-sensitive sink.
+- Any HTML-bearing item field still passes through `sanitizeRichText`
+  before injection — token resolution does not bypass sanitization.
+- Support two fetch strategies and keep them in parity:
+  - **A — host-resolved** (SSR/RSC on Open Page): host resolves items,
+    engine only expands.
+  - **B — client callback**: engine calls `fetchDataSource(sourceId,
+    params)` (never imports host `services/` directly).
+  - Both must produce identical DOM (same item order, same token
+    resolution, same loading/empty/error state markup) for the same
+    DataSource + params — write a parity test against one fixture
+    DataSource covering both strategies.
+- Loading / empty / error states use structural attributes only (e.g.
+  `data-binding-state="empty"`) — styling is still 100% author CSS, the
+  engine does not bake in visual states.
+- Attaching/activating `dataBinding` on any block is gated by host
+  capability `allowDataBinding`. If ungated `dataBinding` is present in
+  loaded JSON (e.g. copied from another page), render it INERT — template
+  only, no fetch — never crash and never silently query.
+
+## Required tests for this area
+
+- Visibility parity across canvas (ghost)/preview (omit)/Open Page (omit).
+- Item-scoped `item.*` predicate fails safe outside a repeater.
+- Repeater expands `itemTemplate` once per item; empty/loading/error states
+  match across both fetch strategies.
+- Binding tokens never emit unescaped HTML from item data.

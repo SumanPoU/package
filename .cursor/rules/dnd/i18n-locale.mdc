@@ -1,0 +1,59 @@
+---
+description: Content locale / i18n rules — nested vs flat key normalization, fallback behavior (ADR-10, §19)
+globs: ["src/core/i18nResolve*", "**/*ContentFields*", "src/editor/components/BlockInspectorPanel/**"]
+alwaysApply: false
+---
+
+# Content Locales (i18n)
+
+## Canonical shape
+
+Everything downstream of `i18nResolve` (RenderPage, inspector) consumes
+ONE shape, regardless of how the host stores it:
+
+```
+i18nProps: {
+  en: { title: "Hello", desc: "…" },
+  ne: { title: "नमस्ते", desc: "…" },
+}
+```
+
+## Accepted input strategies (all must normalize to the shape above)
+
+- **A — Nested** (`i18nProps.en.desc`) — default, preferred.
+- **B — Flat suffix keys** (`desc_en` / `desc_ne`, or host aliases like
+  `desp_eng` / `desp_np`) — mapped to locale codes via HOST CONFIG
+  (`flatSuffixes` on each locale entry), never hardcoded in engine code.
+- **C — Shared value** (`props.desc` only, declared in `sharedProps`) — one
+  value for all locales, not duplicated per locale.
+
+## Hard rules
+
+- Never write `if (lang === 'ne') props.desp_np` or any similar per-locale
+  branch inside a block's `render`. All locale resolution happens in
+  `i18nResolve` before `render` ever sees props.
+- Missing locale value → `fallbackLocale`. An empty string is a valid,
+  intentional value and is NOT the same as missing — don't conflate them.
+- Locale list, `defaultLocale`, `fallbackLocale`, and `localeStorage`
+  (`'nested' | 'flat'`) all come from host config
+  (`locales: [{ code, label, dir, flatSuffixes }]`). Do not hardcode `en`/
+  `ne` as the only supported locales anywhere in engine code — the host
+  may add `hi`, `zh`, etc. without an engine release.
+- Inspector always edits the LOGICAL key (e.g. `desc`) for the currently
+  active locale — never a flat key directly.
+- Switching active locale changes which `i18nProps` slice is shown; it
+  never duplicates or restructures the block tree.
+- Copy/paste and duplicate must preserve the FULL `i18nProps` map (all
+  locales), not just the active one.
+- Rich text in any locale still passes through `sanitizeRichText` — full
+  Unicode (Nepali/Devanagari) must survive sanitization; only active
+  script content (script tags, event handlers) gets stripped.
+- `dir` / `lang` attributes on the rendered page root follow the active
+  locale.
+
+## Performance note
+
+Only the active locale's inputs should mount in the inspector at once
+(don't render N locale tab panels simultaneously for pages with many
+configured locales) — but ALL locales remain present in the underlying
+data regardless of which tab is open.

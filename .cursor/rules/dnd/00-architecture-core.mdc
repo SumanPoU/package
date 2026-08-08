@@ -1,0 +1,92 @@
+---
+description: Core non-negotiable architecture rules for @itzsa/page-builder. Always active — this is the design authority. If any instruction elsewhere conflicts with this file, stop and flag it, do not silently deviate.
+globs:
+alwaysApply: true
+---
+
+# Page Builder — Core Architecture (always active)
+
+You are building `@itzsa/page-builder`, a drag-and-drop visual page builder
+(Elementor / Webflow / Puck class). The full design authority is
+`ARCHITECTURE-PAGE-BUILDER.md` in the repo root. This file is a condensed,
+enforceable summary. When in doubt, re-read that doc before writing code.
+
+## Non-negotiables (ADR-01 through ADR-14)
+
+1. **One render path.** Every block has exactly one React `render` component.
+   Canvas iframe, Preview, and Open Page all mount it from the registry.
+   Never create a second HTML template, a `*.render.ts` string builder, or a
+   parallel "publish" component for the same block type.
+
+2. **Canvas ≠ decorated preview.** The engine does NOT ship decorative CSS
+   for blocks (no default card/hero/button skins, no "looks nice out of the
+   box" padding/shadows). Look comes ONLY from author-written `customCss` /
+   `globalCss`. If you're tempted to add a default style so a block "looks
+   less empty" in the canvas — don't. That is the exact CIB bug this
+   architecture exists to fix.
+
+3. **Editor chrome lives in the parent document, never inside the page DOM.**
+   Selection outlines, drag ghosts, hover rings, toolbars = parent-rendered
+   overlays positioned via `canvasBridge` measurements. They must never be
+   injected into the iframe's page document or affect its visual contract.
+
+4. **Data ≠ behavior.** `Page` / `Block` JSON never contains render
+   functions. `BlockDefinition` (registry) never contains page content.
+   No block type may be special-cased with `switch (block.type)` outside
+   the registry dispatcher itself.
+
+5. **Host owns I/O.** The engine never imports host `services/`, `store/`,
+   or `routes/`. All persistence, auth, uploads, and data fetching happen
+   through injected callbacks (`onSave`, `onPublish`, `uploadAsset`,
+   `fetchDynamicBlocks`, `fetchDataSource`, `capabilities`, `renderContext`).
+   If a task seems to require reaching into host internals, stop and flag it.
+
+6. **Composition over mega-widgets.** Do not build monolithic composite
+   blocks (`hero`, `blog-card`, etc.) as the primary way to express complex
+   UI. Compose from primitives (`box`/`container`, `heading`, `text`,
+   `image`, `button`, `flex`, `grid`, `repeater`). Composites are only
+   allowed for tightly-coupled interactive widgets that truly cannot be
+   expressed as a tree (rare) — and even then must use the same
+   registry/render/CSS rules.
+
+7. **Persist JSON by default (ADR-14).** The canonical saved document is
+   always the structured `Page` JSON, schema-validated. Full HTML is an
+   OPTIONAL derived export via the same `RenderPage` path — never the
+   source of truth for re-opening the editor. If both exist, JSON wins on
+   conflict.
+
+8. **No eval, ever.** Block `render` functions are never created via
+   `eval`, `new Function`, or unsigned remote script injection. See the
+   registry rule file for Model A / Model B constraints.
+
+## Parity rule (test this constantly)
+
+If something is visible as page content in the canvas for the current
+`renderContext`, it MUST render identically in Preview and Open Page.
+Before considering any canvas-affecting change "done," ask: does this still
+hold for Preview and Open Page with the same JSON + author CSS + active
+locale?
+
+## Hard rules checklist — verify before finishing ANY task
+
+- [ ] Canvas === Preview === Open Page for same JSON + CSS + locale + renderContext
+- [ ] No decorative CSS added by the engine
+- [ ] Editor chrome stays in parent overlays only
+- [ ] Same React `render` used by all three surfaces
+- [ ] No `switch` on block type outside registry dispatch
+- [ ] Primitives + presets/repeater preferred over new composite block types
+- [ ] Delete / copy / paste / duplicate / outline stay history-aware
+- [ ] Translatable fields use `i18nProps`; flat host keys normalize through `i18nResolve`, never a hardcoded `switch (lang)`
+- [ ] Preview URL contains only an opaque id/key — never serialized page JSON
+- [ ] Custom CSS/JS only ever passes through composers, never raw-injected
+- [ ] `styles.module.css` is editor-chrome only, never page look
+- [ ] Live registry `.refine()` for `Block.type` — no frozen static enum
+- [ ] Engine does not import host `services/` / `store/` / `routes/`
+- [ ] New public capability gets a matching topic doc in the same PR
+
+## When unsure
+
+If a request would require deviating from this file (e.g. "just hardcode
+this locale switch for now," "add a quick default CSS so it looks better"),
+say so explicitly and propose the compliant alternative instead of silently
+complying.

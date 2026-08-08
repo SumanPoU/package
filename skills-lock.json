@@ -7,17 +7,41 @@
       "skillPath": "skills/building-components/SKILL.md",
       "computedHash": "20889af7cb9b3abca1e38824f7fffaa873eb0cc4d45187967b97bd85462cf934"
     },
+    "puck": {
+      "source": "puckeditor/skills",
+      "sourceType": "github",
+      "skillPath": "skills/puck/SKILL.md",
+      "computedHash": "c41bf408111ac2bcd7c44b7203e1c3b68e8c4bfb8d38fd4add6582f496ec645d"
+    },
+    "vercel-composition-patterns": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/composition-patterns/SKILL.md",
+      "computedHash": "575757e3e25761c8c562d6e395d29f0b76c98b1273c0bd72d88e6ab1bc9c7d42"
+    },
     "vercel-microfrontends": {
       "source": "vercel/microfrontends",
       "sourceType": "github",
       "skillPath": "skills/vercel-microfrontends/SKILL.md",
       "computedHash": "7a230ef727f3462b2058caa532c0e1758229226ac06b24100093c063e4e079b9"
     },
-    "web-design-guidelines": {
-      "source": "vercel/examples",
+    "vercel-react-best-practices": {
+      "source": "vercel-labs/agent-skills",
       "sourceType": "github",
-      "skillPath": ".agents/skills/web-design-guidelines/SKILL.md",
-      "computedHash": "6ce5d4c10f886ca2f053f52e57bbd6689fea57acfbc0301004cf6437a57490a9"
+      "skillPath": "skills/react-best-practices/SKILL.md",
+      "computedHash": "ca7b0c0c6e5f2750043f7f0cd72d16ac4e2abc48f9b5500d047a4b77a2506212"
+    },
+    "wcag-accessibility-audit": {
+      "source": "mastepanoski/claude-skills",
+      "sourceType": "github",
+      "skillPath": "skills/wcag-accessibility-audit/SKILL.md",
+      "computedHash": "794f471ae3f854ff5184f2b8ef2cbaa31c62feb5fe593d1cf6125c5c56c6ab8e"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/web-design-guidelines/SKILL.md",
+      "computedHash": "f3bc47f890f42a44db1007ab390709ec368e4b8c089baee6b0007182236ac474"
     }
   }
 }

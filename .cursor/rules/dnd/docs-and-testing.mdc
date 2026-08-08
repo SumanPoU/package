@@ -1,0 +1,58 @@
+---
+description: Per-topic documentation requirement and required test coverage for any capability change (§14, §18)
+globs: ["docs/page-builder/**", "**/*.test.ts", "**/*.test.tsx"]
+alwaysApply: false
+---
+
+# Docs (Puck-style, one topic per page) & Testing
+
+## Documentation
+
+- Every public subsystem has its own doc page under `docs/page-builder/`
+  (`concepts/`, `editor/`, `api/`, `guides/`) — one concern per file, like
+  Puck's Config/Data/Fields/Render split. Never dump multiple subsystems
+  into one README-style page.
+- Each doc page states: the contract (inputs/outputs/invariants/failure
+  modes), how a host extends it without forking, and its limits (payload
+  size, nesting depth, locale fallback, etc.) and what happens when
+  exceeded.
+- **No silent drift**: if a code change alters a subsystem's contract, the
+  matching doc page updates IN THE SAME PR/commit set. If you change
+  behavior in `visibilityResolve.ts` but don't touch
+  `docs/page-builder/concepts/visibility.md`, the change isn't complete.
+- New `kind` values in the Model B field-adapter enum, new locale storage
+  strategies, new visibility predicate keys, etc. — all require the doc
+  update in the same change, not "as a follow-up."
+
+## Testing — required coverage per area (§14)
+
+When you touch code in a given subsystem, make sure the matching test
+category exists and passes:
+
+| Area touched | Required test |
+|---|---|
+| Any block | Smoke test: `render` + `ContentFields` + `propsSchema` |
+| Registry | Drift test: required `BlockDefinition` fields present |
+| Canvas / preview / Open Page | Same fixture renders comparable DOM across all three |
+| CSS composer | Malformed CSS, `@import`, escape-selector rejection |
+| CSS composer | Remote `url()` / `data:` exfiltration rejection |
+| Sandbox policy | Exact `sandbox` string asserted; no `allow-same-origin`; CSP regression |
+| canvasBridge | Wrong-origin / malformed-schema messages rejected |
+| Rich text | Script / event-handler HTML stripped by sanitizer; Unicode preserved |
+| Clipboard | Paste regenerates all ids; deep trees; history integration |
+| Outline | Mirrors nested blocks; selection sync; hidden nodes still listed, dimmed |
+| Preset expand | Inserts expected primitive tree |
+| Locale resolve | en/ne (+extra) fallback; missing key → fallbackLocale; Unicode round-trip; flat-key normalization both directions |
+| Preview | Large fixture opens via draft id/store key; URL length stays bounded |
+| Visibility | `visibleWhen` + `visibility` evaluate identically across canvas/preview/Open Page; hidden blocks retain full tree data |
+| Registration | Duplicate type errors; namespace enforcement; no eval path exists |
+| Unknown block | Fallback UI renders; page doesn't crash; tree preserved |
+| Repeater binding | Template expands once per item; empty/loading/error parity; token resolution doesn't emit unescaped HTML |
+| Cross-strategy binding | Strategy A (host-resolved) and B (client fetch) produce identical DOM for one fixture DataSource |
+| Item-scoped visibility | `item.*` predicates only resolve inside repeater scope; fail safe outside it |
+| CSP nonce | No `'unsafe-inline'` in `script-src`/`style-src`; nonce mismatch rejected (capture via CSP violation report) |
+| Accessibility | Core primitives + editor chrome pass WCAG 2.2 AA smoke checks (keyboard, labels, focus, contrast) |
+
+If a change doesn't have a corresponding test from this table and it's not
+obviously covered by an existing one, add it before considering the task
+done — don't defer test-writing to "later."

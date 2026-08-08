@@ -1,0 +1,52 @@
+---
+description: Canvas iframe, RenderPage, and cross-surface parity rules (ADR-01, ADR-02, §4, §14 parity tests)
+globs: ["src/canvas/**", "src/render/**", "src/preview/**", "**/RenderPage*"]
+alwaysApply: false
+---
+
+# Canvas / RenderPage / Parity
+
+## Iframe boundary (ADR-02)
+
+- The page tree renders ONLY inside the sandboxed canvas iframe (edit mode)
+  or the live document (Open Page). Never render page content directly in
+  the parent/editor document.
+- All selection chrome, drag ghosts, hover rings, drop-line indicators, and
+  toolbars are drawn in the PARENT document, positioned via measurements
+  relayed through `canvasBridge`. They must never be injected as elements
+  inside the iframe's `<body>`.
+- `canvasBridge` measurements/messages must go through the typed envelope
+  (`{ type, version, payload }`) — see the security rule file for the full
+  contract. Do not add ad-hoc postMessage calls outside that envelope.
+
+## RenderPage (ADR-01)
+
+- `render/RenderPage.tsx` is the ONLY page-tree walker. It is used by:
+  1. Canvas iframe (edit mode, live editor state)
+  2. Preview (draft API or keyed store — never URL payload)
+  3. Open Page (published persistence)
+- `RenderPage` is responsible for: visibility resolution (`visibilityResolve`),
+  data-binding expansion (`dataBinding.ts`), and unknown-type fallback
+  (`fallbackBlock`). Do not duplicate this logic in a second walker for
+  "just this one surface."
+- If you're adding new tree-walk behavior, add it to `RenderPage` and its
+  helpers — do not fork a preview-specific or publish-specific renderer.
+
+## What NOT to do here
+
+- Do not add a `previewOnly` or `canvasOnly` prop that changes which DOM
+  nodes render as page content (visibility differences must go through
+  `visibility` / `visibleWhen`, not ad-hoc surface flags).
+- Do not add default/demo styling in `CanvasDocument.tsx` or anywhere in
+  `canvas/` "so it looks better while empty." Empty containers should look
+  empty. That's expected and correct.
+- Do not let `injectStyles.ts` / `injectScripts.ts` emit anything the
+  composers didn't produce (see security rule file for nonce requirements).
+
+## Tests required for any change in this area
+
+- Fixture-based parity test: same `Page` JSON + author CSS rendered via all
+  three surfaces (canvas, preview, Open Page) must produce comparable DOM.
+- If touching visibility or data-binding: verify canvas shows the
+  dimmed/ghost affordance for hidden-by-condition blocks, while preview and
+  Open Page omit them from the DOM entirely (see visibility rule file).

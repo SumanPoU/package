@@ -145,7 +145,7 @@ const CarouselContentFields = ({
 export const carouselDefinition: BlockDefinition = {
   type: "carousel",
   label: "Image Carousel",
-  category: "media",
+  category: "other",
   defaultProps: {
     slides: [
       {

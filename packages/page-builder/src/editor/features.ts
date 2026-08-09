@@ -11,7 +11,7 @@ export type CanvasMode = "embedded" | "iframe";
 
 /** Host palette filters — hide whole categories and/or individual block types. */
 export type PaletteConfig = {
-  /** Category ids to hide (e.g. `basic`, `layout`, `presets`, `media`, `embeds`). */
+  /** Category ids to hide (e.g. `layout`, `basic`, `presets`, `other`). */
   hideCategories?: string[];
   /** Block type ids to hide (e.g. `heading`, `repeater`). */
   hideBlocks?: string[];

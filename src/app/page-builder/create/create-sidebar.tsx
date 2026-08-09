@@ -89,20 +89,22 @@ const PRESET_ICON: Record<string, ComponentType<{ className?: string }>> = {
   testimonial: MessageSquareQuote,
 };
 
-const CATEGORY_ORDER = [
-  "presets",
-  "layout",
-  "basic",
-  "media",
-  "embeds",
-] as const;
+const CATEGORY_ORDER = ["layout", "basic", "presets", "other"] as const;
 const CATEGORY_LABEL: Record<string, string> = {
-  presets: "Presets",
   layout: "Layout",
   basic: "Basic",
-  media: "Media",
+  presets: "Presets",
+  other: "Other",
   content: "Basic",
-  embeds: "Embeds",
+  media: "Other",
+  embeds: "Other",
+};
+
+const normalizeCategory = (raw: string | undefined): string => {
+  const cat = raw || "basic";
+  if (cat === "content") return "basic";
+  if (cat === "media" || cat === "embeds") return "other";
+  return cat;
 };
 
 export type CreateElementsPanelProps = {
@@ -122,11 +124,10 @@ export function CreateElementsPanel({
 }: CreateElementsPanelProps) {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState<Record<string, boolean>>({
-    presets: true,
     layout: true,
     basic: true,
-    media: true,
-    embeds: true,
+    presets: true,
+    other: true,
   });
 
   const q = search.trim().toLowerCase();
@@ -161,8 +162,7 @@ export function CreateElementsPanel({
   const groups = useMemo(() => {
     const map = new Map<string, BlockDefinition[]>();
     for (const item of filtered) {
-      let cat = item.category || "basic";
-      if (cat === "content") cat = "basic";
+      const cat = normalizeCategory(item.category);
       if (
         isCategoryHidden(palette, cat) ||
         isCategoryHidden(palette, item.category || "basic")

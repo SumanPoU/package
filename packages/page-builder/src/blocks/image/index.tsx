@@ -10,7 +10,7 @@ export { DEFAULT_IMAGE_SRC } from "./defaultSrc";
 export const imageDefinition: BlockDefinition = {
   type: "image",
   label: "Image",
-  category: "media",
+  category: "other",
   defaultProps: {
     src: DEFAULT_IMAGE_SRC,
     contentWidth: "large",

@@ -89,7 +89,7 @@ const AudioContentFields = ({ block, onChange }: BlockContentFieldsProps) => {
 export const audioDefinition: BlockDefinition = {
   type: "audio",
   label: "Audio",
-  category: "media",
+  category: "other",
   defaultProps: { src: "", title: "Audio" },
   translatableProps: [],
   sharedProps: ["src", "title"],

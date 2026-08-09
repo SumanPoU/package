@@ -4,11 +4,12 @@ Complex UI is a **tree of primitives** (and optional presets that expand to tree
 
 ## Shipped core primitives
 
-**Layout (Elementor-style):** `container` (Section), `box` (Inner Section), `flex` (Columns), `grid`, `divider`, `spacer`  
-**Content:** `heading`, `text` (Text Editor), `list`, `badge`, `icon`, `icon-list`, `button`, `code`, `quote`, `alert`, `tabs`, `accordion`, `toggle`, `social-icons`, `anchor` (Menu Anchor), `read-more`  
-**Media:** `image`, `gallery`, `carousel`, `video`, `audio`  
-**Embeds:** `map` (Google Maps), `embed`, `html`  
-**Data:** `repeater`
+**Layout:** `container` (Section), `box` (Inner Section), `flex` (Columns), `grid`, `divider`, `spacer`, `repeater`  
+**Basic:** `heading`, `text` (Text Editor), `list`, `badge`, `icon`, `icon-list`, `button`, `code`, `quote`, `alert`, `tabs`, `accordion`, `toggle`, `social-icons`, `anchor` (Menu Anchor), `read-more`  
+**Other:** `image`, `gallery`, `carousel`, `video`, `audio`, `map` (Google Maps), `embed`, `html`  
+**Presets:** Card, Hero, Icon Box, Image Box, Testimonial
+
+Palette groups (in order): **Layout → Basic → Presets → Other**.
 
 WordPress-only Elementor widgets (**Shortcode**, **Sidebar**) are intentionally out of scope — this engine is host-agnostic.
 

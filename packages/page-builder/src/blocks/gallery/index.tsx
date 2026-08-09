@@ -158,7 +158,7 @@ const GalleryContentFields = ({ block, onChange }: BlockContentFieldsProps) => {
 export const galleryDefinition: BlockDefinition = {
   type: "gallery",
   label: "Image Gallery",
-  category: "media",
+  category: "other",
   defaultProps: {
     columns: 3,
     gap: "0.5rem",

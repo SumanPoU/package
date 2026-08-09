@@ -148,7 +148,7 @@ Drop **Flex** or **Grid** on the canvas, then drop other blocks into the dashed 
 
 ```ts
 palette={{
-  hideCategories: ["embeds"],
+  hideCategories: ["other"],
   hideBlocks: ["html", "repeater"],
 }}
 ```

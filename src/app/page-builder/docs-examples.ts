@@ -432,7 +432,7 @@ fontFamilies={[
 export const PALETTE_CONFIG_EXAMPLE = `import type { PaletteConfig } from "@itzsa/page-builder";
 
 const palette: PaletteConfig = {
-  hideCategories: ["embeds", "presets"], // basic | layout | media | embeds | presets
+  hideCategories: ["other", "presets"], // layout | basic | presets | other
   hideBlocks: ["html", "repeater"],      // by block type id
   // hidePresets: true,                  // or ["hero", "card"]
 };

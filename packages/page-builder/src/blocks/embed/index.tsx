@@ -161,7 +161,7 @@ const EmbedContentFields = ({ block, onChange }: BlockContentFieldsProps) => {
 export const embedDefinition: BlockDefinition = {
   type: "embed",
   label: "Embed / iframe",
-  category: "embeds",
+  category: "other",
   defaultProps: { src: "", height: "400px", title: "Embed" },
   translatableProps: [],
   sharedProps: ["src", "height", "title"],

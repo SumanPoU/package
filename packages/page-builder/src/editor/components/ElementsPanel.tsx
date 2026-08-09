@@ -9,23 +9,25 @@ import {
   type PaletteConfig,
 } from "../features";
 
-const CATEGORY_ORDER = [
-  "presets",
-  "layout",
-  "content",
-  "media",
-  "basic",
-  "embeds",
-] as const;
+const CATEGORY_ORDER = ["layout", "basic", "presets", "other"] as const;
 
 const CATEGORY_LABEL: Record<string, string> = {
-  presets: "Presets",
   layout: "Layout",
-  content: "Basic",
-  media: "Media",
   basic: "Basic",
-  embeds: "Embeds",
-  marketing: "Marketing",
+  presets: "Presets",
+  other: "Other",
+  // legacy aliases → folded in normalizeCategory
+  content: "Basic",
+  media: "Other",
+  embeds: "Other",
+};
+
+/** Fold legacy category ids into the four palette groups. */
+const normalizeCategory = (raw: string | undefined): string => {
+  const cat = raw || "basic";
+  if (cat === "content") return "basic";
+  if (cat === "media" || cat === "embeds") return "other";
+  return cat;
 };
 
 export type ElementsPanelProps = {
@@ -79,8 +81,13 @@ export const ElementsPanel = ({
   const categories = useMemo(() => {
     const map = new Map<string, typeof items>();
     for (const item of items) {
-      const cat = item.category || "basic";
-      if (isCategoryHidden(palette, cat)) continue;
+      const cat = normalizeCategory(item.category);
+      if (
+        isCategoryHidden(palette, cat) ||
+        isCategoryHidden(palette, item.category || "basic")
+      ) {
+        continue;
+      }
       const list = map.get(cat) ?? [];
       list.push(item);
       map.set(cat, list);

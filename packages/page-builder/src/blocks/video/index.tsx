@@ -120,7 +120,7 @@ const VideoContentFields = ({
 export const videoDefinition: BlockDefinition = {
   type: "video",
   label: "Video",
-  category: "media",
+  category: "other",
   defaultProps: { src: "" },
   defaultI18nProps: { en: { title: "Video" }, ne: { title: "भिडियो" } },
   translatableProps: ["title"],

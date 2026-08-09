@@ -77,11 +77,11 @@ const CREATE_FEATURES = {
 };
 
 /** Hide palette groups and/or individual blocks. Examples:
- *  hideCategories: ["embeds", "presets"]
+ *  hideCategories: ["other", "presets"]
  *  hideBlocks: ["html", "repeater"]
  */
 const CREATE_PALETTE: PaletteConfig = {
-  // hideCategories: ["embeds"],
+  // hideCategories: ["other"],
   // hideBlocks: ["html"],
 };
 

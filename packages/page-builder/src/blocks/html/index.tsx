@@ -65,7 +65,7 @@ const HtmlContentFields = ({
 export const htmlDefinition: BlockDefinition = {
   type: "html",
   label: "HTML",
-  category: "embeds",
+  category: "other",
   defaultProps: {},
   defaultI18nProps: {
     en: { html: "<p>Custom HTML</p>" },

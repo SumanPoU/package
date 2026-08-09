@@ -26,7 +26,8 @@
     "dist",
     "src/styles.css",
     "README.md",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "LICENSE"
   ],
   "scripts": {
     "generate:data": "node scripts/generate-data.mjs",

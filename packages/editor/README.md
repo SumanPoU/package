@@ -96,3 +96,14 @@ Flat props (`onUpload`, `maxLength`, `nepali`, …) still work and merge with `s
 ## Ref API
 
 `getHTML`, `getJSON`, `getText`, `setContent`, `clear`, `focus`, `blur`, `isEmpty`, `getEditor`
+
+## License
+
+[MIT](../../LICENSE) — Copyright (c) 2026 Suman Acharya.
+
+## Contributing & bugs
+
+- [CONTRIBUTING.md](../../CONTRIBUTING.md)
+- [Report a bug](https://github.com/SumanPoU/package/issues/new?template=bug_report.yml)
+- [SECURITY.md](../../SECURITY.md) for vulnerabilities (private only)
+

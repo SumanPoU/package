@@ -1,0 +1,94 @@
+name: Bug report
+description: Report a defect in an @itzsa package or the docs site
+title: "[bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug. Security issues go to [SECURITY.md](https://github.com/SumanPoU/package/blob/main/SECURITY.md) — **not** here.
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package / area
+      description: Where does the bug show up?
+      options:
+        - "@itzsa/page-builder"
+        - "@itzsa/table"
+        - "@itzsa/editor"
+        - "@itzsa/nepali-input"
+        - "@itzsa/nepali-datepicker"
+        - "@itzsa/nepal-geo"
+        - "@itzsa/nepal-geo-data"
+        - "@itzsa/bs-date"
+        - "@itzsa/nrb-forex"
+        - "@itzsa/nepal-pay"
+        - "@itzsa/a11y-toolbar"
+        - "@itzsa/captcha"
+        - Docs site / demos
+        - Other / unknown
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Package version
+      description: npm version if applicable (e.g. 0.1.0), or `main` / commit SHA.
+      placeholder: "0.1.0"
+    validations:
+      required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Clear, concise description of the bug.
+      placeholder: Expected X, got Y…
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps someone else can follow.
+      placeholder: |
+        1. …
+        2. …
+        3. …
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, OS, Node/pnpm, Next.js version if relevant.
+      placeholder: |
+        - OS:
+        - Browser:
+        - Node:
+        - pnpm:
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+      description: Screenshots, stack traces, minimal reproduction repo, or Page JSON snippet (no secrets).
+    validations:
+      required: false

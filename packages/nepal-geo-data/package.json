@@ -21,7 +21,8 @@
   "files": [
     "dist",
     "README.md",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "LICENSE"
   ],
   "scripts": {
     "generate:data": "node ../nepal-geo/scripts/generate-data.mjs",

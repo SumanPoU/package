@@ -55,4 +55,11 @@ Ward ids are `localId * 1000 + wardNumber` (`encodeWardId` / `decodeWardId`).
 
 ## License
 
-MIT — names from community open datasets of Nepal’s federal structure.
+[MIT](../../LICENSE) — Copyright (c) 2026 Suman Acharya. Place names from community open datasets of Nepal's federal structure.
+
+## Contributing & bugs
+
+- [CONTRIBUTING.md](../../CONTRIBUTING.md)
+- [Report a bug](https://github.com/SumanPoU/package/issues/new?template=bug_report.yml)
+- [SECURITY.md](../../SECURITY.md) for vulnerabilities (private only)
+

@@ -44,7 +44,8 @@
     "README.md",
     "IMPLEMENTATION.md",
     "BEHAVIOR.md",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "node ./scripts/clean-dist.mjs && tsup && node ./scripts/prepend-use-client.mjs && tsup --config tsup.browser.ts && node ./scripts/minify-css.mjs && node ./scripts/sync-cdn.mjs",

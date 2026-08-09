@@ -254,4 +254,11 @@ export async function GET(request: Request) {
 
 ## License
 
-MIT
+[MIT](../../LICENSE) — Copyright (c) 2026 Suman Acharya.
+
+## Contributing & bugs
+
+- [CONTRIBUTING.md](../../CONTRIBUTING.md)
+- [Report a bug](https://github.com/SumanPoU/package/issues/new?template=bug_report.yml)
+- [SECURITY.md](../../SECURITY.md) for vulnerabilities (private only)
+

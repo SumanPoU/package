@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/SumanPoU/package/security/advisories/new
+    about: Please do not open a public issue for security bugs. See SECURITY.md.
+  - name: Browse live docs
+    url: https://itzsa.acharya-suman.com.np/
+    about: Package documentation and demos for @itzsa/*.
+  - name: Contributing guide
+    url: https://github.com/SumanPoU/package/blob/main/CONTRIBUTING.md
+    about: Setup, PR guidelines, and commit conventions.

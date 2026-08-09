@@ -36,9 +36,12 @@ export async function POST(request: Request) {
     );
   }
 
-  const code = validateAuthorCode(page as Parameters<typeof validateAuthorCode>[0], {
-    allowedUrlOrigins: ["https://placehold.co", "https://picsum.photos"],
-  });
+  const code = validateAuthorCode(
+    page as Parameters<typeof validateAuthorCode>[0],
+    {
+      allowedUrlOrigins: ["https://placehold.co", "https://picsum.photos"],
+    },
+  );
   if (!code.ok) {
     return NextResponse.json(
       {

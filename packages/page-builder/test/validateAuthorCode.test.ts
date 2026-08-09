@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 
 import { PAGE_SCHEMA_VERSION } from "../src/constants";
-import { validateAuthorCode } from "../src/core/validateAuthorCode";
-import type { Page } from "../src/core/types";
 import {
   createEnglishOnlyLocaleConfig,
   createLocaleConfig,
   createNepaliOnlyLocaleConfig,
 } from "../src/core/localePresets";
+import type { Page } from "../src/core/types";
+import { validateAuthorCode } from "../src/core/validateAuthorCode";
 
 const basePage = (): Page => ({
   id: "p1",
@@ -27,7 +27,8 @@ describe("validateAuthorCode", () => {
 
   it("rejects @import in globalCss", () => {
     const page = basePage();
-    page.globalCss = '@import url("https://evil.example/x.css"); body { color: red; }';
+    page.globalCss =
+      '@import url("https://evil.example/x.css"); body { color: red; }';
     const result = validateAuthorCode(page);
     expect(result.ok).toBe(false);
     expect(result.cssErrors.some((m) => m.includes("@import"))).toBe(true);

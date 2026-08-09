@@ -5,12 +5,12 @@ import type { ReactNode } from "react";
 
 import { InstallCommand } from "@/components/install-command";
 import {
+  ADD_LOCALE_EXAMPLE,
   BACKGROUND_EXAMPLE,
+  BLOG_CARD_TREE_EXAMPLE,
   CANVAS_MODE_EXAMPLE,
   CAPABILITIES_EXAMPLE,
   CSS_EXAMPLE,
-  ADD_LOCALE_EXAMPLE,
-  BLOG_CARD_TREE_EXAMPLE,
   DATA_BINDING_EXAMPLE,
   DATA_MODEL_EXAMPLE,
   DYNAMIC_BLOCK_EXAMPLE,
@@ -38,8 +38,8 @@ import {
   DocSection,
   DocsShell,
   FeaturesTable,
-  PropsTable,
   type PropRow,
+  PropsTable,
 } from "./docs-ui";
 
 const PAGE_BUILDER_PROPS: PropRow[] = [
@@ -76,7 +76,8 @@ const PAGE_BUILDER_PROPS: PropRow[] = [
   {
     name: "onSave",
     type: "(page, { expectedRevision? }) => void | Promise",
-    description: "Persist Page JSON. Pass expectedRevision for optimistic concurrency.",
+    description:
+      "Persist Page JSON. Pass expectedRevision for optimistic concurrency.",
   },
   {
     name: "onPreview",
@@ -91,12 +92,14 @@ const PAGE_BUILDER_PROPS: PropRow[] = [
   {
     name: "capabilities",
     type: "PageBuilderCapabilities",
-    description: "Gate CSS, JS, registration, data binding (explicit false disables).",
+    description:
+      "Gate CSS, JS, registration, data binding (explicit false disables).",
   },
   {
     name: "uploadAsset",
     type: "(file: File) => Promise<{ url: string }>",
-    description: "CDN / media upload for Image Upload. Falls back to Base64 if omitted.",
+    description:
+      "CDN / media upload for Image Upload. Falls back to Base64 if omitted.",
   },
   {
     name: "fetchDataSource",
@@ -117,12 +120,14 @@ const PAGE_BUILDER_PROPS: PropRow[] = [
     name: "canvasMode",
     type: '"embedded" | "iframe"',
     default: '"embedded"',
-    description: "embedded = DnD canvas; iframe = sandboxed shell at canvasSrc.",
+    description:
+      "embedded = DnD canvas; iframe = sandboxed shell at canvasSrc.",
   },
   {
     name: "canvasSrc",
     type: "string",
-    description: "Required when canvasMode is iframe (e.g. /page-builder/canvas).",
+    description:
+      "Required when canvasMode is iframe (e.g. /page-builder/canvas).",
   },
   {
     name: "selectedId",
@@ -170,7 +175,8 @@ const REGISTER_PROPS: PropRow[] = [
   {
     name: "type",
     type: "string",
-    description: "Stable type id. Core primitives are unprefixed; tenant/plugin must be namespaced.",
+    description:
+      "Stable type id. Core primitives are unprefixed; tenant/plugin must be namespaced.",
   },
   {
     name: "label",
@@ -209,13 +215,15 @@ const CAPABILITY_ROWS: PropRow[] = [
     name: "allowCustomCss",
     type: "boolean",
     default: "true",
-    description: "Author globalCss / block customCss. Set false to hide and ignore.",
+    description:
+      "Author globalCss / block customCss. Set false to hide and ignore.",
   },
   {
     name: "allowCustomJs",
     type: "boolean",
     default: "true*",
-    description: "Author page JS (prefer false in production until you need it).",
+    description:
+      "Author page JS (prefer false in production until you need it).",
   },
   {
     name: "allowDataBinding",
@@ -287,8 +295,8 @@ export function DocsContent() {
           <Callout title="You own the data">
             The engine never imports your <code>services/</code>,{" "}
             <code>store/</code>, or routes. Persistence, auth, uploads, and
-            previews go through host callbacks (
-            <code>onSave</code>, <code>uploadAsset</code>, …).
+            previews go through host callbacks (<code>onSave</code>,{" "}
+            <code>uploadAsset</code>, …).
           </Callout>
           <div className="flex flex-wrap items-center gap-3 pt-1">
             <Link
@@ -318,8 +326,8 @@ export function DocsContent() {
           <P>
             Prefer a short path: register primitives → mount{" "}
             <code>PageBuilder</code> → save JSON → render with{" "}
-            <code>RenderPage</code> / <code>OpenPageView</code>. Canvas, Preview,
-            and Open Page share one React render path.
+            <code>RenderPage</code> / <code>OpenPageView</code>. Canvas,
+            Preview, and Open Page share one React render path.
           </P>
         </DocSection>
 
@@ -345,9 +353,9 @@ export function DocsContent() {
         >
           <CodeBlock code={EDITOR_EXAMPLE} language="tsx" />
           <Callout title="Parity rule">
-            If something is visible as page content in the canvas for the current{" "}
-            <code>renderContext</code>, it must render identically in Preview and
-            Open Page with the same JSON, author CSS, and locale.
+            If something is visible as page content in the canvas for the
+            current <code>renderContext</code>, it must render identically in
+            Preview and Open Page with the same JSON, author CSS, and locale.
           </Callout>
         </DocSection>
 
@@ -409,8 +417,8 @@ export function DocsContent() {
           <CodeBlock code={PREVIEW_ROUTE_EXAMPLE} language="tsx" />
           <Callout title="Never put Page JSON in the URL">
             Multi-locale trees + CSS blow past URL length limits. Use{" "}
-            <code>createPreviewSession</code> +{" "}
-            <code>buildPreviewUrl</code>, or a draft API that returns an id.
+            <code>createPreviewSession</code> + <code>buildPreviewUrl</code>, or
+            a draft API that returns an id.
           </Callout>
 
           <h4 className="text-[14px] font-medium text-primary">
@@ -433,8 +441,8 @@ export function DocsContent() {
               everything the editor had.
             </li>
             <li>
-              Same <code>localeConfig</code> + choose{" "}
-              <code>activeLocale</code> from the request (cookie, path, query).
+              Same <code>localeConfig</code> + choose <code>activeLocale</code>{" "}
+              from the request (cookie, path, query).
             </li>
             <li>
               Optional: pass <code>fetchDataSource</code> /{" "}
@@ -495,7 +503,11 @@ export function DocsContent() {
         >
           <Ul>
             <li>
-              Empty Flex/Grid shows <strong className="font-medium text-primary">Empty / Drop here</strong> — drop Heading, Text, Image, etc. into that zone.
+              Empty Flex/Grid shows{" "}
+              <strong className="font-medium text-primary">
+                Empty / Drop here
+              </strong>{" "}
+              — drop Heading, Text, Image, etc. into that zone.
             </li>
             <li>
               Content tab: Flex has direction, justify, align, gap, wrap; Grid
@@ -566,8 +578,8 @@ export function DocsContent() {
               <code>allowCustomJs</code>.
             </li>
             <li>
-              Re-validate on the server with{" "}
-              <code>validateAuthorCode</code> before persist (see API).
+              Re-validate on the server with <code>validateAuthorCode</code>{" "}
+              before persist (see API).
             </li>
           </Ul>
         </DocSection>
@@ -628,8 +640,8 @@ export function DocsContent() {
           <CodeBlock code={VISIBILITY_EXAMPLE} language="json" />
           <P>
             Resolve with the same <code>renderContext</code> and{" "}
-            <code>surface</code> in editor and published views so Preview matches
-            Open Page.
+            <code>surface</code> in editor and published views so Preview
+            matches Open Page.
           </P>
         </DocSection>
 
@@ -654,9 +666,7 @@ export function DocsContent() {
         >
           <CodeBlock code={CAPABILITIES_EXAMPLE} language="tsx" />
           <PropsTable rows={CAPABILITY_ROWS} caption="capabilities" />
-          <P>
-            Host chrome flags (demo create shell):
-          </P>
+          <P>Host chrome flags (demo create shell):</P>
           <CodeBlock code={HOST_CHROME_EXAMPLE} language="tsx" />
         </DocSection>
 
@@ -708,12 +718,11 @@ export function DocsContent() {
           <PropsTable rows={PAGE_BUILDER_PROPS} caption="PageBuilderProps" />
         </DocSection>
 
-        <DocSection
-          id="api-render"
-          title="RenderPage / OpenPageView"
-          level={3}
-        >
-          <PropsTable rows={RENDER_PAGE_PROPS} caption="RenderPageProps (core)" />
+        <DocSection id="api-render" title="RenderPage / OpenPageView" level={3}>
+          <PropsTable
+            rows={RENDER_PAGE_PROPS}
+            caption="RenderPageProps (core)"
+          />
           <P>
             <code>OpenPageView</code> adds <code>nonce</code>,{" "}
             <code>cssOptions</code>, and <code>injectAuthorCode</code> (default
@@ -722,7 +731,10 @@ export function DocsContent() {
         </DocSection>
 
         <DocSection id="api-register" title="registerBlock" level={3}>
-          <PropsTable rows={REGISTER_PROPS} caption="BlockDefinition (key fields)" />
+          <PropsTable
+            rows={REGISTER_PROPS}
+            caption="BlockDefinition (key fields)"
+          />
         </DocSection>
 
         <DocSection
@@ -736,8 +748,8 @@ export function DocsContent() {
               <code>onSave</code> — persist Page JSON (+ revision).
             </li>
             <li>
-              <code>onPreview</code> / <code>onOpenPage</code> — navigate with an
-              opaque id, not serialized JSON in the URL.
+              <code>onPreview</code> / <code>onOpenPage</code> — navigate with
+              an opaque id, not serialized JSON in the URL.
             </li>
             <li>
               <code>uploadAsset</code> — return a stable CDN URL.
@@ -807,8 +819,8 @@ export function DocsContent() {
           <CodeBlock code={REGISTER_BLOCK_EXAMPLE} language="tsx" />
           <Callout title="Checklist">
             Namespace non-core types (<code>tenant:</code> /{" "}
-            <code>plugin:</code>). Duplicate <code>type</code> throws — no silent
-            override. No <code>eval</code>. Unknown types still get{" "}
+            <code>plugin:</code>). Duplicate <code>type</code> throws — no
+            silent override. No <code>eval</code>. Unknown types still get{" "}
             <code>FallbackBlock</code>.
           </Callout>
         </DocSection>
@@ -821,28 +833,29 @@ export function DocsContent() {
         >
           <Ul>
             <li>
-              Non-core types <strong className="font-medium text-primary">must</strong>{" "}
-              be <code>tenant:…</code> or <code>plugin:vendor.block</code>.
+              Non-core types{" "}
+              <strong className="font-medium text-primary">must</strong> be{" "}
+              <code>tenant:…</code> or <code>plugin:vendor.block</code>.
             </li>
             <li>
-              Cannot register <code>tenant:heading</code> — bare ids are reserved
-              for core.
+              Cannot register <code>tenant:heading</code> — bare ids are
+              reserved for core.
             </li>
             <li>
-              Duplicate <code>type</code> throws. <code>render</code> ships in the
-              host/plugin bundle.
+              Duplicate <code>type</code> throws. <code>render</code> ships in
+              the host/plugin bundle.
             </li>
             <li>
-              Missing type at render → <code>FallbackBlock</code> (tree-preserving
-              placeholder).
+              Missing type at render → <code>FallbackBlock</code>{" "}
+              (tree-preserving placeholder).
             </li>
           </Ul>
           <CodeBlock code={REGISTER_BLOCK_EXAMPLE} language="tsx" />
           <P>
             Gate with <code>allowRegisterPluginBlocks</code> /{" "}
             <code>allowRegisterTenantBlocks</code> (default allow). Use{" "}
-            <code>createPageSchema(&#123; registry &#125;)</code> so live registry
-            refine accepts new types.
+            <code>createPageSchema(&#123; registry &#125;)</code> so live
+            registry refine accepts new types.
           </P>
         </DocSection>
 
@@ -864,8 +877,9 @@ export function DocsContent() {
               Live registry <code>.refine()</code> accepts the new types.
             </li>
             <li>
-              Template strings may use <code>&#123;&#123;props.fieldKey&#125;&#125;</code>{" "}
-              (same one-pass rules as repeater <code>&#123;&#123;item.*&#125;&#125;</code>).
+              Template strings may use{" "}
+              <code>&#123;&#123;props.fieldKey&#125;&#125;</code> (same one-pass
+              rules as repeater <code>&#123;&#123;item.*&#125;&#125;</code>).
             </li>
           </Ul>
           <CodeBlock code={DYNAMIC_BLOCK_EXAMPLE} language="tsx" />
@@ -903,8 +917,10 @@ export function DocsContent() {
               binding is inert.
             </li>
             <li>
-              Outline edits the <strong className="font-medium text-primary">template</strong>,
-              not N clones. Tokens: <code>&#123;&#123;item.field&#125;&#125;</code> only.
+              Outline edits the{" "}
+              <strong className="font-medium text-primary">template</strong>,
+              not N clones. Tokens:{" "}
+              <code>&#123;&#123;item.field&#125;&#125;</code> only.
             </li>
           </Ul>
           <CodeBlock code={DATA_BINDING_EXAMPLE} language="tsx" />
@@ -922,7 +938,8 @@ export function DocsContent() {
               <code>&#123; code, label, dir, flatSuffixes? &#125;</code>.
             </li>
             <li>
-              Keep <code>defaultLocale</code> / <code>fallbackLocale</code> valid.
+              Keep <code>defaultLocale</code> / <code>fallbackLocale</code>{" "}
+              valid.
             </li>
             <li>
               Pass the same <code>localeConfig</code> into{" "}
@@ -1007,7 +1024,8 @@ export function DocsContent() {
           <Callout title="Failure modes">
             Canvas styles Preview lacks → remove engine/demo CSS. Overlay chrome
             on Open Page → move to parent overlays. Locale differs per surface →
-            same <code>i18nResolve</code> + <code>activeLocale</code> everywhere.
+            same <code>i18nResolve</code> + <code>activeLocale</code>{" "}
+            everywhere.
           </Callout>
         </DocSection>
 
@@ -1018,14 +1036,14 @@ export function DocsContent() {
           description="Phase 19 — not shipped. Do not implement or rely on this path in v1 / v1.x."
         >
           <Callout title="Hard forbid">
-            Never <code>eval</code> / <code>new Function</code> of remote source.
-            Never load unsigned remote script as <code>render</code>. Use Model A
-            (bundled register) or Model B (JSON specs) instead.
+            Never <code>eval</code> / <code>new Function</code> of remote
+            source. Never load unsigned remote script as <code>render</code>.
+            Use Model A (bundled register) or Model B (JSON specs) instead.
           </Callout>
           <P>
             Future intent only: host-controlled URL, SRI / signature check, then{" "}
             <code>import(url)</code> of a vetted bundle — same iframe isolation.
-            Until then, document capability needs in <code>capabilities</code>;
+            Until then, document capability needs in <code>capabilities</code>—
             never invent an eval escape hatch.
           </P>
         </DocSection>

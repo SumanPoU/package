@@ -1,7 +1,4 @@
-import {
-  type CssParseOptions,
-  parseAuthorCss,
-} from "./cssParser";
+import { type CssParseOptions, parseAuthorCss } from "./cssParser";
 import { composePageJs, validateCustomScript } from "./customJsComposer";
 import type { CustomScript, Page } from "./types";
 
@@ -37,7 +34,12 @@ export const validateAuthorCode = (
 
   const walk = (blocks: Page["blocks"]) => {
     for (const block of blocks) {
-      collectCss(block.customCss, `block:${block.id}.customCss`, options, cssErrors);
+      collectCss(
+        block.customCss,
+        `block:${block.id}.customCss`,
+        options,
+        cssErrors,
+      );
       if (block.children?.length) walk(block.children);
     }
   };

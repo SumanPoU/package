@@ -271,9 +271,11 @@ export const createBlockFromDefinition = (def: {
   type: string;
   defaultProps: Record<string, unknown>;
   defaultI18nProps?: Block["i18nProps"];
-  defaultDataBinding?: Block["dataBinding"] | Omit<NonNullable<Block["dataBinding"]>, "itemTemplate"> & {
-    itemTemplate?: Block[];
-  };
+  defaultDataBinding?:
+    | Block["dataBinding"]
+    | (Omit<NonNullable<Block["dataBinding"]>, "itemTemplate"> & {
+        itemTemplate?: Block[];
+      });
   isContainer?: boolean;
 }): Block => ({
   id: createId(),

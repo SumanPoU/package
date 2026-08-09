@@ -58,13 +58,16 @@ export const useDragAndDrop = ({
     [registry],
   );
 
-  const startDragPreset = useCallback((presetId: string, e: React.PointerEvent) => {
-    const preset = getPreset(presetId);
-    if (!preset) return;
-    e.preventDefault();
-    setDrag({ kind: "preset", presetId, label: preset.label });
-    setPointer({ x: e.clientX, y: e.clientY });
-  }, []);
+  const startDragPreset = useCallback(
+    (presetId: string, e: React.PointerEvent) => {
+      const preset = getPreset(presetId);
+      if (!preset) return;
+      e.preventDefault();
+      setDrag({ kind: "preset", presetId, label: preset.label });
+      setPointer({ x: e.clientX, y: e.clientY });
+    },
+    [],
+  );
 
   const startDragMove = useCallback(
     (blockId: string, type: string, e: React.PointerEvent) => {
@@ -80,15 +83,18 @@ export const useDragAndDrop = ({
     (clientX: number, clientY: number): HoverTarget => {
       // display:contents dropzones are skipped by elementsFromPoint — walk DOM
       // with closest() from the topmost hit (and fall back to elementsFromPoint).
-      const top = document.elementFromPoint(clientX, clientY) as HTMLElement | null;
+      const top = document.elementFromPoint(
+        clientX,
+        clientY,
+      ) as HTMLElement | null;
       let dropEl =
         (top?.closest?.("[data-dropzone]") as HTMLElement | null) ?? null;
       if (!dropEl) {
         const els = document.elementsFromPoint(clientX, clientY);
         for (const el of els) {
-          const found = (el as HTMLElement).closest?.("[data-dropzone]") as
-            | HTMLElement
-            | null;
+          const found = (el as HTMLElement).closest?.(
+            "[data-dropzone]",
+          ) as HTMLElement | null;
           if (found) {
             dropEl = found;
             break;
@@ -175,8 +181,7 @@ export const useDragAndDrop = ({
           if (preset) {
             const parent = parentId ? findBlock(page.blocks, parentId) : null;
             const parentDef = parent ? registry.get(parent.type) : undefined;
-            const ok =
-              parentId === null || Boolean(parentDef?.isContainer);
+            const ok = parentId === null || Boolean(parentDef?.isContainer);
             if (ok) {
               const block = preset.create();
               try {

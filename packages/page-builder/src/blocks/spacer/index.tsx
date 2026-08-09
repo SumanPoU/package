@@ -22,10 +22,7 @@ export const SpacerElement = ({ block, props }: BlockRenderProps) => {
   );
 };
 
-const SpacerContentFields = ({
-  block,
-  onChange,
-}: BlockContentFieldsProps) => {
+const SpacerContentFields = ({ block, onChange }: BlockContentFieldsProps) => {
   const height =
     typeof block.props.height === "string" ? block.props.height : "24px";
   return (

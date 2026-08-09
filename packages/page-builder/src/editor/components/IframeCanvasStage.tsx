@@ -1,9 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-
-import type { BridgeMeasurePayload } from "../../canvas/canvasBridge";
 import { CanvasFrame } from "../../canvas/CanvasFrame";
+import type { BridgeMeasurePayload } from "../../canvas/canvasBridge";
 import type { PageBuilderCapabilities } from "../../core/capabilities";
 import type { FetchDataSource } from "../../core/dataBinding";
 import type { BlockRegistry } from "../../core/registry";

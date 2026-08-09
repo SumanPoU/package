@@ -1,9 +1,9 @@
 import { emitStyleTag } from "../canvas/injectStyles";
+import type { PageBuilderCapabilities } from "../core/capabilities";
 import type { CssParseOptions } from "../core/cssParser";
 import { composePageCss } from "../core/customCssComposer";
 import { composePageJs, emitScriptTag } from "../core/customJsComposer";
 import type { FetchDataSource } from "../core/dataBinding";
-import type { PageBuilderCapabilities } from "../core/capabilities";
 import type { BlockRegistry } from "../core/registry";
 import type { LocaleConfig, Page } from "../core/types";
 import type { RenderContext } from "../core/visibilityResolve";

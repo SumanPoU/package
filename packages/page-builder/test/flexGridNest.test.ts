@@ -1,15 +1,14 @@
 import { describe, expect, it } from "vitest";
-
+import { flexDefinition } from "../src/blocks/flex";
+import { gridDefinition } from "../src/blocks/grid";
+import { headingDefinition } from "../src/blocks/heading";
+import { textDefinition } from "../src/blocks/text";
 import {
   createBlockFromDefinition,
   findBlock,
   insertBlock,
 } from "../src/core/blockTree";
 import { createRegistry, registerBlock } from "../src/core/registry";
-import { flexDefinition } from "../src/blocks/flex";
-import { gridDefinition } from "../src/blocks/grid";
-import { headingDefinition } from "../src/blocks/heading";
-import { textDefinition } from "../src/blocks/text";
 
 describe("flex/grid nest children", () => {
   it("inserts heading into empty flex", () => {

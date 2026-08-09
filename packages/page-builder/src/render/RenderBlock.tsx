@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
 import {
-  type PageBuilderCapabilities,
   isDataBindingAllowed,
+  type PageBuilderCapabilities,
 } from "../core/capabilities";
 import {
-  expandRepeater,
   type BindingRenderContext,
   type BindingSourceData,
+  expandRepeater,
   type FetchDataSource,
 } from "../core/dataBinding";
 import { FallbackBlock } from "../core/fallbackBlock";
@@ -55,9 +55,7 @@ export const RenderBlock = ({
   const bindingAllowed = isDataBindingAllowed(capabilities);
   const bindingCtx = renderContext as BindingRenderContext;
   const sourceId = binding?.sourceId;
-  const hostItems = sourceId
-    ? bindingCtx.dataSources?.[sourceId]
-    : undefined;
+  const hostItems = sourceId ? bindingCtx.dataSources?.[sourceId] : undefined;
 
   const [fetched, setFetched] = useState<BindingSourceData | null>(null);
 
@@ -148,8 +146,7 @@ export const RenderBlock = ({
       );
     }
 
-    const sourceItems =
-      mergedCtx.dataSources?.[binding.sourceId]?.items ?? [];
+    const sourceItems = mergedCtx.dataSources?.[binding.sourceId]?.items ?? [];
 
     return (
       <Render block={block} props={{ ...resolved, bindingState: state }}>

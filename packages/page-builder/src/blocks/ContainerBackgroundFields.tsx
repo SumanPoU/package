@@ -167,8 +167,7 @@ export const ContainerBackgroundFields = ({
 
       <label className="pb-field" htmlFor={`${idPrefix}-bg-overlay`}>
         <span className="pb-field-label">
-          Dark overlay{" "}
-          <span className="pb-field-label-muted">{overlay}%</span>
+          Dark overlay <span className="pb-field-label-muted">{overlay}%</span>
         </span>
         <input
           id={`${idPrefix}-bg-overlay`}

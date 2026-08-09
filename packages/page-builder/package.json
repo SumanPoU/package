@@ -1,6 +1,6 @@
 {
   "name": "@itzsa/page-builder",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Drag-and-drop visual page builder — primitives, canvas, editor chrome, preview, author CSS/JS",
   "license": "MIT",
   "sideEffects": [

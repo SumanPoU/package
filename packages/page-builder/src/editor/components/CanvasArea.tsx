@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import type { BridgeMeasurePayload } from "../../canvas/canvasBridge";
+import { findBlock } from "../../core/blockTree";
 import {
-  type PageBuilderCapabilities,
   isDataBindingAllowed,
+  type PageBuilderCapabilities,
 } from "../../core/capabilities";
 import {
   type BindingRenderContext,
   type FetchDataSource,
   resolveBindingSource,
 } from "../../core/dataBinding";
-import { findBlock } from "../../core/blockTree";
 import { FallbackBlock } from "../../core/fallbackBlock";
 import { resolveProps } from "../../core/i18nResolve";
 import type { BlockRegistry } from "../../core/registry";
@@ -234,9 +234,7 @@ export const CanvasArea = ({
     );
   };
 
-  const selectedBlock = selectedId
-    ? findBlock(page.blocks, selectedId)
-    : null;
+  const selectedBlock = selectedId ? findBlock(page.blocks, selectedId) : null;
   const selectedGhost = selectedBlock
     ? resolveVisibility(selectedBlock, renderContext, "canvas") === "ghost"
     : false;

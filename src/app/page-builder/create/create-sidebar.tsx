@@ -1,6 +1,10 @@
 "use client";
 
-import type { BlockDefinition, BlockRegistry, PaletteConfig } from "@itzsa/page-builder";
+import type {
+  BlockDefinition,
+  BlockRegistry,
+  PaletteConfig,
+} from "@itzsa/page-builder";
 import {
   isBlockHidden,
   isCategoryHidden,
@@ -59,7 +63,13 @@ const PRESET_ICON: Record<string, ComponentType<{ className?: string }>> = {
   hero: PanelsTopLeft,
 };
 
-const CATEGORY_ORDER = ["presets", "layout", "basic", "media", "embeds"] as const;
+const CATEGORY_ORDER = [
+  "presets",
+  "layout",
+  "basic",
+  "media",
+  "embeds",
+] as const;
 const CATEGORY_LABEL: Record<string, string> = {
   presets: "Presets",
   layout: "Layout",
@@ -127,7 +137,10 @@ export function CreateElementsPanel({
     for (const item of filtered) {
       let cat = item.category || "basic";
       if (cat === "content") cat = "basic";
-      if (isCategoryHidden(palette, cat) || isCategoryHidden(palette, item.category || "basic")) {
+      if (
+        isCategoryHidden(palette, cat) ||
+        isCategoryHidden(palette, item.category || "basic")
+      ) {
         continue;
       }
       const list = map.get(cat) ?? [];
@@ -135,8 +148,7 @@ export function CreateElementsPanel({
       map.set(cat, list);
     }
     return CATEGORY_ORDER.filter(
-      (c) =>
-        !isCategoryHidden(palette, c) && (c === "presets" || map.has(c)),
+      (c) => !isCategoryHidden(palette, c) && (c === "presets" || map.has(c)),
     ).map((cat) => ({
       cat,
       label: CATEGORY_LABEL[cat] ?? cat,

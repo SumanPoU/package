@@ -12,6 +12,7 @@ import {
   createNepaliOnlyLocaleConfig,
   createPreviewSession,
   createRegistry,
+  type FetchDataSource,
   findBlock,
   findBlockPath,
   IframeCanvasStage,
@@ -20,9 +21,8 @@ import {
   PAGE_SCHEMA_VERSION,
   type Page,
   type PageBuilderCapabilities,
-  type PaletteConfig,
-  type FetchDataSource,
   PageBuilderHostProvider,
+  type PaletteConfig,
   registerDynamicBlock,
   registerPrimitives,
   removeBlock,
@@ -36,15 +36,14 @@ import {
 import "@itzsa/page-builder/styles.css";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-
+import { DEMO_PROMO_SPEC } from "../demo-promo-spec";
+import { SAMPLE_DATA_SOURCES } from "../sample-data-sources";
 import { BlockInspector } from "./block-inspector";
 import { CreateOutline } from "./create-outline";
 import { CreateLeftSidebar } from "./create-sidebar";
 import { loadDraftPage, saveDraftPage } from "./draft-store";
 import { type Device, EditorHeader } from "./editor-header";
 import { type PageMetadata, PageSettingsDialog } from "./page-settings-dialog";
-import { DEMO_PROMO_SPEC } from "../demo-promo-spec";
-import { SAMPLE_DATA_SOURCES } from "../sample-data-sources";
 import { SaveConflictDialog } from "./save-conflict-dialog";
 
 /** `default` | `en` | `ne` — swap to demo single-locale hosts. */
@@ -474,62 +473,62 @@ export function CreateBuilder() {
       />
 
       <PageBuilderHostProvider value={{ uploadAsset }}>
-      <div className="flex min-h-0 flex-1 overflow-hidden">
-        <CreateLeftSidebar
-          registry={registry}
-          leftTab={leftTab}
-          onLeftTabChange={setLeftTab}
-          onStartDragNew={dnd.startDragNew}
-          onStartDragPreset={dnd.startDragPreset}
-          allowDataBinding={CREATE_CAPABILITIES.allowDataBinding !== false}
-          palette={CREATE_PALETTE}
-          outline={outline}
-          inspector={inspector}
-          open={sidebarOpen}
-        />
+        <div className="flex min-h-0 flex-1 overflow-hidden">
+          <CreateLeftSidebar
+            registry={registry}
+            leftTab={leftTab}
+            onLeftTabChange={setLeftTab}
+            onStartDragNew={dnd.startDragNew}
+            onStartDragPreset={dnd.startDragPreset}
+            allowDataBinding={CREATE_CAPABILITIES.allowDataBinding !== false}
+            palette={CREATE_PALETTE}
+            outline={outline}
+            inspector={inspector}
+            open={sidebarOpen}
+          />
 
-        {CREATE_FEATURES.canvasMode === "iframe" ? (
-          <IframeCanvasStage
-            page={page}
-            registry={registry}
-            localeConfig={localeConfig}
-            activeLocale={activeLocale}
-            renderContext={renderContext}
-            selectedId={selectedId}
-            onSelect={setSelectedId}
-            canvasSrc={CREATE_FEATURES.canvasSrc}
-            device={device}
-            pageSlug={pageSlug}
-            capabilities={CREATE_CAPABILITIES}
-            fetchDataSource={fetchSampleDataSource}
-          />
-        ) : (
-          <CanvasArea
-            page={page}
-            registry={registry}
-            localeConfig={localeConfig}
-            activeLocale={activeLocale}
-            renderContext={renderContext}
-            drag={dnd.drag}
-            hover={dnd.hover}
-            selectedId={selectedId}
-            isDraggingOverRoot={dnd.isDraggingOverRoot}
-            canvasRef={dnd.canvasRef}
-            onDeselect={() => setSelectedId(null)}
-            onSelect={setSelectedId}
-            onStartMove={dnd.startDragMove}
-            onRemove={handleRemoveBlock}
-            onMoveUp={(id) => handleMoveBlock(id, -1)}
-            onMoveDown={(id) => handleMoveBlock(id, 1)}
-            registerRef={dnd.registerRef}
-            authorCss={authorCss}
-            device={device}
-            pageSlug={pageSlug}
-            capabilities={CREATE_CAPABILITIES}
-            fetchDataSource={fetchSampleDataSource}
-          />
-        )}
-      </div>
+          {CREATE_FEATURES.canvasMode === "iframe" ? (
+            <IframeCanvasStage
+              page={page}
+              registry={registry}
+              localeConfig={localeConfig}
+              activeLocale={activeLocale}
+              renderContext={renderContext}
+              selectedId={selectedId}
+              onSelect={setSelectedId}
+              canvasSrc={CREATE_FEATURES.canvasSrc}
+              device={device}
+              pageSlug={pageSlug}
+              capabilities={CREATE_CAPABILITIES}
+              fetchDataSource={fetchSampleDataSource}
+            />
+          ) : (
+            <CanvasArea
+              page={page}
+              registry={registry}
+              localeConfig={localeConfig}
+              activeLocale={activeLocale}
+              renderContext={renderContext}
+              drag={dnd.drag}
+              hover={dnd.hover}
+              selectedId={selectedId}
+              isDraggingOverRoot={dnd.isDraggingOverRoot}
+              canvasRef={dnd.canvasRef}
+              onDeselect={() => setSelectedId(null)}
+              onSelect={setSelectedId}
+              onStartMove={dnd.startDragMove}
+              onRemove={handleRemoveBlock}
+              onMoveUp={(id) => handleMoveBlock(id, -1)}
+              onMoveDown={(id) => handleMoveBlock(id, 1)}
+              registerRef={dnd.registerRef}
+              authorCss={authorCss}
+              device={device}
+              pageSlug={pageSlug}
+              capabilities={CREATE_CAPABILITIES}
+              fetchDataSource={fetchSampleDataSource}
+            />
+          )}
+        </div>
       </PageBuilderHostProvider>
 
       {CREATE_FEATURES.canvasMode !== "iframe" && dnd.drag && dnd.pointer ? (

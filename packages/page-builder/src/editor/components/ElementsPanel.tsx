@@ -86,8 +86,7 @@ export const ElementsPanel = ({
       map.set(cat, list);
     }
     const ordered = CATEGORY_ORDER.filter(
-      (c) =>
-        !isCategoryHidden(palette, c) && (c === "presets" || map.has(c)),
+      (c) => !isCategoryHidden(palette, c) && (c === "presets" || map.has(c)),
     );
     for (const key of map.keys()) {
       if (!ordered.includes(key as (typeof CATEGORY_ORDER)[number])) {

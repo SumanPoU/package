@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
-
-import type { RegistrationCapabilities } from "./blockRegistrationGuard";
 import { blockRootAttrs } from "./blockClassName";
+import type { RegistrationCapabilities } from "./blockRegistrationGuard";
 import { createBlockId } from "./blockTree";
 import { applyPropsTemplate } from "./dataBinding";
 import { FallbackBlock } from "./fallbackBlock";
@@ -160,7 +159,9 @@ export const createDefinitionFromDynamicSpec = (
       ...fieldDefaults.i18nProps,
       ...(spec.defaultI18nProps ?? {}),
     },
-    translatableProps: spec.fields.filter((f) => f.translatable).map((f) => f.key),
+    translatableProps: spec.fields
+      .filter((f) => f.translatable)
+      .map((f) => f.key),
     sharedProps: spec.fields.filter((f) => !f.translatable).map((f) => f.key),
     propsSchema: buildPropsSchemaFromFields(spec.fields),
     render: Render,

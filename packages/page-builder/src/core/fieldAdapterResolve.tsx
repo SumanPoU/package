@@ -1,4 +1,4 @@
-import { z, type ZodType } from "zod";
+import { type ZodType, z } from "zod";
 
 import type { BlockContentFieldsProps } from "./types";
 
@@ -64,7 +64,10 @@ export const assertFieldSpecs = (
         },
       };
     }
-    if (field.kind === "select" && (!field.options || field.options.length === 0)) {
+    if (
+      field.kind === "select" &&
+      (!field.options || field.options.length === 0)
+    ) {
       return {
         ok: false,
         error: {
@@ -116,12 +119,14 @@ const readFieldValue = (
   if (field.translatable) {
     const raw = block.i18nProps?.[locale]?.[field.key];
     if (field.kind === "boolean") return Boolean(raw);
-    if (field.kind === "number") return typeof raw === "number" ? raw : Number(raw) || 0;
+    if (field.kind === "number")
+      return typeof raw === "number" ? raw : Number(raw) || 0;
     return typeof raw === "string" ? raw : raw != null ? String(raw) : "";
   }
   const raw = block.props[field.key];
   if (field.kind === "boolean") return Boolean(raw);
-  if (field.kind === "number") return typeof raw === "number" ? raw : Number(raw) || 0;
+  if (field.kind === "number")
+    return typeof raw === "number" ? raw : Number(raw) || 0;
   return typeof raw === "string" ? raw : raw != null ? String(raw) : "";
 };
 
@@ -172,7 +177,13 @@ export const createDynamicContentFields = (fields: DynamicFieldSpec[]) => {
                 checked={Boolean(value)}
                 aria-label={label}
                 onChange={(e) =>
-                  writeFieldValue(block, locale, field, e.target.checked, onChange)
+                  writeFieldValue(
+                    block,
+                    locale,
+                    field,
+                    e.target.checked,
+                    onChange,
+                  )
                 }
               />
             </label>
@@ -188,7 +199,13 @@ export const createDynamicContentFields = (fields: DynamicFieldSpec[]) => {
                 value={String(value)}
                 aria-label={label}
                 onChange={(e) =>
-                  writeFieldValue(block, locale, field, e.target.value, onChange)
+                  writeFieldValue(
+                    block,
+                    locale,
+                    field,
+                    e.target.value,
+                    onChange,
+                  )
                 }
               >
                 {(field.options ?? []).map((opt) => (
@@ -211,7 +228,13 @@ export const createDynamicContentFields = (fields: DynamicFieldSpec[]) => {
                 value={String(value)}
                 aria-label={label}
                 onChange={(e) =>
-                  writeFieldValue(block, locale, field, e.target.value, onChange)
+                  writeFieldValue(
+                    block,
+                    locale,
+                    field,
+                    e.target.value,
+                    onChange,
+                  )
                 }
               />
             </label>
@@ -242,7 +265,11 @@ export const createDynamicContentFields = (fields: DynamicFieldSpec[]) => {
         }
 
         const inputType =
-          field.kind === "url" ? "url" : field.kind === "image" ? "url" : "text";
+          field.kind === "url"
+            ? "url"
+            : field.kind === "image"
+              ? "url"
+              : "text";
 
         return (
           <label key={field.key} className="pb-field" htmlFor={id}>

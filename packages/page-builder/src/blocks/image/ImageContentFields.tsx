@@ -1,9 +1,8 @@
 "use client";
 
 import { useId } from "react";
-
-import type { BlockContentFieldsProps } from "../../core/types";
 import { getBlockStyle } from "../../core/blockStyleCss";
+import type { BlockContentFieldsProps } from "../../core/types";
 import { LinkFields } from "../LinkFields";
 import { MediaUrlField } from "../MediaUrlField";
 import { DEFAULT_IMAGE_SRC } from "./defaultSrc";
@@ -28,8 +27,7 @@ export const ImageContentFields = ({
 
   const rawSrc = typeof block.props.src === "string" ? block.props.src : "";
   const previewSrc = rawSrc.trim() || DEFAULT_IMAGE_SRC;
-  const width =
-    typeof block.props.width === "string" ? block.props.width : "";
+  const width = typeof block.props.width === "string" ? block.props.width : "";
   const height =
     typeof block.props.height === "string" ? block.props.height : "";
   const contentWidth =
@@ -144,7 +142,11 @@ export const ImageContentFields = ({
         </div>
       </div>
 
-      <LinkFields block={block} onChange={onChange} idPrefix={`img-${block.id}`} />
+      <LinkFields
+        block={block}
+        onChange={onChange}
+        idPrefix={`img-${block.id}`}
+      />
 
       <label className="pb-field" htmlFor={altId}>
         <span className="pb-field-label">Alt text</span>

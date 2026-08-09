@@ -2,9 +2,9 @@ export {
   badgeDefinition,
   boxDefinition,
   buttonDefinition,
+  ContainerBackgroundFields,
   codeDefinition,
   containerDefinition,
-  ContainerBackgroundFields,
   DEFAULT_IMAGE_SRC,
   dividerDefinition,
   embedDefinition,
@@ -16,17 +16,17 @@ export {
   imageDefinition,
   isGoogleMapsEmbedSrc,
   listDefinition,
-  mapDefinition,
   MediaUrlField,
+  mapDefinition,
+  type ParsedEmbed,
+  PRIMITIVE_DEFINITIONS,
   parseEmbedInput,
   parseGoogleMapsEmbed,
-  PRIMITIVE_DEFINITIONS,
   registerPrimitives,
   repeaterDefinition,
   spacerDefinition,
   textDefinition,
   videoDefinition,
-  type ParsedEmbed,
 } from "./blocks";
 export {
   CanvasDocument,
@@ -105,6 +105,13 @@ export {
   removeBlock,
   updateBlock,
 } from "./core/blockTree";
+export type { PageBuilderCapabilities as Capabilities } from "./core/capabilities";
+export {
+  isCapabilityAllowed,
+  isCustomCssAllowed,
+  isCustomJsAllowed,
+  isDataBindingAllowed,
+} from "./core/capabilities";
 export {
   type ClipboardPayload,
   clearClipboard,
@@ -125,11 +132,9 @@ export {
   composePageCss,
 } from "./core/customCssComposer";
 export {
-  isCapabilityAllowed,
-  isCustomCssAllowed,
-  isCustomJsAllowed,
-  isDataBindingAllowed,
-} from "./core/capabilities";
+  composePageJs,
+  emitScriptTag,
+} from "./core/customJsComposer";
 export {
   applyBindingsToBlock,
   applyPropsTemplate,
@@ -152,20 +157,16 @@ export {
   registerDynamicBlock,
   registerDynamicBlocks,
 } from "./core/dynamicBlock";
+export { FallbackBlock } from "./core/fallbackBlock";
 export {
   assertFieldSpecs,
   buildPropsSchemaFromFields,
   createDynamicContentFields,
   type DynamicFieldSpec,
-  type FieldKind,
   FIELD_KINDS,
+  type FieldKind,
   isFieldKind,
 } from "./core/fieldAdapterResolve";
-export {
-  composePageJs,
-  emitScriptTag,
-} from "./core/customJsComposer";
-export { FallbackBlock } from "./core/fallbackBlock";
 export {
   createDefaultLocaleConfig,
   getActiveLocaleDir,
@@ -182,11 +183,6 @@ export {
   ENGLISH_LOCALE,
   NEPALI_LOCALE,
 } from "./core/localePresets";
-export {
-  asCustomScript,
-  type AuthorCodeValidation,
-  validateAuthorCode,
-} from "./core/validateAuthorCode";
 export {
   type BlockRegistry,
   createRegistry,
@@ -236,23 +232,17 @@ export type {
   VisibleWhen,
 } from "./core/types";
 export {
+  type AuthorCodeValidation,
+  asCustomScript,
+  validateAuthorCode,
+} from "./core/validateAuthorCode";
+export {
   isVisibleAsPageContent,
   type RenderContext,
   type RenderSurface,
   resolveVisibility,
   type VisibilityResult,
 } from "./core/visibilityResolve";
-export {
-  CORE_PRESETS,
-  cardPreset,
-  createCardPreset,
-  createHeroPreset,
-  getPreset,
-  heroPreset,
-  listPresets,
-  PRESET_CATEGORY,
-  type PresetDefinition,
-} from "./presets";
 export { CanvasArea } from "./editor/components/CanvasArea";
 export { IframeCanvasStage } from "./editor/components/IframeCanvasStage";
 export { SelectionOverlay } from "./editor/components/SelectionOverlay";
@@ -266,12 +256,6 @@ export {
   isCategoryHidden,
   isPresetHidden,
 } from "./editor/features";
-export {
-  PageBuilderHostProvider,
-  type PageBuilderHostValue,
-  type UploadAsset,
-  usePageBuilderHost,
-} from "./editor/hostContext";
 export { useBlockHistory } from "./editor/hooks/useBlockHistory";
 export { useClipboard } from "./editor/hooks/useClipboard";
 export {
@@ -281,12 +265,28 @@ export {
 } from "./editor/hooks/useDragAndDrop";
 export { useKeyboardShortcuts } from "./editor/hooks/useKeyboardShortcuts";
 export {
+  PageBuilderHostProvider,
+  type PageBuilderHostValue,
+  type UploadAsset,
+  usePageBuilderHost,
+} from "./editor/hostContext";
+export {
   PageBuilder,
   type PageBuilderCapabilities,
   type PageBuilderProps,
   type UploadAsset as PageBuilderUploadAsset,
 } from "./editor/PageBuilder";
-export type { PageBuilderCapabilities as Capabilities } from "./core/capabilities";
+export {
+  CORE_PRESETS,
+  cardPreset,
+  createCardPreset,
+  createHeroPreset,
+  getPreset,
+  heroPreset,
+  listPresets,
+  PRESET_CATEGORY,
+  type PresetDefinition,
+} from "./presets";
 export {
   buildPreviewUrl,
   type CreatePreviewSessionInput,

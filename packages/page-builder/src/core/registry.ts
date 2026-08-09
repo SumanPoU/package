@@ -1,8 +1,8 @@
-import type { BlockDefinition } from "./types";
 import {
   type RegistrationCapabilities,
   registerBlockGuarded,
 } from "./blockRegistrationGuard";
+import type { BlockDefinition } from "./types";
 
 export type BlockRegistry = {
   register: (definition: BlockDefinition) => void;

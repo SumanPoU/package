@@ -2,8 +2,7 @@ import type { CSSProperties } from "react";
 
 import { blockRootAttrs } from "../../core/blockClassName";
 import type { BlockRenderProps } from "../../core/types";
-import { containerBackgroundStyle } from "../shared";
-import { asString } from "../shared";
+import { asString, containerBackgroundStyle } from "../shared";
 
 export const FlexElement = ({ block, props, children }: BlockRenderProps) => {
   const bg = containerBackgroundStyle(props);

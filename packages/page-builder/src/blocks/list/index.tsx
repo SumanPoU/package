@@ -72,8 +72,7 @@ const ListContentFields = ({
   const typeId = useId();
   const listStyle = (asString(block.props.listStyle, "disc") ||
     (block.props.ordered ? "decimal" : "disc")) as ListStyle;
-  const raw =
-    block.i18nProps?.[locale]?.items ?? block.props.items ?? "";
+  const raw = block.i18nProps?.[locale]?.items ?? block.props.items ?? "";
   const items = readItems(raw);
   const display =
     items.length > 0 ? items : ["First item", "Second item", "Third item"];
@@ -105,8 +104,7 @@ const ListContentFields = ({
     <div className="pb-content-fields">
       <label className="pb-field" htmlFor={typeId}>
         <span className="pb-field-label">
-          List type{" "}
-          <span className="pb-field-label-muted">(shared)</span>
+          List type <span className="pb-field-label-muted">(shared)</span>
         </span>
         <select
           id={typeId}

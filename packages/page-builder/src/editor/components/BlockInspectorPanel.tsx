@@ -55,8 +55,7 @@ export const BlockInspectorPanel = ({
       <h2 className="pb-panel-title">{def?.label ?? block.type}</h2>
       <section aria-label="Content">
         <h3 className="pb-panel-title">Content</h3>
-        {ContentFields &&
-        !(block.type === "repeater" && !allowDataBinding) ? (
+        {ContentFields && !(block.type === "repeater" && !allowDataBinding) ? (
           <ContentFields
             block={block}
             locale={locale}

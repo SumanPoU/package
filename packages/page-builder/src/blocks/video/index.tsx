@@ -91,9 +91,7 @@ const VideoContentFields = ({
       <MediaUrlField
         label="Video URL (YouTube, Vimeo, or mp4)"
         value={src}
-        onChange={(next) =>
-          onChange({ props: { ...block.props, src: next } })
-        }
+        onChange={(next) => onChange({ props: { ...block.props, src: next } })}
         placeholder="https://www.youtube.com/watch?v=…"
         hint="Paste a URL. Upload stores a media URL or Base64 (prefer mp4 via CDN)."
         accept="video/*,image/*"

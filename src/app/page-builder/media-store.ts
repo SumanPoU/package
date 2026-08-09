@@ -18,10 +18,7 @@ const store = (): Map<string, StoredMedia> => {
   return g.__pbMediaStore;
 };
 
-export const putMedia = (
-  contentType: string,
-  bytes: Buffer,
-): StoredMedia => {
+export const putMedia = (contentType: string, bytes: Buffer): StoredMedia => {
   const id = `m_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
   const row: StoredMedia = {
     id,

@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import type { Block } from "../src/core/types";
 import {
-  resolveVisibility,
   type RenderContext,
+  resolveVisibility,
 } from "../src/core/visibilityResolve";
 
 const baseCtx = (over: Partial<RenderContext> = {}): RenderContext => ({

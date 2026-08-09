@@ -30,8 +30,7 @@ export type BindingScope = {
   props?: Record<string, unknown>;
 };
 
-const TOKEN_RE =
-  /\{\{\s*((?:item|props)(?:\.[A-Za-z_][A-Za-z0-9_]*)+)\s*\}\}/g;
+const TOKEN_RE = /\{\{\s*((?:item|props)(?:\.[A-Za-z_][A-Za-z0-9_]*)+)\s*\}\}/g;
 
 const lookupPath = (
   root: Record<string, unknown> | undefined,
@@ -91,13 +90,12 @@ export const resolveBindingsInValue = (
   scope: BindingScope | Record<string, unknown>,
 ): unknown => {
   const normalized: BindingScope =
-    scope &&
-    typeof scope === "object" &&
-    ("item" in scope || "props" in scope)
+    scope && typeof scope === "object" && ("item" in scope || "props" in scope)
       ? (scope as BindingScope)
       : { item: scope as Record<string, unknown> };
 
-  if (typeof value === "string") return resolveTemplateString(value, normalized);
+  if (typeof value === "string")
+    return resolveTemplateString(value, normalized);
   if (Array.isArray(value)) {
     return value.map((v) => resolveBindingsInValue(v, normalized));
   }

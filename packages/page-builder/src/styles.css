@@ -806,7 +806,10 @@
 
 .pb-bg-type-btn.is-active {
   border-color: var(--pb-accent);
-  background: var(--pb-accent-soft, color-mix(in oklab, var(--pb-accent) 12%, white));
+  background: var(
+    --pb-accent-soft,
+    color-mix(in oklab, var(--pb-accent) 12%, white)
+  );
   color: var(--pb-accent);
 }
 
@@ -847,7 +850,10 @@
 
 .pb-align-btn.is-active {
   border-color: var(--pb-accent);
-  background: var(--pb-accent-soft, color-mix(in oklab, var(--pb-accent) 12%, white));
+  background: var(
+    --pb-accent-soft,
+    color-mix(in oklab, var(--pb-accent) 12%, white)
+  );
   color: var(--pb-accent);
 }
 
@@ -944,7 +950,10 @@
 
 .pb-icon-pick.is-active {
   border-color: var(--pb-accent);
-  background: var(--pb-accent-soft, color-mix(in oklab, var(--pb-accent) 12%, white));
+  background: var(
+    --pb-accent-soft,
+    color-mix(in oklab, var(--pb-accent) 12%, white)
+  );
 }
 
 .pb-link-row {

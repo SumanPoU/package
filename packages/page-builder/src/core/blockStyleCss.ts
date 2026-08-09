@@ -1,6 +1,6 @@
+import { backgroundStyleDeclarations } from "../blocks/backgroundStyle";
 import { blockSelector } from "./blockClassName";
 import type { Block, Device } from "./types";
-import { backgroundStyleDeclarations } from "../blocks/backgroundStyle";
 
 export type SpacingBox = {
   t?: string;
@@ -214,9 +214,7 @@ export const buildStyleDeclarations = (
     const lsUnit = style.letterSpacingUnit ?? "px";
     const ls = style.letterSpacing.trim();
     const hasUnit = /[a-z%]+$/i.test(ls);
-    parts.push(
-      `letter-spacing:${hasUnit ? ls : `${ls}${lsUnit}`}`,
-    );
+    parts.push(`letter-spacing:${hasUnit ? ls : `${ls}${lsUnit}`}`);
   }
   if (style.textTransform && style.textTransform !== "none") {
     parts.push(`text-transform:${style.textTransform}`);

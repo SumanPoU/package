@@ -7,7 +7,13 @@ export const DEMO_PROMO_SPEC: DynamicBlockSpec = {
   category: "basic",
   source: "tenant",
   fields: [
-    { key: "title", kind: "text", label: "Title", translatable: true, defaultValue: "Special offer" },
+    {
+      key: "title",
+      kind: "text",
+      label: "Title",
+      translatable: true,
+      defaultValue: "Special offer",
+    },
     {
       key: "body",
       kind: "richText",

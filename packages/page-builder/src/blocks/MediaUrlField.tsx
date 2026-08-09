@@ -100,10 +100,7 @@ export const MediaUrlField = ({
             onChange(e.target.value);
           }}
           onBlur={() => {
-            if (
-              fallbackOnEmpty !== undefined &&
-              value.trim() === ""
-            ) {
+            if (fallbackOnEmpty !== undefined && value.trim() === "") {
               onChange(fallbackOnEmpty);
             }
           }}

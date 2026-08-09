@@ -6,8 +6,8 @@ import {
   createDefaultLocaleConfig,
   createRegistry,
   type LocaleConfig,
-  type Page,
   PAGE_SCHEMA_VERSION,
+  type Page,
   type RenderContext,
   registerPrimitives,
 } from "@itzsa/page-builder";

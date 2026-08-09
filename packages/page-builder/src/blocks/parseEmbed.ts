@@ -10,7 +10,10 @@ export type ParsedEmbed = {
 };
 
 const ATTR = (tag: string, name: string): string | undefined => {
-  const re = new RegExp(`\\s${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, "i");
+  const re = new RegExp(
+    `\\s${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`,
+    "i",
+  );
   const m = tag.match(re);
   return m?.[1] ?? m?.[2] ?? m?.[3];
 };

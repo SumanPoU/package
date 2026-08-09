@@ -17,13 +17,13 @@ export type ContainerBackgroundProps = {
 };
 
 const clampPct = (raw: unknown, fallback = 100): number => {
-  const n = typeof raw === "number" ? raw : Number.parseFloat(String(raw ?? ""));
+  const n =
+    typeof raw === "number" ? raw : Number.parseFloat(String(raw ?? ""));
   if (!Number.isFinite(n)) return fallback;
   return Math.min(100, Math.max(0, n));
 };
 
-const escapeUrl = (url: string): string =>
-  JSON.stringify(url).slice(1, -1);
+const escapeUrl = (url: string): string => JSON.stringify(url).slice(1, -1);
 
 /**
  * Author-owned background for containers / style CSS.
@@ -57,7 +57,11 @@ export const resolveBackgroundStyle = (
   if (type === "color") {
     const color = asString(props.backgroundColor).trim();
     if (!color) return undefined;
-    if (opacity < 1 && color.startsWith("#") && (color.length === 7 || color.length === 4)) {
+    if (
+      opacity < 1 &&
+      color.startsWith("#") &&
+      (color.length === 7 || color.length === 4)
+    ) {
       style.backgroundColor = hexToRgba(color, opacity);
     } else if (opacity < 1) {
       style.backgroundColor = color;
@@ -90,10 +94,8 @@ export const resolveBackgroundStyle = (
 const legacyImageStyle = (
   props: Record<string, unknown> | ContainerBackgroundProps,
   url: string,
-  overlay = clampPct(
-    (props as ContainerBackgroundProps).backgroundOverlay,
-    0,
-  ) / 100,
+  overlay = clampPct((props as ContainerBackgroundProps).backgroundOverlay, 0) /
+    100,
   opacity = clampPct(
     (props as ContainerBackgroundProps).backgroundOpacity,
     100,
@@ -120,7 +122,10 @@ const legacyImageStyle = (
   } else {
     style.backgroundSize = "cover";
   }
-  if (typeof props.backgroundPosition === "string" && props.backgroundPosition) {
+  if (
+    typeof props.backgroundPosition === "string" &&
+    props.backgroundPosition
+  ) {
     style.backgroundPosition = props.backgroundPosition;
   } else {
     style.backgroundPosition = "center";

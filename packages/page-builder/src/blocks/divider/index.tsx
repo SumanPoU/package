@@ -27,10 +27,7 @@ export const DividerElement = ({ block, props }: BlockRenderProps) => {
   );
 };
 
-const DividerContentFields = ({
-  block,
-  onChange,
-}: BlockContentFieldsProps) => {
+const DividerContentFields = ({ block, onChange }: BlockContentFieldsProps) => {
   const thickness = asString(block.props.thickness, "1px");
   const color = asString(block.props.color);
   return (

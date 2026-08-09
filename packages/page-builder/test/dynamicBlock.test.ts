@@ -1,12 +1,11 @@
 import { describe, expect, it } from "vitest";
-
+import type { DynamicBlockSpec } from "../src/core/dynamicBlock";
 import {
   createRegistry,
   registerDynamicBlock,
   registerPrimitives,
   resolveTemplateString,
 } from "../src/index";
-import type { DynamicBlockSpec } from "../src/core/dynamicBlock";
 
 const promoSpec = (): DynamicBlockSpec => ({
   type: "tenant:promo",

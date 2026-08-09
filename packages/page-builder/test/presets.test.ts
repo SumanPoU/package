@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { createCardPreset, createHeroPreset, listPresets } from "../src/presets";
+import {
+  createCardPreset,
+  createHeroPreset,
+  listPresets,
+} from "../src/presets";
 
 describe("presets", () => {
   it("lists card and hero", () => {

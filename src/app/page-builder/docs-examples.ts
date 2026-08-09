@@ -627,8 +627,7 @@ export const FEATURES_TABLE: { feature: string; description: string }[] = [
   },
   {
     feature: "Background",
-    description:
-      "Background Type color | image with opacity and dark overlay.",
+    description: "Background Type color | image with opacity and dark overlay.",
   },
   {
     feature: "Flex & Grid",
@@ -637,7 +636,6 @@ export const FEATURES_TABLE: { feature: string; description: string }[] = [
   },
   {
     feature: "Palette filters",
-    description:
-      "PaletteConfig hideCategories / hideBlocks / hidePresets.",
+    description: "PaletteConfig hideCategories / hideBlocks / hidePresets.",
   },
 ];

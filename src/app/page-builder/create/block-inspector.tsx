@@ -883,7 +883,9 @@ export function BlockInspector({
                   placeholder="400 or bold"
                   aria-label="Font weight"
                   onChange={(e) =>
-                    patchStyle({ fontWeight: e.target.value.trim() || undefined })
+                    patchStyle({
+                      fontWeight: e.target.value.trim() || undefined,
+                    })
                   }
                   className={fieldInput}
                 />
@@ -1073,7 +1075,8 @@ export function BlockInspector({
                           }
                           className={cn(
                             "flex flex-col items-center gap-1 rounded border py-2 text-[11px] transition-colors",
-                            activeStyle.bg === id && !activeStyle.backgroundColor
+                            activeStyle.bg === id &&
+                              !activeStyle.backgroundColor
                               ? chipSelected
                               : chipIdle,
                           )}
@@ -1281,7 +1284,9 @@ export function BlockInspector({
                     />
                   </label>
                   <label className="flex flex-col gap-1">
-                    <span className="text-[11px] text-gray-500">CSS Classes</span>
+                    <span className="text-[11px] text-gray-500">
+                      CSS Classes
+                    </span>
                     <input
                       type="text"
                       value={getBlockStyle(block).cssClasses ?? ""}
@@ -1407,51 +1412,51 @@ export function BlockInspector({
             </Section>
 
             {allowCustomCss ? (
-            <Section title="Custom CSS">
-              <div className="overflow-hidden rounded border border-gray-800 bg-gray-900">
-                <div className="px-2.5 py-1 font-mono text-[10px] text-gray-400">
-                  <span className="text-accent">.b-{block.id}</span>
-                  <span className="text-gray-500"> {"{"}</span>
+              <Section title="Custom CSS">
+                <div className="overflow-hidden rounded border border-gray-800 bg-gray-900">
+                  <div className="px-2.5 py-1 font-mono text-[10px] text-gray-400">
+                    <span className="text-accent">.b-{block.id}</span>
+                    <span className="text-gray-500"> {"{"}</span>
+                  </div>
+                  <textarea
+                    value={block.customCss ?? ""}
+                    onChange={(e) => onChange({ customCss: e.target.value })}
+                    placeholder={
+                      "color: red;\nmargin-top: 20px;\n/* declarations only – or use .element { ... } */"
+                    }
+                    rows={7}
+                    spellCheck={false}
+                    aria-label="Custom CSS"
+                    className="w-full resize-y border-0 bg-gray-900 px-2.5 py-1 font-mono text-[11px] text-green-400 outline-none placeholder:text-gray-600"
+                  />
+                  <div className="px-2.5 py-1 font-mono text-[10px] text-gray-500">
+                    {"}"}
+                  </div>
                 </div>
-                <textarea
-                  value={block.customCss ?? ""}
-                  onChange={(e) => onChange({ customCss: e.target.value })}
-                  placeholder={
-                    "color: red;\nmargin-top: 20px;\n/* declarations only – or use .element { ... } */"
-                  }
-                  rows={7}
-                  spellCheck={false}
-                  aria-label="Custom CSS"
-                  className="w-full resize-y border-0 bg-gray-900 px-2.5 py-1 font-mono text-[11px] text-green-400 outline-none placeholder:text-gray-600"
-                />
-                <div className="px-2.5 py-1 font-mono text-[10px] text-gray-500">
-                  {"}"}
-                </div>
-              </div>
-              <p className="text-[10px] leading-relaxed text-gray-500">
-                Enter CSS declarations only, or a full rule using{" "}
-                <code className="rounded bg-gray-100 px-1 py-0.5">
-                  .element
-                </code>{" "}
-                as a shortcut for{" "}
-                <code className="inline-block max-w-full break-all rounded bg-gray-100 px-1 py-0.5">
-                  .b-{block.id}
-                </code>
-                .
-              </p>
-            </Section>
+                <p className="text-[10px] leading-relaxed text-gray-500">
+                  Enter CSS declarations only, or a full rule using{" "}
+                  <code className="rounded bg-gray-100 px-1 py-0.5">
+                    .element
+                  </code>{" "}
+                  as a shortcut for{" "}
+                  <code className="inline-block max-w-full break-all rounded bg-gray-100 px-1 py-0.5">
+                    .b-{block.id}
+                  </code>
+                  .
+                </p>
+              </Section>
             ) : null}
 
             {allowCustomJs ? (
-            <Section title="Custom JS" defaultOpen={false}>
-              <CustomScriptEditor
-                value={block.customJs}
-                onChange={(customJs) => onChange({ customJs })}
-                ariaLabel="Block custom JavaScript"
-                hint="Runs on Preview / Open Page for this block’s page (composePageJs). Not injected into the editor canvas."
-                minRows={8}
-              />
-            </Section>
+              <Section title="Custom JS" defaultOpen={false}>
+                <CustomScriptEditor
+                  value={block.customJs}
+                  onChange={(customJs) => onChange({ customJs })}
+                  ariaLabel="Block custom JavaScript"
+                  hint="Runs on Preview / Open Page for this block’s page (composePageJs). Not injected into the editor canvas."
+                  minRows={8}
+                />
+              </Section>
             ) : null}
 
             <Section title="Code" defaultOpen={false}>

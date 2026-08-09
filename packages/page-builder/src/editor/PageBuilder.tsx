@@ -18,14 +18,11 @@ import { DragGhost } from "./components/DragGhost";
 import { IframeCanvasStage } from "./components/IframeCanvasStage";
 import { LeftSidebar } from "./components/LeftSidebar";
 import type { CanvasMode, PageBuilderUiFeatures } from "./features";
-import {
-  type UploadAsset,
-  PageBuilderHostProvider,
-} from "./hostContext";
 import { useBlockHistory } from "./hooks/useBlockHistory";
 import { useClipboard } from "./hooks/useClipboard";
 import { useDragAndDrop } from "./hooks/useDragAndDrop";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
+import { PageBuilderHostProvider, type UploadAsset } from "./hostContext";
 
 export type { PageBuilderCapabilities };
 export type { CanvasMode, PageBuilderUiFeatures, UploadAsset };

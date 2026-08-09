@@ -51,11 +51,20 @@ export const ImageElement = ({ block, props }: BlockRenderProps) => {
 
   if (href) {
     return (
-      <a {...root} href={href} {...linkAttrs} style={{ display: "inline-block", maxWidth: "100%" }}>
+      <a
+        {...root}
+        href={href}
+        {...linkAttrs}
+        style={{ display: "inline-block", maxWidth: "100%" }}
+      >
         {img}
       </a>
     );
   }
 
-  return <span {...root} style={{ display: "inline-block", maxWidth: "100%" }}>{img}</span>;
+  return (
+    <span {...root} style={{ display: "inline-block", maxWidth: "100%" }}>
+      {img}
+    </span>
+  );
 };

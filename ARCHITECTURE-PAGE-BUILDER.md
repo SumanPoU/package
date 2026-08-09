@@ -302,7 +302,7 @@ When normalizing flat keys → nested `i18nProps`, resolve deterministically:
 
 ### ADR-12 — No client-side eval of remote block render code
 
-**Decision:** Block `render` functions are never created via `eval` / `new Function` / unsigned remote script injection. See §24 Model A (bundled) vs Model B (data-driven). Signed dynamic `import()` from host-controlled URLs is **Phase 19 only**, not v1.
+**Decision:** Block `render` functions are never created via `eval` / `new Function` / unsigned remote script injection. See §24 Model A (bundled) vs Model B (data-driven). Signed dynamic `import()` from host-controlled URLs is **Phase 19** (`registerSignedBlock`) — opt-in, SRI + origin allow-list, default deny.
 
 ### ADR-13 — Web accessibility is mandatory for components
 
@@ -843,9 +843,9 @@ Load → migrate by `schemaVersion` → parse. Publish uses the same parse. Fail
 | 14 | v1.x | **§24 Model A** — namespaced `registerBlock`, collision errors, fallback renderer, capability gates |
 | 15 | v1.x | **§25 Repeater + DataSource binding** (after presets — same primitive-tree pattern) |
 | 16 | v1.x | **§24 Model B** — `fetchDynamicBlocks` JSON specs (composition of existing primitives only) |
-| 17 | v1.x | **Topic docs** under `docs/page-builder/` (Puck-style) for every shipped capability |
-| 18 | v1.x | Capability hardening / more primitives |
-| 19 | gated | Signed host-controlled dynamic `import()` for custom render (never eval) |
+| 17 | shipped | **Topic docs** under `docs/page-builder/` (Puck-style) for every shipped capability |
+| 18 | shipped | Capability hardening (`createProductionCapabilities`) + core primitives incl. quote/alert + a11y smoke |
+| 19 | shipped (opt-in) | Signed host-controlled dynamic `import()` for custom render (never eval); **default deny** |
 
 ---
 
@@ -1378,16 +1378,17 @@ Document once in `visibilityResolve.ts` — blocks must not special-case.
 
 **Hard security rule:** remote code execution via dynamic eval of block render is forbidden — not a preference.
 
-### 24.3 Future / gated — signed dynamic import (Phase 19)
+### 24.3 Signed dynamic import (Phase 19)
 
-If white-label SaaS requires per-customer executable render without rebuilding the host:
+**Shipped, opt-in (default deny).** Hosts that need per-customer executable `render` without rebuilding:
 
-- Host-controlled URL only  
-- Subresource integrity / signature check  
-- `import(url)` of a vetted bundle — **never** inline eval  
-- Same iframe isolation for any script the bundle injects  
+- Host-controlled URL only (`allowedImportOrigins`)
+- Subresource integrity check on fetched bytes before load
+- `import()` of a vetted ESM blob — **never** inline eval
+- Capability `allowSignedBlockImport: true` required
+- Same iframe isolation for author scripts (ADR-02 / §22)
 
-Marked **not v1**.
+API: `registerSignedBlock` in `@itzsa/page-builder`. See `docs/page-builder/guides/phase-19-signed-import.md`.
 
 ### 24.4 Registration lifecycle
 
@@ -1403,6 +1404,7 @@ Marked **not v1**.
 
 - `docs/page-builder/guides/register-custom-block.md` (Model A)  
 - `docs/page-builder/guides/dynamic-block-data-binding.md` (Model B)
+- `docs/page-builder/guides/phase-19-signed-import.md` (signed `import()`)
 
 ---
 

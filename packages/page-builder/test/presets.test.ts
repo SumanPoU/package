@@ -7,9 +7,15 @@ import {
 } from "../src/presets";
 
 describe("presets", () => {
-  it("lists card and hero", () => {
+  it("lists core presets", () => {
     const ids = listPresets().map((p) => p.id);
-    expect(ids).toEqual(["card", "hero"]);
+    expect(ids).toEqual([
+      "card",
+      "hero",
+      "icon-box",
+      "image-box",
+      "testimonial",
+    ]);
   });
 
   it("card expands to box with image/heading/text/button", () => {

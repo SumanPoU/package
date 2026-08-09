@@ -1,18 +1,25 @@
 export {
+  accordionDefinition,
+  alertDefinition,
+  anchorDefinition,
+  audioDefinition,
   badgeDefinition,
   boxDefinition,
   buttonDefinition,
   ContainerBackgroundFields,
+  carouselDefinition,
   codeDefinition,
   containerDefinition,
   DEFAULT_IMAGE_SRC,
   dividerDefinition,
   embedDefinition,
   flexDefinition,
+  galleryDefinition,
   gridDefinition,
   headingDefinition,
   htmlDefinition,
   iconDefinition,
+  iconListDefinition,
   imageDefinition,
   isGoogleMapsEmbedSrc,
   listDefinition,
@@ -22,10 +29,15 @@ export {
   PRIMITIVE_DEFINITIONS,
   parseEmbedInput,
   parseGoogleMapsEmbed,
+  quoteDefinition,
+  readMoreDefinition,
   registerPrimitives,
   repeaterDefinition,
+  socialIconsDefinition,
   spacerDefinition,
+  tabsDefinition,
   textDefinition,
+  toggleDefinition,
   videoDefinition,
 } from "./blocks";
 export {
@@ -107,10 +119,12 @@ export {
 } from "./core/blockTree";
 export type { PageBuilderCapabilities as Capabilities } from "./core/capabilities";
 export {
+  createProductionCapabilities,
   isCapabilityAllowed,
   isCustomCssAllowed,
   isCustomJsAllowed,
   isDataBindingAllowed,
+  isSignedBlockImportAllowed,
 } from "./core/capabilities";
 export {
   type ClipboardPayload,
@@ -209,6 +223,18 @@ export {
   visibilityPredicateSchema,
   visibleWhenSchema,
 } from "./core/schema";
+export {
+  assertAllowedImportUrl,
+  extractBlockDefinition,
+  parseSriIntegrity,
+  type RegisterSignedBlockOptions,
+  registerSignedBlock,
+  type SignedBlockImportCapabilities,
+  type SignedBlockImportSpec,
+  type SignedImportFetch,
+  type SignedImportModule,
+  verifyBytesIntegrity,
+} from "./core/signedBlockImport";
 export type {
   Block,
   BlockContentFieldsProps,
@@ -281,11 +307,17 @@ export {
   cardPreset,
   createCardPreset,
   createHeroPreset,
+  createIconBoxPreset,
+  createImageBoxPreset,
+  createTestimonialPreset,
   getPreset,
   heroPreset,
+  iconBoxPreset,
+  imageBoxPreset,
   listPresets,
   PRESET_CATEGORY,
   type PresetDefinition,
+  testimonialPreset,
 } from "./presets";
 export {
   buildPreviewUrl,

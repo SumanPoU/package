@@ -248,14 +248,43 @@ export const DATA_BINDING_EXAMPLE = `<PageBuilder
 
 // Inside a Repeater template, bind with {{item.title}}`;
 
-export const CAPABILITIES_EXAMPLE = `capabilities={{
+export const CAPABILITIES_EXAMPLE = `import { createProductionCapabilities } from "@itzsa/page-builder";
+
+// Production / low-trust hosts — prefer the helper:
+capabilities={createProductionCapabilities()}
+
+// Or explicit:
+capabilities={{
   allowCustomCss: true,
   allowCustomJs: false,
   allowDataBinding: true,
   allowRegisterTenantBlocks: true,
   allowRegisterPluginBlocks: false,
   allowDynamicBlockDefs: true,
+  allowSignedBlockImport: false,
 }}`;
+
+export const SIGNED_IMPORT_EXAMPLE = `import {
+  createRegistry,
+  registerPrimitives,
+  registerSignedBlock,
+} from "@itzsa/page-builder";
+
+const registry = createRegistry();
+registerPrimitives(registry);
+
+await registerSignedBlock(
+  registry,
+  {
+    url: "https://cdn.example.com/blocks/tenant-callout.js",
+    integrity: "sha384-…",
+    expectedType: "tenant:callout",
+  },
+  {
+    capabilities: { allowSignedBlockImport: true },
+    allowedImportOrigins: ["https://cdn.example.com"],
+  },
+);`;
 
 export const CANVAS_MODE_EXAMPLE = `<PageBuilder
   canvasMode="iframe"

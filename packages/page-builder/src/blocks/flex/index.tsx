@@ -6,7 +6,7 @@ import { FlexElement } from "./FlexElement";
 
 export const flexDefinition: BlockDefinition = {
   type: "flex",
-  label: "Flex",
+  label: "Columns",
   category: "layout",
   isContainer: true,
   canAcceptChild: () => true,

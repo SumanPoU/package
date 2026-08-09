@@ -2,9 +2,12 @@ import { describe, expect, it } from "vitest";
 
 import {
   CANVAS_SANDBOX,
+  CORE_PRIMITIVE_TYPES,
   clearClipboard,
   copyBlockToClipboard,
+  createProductionCapabilities,
   createRegistry,
+  PRIMITIVE_DEFINITIONS,
   parseAuthorCss,
   parseBridgeMessage,
   registerPrimitives,
@@ -13,22 +16,13 @@ import {
 } from "../src/index";
 
 describe("primitives registry", () => {
-  it("registers core primitives without drift", () => {
+  it("registers every CORE_PRIMITIVE_TYPES id without drift", () => {
     const registry = createRegistry();
     registerPrimitives(registry);
-    for (const type of [
-      "box",
-      "container",
-      "flex",
-      "grid",
-      "heading",
-      "text",
-      "image",
-      "button",
-      "divider",
-      "spacer",
-      "repeater",
-    ]) {
+    expect(PRIMITIVE_DEFINITIONS.map((d) => d.type).toSorted()).toEqual(
+      [...CORE_PRIMITIVE_TYPES].toSorted(),
+    );
+    for (const type of CORE_PRIMITIVE_TYPES) {
       const def = registry.get(type);
       expect(def, type).toBeDefined();
       expect(def?.render).toBeTypeOf("function");
@@ -36,7 +30,19 @@ describe("primitives registry", () => {
       expect(def?.propsSchema).toBeDefined();
       expect(Array.isArray(def?.translatableProps)).toBe(true);
       expect(Array.isArray(def?.sharedProps)).toBe(true);
+      expect(def?.source).toBe("core");
     }
+  });
+});
+
+describe("createProductionCapabilities", () => {
+  it("hardens JS / plugins / signed import for production hosts", () => {
+    const caps = createProductionCapabilities();
+    expect(caps.allowCustomJs).toBe(false);
+    expect(caps.allowRegisterPluginBlocks).toBe(false);
+    expect(caps.allowSignedBlockImport).toBe(false);
+    expect(caps.allowCustomCss).toBe(true);
+    expect(caps.allowDataBinding).toBe(true);
   });
 });
 

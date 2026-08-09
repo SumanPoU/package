@@ -41,5 +41,5 @@ export const DOC_NAV: NavItem[] = [
   { id: "guide-locale", label: "Add a locale", indent: true },
   { id: "guide-custom-css", label: "Custom CSS / JS", indent: true },
   { id: "guide-render-parity", label: "Render parity", indent: true },
-  { id: "guide-signed-import", label: "Signed import (gated)", indent: true },
+  { id: "guide-signed-import", label: "Signed import", indent: true },
 ];

@@ -1,31 +1,74 @@
-# Phase 19 — signed dynamic import (GATED)
+# Phase 19 — signed dynamic import
 
-**Status: GATED / not shipped.** Do not implement or rely on this path in v1 / v1.x product code.
+**Status: shipped (opt-in).** Default **deny**. Hosts must set `allowSignedBlockImport: true` and pass an origin allow-list.
 
-## Intent (future only)
+White-label SaaS can load per-customer **executable** `render` without rebuilding the host — only via a vetted ESM module.
 
-If white-label SaaS later needs per-customer **executable** `render` without rebuilding the host:
+## Flow
 
-- Host-controlled URL only
-- Subresource integrity / signature check before load
-- `import(url)` of a vetted bundle
-- Same iframe isolation for any script the bundle injects
+```text
+1. capability allowSignedBlockImport === true  (else throw)
+2. URL is https + origin ∈ allowedImportOrigins
+3. fetch(url) → bytes
+4. verify SRI integrity (sha256|sha384|sha512-<base64>)
+5. blob URL + import(blob) of verified bytes only
+6. export `definition` or `default` → registerBlock (namespaced)
+```
 
-## Hard forbid (now and forever for unsigned paths)
+Never `eval` / `new Function`. Integrity failure aborts **before** `import()`.
+
+## Host usage
+
+```ts
+import {
+  createRegistry,
+  registerPrimitives,
+  registerSignedBlock,
+} from "@itzsa/page-builder";
+
+const registry = createRegistry();
+registerPrimitives(registry);
+
+await registerSignedBlock(
+  registry,
+  {
+    url: "https://cdn.example.com/blocks/tenant-callout.js",
+    integrity: "sha384-…", // from your release pipeline
+    expectedType: "tenant:callout",
+  },
+  {
+    capabilities: { allowSignedBlockImport: true },
+    allowedImportOrigins: ["https://cdn.example.com"],
+  },
+);
+```
+
+### Remote module shape
+
+```ts
+// Built ESM on your CDN (peer: react). Do not inline secrets.
+export const definition = {
+  type: "tenant:callout",
+  label: "Callout",
+  source: "tenant",
+  // … propsSchema, render, ContentFields
+};
+```
+
+`source: "core"` from a remote module is rejected.
+
+## Hard forbid
 
 | Forbidden | Use instead |
 | --- | --- |
 | `eval` / `new Function` of remote source | Never |
-| Unsigned remote script as `render` | Model A bundled register · Model B JSON specs |
-| “Trusted partner” skip of sandbox | Same sandbox + composers for everyone |
+| Unsigned remote script | Model A bundle · Model B JSON · or this API **with** SRI |
+| Empty / missing `allowedImportOrigins` | Explicit CDN origins |
+| Skipping capability | Explicit `allowSignedBlockImport: true` |
 
-ADR-12 / §24.3: signed dynamic `import()` is **Phase 19 only**, marked not v1. Phases 1–18 do not unblock this.
+## Isolation
 
-## Until then
-
-- Model A: bundle `BlockDefinition.render` with the host/plugin
-- Model B: JSON field specs + primitive template trees
-- Document capability needs in `capabilities`; never invent an eval escape hatch
+Author JS / canvas isolation is unchanged (§22). Remote block `render` runs in the same React tree as Model A — prefer `canvasMode: "iframe"` so page scripts stay sandboxed.
 
 ## Related
 

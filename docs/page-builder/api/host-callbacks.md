@@ -20,8 +20,27 @@ Engine never imports host `services/` / `store/` / `routes/`. All I/O is injecte
 | --- | --- |
 | `fetchDynamicBlocks?` | Model B JSON specs (§24) |
 | `fetchDataSource(sourceId, params)` | Strategy B client fetch (§25) |
-| `capabilities` | Who may CSS/JS / register / bind |
+| `capabilities` | Who may CSS/JS / register / bind / signed import |
 | `renderContext` | Locale, device, auth flags for visibility — **injected**, never fetched by engine |
+
+## Capabilities hardening
+
+Unset capabilities stay permissive (backward compatible). For production / multi-tenant hosts:
+
+```ts
+import { createProductionCapabilities } from "@itzsa/page-builder";
+
+<PageBuilder capabilities={createProductionCapabilities()} … />
+```
+
+| Production default | Value |
+| --- | --- |
+| `allowCustomJs` | `false` |
+| `allowRegisterPluginBlocks` | `false` |
+| `allowSignedBlockImport` | `false` |
+| `allowCustomCss` / `allowDataBinding` / `allowRegisterTenantBlocks` / `allowDynamicBlockDefs` | `true` |
+
+Always re-validate author CSS/JS and registration policy on the **server** at save/publish — client caps are not authority.
 
 ## `fetchDataSource` (Strategy B)
 

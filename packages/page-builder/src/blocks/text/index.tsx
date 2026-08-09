@@ -6,7 +6,7 @@ import { TextElement } from "./TextElement";
 
 export const textDefinition: BlockDefinition = {
   type: "text",
-  label: "Text",
+  label: "Text Editor",
   category: "basic",
   defaultProps: {},
   defaultI18nProps: { en: { content: "Paragraph text" } },

@@ -42,4 +42,8 @@ Integrator-facing documentation for `@itzsa/page-builder`.
 
 ### Guides
 
-[custom CSS/JS](./guides/custom-css-js.md) · [Model A](./guides/register-custom-block.md) · [Model B](./guides/dynamic-block-data-binding.md) · [blog card loop](./guides/dynamic-blog-card.md) · [show on site](./guides/show-page-on-site.md) · [Phase 19 gated](./guides/phase-19-signed-import.md)
+[custom CSS/JS](./guides/custom-css-js.md) · [Model A](./guides/register-custom-block.md) · [Model B](./guides/dynamic-block-data-binding.md) · [blog card loop](./guides/dynamic-blog-card.md) · [show on site](./guides/show-page-on-site.md) · [add a locale](./guides/add-a-locale.md) · [signed import](./guides/phase-19-signed-import.md)
+
+### §18.1 layout
+
+Matches architecture: `concepts/` (incl. author-css, accessibility, composition), `editor/`, `api/`, `guides/` (incl. show-page-on-site + phase-19-signed-import).

@@ -1,26 +1,34 @@
 # Accessibility (ADR-13)
 
-Every block `render` (canvas + Open Page) and all editor chrome must meet **WCAG 2.2 Level AA** and the repo Web Interface Guidelines. Accessibility is not optional polish.
+Every block `render` (canvas + Open Page) and all editor chrome must meet **WCAG 2.2 Level AA**. Accessibility is not optional polish.
 
 ## Contract
 
 | Surface | Requirement |
 | --- | --- |
-| Block `render` | Semantic HTML (`h1`–`h6`, `button`, `a`, `img` with `alt` from props/i18n); no click-only `div` buttons |
+| Block `render` | Semantic HTML (`h1`–`h6`, `button`, `a`, `img` with `alt`, `blockquote`, alerts with `role`); no click-only `div` buttons |
 | Editor chrome | Focusable controls, `aria-*` where needed; Outline / Inspector keyboard-operable |
 | Rich text | Sanitized subset stays keyboard-navigable; links have discernible text |
-| Locale / `dir` | Honor `lang` / `dir` from active locale (§19.5) |
+| Locale / `dir` | Honor `lang` / `dir` from active locale (§19) |
 
-## Why
+## Limits & failure modes
 
-Inaccessible primitives multiply inaccessible published pages. Editor chrome that cannot be used with keyboard/AT excludes authors.
+| Limit | Behavior |
+| --- | --- |
+| Host Model A `render` skips semantics | Engine cannot auto-fix; host owns a11y for custom types |
+| Decorative container backgrounds | Use CSS/background props — not a fake `<img>` without alt |
+| Empty `alt` on meaningful images | Author responsibility; smoke test only asserts `alt` attribute presence on the `image` primitive |
+
+## Smoke gate (§14)
+
+Package test `a11ySmoke.test.ts` renders every `CORE_PRIMITIVE_TYPES` `render` via `renderToStaticMarkup` and asserts semantic tags (no new a11y deps). New primitives must extend that list.
 
 ## Integrator rules
 
-- New primitives ship an a11y smoke check (§14)
-- Host-provided Model A `render` functions must satisfy the same semantic contract
-- Contrast / focus visibility apply to page content **and** parent chrome
+- New primitives ship an a11y smoke assertion
+- Host-provided Model A `render` must satisfy the same semantic contract
+- Prefer `createProductionCapabilities()` so custom JS stays off unless needed
 
 ## Related
 
-[render-parity](./render-parity.md) · [inspector-fields](../editor/inspector-fields.md) · [outline-tree](../editor/outline-tree.md)
+[render-parity](./render-parity.md) · [inspector-fields](../editor/inspector-fields.md) · [composition](./composition.md)

@@ -47,9 +47,9 @@ alwaysApply: false
   `render`.
 - Any "trusted partner" exception that skips the sandbox or the Model A/B
   distinction.
-- Signed dynamic `import()` of remote render bundles — this is Phase 19,
-  explicitly NOT v1. Do not implement it unless specifically asked to work
-  on that phase.
+- Signed dynamic `import()` of remote render bundles — Phase 19 via
+  `registerSignedBlock` only (SRI + origin allow-list +
+  `allowSignedBlockImport: true`). Never `eval` / `new Function`.
 
 ## Registration lifecycle
 

@@ -26,6 +26,7 @@ import {
   REGISTER_BLOCK_EXAMPLE,
   RENDER_PAGE_EXAMPLE,
   SAVE_TO_BACKEND_EXAMPLE,
+  SIGNED_IMPORT_EXAMPLE,
   THEME_EXAMPLE,
   TYPOGRAPHY_EXAMPLE,
   UPLOAD_EXAMPLE,
@@ -248,6 +249,13 @@ const CAPABILITY_ROWS: PropRow[] = [
     type: "boolean",
     default: "true",
     description: "Model B registerDynamicBlock(s).",
+  },
+  {
+    name: "allowSignedBlockImport",
+    type: "boolean",
+    default: "false (deny)",
+    description:
+      "Phase 19 registerSignedBlock — must be explicitly true (default deny).",
   },
 ];
 
@@ -474,8 +482,9 @@ export function DocsContent() {
           <P>
             Call <code>registerPrimitives(registry)</code> for heading, text,
             image, button, box/flex/grid, spacer, divider, and repeater. Card /
-            Hero presets expand to editable primitive trees — prefer composition
-            over mega-widgets.
+            Icon Box, Image Box, Testimonial, Card, and Hero presets expand to
+            editable primitive trees — prefer composition over mega-widgets.
+            WordPress Shortcode/Sidebar widgets are out of scope.
           </P>
           <CodeBlock code={REGISTER_BLOCK_EXAMPLE} language="tsx" />
           <Callout title="One render path">
@@ -1031,21 +1040,37 @@ export function DocsContent() {
 
         <DocSection
           id="guide-signed-import"
-          title="Signed dynamic import (gated)"
+          title="Signed dynamic import"
           level={3}
-          description="Phase 19 — not shipped. Do not implement or rely on this path in v1 / v1.x."
+          description="Phase 19 — opt-in. Fetch a host CDN ESM, verify SRI, then import() — never eval. Default deny."
         >
           <Callout title="Hard forbid">
             Never <code>eval</code> / <code>new Function</code> of remote
-            source. Never load unsigned remote script as <code>render</code>.
-            Use Model A (bundled register) or Model B (JSON specs) instead.
+            source. Never skip SRI or the origin allow-list.{" "}
+            <code>allowSignedBlockImport</code> must be explicitly{" "}
+            <code>true</code>.
           </Callout>
-          <P>
-            Future intent only: host-controlled URL, SRI / signature check, then{" "}
-            <code>import(url)</code> of a vetted bundle — same iframe isolation.
-            Until then, document capability needs in <code>capabilities</code>—
-            never invent an eval escape hatch.
-          </P>
+          <Ul>
+            <li>
+              URL must be <code>https</code> and origin ∈{" "}
+              <code>allowedImportOrigins</code>.
+            </li>
+            <li>
+              Bytes verified against SRI (
+              <code>sha256|sha384|sha512-&lt;base64&gt;</code>) before{" "}
+              <code>import()</code>.
+            </li>
+            <li>
+              Module exports <code>definition</code> or <code>default</code>{" "}
+              <code>BlockDefinition</code> (namespaced <code>tenant:</code> /{" "}
+              <code>plugin:</code>).
+            </li>
+            <li>
+              Prefer <code>canvasMode: &quot;iframe&quot;</code> so page scripts
+              stay sandboxed.
+            </li>
+          </Ul>
+          <CodeBlock code={SIGNED_IMPORT_EXAMPLE} language="tsx" />
         </DocSection>
       </div>
     </DocsShell>

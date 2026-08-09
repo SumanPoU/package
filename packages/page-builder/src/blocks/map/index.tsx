@@ -163,7 +163,7 @@ const MapContentFields = ({ block, onChange }: BlockContentFieldsProps) => {
 
 export const mapDefinition: BlockDefinition = {
   type: "map",
-  label: "Google Map",
+  label: "Google Maps",
   category: "embeds",
   defaultProps: { src: "", height: "360px", title: "Google Map" },
   translatableProps: [],

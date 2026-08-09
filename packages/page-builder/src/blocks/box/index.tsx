@@ -32,7 +32,7 @@ const sharedProps = [
 
 export const boxDefinition: BlockDefinition = {
   type: "box",
-  label: "Box",
+  label: "Inner Section",
   category: "layout",
   isContainer: true,
   canAcceptChild: () => true,
@@ -49,5 +49,5 @@ export const boxDefinition: BlockDefinition = {
 export const containerDefinition: BlockDefinition = {
   ...boxDefinition,
   type: "container",
-  label: "Container",
+  label: "Section",
 };

@@ -1,29 +1,38 @@
 # Composition (primitives + presets)
 
-Pages are trees of **primitive** blocks (`box`, `heading`, `text`, `image`, `button`, `flex`, `grid`, …). Composites like “card” or “hero” are not separate block types — they are **presets**: one palette action that inserts a nested primitive tree.
+Complex UI is a **tree of primitives** (and optional presets that expand to trees). Locked mega-widgets (`blog-card`, composite heroes as single block types) are not the primary path (ADR-07).
 
-## Why
+## Shipped core primitives
 
-- Remix and restyle without forking a mega-widget
-- Stored JSON stays a normal `Block[]` (editable in outline / canvas)
-- Same `render` path for canvas, Preview, and Open Page (ADR-01 / ADR-07)
+**Layout (Elementor-style):** `container` (Section), `box` (Inner Section), `flex` (Columns), `grid`, `divider`, `spacer`  
+**Content:** `heading`, `text` (Text Editor), `list`, `badge`, `icon`, `icon-list`, `button`, `code`, `quote`, `alert`, `tabs`, `accordion`, `toggle`, `social-icons`, `anchor` (Menu Anchor), `read-more`  
+**Media:** `image`, `gallery`, `carousel`, `video`, `audio`  
+**Embeds:** `map` (Google Maps), `embed`, `html`  
+**Data:** `repeater`
 
-## Package API
+WordPress-only Elementor widgets (**Shortcode**, **Sidebar**) are intentionally out of scope — this engine is host-agnostic.
 
-```ts
-import {
-  listPresets,
-  getPreset,
-  createCardPreset,
-  createHeroPreset,
-} from "@itzsa/page-builder";
+## Presets (not block types)
 
-listPresets(); // [{ id: "card", … }, { id: "hero", … }]
-const tree = getPreset("card")?.create(); // Block root + children
-```
+`Card`, `Hero`, `Icon Box`, `Image Box`, and `Testimonial` insert nested primitive trees via the palette. Stored JSON remains editable blocks — never a frozen composite type.
 
-Presets live under `packages/page-builder/src/presets/`. DnD payload `kind: "preset"` expands via `create()` on drop — never stores a `type: "card"` block.
+## Forbidden as core types
 
-## Author CSS in presets
+| Pattern | Use instead |
+| --- | --- |
+| `blog-card` mega-widget | `repeater` + primitive template |
+| Locked `icon-box` / `image-box` / `testimonial` block types | Presets above |
+| WordPress Shortcode / Sidebar | Host-specific integration outside the engine |
+| Parallel `*.render.ts` HTML string builders | Single React `render` in the registry |
 
-Preset factories may set starter `customCss` on inserted nodes. That is **author CSS on the page JSON**, not engine decorative skins (ADR-03).
+## Limits
+
+| Limit | Behavior |
+| --- | --- |
+| Nesting depth | No hard engine cap; hosts may enforce product limits on save |
+| Unknown type | `FallbackBlock` — tree preserved |
+| Tenant composites | Model A namespaced `registerBlock` or Model B JSON specs |
+
+## Related
+
+[data-model](./data-model.md) · [registry](./registry.md) · [data-binding](./data-binding.md) · [add-a-block](../guides/add-a-block.md)

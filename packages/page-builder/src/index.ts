@@ -1,17 +1,32 @@
 export {
+  badgeDefinition,
   boxDefinition,
   buttonDefinition,
+  codeDefinition,
   containerDefinition,
+  ContainerBackgroundFields,
+  DEFAULT_IMAGE_SRC,
   dividerDefinition,
+  embedDefinition,
   flexDefinition,
   gridDefinition,
   headingDefinition,
+  htmlDefinition,
+  iconDefinition,
   imageDefinition,
+  isGoogleMapsEmbedSrc,
+  listDefinition,
+  mapDefinition,
+  MediaUrlField,
+  parseEmbedInput,
+  parseGoogleMapsEmbed,
   PRIMITIVE_DEFINITIONS,
   registerPrimitives,
   repeaterDefinition,
   spacerDefinition,
   textDefinition,
+  videoDefinition,
+  type ParsedEmbed,
 } from "./blocks";
 export {
   CanvasDocument,
@@ -161,6 +176,18 @@ export {
   serializeI18n,
 } from "./core/i18nResolve";
 export {
+  createEnglishOnlyLocaleConfig,
+  createLocaleConfig,
+  createNepaliOnlyLocaleConfig,
+  ENGLISH_LOCALE,
+  NEPALI_LOCALE,
+} from "./core/localePresets";
+export {
+  asCustomScript,
+  type AuthorCodeValidation,
+  validateAuthorCode,
+} from "./core/validateAuthorCode";
+export {
   type BlockRegistry,
   createRegistry,
   registerBlock,
@@ -227,7 +254,24 @@ export {
   type PresetDefinition,
 } from "./presets";
 export { CanvasArea } from "./editor/components/CanvasArea";
+export { IframeCanvasStage } from "./editor/components/IframeCanvasStage";
 export { SelectionOverlay } from "./editor/components/SelectionOverlay";
+export type {
+  CanvasMode,
+  PageBuilderUiFeatures,
+  PaletteConfig,
+} from "./editor/features";
+export {
+  isBlockHidden,
+  isCategoryHidden,
+  isPresetHidden,
+} from "./editor/features";
+export {
+  PageBuilderHostProvider,
+  type PageBuilderHostValue,
+  type UploadAsset,
+  usePageBuilderHost,
+} from "./editor/hostContext";
 export { useBlockHistory } from "./editor/hooks/useBlockHistory";
 export { useClipboard } from "./editor/hooks/useClipboard";
 export {
@@ -240,6 +284,7 @@ export {
   PageBuilder,
   type PageBuilderCapabilities,
   type PageBuilderProps,
+  type UploadAsset as PageBuilderUploadAsset,
 } from "./editor/PageBuilder";
 export type { PageBuilderCapabilities as Capabilities } from "./core/capabilities";
 export {

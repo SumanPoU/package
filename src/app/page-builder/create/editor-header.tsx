@@ -25,8 +25,10 @@ export type Device = "desktop" | "tablet" | "mobile";
 
 export type EditorHeaderProps = {
   pageName: string;
+  pageNameNp?: string;
   pageSlug: string;
   onPageNameChange: (value: string) => void;
+  onPageNameNpChange?: (value: string) => void;
   device: Device;
   onDeviceChange: (device: Device) => void;
   activeLocale: string;
@@ -45,14 +47,21 @@ export type EditorHeaderProps = {
   savedFlash?: boolean;
   sidebarOpen: boolean;
   onSidebarOpenChange: (open: boolean) => void;
+  /** Host feature: hide entire header chrome. Default true. */
+  showHeader?: boolean;
   /** Host feature: hide the Code (HTML/JSON) button and panel. Default true. */
   showCodePanel?: boolean;
+  showPreview?: boolean;
+  showOpenPage?: boolean;
+  showPublish?: boolean;
 };
 
 export function EditorHeader({
   pageName,
+  pageNameNp = "",
   pageSlug,
   onPageNameChange,
+  onPageNameNpChange,
   device,
   onDeviceChange,
   activeLocale,
@@ -71,9 +80,20 @@ export function EditorHeader({
   savedFlash = false,
   sidebarOpen,
   onSidebarOpenChange,
+  showHeader = true,
   showCodePanel = true,
+  showPreview = true,
+  showOpenPage = true,
+  showPublish = true,
 }: EditorHeaderProps) {
   const [codeOpen, setCodeOpen] = useState(false);
+
+  const isNepali = activeLocale === "ne";
+  const displayName = isNepali ? pageNameNp || pageName : pageName;
+  const handleNameChange = (value: string) => {
+    if (isNepali && onPageNameNpChange) onPageNameNpChange(value);
+    else onPageNameChange(value);
+  };
 
   /** Page document as Save / Publish would persist (draft title + slug folded into meta). */
   const pageDocument = useMemo<Page>(
@@ -82,11 +102,14 @@ export function EditorHeader({
       meta: {
         ...page.meta,
         title: pageName,
+        title_np: pageNameNp,
         slug: pageSlug,
       },
     }),
-    [page, pageName, pageSlug],
+    [page, pageName, pageNameNp, pageSlug],
   );
+
+  if (!showHeader) return null;
 
   return (
     <>
@@ -117,9 +140,10 @@ export function EditorHeader({
             <Globe className="h-3.5 w-3.5" />
           </div>
           <input
-            value={pageName}
-            onChange={(e) => onPageNameChange(e.target.value)}
-            aria-label="Page name"
+            value={displayName}
+            onChange={(e) => handleNameChange(e.target.value)}
+            aria-label={isNepali ? "Page name (Nepali)" : "Page name"}
+            placeholder={isNepali ? "पृष्ठको नाम" : "Page name"}
             className="h-8 w-40 rounded-md border border-transparent bg-transparent px-2 text-sm font-semibold tracking-tight text-foreground outline-none hover:border-border focus:border-accent focus:bg-card"
           />
           <span className="hidden max-w-[120px] truncate text-[11px] text-gray-400 sm:inline">
@@ -161,36 +185,42 @@ export function EditorHeader({
               <span className="hidden sm:inline">Code</span>
             </button>
           ) : null}
-          <button
-            type="button"
-            onClick={onPreview}
-            className="flex h-7 items-center gap-1 rounded-md px-2 text-[12px] text-gray-500 hover:bg-gray-50 hover:text-gray-800"
-          >
-            <ExternalLink className="h-3.5 w-3.5" /> Preview
-          </button>
-          <button
-            type="button"
-            onClick={onOpenPage}
-            className="flex h-7 items-center gap-1 rounded-md px-2 text-[12px] text-gray-500 hover:bg-gray-50 hover:text-gray-800"
-          >
-            Open Page
-          </button>
-          <button
-            type="button"
-            onClick={onPublish}
-            disabled={isPublishing}
-            className="flex h-8 items-center gap-1 rounded-md bg-gray-900 px-3.5 text-[12px] font-semibold text-white shadow-sm hover:bg-gray-800 disabled:opacity-60"
-          >
-            {savedFlash ? (
-              <>
-                <Check className="h-3 w-3" /> Saved
-              </>
-            ) : isPublishing ? (
-              "Publishing…"
-            ) : (
-              "Publish"
-            )}
-          </button>
+          {showPreview ? (
+            <button
+              type="button"
+              onClick={onPreview}
+              className="flex h-7 items-center gap-1 rounded-md px-2 text-[12px] text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+            >
+              <ExternalLink className="h-3.5 w-3.5" /> Preview
+            </button>
+          ) : null}
+          {showOpenPage ? (
+            <button
+              type="button"
+              onClick={onOpenPage}
+              className="flex h-7 items-center gap-1 rounded-md px-2 text-[12px] text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+            >
+              Open Page
+            </button>
+          ) : null}
+          {showPublish ? (
+            <button
+              type="button"
+              onClick={onPublish}
+              disabled={isPublishing}
+              className="flex h-8 items-center gap-1 rounded-md bg-gray-900 px-3.5 text-[12px] font-semibold text-white shadow-sm hover:bg-gray-800 disabled:opacity-60"
+            >
+              {savedFlash ? (
+                <>
+                  <Check className="h-3 w-3" /> Saved
+                </>
+              ) : isPublishing ? (
+                "Publishing…"
+              ) : (
+                "Publish"
+              )}
+            </button>
+          ) : null}
         </div>
       </header>
 

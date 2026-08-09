@@ -9,6 +9,7 @@ import {
   getBlockStyle,
   type LocaleConfig,
   type LocaleDefinition,
+  MediaUrlField,
   type SpacingBox,
 } from "@itzsa/page-builder";
 import {
@@ -48,6 +49,15 @@ const chipIdle =
 const fieldInput =
   "h-7 w-full rounded border border-border bg-card px-2 text-[11px] text-foreground outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground focus:border-accent focus:ring-1 focus:ring-accent/25";
 
+export type FontFamilyOption = { label: string; value: string };
+
+const DEFAULT_FONT_FAMILIES: FontFamilyOption[] = [
+  { label: "Sans", value: "ui-sans-serif, system-ui, sans-serif" },
+  { label: "Georgia", value: "Georgia, serif" },
+  { label: "Monospace", value: "ui-monospace, monospace" },
+  { label: "Times", value: "'Times New Roman', Times, serif" },
+];
+
 export type BlockInspectorProps = {
   block: Block;
   registry: BlockRegistry;
@@ -63,6 +73,8 @@ export type BlockInspectorProps = {
   allowCustomCss?: boolean;
   allowCustomJs?: boolean;
   allowDataBinding?: boolean;
+  /** Extra / replacement font stacks for the Typography select. */
+  fontFamilies?: FontFamilyOption[];
 };
 
 const emptySpacing = (): SpacingBox => ({
@@ -366,6 +378,7 @@ export function BlockInspector({
   allowCustomCss = true,
   allowCustomJs = true,
   allowDataBinding = true,
+  fontFamilies,
 }: BlockInspectorProps) {
   const [tab, setTab] = useState<PanelTab>("content");
   const def = registry.get(block.type);
@@ -797,13 +810,29 @@ export function BlockInspector({
                   className="h-8 w-full rounded border border-gray-200 px-2 text-[11px]"
                 >
                   <option value="">Default (System)</option>
-                  <option value="ui-sans-serif, system-ui, sans-serif">
-                    Sans
-                  </option>
-                  <option value="Georgia, serif">Georgia</option>
-                  <option value="ui-monospace, monospace">Monospace</option>
-                  <option value="'Times New Roman', Times, serif">Times</option>
+                  {(fontFamilies ?? DEFAULT_FONT_FAMILIES).map((f) => (
+                    <option key={f.value} value={f.value}>
+                      {f.label}
+                    </option>
+                  ))}
                 </select>
+                <input
+                  value={
+                    (fontFamilies ?? DEFAULT_FONT_FAMILIES).some(
+                      (f) => f.value === (activeStyle.fontFamily ?? ""),
+                    )
+                      ? ""
+                      : (activeStyle.fontFamily ?? "")
+                  }
+                  placeholder="Or type a custom font stack…"
+                  aria-label="Custom font family"
+                  onChange={(e) =>
+                    patchStyle({
+                      fontFamily: e.target.value.trim() || undefined,
+                    })
+                  }
+                  className={fieldInput}
+                />
               </div>
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between gap-2">
@@ -849,44 +878,18 @@ export function BlockInspector({
               </div>
               <div className="space-y-1.5">
                 <FieldLabel>Font weight</FieldLabel>
-                <div className="grid grid-cols-5 gap-1">
-                  {(
-                    [
-                      ["100", "100"],
-                      ["200", "200"],
-                      ["300", "300"],
-                      ["400", "400"],
-                      ["500", "500"],
-                      ["600", "600"],
-                      ["700", "700"],
-                      ["800", "800"],
-                      ["900", "900"],
-                    ] as const
-                  ).map(([id, label]) => {
-                    const aliases: Record<string, string> = {
-                      thin: "300",
-                      reg: "400",
-                      semi: "600",
-                      bold: "700",
-                    };
-                    const current =
-                      aliases[activeStyle.fontWeight ?? ""] ??
-                      activeStyle.fontWeight;
-                    return (
-                      <button
-                        key={id}
-                        type="button"
-                        onClick={() => patchStyle({ fontWeight: id })}
-                        className={cn(
-                          "rounded border py-1 font-mono text-[10px] transition-colors",
-                          current === id ? chipSelected : chipIdle,
-                        )}
-                      >
-                        {label}
-                      </button>
-                    );
-                  })}
-                </div>
+                <input
+                  value={activeStyle.fontWeight ?? ""}
+                  placeholder="400 or bold"
+                  aria-label="Font weight"
+                  onChange={(e) =>
+                    patchStyle({ fontWeight: e.target.value.trim() || undefined })
+                  }
+                  className={fieldInput}
+                />
+                <p className="text-[10px] text-muted-foreground">
+                  Type a number (100–900) or keyword (normal, bold).
+                </p>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1.5">
@@ -896,20 +899,37 @@ export function BlockInspector({
                     placeholder="1.5"
                     aria-label="Line height"
                     onChange={(e) => patchStyle({ lineHeight: e.target.value })}
-                    className="h-7 w-full rounded border border-gray-200 px-2 text-[11px] outline-none focus:border-gray-400"
+                    className={fieldInput}
                   />
                 </div>
                 <div className="space-y-1.5">
                   <FieldLabel>Letter spacing</FieldLabel>
-                  <input
-                    value={activeStyle.letterSpacing ?? ""}
-                    placeholder="0px"
-                    aria-label="Letter spacing"
-                    onChange={(e) =>
-                      patchStyle({ letterSpacing: e.target.value })
-                    }
-                    className="h-7 w-full rounded border border-gray-200 px-2 text-[11px] outline-none focus:border-gray-400"
-                  />
+                  <div className="flex gap-1">
+                    <input
+                      value={activeStyle.letterSpacing ?? ""}
+                      placeholder="0"
+                      inputMode="decimal"
+                      aria-label="Letter spacing"
+                      onChange={(e) =>
+                        patchStyle({ letterSpacing: e.target.value })
+                      }
+                      className={cn(fieldInput, "flex-1")}
+                    />
+                    <select
+                      value={activeStyle.letterSpacingUnit ?? "px"}
+                      aria-label="Letter spacing unit"
+                      onChange={(e) =>
+                        patchStyle({ letterSpacingUnit: e.target.value })
+                      }
+                      className="h-7 rounded border border-border bg-card px-1 text-[10px] outline-none focus:border-accent"
+                    >
+                      {["px", "em", "rem"].map((u) => (
+                        <option key={u} value={u}>
+                          {u}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
               <div className="space-y-1.5">
@@ -948,47 +968,173 @@ export function BlockInspector({
 
             <Section title="Background">
               <div className="space-y-1.5">
-                <FieldLabel>Preset</FieldLabel>
-                <div className="grid grid-cols-3 gap-1">
+                <FieldLabel>Background Type</FieldLabel>
+                <div className="grid grid-cols-2 gap-1">
                   {(
                     [
-                      ["none", "None", "bg-white border border-gray-200"],
-                      ["gray", "Gray", "bg-gray-100"],
-                      ["dark", "Dark", "bg-gray-800"],
+                      ["color", "Color"],
+                      ["image", "Image"],
                     ] as const
-                  ).map(([id, label, swatch]) => (
-                    <button
-                      key={id}
-                      type="button"
-                      onClick={() =>
-                        patchStyle({
-                          bg: id,
-                          backgroundColor: undefined,
-                        })
-                      }
-                      className={cn(
-                        "flex flex-col items-center gap-1 rounded border py-2 text-[11px] transition-colors",
-                        activeStyle.bg === id && !activeStyle.backgroundColor
-                          ? chipSelected
-                          : chipIdle,
-                      )}
-                    >
-                      <span className={cn("h-3 w-6 rounded", swatch)} />
-                      <span className="text-gray-500">{label}</span>
-                    </button>
-                  ))}
+                  ).map(([id, label]) => {
+                    const current =
+                      activeStyle.backgroundType ??
+                      (activeStyle.backgroundImage ? "image" : "color");
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        onClick={() => patchStyle({ backgroundType: id })}
+                        className={cn(
+                          "rounded border py-2 text-[11px] transition-colors",
+                          current === id ? chipSelected : chipIdle,
+                        )}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
-              <ColorField
-                label="Custom color"
-                value={activeStyle.backgroundColor}
-                onChange={(backgroundColor) =>
-                  patchStyle({
-                    backgroundColor,
-                    bg: backgroundColor ? "none" : activeStyle.bg,
-                  })
-                }
-              />
+              {(activeStyle.backgroundType ??
+                (activeStyle.backgroundImage ? "image" : "color")) ===
+              "image" ? (
+                <>
+                  <div className="pb-host-content-fields space-y-2">
+                    <MediaUrlField
+                      label="Background Image"
+                      value={activeStyle.backgroundImage ?? ""}
+                      onChange={(backgroundImage) =>
+                        patchStyle({
+                          backgroundImage,
+                          backgroundType: "image",
+                          bg: "none",
+                        })
+                      }
+                      placeholder="https://… or Upload"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1.5">
+                      <FieldLabel>Size</FieldLabel>
+                      <select
+                        value={activeStyle.backgroundSize ?? "cover"}
+                        aria-label="Background size"
+                        onChange={(e) =>
+                          patchStyle({ backgroundSize: e.target.value })
+                        }
+                        className="h-8 w-full rounded border border-gray-200 px-2 text-[11px]"
+                      >
+                        <option value="cover">Cover</option>
+                        <option value="contain">Contain</option>
+                        <option value="auto">Auto</option>
+                      </select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <FieldLabel>Position</FieldLabel>
+                      <select
+                        value={activeStyle.backgroundPosition ?? "center"}
+                        aria-label="Background position"
+                        onChange={(e) =>
+                          patchStyle({ backgroundPosition: e.target.value })
+                        }
+                        className="h-8 w-full rounded border border-gray-200 px-2 text-[11px]"
+                      >
+                        <option value="center">Center</option>
+                        <option value="top">Top</option>
+                        <option value="bottom">Bottom</option>
+                        <option value="left">Left</option>
+                        <option value="right">Right</option>
+                      </select>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="space-y-1.5">
+                    <FieldLabel>Preset</FieldLabel>
+                    <div className="grid grid-cols-3 gap-1">
+                      {(
+                        [
+                          ["none", "None", "bg-white border border-gray-200"],
+                          ["gray", "Gray", "bg-gray-100"],
+                          ["dark", "Dark", "bg-gray-800"],
+                        ] as const
+                      ).map(([id, label, swatch]) => (
+                        <button
+                          key={id}
+                          type="button"
+                          onClick={() =>
+                            patchStyle({
+                              bg: id,
+                              backgroundColor: undefined,
+                              backgroundType: "color",
+                              backgroundImage: undefined,
+                            })
+                          }
+                          className={cn(
+                            "flex flex-col items-center gap-1 rounded border py-2 text-[11px] transition-colors",
+                            activeStyle.bg === id && !activeStyle.backgroundColor
+                              ? chipSelected
+                              : chipIdle,
+                          )}
+                        >
+                          <span className={cn("h-3 w-6 rounded", swatch)} />
+                          <span className="text-gray-500">{label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <ColorField
+                    label="Custom color"
+                    value={activeStyle.backgroundColor}
+                    onChange={(backgroundColor) =>
+                      patchStyle({
+                        backgroundColor,
+                        backgroundType: "color",
+                        bg: backgroundColor ? "none" : activeStyle.bg,
+                      })
+                    }
+                  />
+                </>
+              )}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <FieldLabel>Background opacity</FieldLabel>
+                  <span className="font-mono text-[11px] text-gray-500">
+                    {activeStyle.backgroundOpacity ?? "100"}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  value={activeStyle.backgroundOpacity ?? "100"}
+                  aria-label="Background opacity"
+                  onChange={(e) =>
+                    patchStyle({ backgroundOpacity: e.target.value })
+                  }
+                  className="w-full accent-accent"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <FieldLabel>Dark overlay</FieldLabel>
+                  <span className="font-mono text-[11px] text-gray-500">
+                    {activeStyle.backgroundOverlay ?? "0"}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  value={activeStyle.backgroundOverlay ?? "0"}
+                  aria-label="Dark overlay"
+                  onChange={(e) =>
+                    patchStyle({ backgroundOverlay: e.target.value })
+                  }
+                  className="w-full accent-accent"
+                />
+              </div>
             </Section>
 
             <Section title="Border" alt>

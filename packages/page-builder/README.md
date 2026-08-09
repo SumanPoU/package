@@ -1,12 +1,23 @@
 # @itzsa/page-builder
 
-Drag-and-drop visual page builder for React (Elementor / Webflow / Puck class).
+Drag-and-drop visual page builder for React (Elementor / Webflow / [Puck](https://puckeditor.com) class).
 
-**Phase 1 (this release):** core data model, live block registry, immutable tree
-ops, Zod schemas, and first-class content locales (`i18nResolve`).
+Authors compose pages from registered blocks. **You own the data** — persist structured `Page` JSON. Canvas, Preview, and Open Page share **one React render path**.
 
-Architecture: see repo root `ARCHITECTURE-PAGE-BUILDER.md`. Topic docs:
-`docs/page-builder/`.
+Full docs (site): `/page-builder` in this monorepo. Design authority: `ARCHITECTURE-PAGE-BUILDER.md`. Topic tree: `docs/page-builder/`.
+
+## Features
+
+| Feature | Description |
+| --- | --- |
+| Block registry | Register React blocks (or use primitives) with fields + `render` |
+| Page JSON | Persist a schema-validated document — not a one-off HTML dump |
+| Render parity | Same `render` for canvas / preview / open |
+| Localization | First-class `i18nProps` with host-configured locales |
+| Author CSS / JS | Look from composers — no engine decorative skins |
+| Visibility | Device, locale, publish, `renderContext` predicates |
+| Data sources | Repeater + `{{item.*}}` via `fetchDataSource` |
+| Feature toggling | `capabilities` + host UI flags |
 
 ## Install
 
@@ -14,59 +25,155 @@ Architecture: see repo root `ARCHITECTURE-PAGE-BUILDER.md`. Topic docs:
 pnpm add @itzsa/page-builder zod
 ```
 
-Peer: `react`, `react-dom` (^18 || ^19).
+Peers: `react`, `react-dom` (^18 \|\| ^19).
 
-## Quick start
+```ts
+import "@itzsa/page-builder/styles.css";
+```
+
+## Render the editor
+
+```tsx
+import { useState } from "react";
+import {
+  PageBuilder,
+  createRegistry,
+  registerPrimitives,
+  createDefaultLocaleConfig,
+  PAGE_SCHEMA_VERSION,
+  type Page,
+} from "@itzsa/page-builder";
+import "@itzsa/page-builder/styles.css";
+
+const registry = createRegistry();
+registerPrimitives(registry);
+const localeConfig = createDefaultLocaleConfig();
+
+const initialPage: Page = {
+  id: "home",
+  schemaVersion: PAGE_SCHEMA_VERSION,
+  revision: "1",
+  meta: { title: "Home" },
+  blocks: [],
+};
+
+export function Editor() {
+  const [page, setPage] = useState(initialPage);
+  const [locale, setLocale] = useState(localeConfig.defaultLocale);
+
+  return (
+    <PageBuilder
+      page={page}
+      onChange={setPage}
+      registry={registry}
+      localeConfig={localeConfig}
+      activeLocale={locale}
+      onActiveLocaleChange={setLocale}
+      onSave={(next) => {
+        void savePage(next);
+      }}
+      capabilities={{ allowCustomCss: true, allowCustomJs: false }}
+    />
+  );
+}
+```
+
+## Render the page
+
+```tsx
+import {
+  RenderPage,
+  OpenPageView,
+  createRegistry,
+  registerPrimitives,
+  createDefaultLocaleConfig,
+  type Page,
+} from "@itzsa/page-builder";
+
+const registry = createRegistry();
+registerPrimitives(registry);
+const localeConfig = createDefaultLocaleConfig();
+
+export function PageView({ page, locale }: { page: Page; locale: string }) {
+  return (
+    <RenderPage
+      page={page}
+      registry={registry}
+      localeConfig={localeConfig}
+      activeLocale={locale}
+      surface="open"
+    />
+  );
+}
+
+export function PublishedPage({ page, locale }: { page: Page; locale: string }) {
+  return (
+    <OpenPageView
+      page={page}
+      registry={registry}
+      localeConfig={localeConfig}
+      activeLocale={locale}
+    />
+  );
+}
+```
+
+## Show page on your site (save → fetch → render)
+
+1. **Save** — `onSave` persists `Page` JSON to your API (not HTML as source of truth).
+2. **Preview** (optional) — `createPreviewSession` + `buildPreviewUrl` → another route loads with `loadPreviewSession` + `OpenPageView` (opaque id in URL only).
+3. **Public page** — fetch JSON by slug/id, then mount **`OpenPageView`** with the **same registry** as the editor.
+
+```tsx
+// Public route — this is the component visitors see
+const page = await getPageBySlug(slug); // your backend
+
+return (
+  <OpenPageView
+    page={page}
+    registry={registry}
+    localeConfig={localeConfig}
+    activeLocale={localeConfig.defaultLocale}
+  />
+);
+```
+
+Full guide: `docs/page-builder/guides/show-page-on-site.md` · live docs `/page-builder#show-on-site`.
+
+## Flex & Grid nesting
+
+Drop **Flex** or **Grid** on the canvas, then drop other blocks into the dashed **Empty / Drop here** zone. Children are stored on `block.children`.
+
+## Palette filters
+
+```ts
+palette={{
+  hideCategories: ["embeds"],
+  hideBlocks: ["html", "repeater"],
+}}
+```
+
+## Locales
 
 ```ts
 import {
-  createRegistry,
-  createDefaultLocaleConfig,
-  normalizeI18n,
-  resolveProps,
-  insertBlock,
-  createPageSchema,
-  PAGE_SCHEMA_VERSION,
-  type Block,
-  type BlockDefinition,
+  createDefaultLocaleConfig, // en + ne
+  createEnglishOnlyLocaleConfig,
+  createNepaliOnlyLocaleConfig,
+  createLocaleConfig,
 } from "@itzsa/page-builder";
-import { z } from "zod";
-
-const registry = createRegistry();
-const locales = createDefaultLocaleConfig();
-
-// registerBlock(registry, headingDefinition) — Phase 2 primitives
-
-const pageSchema = createPageSchema({
-  registry,
-  allowUnknownTypes: true, // until primitives are registered
-});
-
-const raw = normalizeI18n(
-  { props: { desc_en: "Hello", desc_ne: "नमस्ते" } },
-  locales,
-);
-// → i18nProps: { en: { desc: "Hello" }, ne: { desc: "नमस्ते" } }
-
-const block: Block = {
-  id: "b1",
-  type: "heading",
-  props: {},
-  i18nProps: raw.i18nProps,
-};
-
-resolveProps(block, "ne", locales); // { desc: "नमस्ते" }
 ```
 
-## Public API (Phase 1)
+## Validate author CSS / JS on save
 
-| Export | Role |
-| --- | --- |
-| `createRegistry` / `registerBlock` | Live block definition map |
-| `insertBlock` / `removeBlock` / `moveBlock` / `updateBlock` / `cloneBlock` / `findBlock` | Immutable tree ops |
-| `createDefaultLocaleConfig` / `normalizeI18n` / `resolveProps` / `serializeI18n` | ADR-10 locale pipeline |
-| `createBlockSchema` / `createPageSchema` | Zod parse; `type` refined against registry |
-| `PAGE_SCHEMA_VERSION` | Current document schema version |
+```ts
+import { validateAuthorCode } from "@itzsa/page-builder";
+
+const result = validateAuthorCode(page);
+if (!result.ok) {
+  // reject — result.cssErrors / result.jsErrors
+}
+```
 
 ## License
 

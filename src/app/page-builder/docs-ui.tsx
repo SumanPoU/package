@@ -152,3 +152,41 @@ export function Callout({
     </div>
   );
 }
+
+export function FeaturesTable({
+  rows,
+}: {
+  rows: { feature: string; description: string }[];
+}) {
+  return (
+    <div className="overflow-x-auto rounded-md border-[0.5px] border-border bg-card">
+      <table className="w-full min-w-[28rem] border-collapse text-left text-sm">
+        <thead>
+          <tr className="border-b-[0.5px] border-border">
+            <th className="px-3 py-2.5 text-[12px] font-medium text-primary">
+              Feature
+            </th>
+            <th className="px-3 py-2.5 text-[12px] font-medium text-primary">
+              Description
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr
+              key={row.feature}
+              className="border-b-[0.5px] border-border last:border-0"
+            >
+              <td className="px-3 py-2.5 align-top text-[13px] font-medium whitespace-nowrap text-primary">
+                {row.feature}
+              </td>
+              <td className="px-3 py-2.5 align-top text-[13px] leading-relaxed text-secondary">
+                {row.description}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}

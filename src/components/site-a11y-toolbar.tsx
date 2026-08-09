@@ -10,7 +10,11 @@ import { usePathname } from "next/navigation";
  */
 export function SiteA11yToolbar() {
   const pathname = usePathname();
-  if (pathname.startsWith("/page-builder/create")) return null;
+  if (
+    pathname.startsWith("/page-builder/create") ||
+    pathname.startsWith("/page-builder/canvas")
+  )
+    return null;
 
   return (
     <A11yToolbar

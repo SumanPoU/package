@@ -1,5 +1,6 @@
 import { blockSelector } from "./blockClassName";
 import type { Block, Device } from "./types";
+import { backgroundStyleDeclarations } from "../blocks/backgroundStyle";
 
 export type SpacingBox = {
   t?: string;
@@ -36,9 +37,18 @@ export type BlockStyle = {
   fontWeight?: string;
   lineHeight?: string;
   letterSpacing?: string;
+  letterSpacingUnit?: string;
   textTransform?: "none" | "uppercase" | "lowercase" | "capitalize";
   textColor?: string;
   backgroundColor?: string;
+  /** Style-tab background type (color | image). */
+  backgroundType?: "color" | "image";
+  backgroundImage?: string;
+  backgroundSize?: string;
+  backgroundPosition?: string;
+  backgroundRepeat?: string;
+  backgroundOverlay?: string;
+  backgroundOpacity?: string;
   /** Preset bg when no custom color. */
   bg?: "none" | "gray" | "dark";
   borderStyle?: "none" | "solid" | "dashed" | "dotted" | "double";
@@ -80,6 +90,26 @@ const BG_PRESET: Record<string, string> = {
   none: "",
   gray: "background-color:#f3f4f6",
   dark: "background-color:#1f2937;color:#f3f4f6",
+};
+
+const backgroundStyleToDecls = (style: BlockStyle): string => {
+  if (
+    style.backgroundType === "image" ||
+    style.backgroundType === "color" ||
+    style.backgroundImage?.trim()
+  ) {
+    return backgroundStyleDeclarations({
+      backgroundType: style.backgroundType,
+      backgroundColor: style.backgroundColor,
+      backgroundImage: style.backgroundImage,
+      backgroundSize: style.backgroundSize,
+      backgroundPosition: style.backgroundPosition,
+      backgroundRepeat: style.backgroundRepeat,
+      backgroundOverlay: style.backgroundOverlay,
+      backgroundOpacity: style.backgroundOpacity,
+    });
+  }
+  return "";
 };
 
 const deviceMediaQuery = (device: Device): string => {
@@ -181,14 +211,23 @@ export const buildStyleDeclarations = (
   }
   if (style.lineHeight?.trim()) parts.push(`line-height:${style.lineHeight}`);
   if (style.letterSpacing?.trim()) {
-    parts.push(`letter-spacing:${style.letterSpacing}`);
+    const lsUnit = style.letterSpacingUnit ?? "px";
+    const ls = style.letterSpacing.trim();
+    const hasUnit = /[a-z%]+$/i.test(ls);
+    parts.push(
+      `letter-spacing:${hasUnit ? ls : `${ls}${lsUnit}`}`,
+    );
   }
   if (style.textTransform && style.textTransform !== "none") {
     parts.push(`text-transform:${style.textTransform}`);
   }
   if (style.textColor) parts.push(`color:${style.textColor}`);
 
-  if (style.backgroundColor) {
+  // Background: prefer explicit type/image/color fields (Style tab).
+  const bgDecls = backgroundStyleToDecls(style);
+  if (bgDecls) {
+    parts.push(bgDecls);
+  } else if (style.backgroundColor) {
     parts.push(`background-color:${style.backgroundColor}`);
   } else if (style.bg && BG_PRESET[style.bg]) {
     parts.push(BG_PRESET[style.bg]!);
@@ -227,6 +266,10 @@ export const buildStyleDeclarations = (
     if (style.justifyContent)
       parts.push(`justify-content:${style.justifyContent}`);
     if (style.alignItems) parts.push(`align-items:${style.alignItems}`);
+    if (style.gap) parts.push(`gap:${style.gap}`);
+  }
+
+  if (blockType === "grid") {
     if (style.gap) parts.push(`gap:${style.gap}`);
   }
 

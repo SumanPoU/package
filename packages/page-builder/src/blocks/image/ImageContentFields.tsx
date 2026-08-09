@@ -1,46 +1,46 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useId } from "react";
 
 import type { BlockContentFieldsProps } from "../../core/types";
+import { getBlockStyle } from "../../core/blockStyleCss";
+import { LinkFields } from "../LinkFields";
+import { MediaUrlField } from "../MediaUrlField";
 import { DEFAULT_IMAGE_SRC } from "./defaultSrc";
 
-const MAX_BASE64_BYTES = 1_500_000; // ~1.5MB — keep page JSON sane
-
-const fileToDataUrl = (file: File): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") resolve(reader.result);
-      else reject(new Error("Could not read file"));
-    };
-    reader.onerror = () => reject(reader.error ?? new Error("Read failed"));
-    reader.readAsDataURL(file);
-  });
+const CONTENT_WIDTHS = [
+  { value: "full", label: "Full width" },
+  { value: "large", label: "Large - 1024px" },
+  { value: "medium", label: "Medium - 768px" },
+  { value: "small", label: "Small - 480px" },
+  { value: "custom", label: "Custom" },
+] as const;
 
 export const ImageContentFields = ({
   block,
   locale,
   onChange,
 }: BlockContentFieldsProps) => {
-  const srcId = useId();
   const altId = useId();
   const widthId = useId();
   const heightId = useId();
-  const fileId = useId();
-  const fileRef = useRef<HTMLInputElement>(null);
-  const [status, setStatus] = useState<string | null>(null);
-  const [isConverting, setIsConverting] = useState(false);
+  const contentWidthId = useId();
 
   const rawSrc = typeof block.props.src === "string" ? block.props.src : "";
+  const previewSrc = rawSrc.trim() || DEFAULT_IMAGE_SRC;
   const width =
     typeof block.props.width === "string" ? block.props.width : "";
   const height =
     typeof block.props.height === "string" ? block.props.height : "";
+  const contentWidth =
+    typeof block.props.contentWidth === "string"
+      ? block.props.contentWidth
+      : "large";
   const alt =
     typeof block.i18nProps?.[locale]?.alt === "string"
       ? (block.i18nProps[locale]!.alt as string)
       : "";
+  const align = getBlockStyle(block).align ?? "left";
 
   const handleAlt = (value: string) => {
     const i18nProps = { ...(block.i18nProps ?? {}) };
@@ -48,118 +48,103 @@ export const ImageContentFields = ({
     onChange({ i18nProps });
   };
 
-  const handleSetSrc = (next: string) => {
-    setStatus(null);
-    onChange({ props: { ...block.props, src: next } });
-  };
-
-  const handlePatchSize = (patch: { width?: string; height?: string }) => {
+  const handlePatchProps = (patch: Record<string, unknown>) => {
     onChange({ props: { ...block.props, ...patch } });
   };
 
-  const handleFile = async (file: File | undefined) => {
-    if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      setStatus("Choose an image file (PNG, JPG, WebP, GIF, …).");
-      return;
-    }
-    if (file.size > MAX_BASE64_BYTES) {
-      setStatus(
-        "File is too large for Base64 in page JSON. Use a CDN URL instead (max ~1.5MB).",
-      );
-      return;
-    }
-    setIsConverting(true);
-    setStatus(null);
-    try {
-      const dataUrl = await fileToDataUrl(file);
-      handleSetSrc(dataUrl);
-      setStatus("Converted to Base64.");
-    } catch {
-      setStatus("Could not convert that file to Base64.");
-    } finally {
-      setIsConverting(false);
-      if (fileRef.current) fileRef.current.value = "";
-    }
+  const handleAlign = (next: "left" | "center" | "right") => {
+    onChange({
+      style: {
+        ...getBlockStyle(block),
+        align: next,
+      },
+    });
   };
 
   return (
     <div className="pb-content-fields">
-      <div className="pb-field">
-        <span className="pb-field-label" id={`${srcId}-label`}>
-          Image URL{" "}
-          <span className="pb-field-label-muted">(shared)</span>
-        </span>
-        <div className="pb-media-row">
-          <input
-            id={srcId}
-            type="text"
-            value={rawSrc}
-            placeholder={DEFAULT_IMAGE_SRC}
-            aria-labelledby={`${srcId}-label`}
-            onChange={(e) => handleSetSrc(e.target.value)}
-            onBlur={() => {
-              if (rawSrc.trim() === "") handleSetSrc(DEFAULT_IMAGE_SRC);
-            }}
-          />
-          <input
-            ref={fileRef}
-            id={fileId}
-            type="file"
-            accept="image/*"
-            hidden
-            aria-label="Upload image and convert to Base64"
-            onChange={(e) => void handleFile(e.target.files?.[0])}
-          />
-          <button
-            type="button"
-            className="pb-media-upload"
-            disabled={isConverting}
-            aria-label="Upload image and convert to Base64"
-            onClick={() => fileRef.current?.click()}
-          >
-            {isConverting ? "…" : "Upload"}
-          </button>
-        </div>
-        {status ? (
-          <p className="pb-hint" role="status">
-            {status}
-          </p>
-        ) : (
-          <p className="pb-hint">
-            Paste a URL, or Upload to store as Base64. Default is placehold.co.
-          </p>
-        )}
+      <div className="pb-image-preview">
+        <img src={previewSrc} alt="" className="pb-image-preview-img" />
       </div>
 
-      <div className="pb-size-row">
-        <label className="pb-field" htmlFor={widthId}>
-          <span className="pb-field-label">
-            Width <span className="pb-field-label-muted">(shared)</span>
-          </span>
-          <input
-            id={widthId}
-            type="text"
-            value={width}
-            placeholder="100% or 400px"
-            aria-label="Image width"
-            onChange={(e) => handlePatchSize({ width: e.target.value })}
-          />
-        </label>
-        <label className="pb-field" htmlFor={heightId}>
-          <span className="pb-field-label">
-            Height <span className="pb-field-label-muted">(shared)</span>
-          </span>
-          <input
-            id={heightId}
-            type="text"
-            value={height}
-            placeholder="auto or 240px"
-            aria-label="Image height"
-            onChange={(e) => handlePatchSize({ height: e.target.value })}
-          />
-        </label>
+      <MediaUrlField
+        label="Image URL (shared)"
+        value={rawSrc}
+        onChange={(src) => handlePatchProps({ src })}
+        placeholder={DEFAULT_IMAGE_SRC}
+        fallbackOnEmpty={DEFAULT_IMAGE_SRC}
+      />
+
+      <label className="pb-field" htmlFor={contentWidthId}>
+        <span className="pb-field-label">Content Width</span>
+        <select
+          id={contentWidthId}
+          value={contentWidth}
+          aria-label="Content width"
+          onChange={(e) => handlePatchProps({ contentWidth: e.target.value })}
+        >
+          {CONTENT_WIDTHS.map((w) => (
+            <option key={w.value} value={w.value}>
+              {w.label}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      {contentWidth === "custom" ? (
+        <div className="pb-size-row">
+          <label className="pb-field" htmlFor={widthId}>
+            <span className="pb-field-label">Width</span>
+            <input
+              id={widthId}
+              type="text"
+              value={width}
+              placeholder="100% or 400px"
+              aria-label="Image width"
+              onChange={(e) => handlePatchProps({ width: e.target.value })}
+            />
+          </label>
+          <label className="pb-field" htmlFor={heightId}>
+            <span className="pb-field-label">Height</span>
+            <input
+              id={heightId}
+              type="text"
+              value={height}
+              placeholder="auto or 240px"
+              aria-label="Image height"
+              onChange={(e) => handlePatchProps({ height: e.target.value })}
+            />
+          </label>
+        </div>
+      ) : null}
+
+      <div className="pb-field">
+        <span className="pb-field-label">Alignment</span>
+        <div className="pb-align-row" role="group" aria-label="Alignment">
+          {(
+            [
+              ["left", "Left"],
+              ["center", "Center"],
+              ["right", "Right"],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              className={
+                align === id ? "pb-align-btn is-active" : "pb-align-btn"
+              }
+              aria-pressed={align === id}
+              aria-label={label}
+              onClick={() => handleAlign(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
+
+      <LinkFields block={block} onChange={onChange} idPrefix={`img-${block.id}`} />
 
       <label className="pb-field" htmlFor={altId}>
         <span className="pb-field-label">Alt text</span>

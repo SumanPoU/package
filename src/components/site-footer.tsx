@@ -7,7 +7,11 @@ const YEAR = new Date().getFullYear();
 
 export function SiteFooter() {
   const pathname = usePathname();
-  if (pathname.startsWith("/page-builder/create")) return null;
+  if (
+    pathname.startsWith("/page-builder/create") ||
+    pathname.startsWith("/page-builder/canvas")
+  )
+    return null;
 
   return (
     <footer className="site-footer mt-auto border-t-[0.5px] border-border bg-page">

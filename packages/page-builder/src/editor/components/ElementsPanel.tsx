@@ -2,6 +2,12 @@ import { useMemo, useState } from "react";
 
 import type { BlockRegistry } from "../../core/registry";
 import { listPresets } from "../../presets";
+import {
+  isBlockHidden,
+  isCategoryHidden,
+  isPresetHidden,
+  type PaletteConfig,
+} from "../features";
 
 const CATEGORY_ORDER = [
   "presets",
@@ -26,9 +32,9 @@ export type ElementsPanelProps = {
   registry: BlockRegistry;
   onStartDragNew: (type: string, e: React.PointerEvent) => void;
   onStartDragPreset?: (presetId: string, e: React.PointerEvent) => void;
-  /** Optional click-to-insert fallback (accessibility). */
   onInsertType?: (type: string) => void;
   allowDataBinding?: boolean;
+  palette?: PaletteConfig;
 };
 
 export const ElementsPanel = ({
@@ -37,6 +43,7 @@ export const ElementsPanel = ({
   onStartDragPreset,
   onInsertType,
   allowDataBinding = true,
+  palette,
 }: ElementsPanelProps) => {
   const [search, setSearch] = useState("");
   const [openCats, setOpenCats] = useState<Record<string, boolean>>(() =>
@@ -49,34 +56,38 @@ export const ElementsPanel = ({
     () =>
       listPresets().filter(
         (p) =>
-          !q ||
-          p.label.toLowerCase().includes(q) ||
-          p.id.toLowerCase().includes(q),
+          !isPresetHidden(palette, p.id) &&
+          (!q ||
+            p.label.toLowerCase().includes(q) ||
+            p.id.toLowerCase().includes(q)),
       ),
-    [q],
+    [q, palette],
   );
 
   const items = useMemo(() => {
     return registry
       .list()
       .filter((d) => (allowDataBinding ? true : d.type !== "repeater"))
+      .filter((d) => !isBlockHidden(palette, d.type))
       .filter(
         (d) => !q || d.label.toLowerCase().includes(q) || d.type.includes(q),
       )
       .slice()
       .sort((a, b) => a.label.localeCompare(b.label));
-  }, [registry, q, allowDataBinding]);
+  }, [registry, q, allowDataBinding, palette]);
 
   const categories = useMemo(() => {
     const map = new Map<string, typeof items>();
     for (const item of items) {
       const cat = item.category || "basic";
+      if (isCategoryHidden(palette, cat)) continue;
       const list = map.get(cat) ?? [];
       list.push(item);
       map.set(cat, list);
     }
     const ordered = CATEGORY_ORDER.filter(
-      (c) => c === "presets" || map.has(c),
+      (c) =>
+        !isCategoryHidden(palette, c) && (c === "presets" || map.has(c)),
     );
     for (const key of map.keys()) {
       if (!ordered.includes(key as (typeof CATEGORY_ORDER)[number])) {
@@ -88,7 +99,7 @@ export const ElementsPanel = ({
       label: CATEGORY_LABEL[cat] ?? cat,
       items: map.get(cat) ?? [],
     }));
-  }, [items]);
+  }, [items, palette]);
 
   const noResults = items.length === 0 && presets.length === 0;
 
@@ -107,7 +118,12 @@ export const ElementsPanel = ({
       <div className="pb-elements-scroll">
         {categories.map(({ cat, label, items: catItems }) => {
           const isPresets = cat === "presets";
-          if (isPresets && (!onStartDragPreset || presets.length === 0)) {
+          if (
+            isPresets &&
+            (isCategoryHidden(palette, "presets") ||
+              !onStartDragPreset ||
+              presets.length === 0)
+          ) {
             return null;
           }
           if (!isPresets && !catItems.length) return null;

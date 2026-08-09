@@ -40,7 +40,10 @@ function GitHubIcon({ className }: { className?: string }) {
 export function SiteNav() {
   const pathname = usePathname();
 
-  if (pathname.startsWith("/page-builder/create")) {
+  if (
+    pathname.startsWith("/page-builder/create") ||
+    pathname.startsWith("/page-builder/canvas")
+  ) {
     return null;
   }
 

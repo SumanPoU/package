@@ -50,6 +50,29 @@ describe("blockStyleCss", () => {
     expect(css).toContain("width:100%");
     expect(css).toContain("box-shadow:");
   });
+
+  it("emits background image + dark overlay layers", () => {
+    const css = buildStyleDeclarations(
+      {
+        backgroundType: "image",
+        backgroundImage: "https://cdn.example.com/a.jpg",
+        backgroundOverlay: "40",
+        backgroundOpacity: "100",
+      },
+      "box",
+    );
+    expect(css).toContain("background-image:");
+    expect(css).toContain("rgba(0,0,0,0.4)");
+    expect(css).toContain("cdn.example.com/a.jpg");
+  });
+
+  it("applies letter-spacing unit when value has no unit", () => {
+    const css = buildStyleDeclarations(
+      { letterSpacing: "2", letterSpacingUnit: "em" },
+      "heading",
+    );
+    expect(css).toContain("letter-spacing:2em");
+  });
 });
 
 describe("composePageCss", () => {

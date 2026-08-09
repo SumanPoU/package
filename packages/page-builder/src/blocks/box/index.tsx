@@ -6,19 +6,27 @@ import { BoxElement } from "./BoxElement";
 
 const propsSchema = z
   .object({
+    backgroundType: z.enum(["color", "image"]).optional(),
+    backgroundColor: z.string().optional(),
     backgroundImage: z.string().optional(),
     backgroundSize: z.string().optional(),
     backgroundPosition: z.string().optional(),
     backgroundRepeat: z.string().optional(),
+    backgroundOverlay: z.union([z.string(), z.number()]).optional(),
+    backgroundOpacity: z.union([z.string(), z.number()]).optional(),
     as: z.enum(["div", "section"]).optional(),
   })
   .passthrough();
 
 const sharedProps = [
+  "backgroundType",
+  "backgroundColor",
   "backgroundImage",
   "backgroundSize",
   "backgroundPosition",
   "backgroundRepeat",
+  "backgroundOverlay",
+  "backgroundOpacity",
   "as",
 ];
 
@@ -28,7 +36,7 @@ export const boxDefinition: BlockDefinition = {
   category: "layout",
   isContainer: true,
   canAcceptChild: () => true,
-  defaultProps: {},
+  defaultProps: { backgroundType: "color" },
   translatableProps: [],
   sharedProps,
   propsSchema,

@@ -15,13 +15,20 @@ import type { Block, LocaleConfig, Page } from "../core/types";
 import type { RenderContext } from "../core/visibilityResolve";
 import { CanvasArea } from "./components/CanvasArea";
 import { DragGhost } from "./components/DragGhost";
+import { IframeCanvasStage } from "./components/IframeCanvasStage";
 import { LeftSidebar } from "./components/LeftSidebar";
+import type { CanvasMode, PageBuilderUiFeatures } from "./features";
+import {
+  type UploadAsset,
+  PageBuilderHostProvider,
+} from "./hostContext";
 import { useBlockHistory } from "./hooks/useBlockHistory";
 import { useClipboard } from "./hooks/useClipboard";
 import { useDragAndDrop } from "./hooks/useDragAndDrop";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 
 export type { PageBuilderCapabilities };
+export type { CanvasMode, PageBuilderUiFeatures, UploadAsset };
 
 export type PageBuilderProps = {
   page: Page;
@@ -39,10 +46,21 @@ export type PageBuilderProps = {
   capabilities?: PageBuilderCapabilities;
   renderContext?: Partial<RenderContext>;
   fetchDataSource?: FetchDataSource;
+  /** Host CDN / media upload — Image Upload prefers this over Base64. */
+  uploadAsset?: UploadAsset;
   selectedId?: string | null;
   onSelectedIdChange?: (id: string | null) => void;
-  /** Optional title shown in toolbar. */
   title?: string;
+  /** Toolbar visibility flags (host chrome). */
+  features?: PageBuilderUiFeatures;
+  /**
+   * `embedded` (default): same-doc editable canvas with DnD chrome.
+   * `iframe`: sandboxed shell at `canvasSrc` (ADR-02).
+   */
+  canvasMode?: CanvasMode;
+  /** Required when canvasMode is `iframe` — e.g. `/page-builder/canvas`. */
+  canvasSrc?: string;
+  canvasNonce?: string;
 };
 
 export const PageBuilder = ({
@@ -58,9 +76,14 @@ export const PageBuilder = ({
   capabilities,
   renderContext,
   fetchDataSource,
+  uploadAsset,
   selectedId: controlledSelectedId,
   onSelectedIdChange,
   title = "Page builder",
+  features,
+  canvasMode = "embedded",
+  canvasSrc,
+  canvasNonce,
 }: PageBuilderProps) => {
   const [internalSelected, setInternalSelected] = useState<string | null>(null);
   const selectedId =
@@ -196,111 +219,136 @@ export const PageBuilder = ({
     [history, page],
   );
 
+  const useIframe = canvasMode === "iframe" && Boolean(canvasSrc);
+  const showSave = features?.showSave !== false && Boolean(onSave);
+  const showPreview = features?.showPreview !== false && Boolean(onPreview);
+  const showOpenPage = features?.showOpenPage !== false && Boolean(onOpenPage);
+
+  const hostValue = useMemo(() => ({ uploadAsset }), [uploadAsset]);
+
   return (
-    <div className="pb-root" data-pb-editor="">
-      <div className="pb-toolbar" role="toolbar" aria-label="Page builder">
-        <span className="pb-toolbar-title">{title}</span>
-        <button
-          type="button"
-          disabled={!history.canUndo}
-          onClick={history.undo}
-          aria-label="Undo"
-        >
-          Undo
-        </button>
-        <button
-          type="button"
-          disabled={!history.canRedo}
-          onClick={history.redo}
-          aria-label="Redo"
-        >
-          Redo
-        </button>
-        <label>
-          Locale
-          <select
-            value={activeLocale}
-            aria-label="Active locale"
-            onChange={(e) => onActiveLocaleChange(e.target.value)}
-          >
-            {localeConfig.locales.map((l) => (
-              <option key={l.code} value={l.code}>
-                {l.label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <span className="pb-toolbar-spacer" />
-        {onSave ? (
+    <PageBuilderHostProvider value={hostValue}>
+      <div className="pb-root" data-pb-editor="">
+        <div className="pb-toolbar" role="toolbar" aria-label="Page builder">
+          <span className="pb-toolbar-title">{title}</span>
           <button
             type="button"
-            onClick={() =>
-              void onSave(page, { expectedRevision: page.revision })
-            }
+            disabled={!history.canUndo}
+            onClick={history.undo}
+            aria-label="Undo"
           >
-            Save
+            Undo
           </button>
-        ) : null}
-        {onPreview ? (
-          <button type="button" onClick={() => void onPreview(page)}>
-            Preview
+          <button
+            type="button"
+            disabled={!history.canRedo}
+            onClick={history.redo}
+            aria-label="Redo"
+          >
+            Redo
           </button>
-        ) : null}
-        {onOpenPage ? (
-          <button type="button" onClick={() => void onOpenPage(page)}>
-            Open Page
-          </button>
+          <label>
+            Locale
+            <select
+              value={activeLocale}
+              aria-label="Active locale"
+              onChange={(e) => onActiveLocaleChange(e.target.value)}
+            >
+              {localeConfig.locales.map((l) => (
+                <option key={l.code} value={l.code}>
+                  {l.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <span className="pb-toolbar-spacer" />
+          {showSave ? (
+            <button
+              type="button"
+              onClick={() =>
+                void onSave?.(page, { expectedRevision: page.revision })
+              }
+            >
+              Save
+            </button>
+          ) : null}
+          {showPreview ? (
+            <button type="button" onClick={() => void onPreview?.(page)}>
+              Preview
+            </button>
+          ) : null}
+          {showOpenPage ? (
+            <button type="button" onClick={() => void onOpenPage?.(page)}>
+              Open Page
+            </button>
+          ) : null}
+        </div>
+
+        <div className="pb-body">
+          <LeftSidebar
+            page={page}
+            registry={registry}
+            selectedId={selectedId}
+            selectedBlock={selectedBlock}
+            locale={activeLocale}
+            renderContext={ctx}
+            leftTab={leftTab}
+            onLeftTabChange={setLeftTab}
+            onSelect={setSelectedId}
+            onStartDragNew={dnd.startDragNew}
+            onStartDragPreset={dnd.startDragPreset}
+            onInsertType={handleInsertType}
+            onChangeBlock={handleChangeBlock}
+            onRemoveBlock={handleRemoveBlock}
+            allowCustomCss={capabilities?.allowCustomCss !== false}
+            allowCustomJs={capabilities?.allowCustomJs !== false}
+            allowDataBinding={capabilities?.allowDataBinding !== false}
+          />
+
+          {useIframe && canvasSrc ? (
+            <IframeCanvasStage
+              page={page}
+              registry={registry}
+              localeConfig={localeConfig}
+              activeLocale={activeLocale}
+              renderContext={ctx}
+              selectedId={selectedId}
+              onSelect={setSelectedId}
+              canvasSrc={canvasSrc}
+              nonce={canvasNonce}
+              capabilities={capabilities}
+              fetchDataSource={fetchDataSource}
+            />
+          ) : (
+            <CanvasArea
+              page={page}
+              registry={registry}
+              localeConfig={localeConfig}
+              activeLocale={activeLocale}
+              renderContext={ctx}
+              drag={dnd.drag}
+              hover={dnd.hover}
+              selectedId={selectedId}
+              isDraggingOverRoot={dnd.isDraggingOverRoot}
+              canvasRef={dnd.canvasRef}
+              onDeselect={() => setSelectedId(null)}
+              onSelect={setSelectedId}
+              onStartMove={dnd.startDragMove}
+              onRemove={handleRemoveBlock}
+              onMoveUp={(id) => handleMoveBlock(id, -1)}
+              onMoveDown={(id) => handleMoveBlock(id, 1)}
+              registerRef={dnd.registerRef}
+              authorCss={authorCss}
+              capabilities={capabilities}
+              fetchDataSource={fetchDataSource}
+            />
+          )}
+        </div>
+
+        {!useIframe && dnd.drag && dnd.pointer ? (
+          <DragGhost drag={dnd.drag} pointer={dnd.pointer} />
         ) : null}
       </div>
-
-      <div className="pb-body">
-        <LeftSidebar
-          page={page}
-          registry={registry}
-          selectedId={selectedId}
-          selectedBlock={selectedBlock}
-          locale={activeLocale}
-          renderContext={ctx}
-          leftTab={leftTab}
-          onLeftTabChange={setLeftTab}
-          onSelect={setSelectedId}
-          onStartDragNew={dnd.startDragNew}
-          onStartDragPreset={dnd.startDragPreset}
-          onInsertType={handleInsertType}
-          onChangeBlock={handleChangeBlock}
-          onRemoveBlock={handleRemoveBlock}
-          allowCustomCss={capabilities?.allowCustomCss !== false}
-          allowCustomJs={capabilities?.allowCustomJs !== false}
-          allowDataBinding={capabilities?.allowDataBinding !== false}
-        />
-
-        <CanvasArea
-          page={page}
-          registry={registry}
-          localeConfig={localeConfig}
-          activeLocale={activeLocale}
-          renderContext={ctx}
-          drag={dnd.drag}
-          hover={dnd.hover}
-          selectedId={selectedId}
-          isDraggingOverRoot={dnd.isDraggingOverRoot}
-          canvasRef={dnd.canvasRef}
-          onDeselect={() => setSelectedId(null)}
-          onSelect={setSelectedId}
-          onStartMove={dnd.startDragMove}
-          onRemove={handleRemoveBlock}
-          onMoveUp={(id) => handleMoveBlock(id, -1)}
-          onMoveDown={(id) => handleMoveBlock(id, 1)}
-          registerRef={dnd.registerRef}
-          authorCss={authorCss}
-          capabilities={capabilities}
-          fetchDataSource={fetchDataSource}
-        />
-      </div>
-
-      {dnd.drag && dnd.pointer ? (
-        <DragGhost drag={dnd.drag} pointer={dnd.pointer} />
-      ) : null}
-    </div>
+    </PageBuilderHostProvider>
   );
 };

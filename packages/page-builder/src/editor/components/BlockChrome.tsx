@@ -30,6 +30,7 @@ export type BlockChromeProps = {
 export const BlockChrome = ({
   block,
   label,
+  isContainer,
   selectedId,
   drag,
   depth,
@@ -51,8 +52,10 @@ export const BlockChrome = ({
     <div
       ref={(el) => registerRef(block.id, el)}
       data-pb-ghost={ghost ? "true" : undefined}
+      data-dropzone={isContainer ? block.id : undefined}
       className={[
         "pb-block-chrome",
+        isContainer ? "pb-block-chrome--container" : "",
         selected ? "pb-block-chrome--selected" : "",
         draggingThis ? "pb-block-chrome--dragging" : "",
         ghost ? "pb-block-chrome--ghost" : "",

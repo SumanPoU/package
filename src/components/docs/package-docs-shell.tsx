@@ -24,44 +24,59 @@ export function useActiveSection(ids: string[]) {
 
   useEffect(() => {
     if (ids.length === 0) return;
-    const elements = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => Boolean(el));
-    if (elements.length === 0) return;
 
-    const visibility = new Map<string, number>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          visibility.set(
-            entry.target.id,
-            entry.isIntersecting ? entry.intersectionRatio : 0,
-          );
-        }
-        let bestId = ids[0] ?? "";
-        let bestRatio = -1;
-        for (const id of ids) {
-          const ratio = visibility.get(id) ?? 0;
-          if (ratio > bestRatio) {
-            bestRatio = ratio;
-            bestId = id;
-          }
-        }
-        if (bestRatio < 0.05) {
-          const mid = window.innerHeight * 0.28;
-          let fallback = ids[0] ?? "";
-          for (const el of elements) {
-            if (el.getBoundingClientRect().top <= mid) fallback = el.id;
-          }
-          setActiveId(fallback);
-          return;
-        }
-        setActiveId(bestId);
-      },
-      { rootMargin: "-12% 0px -55% 0px", threshold: [0, 0.1, 0.25, 0.5, 1] },
-    );
-    for (const el of elements) observer.observe(el);
-    return () => observer.disconnect();
+    const elements = () =>
+      ids
+        .map((id) => document.getElementById(id))
+        .filter((el): el is HTMLElement => Boolean(el));
+
+    let frame = 0;
+    const update = () => {
+      const els = elements();
+      if (els.length === 0) return;
+
+      // Near page bottom → last heading (short trailing sections never reach the line).
+      const doc = document.documentElement;
+      const atBottom =
+        window.scrollY + window.innerHeight >= doc.scrollHeight - 24;
+      if (atBottom) {
+        setActiveId(els[els.length - 1]!.id);
+        return;
+      }
+
+      // Last section whose top has crossed the reading line (~header + TOC offset).
+      const line = Math.min(120, window.innerHeight * 0.22);
+      let current = els[0]!.id;
+      for (const el of els) {
+        if (el.getBoundingClientRect().top <= line) current = el.id;
+        else break;
+      }
+      setActiveId(current);
+    };
+
+    const onScroll = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(update);
+    };
+
+    const onHash = () => {
+      const hash = window.location.hash.replace(/^#/, "");
+      if (hash && ids.includes(hash) && document.getElementById(hash)) {
+        setActiveId(hash);
+      }
+    };
+
+    update();
+    onHash();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    window.addEventListener("hashchange", onHash);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("hashchange", onHash);
+    };
   }, [ids]);
 
   return activeId;

@@ -32,6 +32,9 @@ const securityHeaders = [
       "img-src 'self' data: blob: https:",
       "font-src 'self' data:",
       "connect-src 'self' https:",
+      // Page-builder map/video/embed blocks load third-party https iframes.
+      // Without frame-src, default-src 'self' blocks them (Chrome: "This content is blocked").
+      "frame-src 'self' https:",
       "frame-ancestors 'self'",
       "base-uri 'self'",
       "form-action 'self'",

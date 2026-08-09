@@ -8,19 +8,25 @@ import {
   cloneBlock,
   composePageCss,
   createDefaultLocaleConfig,
+  createEnglishOnlyLocaleConfig,
+  createNepaliOnlyLocaleConfig,
   createPreviewSession,
   createRegistry,
   findBlock,
   findBlockPath,
+  IframeCanvasStage,
   insertBlock,
   moveBlockByDelta,
   PAGE_SCHEMA_VERSION,
   type Page,
   type PageBuilderCapabilities,
+  type PaletteConfig,
   type FetchDataSource,
+  PageBuilderHostProvider,
   registerDynamicBlock,
   registerPrimitives,
   removeBlock,
+  type UploadAsset,
   updateBlock,
   useBlockHistory,
   useClipboard,
@@ -41,7 +47,15 @@ import { DEMO_PROMO_SPEC } from "../demo-promo-spec";
 import { SAMPLE_DATA_SOURCES } from "../sample-data-sources";
 import { SaveConflictDialog } from "./save-conflict-dialog";
 
-const localeConfig = createDefaultLocaleConfig();
+/** `default` | `en` | `ne` — swap to demo single-locale hosts. */
+const CREATE_LOCALE_MODE: "default" | "en" | "ne" = "default";
+
+const localeConfig =
+  CREATE_LOCALE_MODE === "en"
+    ? createEnglishOnlyLocaleConfig()
+    : CREATE_LOCALE_MODE === "ne"
+      ? createNepaliOnlyLocaleConfig()
+      : createDefaultLocaleConfig();
 
 const CREATE_CAPABILITIES: PageBuilderCapabilities = {
   allowCustomCss: true,
@@ -51,10 +65,35 @@ const CREATE_CAPABILITIES: PageBuilderCapabilities = {
   allowRegisterTenantBlocks: true,
 };
 
-/** Host chrome flags (not package capabilities). Flip to hide Code, etc. */
+/** Host chrome flags (not package capabilities). */
 const CREATE_FEATURES = {
+  showHeader: true,
   showCodePanel: true,
-} as const;
+  showPreview: true,
+  showOpenPage: true,
+  showPublish: true,
+  /** `iframe` uses sandboxed `/page-builder/canvas` (DnD chrome limited). */
+  canvasMode: "embedded" as "embedded" | "iframe",
+  canvasSrc: "/page-builder/canvas",
+};
+
+/** Hide palette groups and/or individual blocks. Examples:
+ *  hideCategories: ["embeds", "presets"]
+ *  hideBlocks: ["html", "repeater"]
+ */
+const CREATE_PALETTE: PaletteConfig = {
+  // hideCategories: ["embeds"],
+  // hideBlocks: ["html"],
+};
+
+/** Host typography font stacks (appended to defaults in the Style tab). */
+const CREATE_FONT_FAMILIES = [
+  { label: "Inter", value: "Inter, ui-sans-serif, system-ui, sans-serif" },
+  {
+    label: "Noto Sans Devanagari",
+    value: "'Noto Sans Devanagari', 'Noto Sans', sans-serif",
+  },
+];
 
 const fetchSampleDataSource: FetchDataSource = async (sourceId) => {
   const data = SAMPLE_DATA_SOURCES[sourceId];
@@ -276,10 +315,36 @@ export function CreateBuilder() {
   }, [metadata, pageName, pageNameNp, pageSlug, statusActive]);
 
   const handlePublish = useCallback(
-    (opts: { overwrite?: boolean } = {}) => {
+    async (opts: { overwrite?: boolean } = {}) => {
       setIsPublishing(true);
       try {
         const pending = buildPublishPage();
+
+        const gate = await fetch("/api/page-builder/validate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            page: pending,
+            expectedRevision: pending.revision,
+          }),
+        });
+        if (gate.status === 422) {
+          const body = (await gate.json()) as {
+            cssErrors?: string[];
+            jsErrors?: string[];
+          };
+          window.alert(
+            [
+              "Author CSS/JS rejected by server validation:",
+              ...(body.cssErrors ?? []),
+              ...(body.jsErrors ?? []),
+            ]
+              .filter(Boolean)
+              .join("\n"),
+          );
+          return;
+        }
+
         const result = saveDraftPage(pending, {
           expectedRevision: pending.revision,
           overwrite: opts.overwrite,
@@ -305,6 +370,19 @@ export function CreateBuilder() {
     },
     [applySavedPage, buildPublishPage],
   );
+
+  const uploadAsset = useCallback<UploadAsset>(async (file) => {
+    const form = new FormData();
+    form.append("file", file);
+    const res = await fetch("/api/page-builder/upload", {
+      method: "POST",
+      body: form,
+    });
+    if (!res.ok) throw new Error(`upload failed (${res.status})`);
+    const data = (await res.json()) as { url?: string };
+    if (!data.url) throw new Error("upload missing url");
+    return { url: data.url };
+  }, []);
 
   const handlePreview = async () => {
     const session = await createPreviewSession({
@@ -354,6 +432,7 @@ export function CreateBuilder() {
       allowCustomCss={CREATE_CAPABILITIES.allowCustomCss !== false}
       allowCustomJs={CREATE_CAPABILITIES.allowCustomJs !== false}
       allowDataBinding={CREATE_CAPABILITIES.allowDataBinding !== false}
+      fontFamilies={CREATE_FONT_FAMILIES}
     />
   ) : null;
 
@@ -361,8 +440,10 @@ export function CreateBuilder() {
     <div className="flex h-dvh flex-col bg-[#e8eaed] text-gray-900">
       <EditorHeader
         pageName={pageName}
+        pageNameNp={pageNameNp}
         pageSlug={pageSlug}
         onPageNameChange={setPageName}
+        onPageNameNpChange={setPageNameNp}
         device={device}
         onDeviceChange={setDevice}
         activeLocale={activeLocale}
@@ -380,14 +461,19 @@ export function CreateBuilder() {
         onSettingsOpen={() => setSettingsOpen(true)}
         onPreview={() => void handlePreview()}
         onOpenPage={() => void handleOpenPage()}
-        onPublish={() => handlePublish()}
+        onPublish={() => void handlePublish()}
         isPublishing={isPublishing}
         savedFlash={savedFlash}
         sidebarOpen={sidebarOpen}
         onSidebarOpenChange={setSidebarOpen}
+        showHeader={CREATE_FEATURES.showHeader}
         showCodePanel={CREATE_FEATURES.showCodePanel}
+        showPreview={CREATE_FEATURES.showPreview}
+        showOpenPage={CREATE_FEATURES.showOpenPage}
+        showPublish={CREATE_FEATURES.showPublish}
       />
 
+      <PageBuilderHostProvider value={{ uploadAsset }}>
       <div className="flex min-h-0 flex-1 overflow-hidden">
         <CreateLeftSidebar
           registry={registry}
@@ -396,38 +482,57 @@ export function CreateBuilder() {
           onStartDragNew={dnd.startDragNew}
           onStartDragPreset={dnd.startDragPreset}
           allowDataBinding={CREATE_CAPABILITIES.allowDataBinding !== false}
+          palette={CREATE_PALETTE}
           outline={outline}
           inspector={inspector}
           open={sidebarOpen}
         />
 
-        <CanvasArea
-          page={page}
-          registry={registry}
-          localeConfig={localeConfig}
-          activeLocale={activeLocale}
-          renderContext={renderContext}
-          drag={dnd.drag}
-          hover={dnd.hover}
-          selectedId={selectedId}
-          isDraggingOverRoot={dnd.isDraggingOverRoot}
-          canvasRef={dnd.canvasRef}
-          onDeselect={() => setSelectedId(null)}
-          onSelect={setSelectedId}
-          onStartMove={dnd.startDragMove}
-          onRemove={handleRemoveBlock}
-          onMoveUp={(id) => handleMoveBlock(id, -1)}
-          onMoveDown={(id) => handleMoveBlock(id, 1)}
-          registerRef={dnd.registerRef}
-          authorCss={authorCss}
-          device={device}
-          pageSlug={pageSlug}
-          capabilities={CREATE_CAPABILITIES}
-          fetchDataSource={fetchSampleDataSource}
-        />
+        {CREATE_FEATURES.canvasMode === "iframe" ? (
+          <IframeCanvasStage
+            page={page}
+            registry={registry}
+            localeConfig={localeConfig}
+            activeLocale={activeLocale}
+            renderContext={renderContext}
+            selectedId={selectedId}
+            onSelect={setSelectedId}
+            canvasSrc={CREATE_FEATURES.canvasSrc}
+            device={device}
+            pageSlug={pageSlug}
+            capabilities={CREATE_CAPABILITIES}
+            fetchDataSource={fetchSampleDataSource}
+          />
+        ) : (
+          <CanvasArea
+            page={page}
+            registry={registry}
+            localeConfig={localeConfig}
+            activeLocale={activeLocale}
+            renderContext={renderContext}
+            drag={dnd.drag}
+            hover={dnd.hover}
+            selectedId={selectedId}
+            isDraggingOverRoot={dnd.isDraggingOverRoot}
+            canvasRef={dnd.canvasRef}
+            onDeselect={() => setSelectedId(null)}
+            onSelect={setSelectedId}
+            onStartMove={dnd.startDragMove}
+            onRemove={handleRemoveBlock}
+            onMoveUp={(id) => handleMoveBlock(id, -1)}
+            onMoveDown={(id) => handleMoveBlock(id, 1)}
+            registerRef={dnd.registerRef}
+            authorCss={authorCss}
+            device={device}
+            pageSlug={pageSlug}
+            capabilities={CREATE_CAPABILITIES}
+            fetchDataSource={fetchSampleDataSource}
+          />
+        )}
       </div>
+      </PageBuilderHostProvider>
 
-      {dnd.drag && dnd.pointer ? (
+      {CREATE_FEATURES.canvasMode !== "iframe" && dnd.drag && dnd.pointer ? (
         <div
           className="pointer-events-none fixed z-50 flex items-center gap-1.5 rounded border border-gray-200 bg-white px-2 py-1 text-[11px] text-gray-600 shadow-md"
           style={{ left: dnd.pointer.x + 10, top: dnd.pointer.y + 10 }}
@@ -465,7 +570,7 @@ export function CreateBuilder() {
           applySavedPage(conflict.current);
           setConflict(null);
         }}
-        onOverwrite={() => handlePublish({ overwrite: true })}
+        onOverwrite={() => void handlePublish({ overwrite: true })}
       />
     </div>
   );

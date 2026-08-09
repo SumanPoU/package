@@ -78,10 +78,27 @@ export const useDragAndDrop = ({
 
   const computeHoverTarget = useCallback(
     (clientX: number, clientY: number): HoverTarget => {
-      const els = document.elementsFromPoint(clientX, clientY);
-      const dropEl = els.find(
-        (el) => (el as HTMLElement).dataset?.dropzone !== undefined,
-      ) as HTMLElement | undefined;
+      // display:contents dropzones are skipped by elementsFromPoint — walk DOM
+      // with closest() from the topmost hit (and fall back to elementsFromPoint).
+      const top = document.elementFromPoint(clientX, clientY) as HTMLElement | null;
+      let dropEl =
+        (top?.closest?.("[data-dropzone]") as HTMLElement | null) ?? null;
+      if (!dropEl) {
+        const els = document.elementsFromPoint(clientX, clientY);
+        for (const el of els) {
+          const found = (el as HTMLElement).closest?.("[data-dropzone]") as
+            | HTMLElement
+            | null;
+          if (found) {
+            dropEl = found;
+            break;
+          }
+          if ((el as HTMLElement).dataset?.dropzone !== undefined) {
+            dropEl = el as HTMLElement;
+            break;
+          }
+        }
+      }
       if (!dropEl) return null;
       const containerId = dropEl.dataset.dropzone!;
       const childIds = getChildrenIds(page.blocks, containerId);
@@ -96,13 +113,16 @@ export const useDragAndDrop = ({
         const el = blockRefs.current.get(childIds[i]!);
         if (!el) continue;
         const rect = el.getBoundingClientRect();
+        if (isHorizontal) {
+          if (clientY < rect.top || clientY > rect.bottom) continue;
+          if (clientX < rect.left + rect.width / 2) {
+            return { containerId, index: i };
+          }
+          continue;
+        }
         if (clientY < rect.top) return { containerId, index: i };
         if (clientY >= rect.top && clientY <= rect.bottom) {
-          if (isHorizontal) {
-            if (clientX < rect.left + rect.width / 2) {
-              return { containerId, index: i };
-            }
-          } else if (clientY < rect.top + rect.height / 2) {
+          if (clientY < rect.top + rect.height / 2) {
             return { containerId, index: i };
           }
         }

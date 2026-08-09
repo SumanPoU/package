@@ -1,10 +1,16 @@
 "use client";
 
-import type { BlockDefinition, BlockRegistry } from "@itzsa/page-builder";
-import { listPresets } from "@itzsa/page-builder";
+import type { BlockDefinition, BlockRegistry, PaletteConfig } from "@itzsa/page-builder";
+import {
+  isBlockHidden,
+  isCategoryHidden,
+  isPresetHidden,
+  listPresets,
+} from "@itzsa/page-builder";
 import {
   Box,
   ChevronDown,
+  Code2,
   Columns3,
   Heading1,
   Image as ImageIcon,
@@ -12,12 +18,16 @@ import {
   LayoutGrid,
   LayoutTemplate,
   ListOrdered,
+  MapPin,
   Minus,
   PanelsTopLeft,
   Rows3,
   Search,
+  Sparkles,
   Square,
+  Star,
   Type,
+  Video,
 } from "lucide-react";
 import { type ComponentType, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -29,9 +39,16 @@ const ICON_MAP: Record<string, ComponentType<{ className?: string }>> = {
   grid: Columns3,
   heading: Heading1,
   text: Type,
-  image: ImageIcon,
-  button: Square,
   list: ListOrdered,
+  badge: Sparkles,
+  icon: Star,
+  image: ImageIcon,
+  video: Video,
+  html: Code2,
+  code: Code2,
+  map: MapPin,
+  embed: PanelsTopLeft,
+  button: Square,
   divider: Minus,
   spacer: Minus,
   repeater: ListOrdered,
@@ -47,7 +64,7 @@ const CATEGORY_LABEL: Record<string, string> = {
   presets: "Presets",
   layout: "Layout",
   basic: "Basic",
-  media: "Basic",
+  media: "Media",
   content: "Basic",
   embeds: "Embeds",
 };
@@ -57,6 +74,7 @@ export type CreateElementsPanelProps = {
   onStartDragNew: (type: string, e: React.PointerEvent) => void;
   onStartDragPreset: (presetId: string, e: React.PointerEvent) => void;
   allowDataBinding?: boolean;
+  palette?: PaletteConfig;
 };
 
 export function CreateElementsPanel({
@@ -64,12 +82,15 @@ export function CreateElementsPanel({
   onStartDragNew,
   onStartDragPreset,
   allowDataBinding = true,
+  palette,
 }: CreateElementsPanelProps) {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState<Record<string, boolean>>({
     presets: true,
     layout: true,
     basic: true,
+    media: true,
+    embeds: true,
   });
 
   const q = search.trim().toLowerCase();
@@ -78,17 +99,19 @@ export function CreateElementsPanel({
     () =>
       listPresets().filter(
         (p) =>
-          !q ||
-          p.label.toLowerCase().includes(q) ||
-          p.id.toLowerCase().includes(q),
+          !isPresetHidden(palette, p.id) &&
+          (!q ||
+            p.label.toLowerCase().includes(q) ||
+            p.id.toLowerCase().includes(q)),
       ),
-    [q],
+    [q, palette],
   );
 
   const filtered = useMemo(() => {
     return registry
       .list()
       .filter((d) => (allowDataBinding ? true : d.type !== "repeater"))
+      .filter((d) => !isBlockHidden(palette, d.type))
       .filter(
         (d) =>
           !q ||
@@ -97,25 +120,29 @@ export function CreateElementsPanel({
       )
       .slice()
       .sort((a, b) => a.label.localeCompare(b.label));
-  }, [registry, q, allowDataBinding]);
+  }, [registry, q, allowDataBinding, palette]);
 
   const groups = useMemo(() => {
     const map = new Map<string, BlockDefinition[]>();
     for (const item of filtered) {
       let cat = item.category || "basic";
-      if (cat === "content" || cat === "media") cat = "basic";
+      if (cat === "content") cat = "basic";
+      if (isCategoryHidden(palette, cat) || isCategoryHidden(palette, item.category || "basic")) {
+        continue;
+      }
       const list = map.get(cat) ?? [];
       list.push(item);
       map.set(cat, list);
     }
     return CATEGORY_ORDER.filter(
-      (c) => c === "presets" || map.has(c),
+      (c) =>
+        !isCategoryHidden(palette, c) && (c === "presets" || map.has(c)),
     ).map((cat) => ({
       cat,
       label: CATEGORY_LABEL[cat] ?? cat,
       items: map.get(cat) ?? [],
     }));
-  }, [filtered]);
+  }, [filtered, palette]);
 
   const noResults = filtered.length === 0 && presets.length === 0;
 
@@ -217,6 +244,7 @@ export type CreateLeftSidebarProps = {
   onStartDragNew: (type: string, e: React.PointerEvent) => void;
   onStartDragPreset: (presetId: string, e: React.PointerEvent) => void;
   allowDataBinding?: boolean;
+  palette?: PaletteConfig;
   outline: React.ReactNode;
   inspector: React.ReactNode | null;
   /** When false, sidebar is hidden (toggle lives in the header). */
@@ -232,6 +260,7 @@ export function CreateLeftSidebar({
   onStartDragNew,
   onStartDragPreset,
   allowDataBinding = true,
+  palette,
   outline,
   inspector,
   open = true,
@@ -293,6 +322,7 @@ export function CreateLeftSidebar({
             onStartDragNew={onStartDragNew}
             onStartDragPreset={onStartDragPreset}
             allowDataBinding={allowDataBinding}
+            palette={palette}
           />
         </div>
       ) : (

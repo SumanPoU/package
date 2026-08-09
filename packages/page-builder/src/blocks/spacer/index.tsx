@@ -48,7 +48,7 @@ const SpacerContentFields = ({
 
 export const spacerDefinition: BlockDefinition = {
   type: "spacer",
-  label: "Spacer",
+  label: "Space",
   category: "layout",
   defaultProps: { height: "24px" },
   translatableProps: [],

@@ -13,3 +13,18 @@
 - Phase 7–8: preview session store (opaque id only) + `OpenPageView`
 - Phase 9–11: CSS/JS composers, rich-text sanitizer, revision match helper
 - Visibility resolve + registration guard (early slices of later phases)
+- `uploadAsset` host context; image placehold.co default + Base64/CDN upload; width/height
+- Image Content: preview, content width, alignment, link; shared `MediaUrlField` (CDN/Base64)
+- Background Type color|image with opacity + dark overlay (containers + Style tab)
+- Flex/Grid ContentFields: direction/justify/align/gap/columns
+- Primitives: `list`, `video`, `html` (sanitized)
+- Primitives: `badge`, `icon`, `code`, `map` (Google Maps iframe parse), `embed`
+- List Content: list-style markers + per-item rows / Add / delete
+- Spacer labeled **Space**; Divider thickness/color fields
+- Demo upload route imports `../../../page-builder/media-store`
+- `PaletteConfig` — hideCategories / hideBlocks / hidePresets
+- Typography: typeable font weight, letter-spacing units, host `fontFamilies`
+- `validateAuthorCode` for host save/publish re-validation
+- Locale presets: `createEnglishOnlyLocaleConfig` / `createNepaliOnlyLocaleConfig` / `createLocaleConfig`
+- `canvasMode: "iframe"` + `IframeCanvasStage` (sandboxed shell via `canvasSrc`)
+- `PageBuilder` UI `features` flags (save/preview/open)

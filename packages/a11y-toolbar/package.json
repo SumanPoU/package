@@ -1,6 +1,6 @@
 {
   "name": "@itzsa/a11y-toolbar",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Accessible React preference toolbar — text size, contrast, motion, read aloud (TTS), WCAG chrome, FOUC-safe SSR",
   "license": "MIT",
   "sideEffects": [

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
+  hasSpeechVoiceForLang,
   pauseReading,
   READ_ALOUD_SELECTOR,
   type ReadSpeechOptions,
@@ -20,6 +21,7 @@ export type ReadAloudLabels = {
   stop: string;
   rate: string;
   unsupported: string;
+  noVoice: string;
 };
 
 type ReadAloudListenerProps = {
@@ -105,6 +107,8 @@ type ReadAloudControlsProps = {
   onRateChange: (rate: number) => void;
   labels: ReadAloudLabels;
   supported: boolean;
+  /** Active panel locale — used to detect missing TTS voices (e.g. Nepali). */
+  lang?: string;
 };
 
 /** Play/pause/stop + rate slider shown in the panel while Read Aloud is on. */
@@ -113,8 +117,27 @@ export function ReadAloudControls({
   onRateChange,
   labels,
   supported,
+  lang,
 }: ReadAloudControlsProps) {
   const [paused, setPaused] = useState(false);
+  const [hasVoice, setHasVoice] = useState(() =>
+    supported ? hasSpeechVoiceForLang(lang) : false,
+  );
+
+  useEffect(() => {
+    if (!supported) {
+      setHasVoice(false);
+      return;
+    }
+
+    const sync = () => setHasVoice(hasSpeechVoiceForLang(lang));
+    sync();
+    // Chrome loads voices asynchronously.
+    window.speechSynthesis.addEventListener("voiceschanged", sync);
+    return () => {
+      window.speechSynthesis.removeEventListener("voiceschanged", sync);
+    };
+  }, [supported, lang]);
 
   if (!supported) {
     return (
@@ -134,6 +157,9 @@ export function ReadAloudControls({
       role="group"
       aria-label={labels.rate}
     >
+      {!hasVoice ? (
+        <p className="itzsa-a11y-read-aloud-note">{labels.noVoice}</p>
+      ) : null}
       <div className="itzsa-a11y-read-aloud-actions">
         <button
           type="button"

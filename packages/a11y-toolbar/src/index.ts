@@ -89,8 +89,11 @@ export {
 export type { ReadSpeechOptions } from "./speech";
 export {
   clampSpeechRate,
+  hasSpeechVoiceForLang,
   isSpeechSynthesisSupported,
+  normalizeSpeechLang,
   pauseReading,
+  pickSpeechVoice,
   READ_ALOUD_SELECTOR,
   readElement,
   readText,

@@ -137,7 +137,10 @@ export function Callout({
   title?: string;
 }) {
   return (
-    <div className="rounded-md border-[0.5px] border-border bg-card px-3.5 py-3 text-sm leading-relaxed text-secondary">
+    <div
+      data-a11y-readable
+      className="rounded-md border-[0.5px] border-border bg-card px-3.5 py-3 text-sm leading-relaxed text-secondary"
+    >
       {title ? (
         <p className="mb-1 text-[12px] font-medium tracking-wide text-primary uppercase">
           {title}

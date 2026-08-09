@@ -140,7 +140,6 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         {/* biome-ignore lint/security/noDangerouslySetInnerHtml: a11y prefs bootstrap before paint */}
         <script dangerouslySetInnerHTML={{ __html: a11yInitScript }} />
-        <JsonLd />
       </head>
       <body className="flex min-h-full flex-col bg-page font-sans text-primary">
         <ThemeProvider>
@@ -151,6 +150,7 @@ export default function RootLayout({
           </div>
           <SiteA11yToolbar />
         </ThemeProvider>
+        <JsonLd />
       </body>
     </html>
   );

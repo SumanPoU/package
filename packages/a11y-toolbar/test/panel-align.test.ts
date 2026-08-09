@@ -21,12 +21,14 @@ describe("resolvePanelAlign", () => {
 });
 
 describe("resolvePanelStyle", () => {
-  it("pins bottom-center + left to the left edge above the launcher", () => {
+  it("pins bottom-center + left to the left edge and fills the viewport (no gap above launcher)", () => {
     const style = resolvePanelStyle("bottom-center", "left");
     expect(style.left).toContain("--itzsa-a11y-offset");
     expect(style.right).toBe("auto");
-    expect(style.bottom).toContain("--itzsa-a11y-launcher-size");
-    expect(style.top).toBe("auto");
+    expect(style.bottom).toContain("--itzsa-a11y-offset");
+    expect(style.top).toContain("--itzsa-a11y-offset");
+    expect(style.bottom).not.toContain("--itzsa-a11y-launcher-size");
+    expect(style.height).toBeUndefined();
   });
 
   it("pins bottom-center + right to the right edge", () => {

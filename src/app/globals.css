@@ -261,3 +261,56 @@ h6 {
   border: 2px solid transparent;
   background-clip: padding-box;
 }
+
+/*
+  Compact package docs. Tailwind rem utilities ignore parent font-size,
+  so headings / body / code are overridden inside .docs-shell only.
+*/
+/* biome-ignore-start lint/complexity/noImportantStyles: override Tailwind rem utilities in docs shell */
+.docs-shell {
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.docs-shell main :where(h1) {
+  font-size: 1.25rem !important;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 640px) {
+  .docs-shell main :where(h1) {
+    font-size: 1.4rem !important;
+  }
+}
+
+.docs-shell main :where(h2) {
+  font-size: 0.95rem !important;
+  line-height: 1.3;
+}
+
+.docs-shell main :where(h3) {
+  font-size: 0.8125rem !important;
+  line-height: 1.35;
+}
+
+.docs-shell main :where(p, li, dd, dt) {
+  font-size: 12.5px !important;
+  line-height: 1.55 !important;
+}
+
+.docs-shell main :where(th, td) {
+  font-size: 11.5px !important;
+  line-height: 1.45 !important;
+}
+
+.docs-shell main :where(pre),
+.docs-shell main :where(pre code) {
+  font-size: 11.5px !important;
+  line-height: 1.5 !important;
+}
+
+.docs-shell main :where(button[role="tab"]) {
+  font-size: 11.5px !important;
+}
+/* biome-ignore-end lint/complexity/noImportantStyles: override Tailwind rem utilities in docs shell */

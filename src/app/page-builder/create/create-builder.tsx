@@ -46,15 +46,14 @@ import { type Device, EditorHeader } from "./editor-header";
 import { type PageMetadata, PageSettingsDialog } from "./page-settings-dialog";
 import { SaveConflictDialog } from "./save-conflict-dialog";
 
-/** `default` | `en` | `ne` — swap to demo single-locale hosts. */
-const CREATE_LOCALE_MODE: "default" | "en" | "ne" = "default";
+/** `default` | `en` | `ne` — swap arg to demo single-locale hosts. */
+const resolveCreateLocaleConfig = (mode: "default" | "en" | "ne") => {
+  if (mode === "en") return createEnglishOnlyLocaleConfig();
+  if (mode === "ne") return createNepaliOnlyLocaleConfig();
+  return createDefaultLocaleConfig();
+};
 
-const localeConfig =
-  CREATE_LOCALE_MODE === "en"
-    ? createEnglishOnlyLocaleConfig()
-    : CREATE_LOCALE_MODE === "ne"
-      ? createNepaliOnlyLocaleConfig()
-      : createDefaultLocaleConfig();
+const localeConfig = resolveCreateLocaleConfig("default");
 
 const CREATE_CAPABILITIES: PageBuilderCapabilities = {
   allowCustomCss: true,
@@ -362,7 +361,7 @@ export function CreateBuilder() {
           });
           return;
         }
-        window.alert(result.error);
+        window.alert("error" in result ? result.error : "Publish failed");
       } finally {
         setIsPublishing(false);
       }

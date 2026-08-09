@@ -110,15 +110,16 @@ export const PLACEMENT_PROPS: PropRow[] = [
   {
     name: "panelMaxHeight",
     type: "string",
-    default: "min(40rem, 100dvh - 6rem)",
-    description: 'Panel max height, e.g. "32rem" or "70dvh".',
+    default: "none",
+    description:
+      'Panel max height ceiling, e.g. "32rem" or "70dvh". Default none (full stretch).',
   },
   {
     name: "panelHeight",
     type: "string",
-    default: "auto",
+    default: "— (stretch)",
     description:
-      "Fixed panel height. Still capped by panelMaxHeight; body scrolls inside.",
+      "Optional fixed height. When unset, the panel stretches between safe edges and the launcher.",
   },
 ];
 
@@ -395,7 +396,7 @@ export const MOTION_FEATURES: PropRow[] = [
     name: "readAloud",
     type: "toggle",
     description:
-      "Click-to-speak on p/h1–h6/li/blockquote under data-a11y-content. Panel exposes pause/resume/stop + speechRate (0.5–2).",
+      "Click-to-speak on p/h1–h6/li/blockquote under data-a11y-content. Locale ne → ne-NP + Nepali/Hindi voice when installed. Panel exposes pause/resume/stop + speechRate (0.5–2).",
   },
 ];
 

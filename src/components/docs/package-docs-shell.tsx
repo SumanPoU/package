@@ -99,11 +99,11 @@ function NavLink({
       className={cn(
         "group relative block rounded-sm transition-colors",
         size === "toc"
-          ? "border-l-[0.5px] border-border py-1.5 pl-3 text-[13px] leading-snug"
-          : "px-2.5 py-1.5 text-sm",
+          ? "border-l-[0.5px] border-border py-1 pl-2.5 text-[12px] leading-snug"
+          : "px-2 py-1 text-[12.5px]",
         item.indent &&
           size === "default" &&
-          "ml-2 border-l-[0.5px] border-transparent pl-3 text-[13px]",
+          "ml-1.5 border-l-[0.5px] border-transparent pl-2.5 text-[12px]",
         active
           ? size === "toc"
             ? "border-l-2 border-l-accent text-accent"
@@ -180,12 +180,12 @@ export function PackageDocsShell({
   }, []);
 
   return (
-    <div className="docs-shell min-h-full bg-page">
-      <div className="mx-auto flex w-full max-w-[88rem] gap-4 px-4 py-6 sm:px-6 sm:py-8 lg:gap-8 lg:py-10 xl:gap-10">
+    <div className="docs-shell min-h-full bg-page text-[12.5px] leading-normal">
+      <div className="mx-auto flex w-full max-w-[88rem] gap-3 px-4 py-5 sm:px-6 sm:py-6 lg:gap-6 lg:py-7 xl:gap-8">
         <aside
           ref={leftRef}
           data-docs-sidebar="left"
-          className="sticky top-20 hidden h-[calc(100vh-6rem)] w-52 shrink-0 overflow-y-auto overscroll-contain lg:block xl:w-56"
+          className="sticky top-20 hidden h-[calc(100vh-6rem)] w-48 shrink-0 overflow-y-auto overscroll-contain lg:block xl:w-52"
         >
           <nav
             aria-label="Documentation"
@@ -193,15 +193,15 @@ export function PackageDocsShell({
           >
             <Link
               href="/"
-              className="mb-5 text-[11px] font-medium tracking-[0.16em] text-secondary uppercase transition-colors hover:text-primary"
+              className="mb-4 text-[10px] font-medium tracking-[0.16em] text-secondary uppercase transition-colors hover:text-primary"
             >
               ← itzsa
             </Link>
-            <div className="mb-4 flex flex-col gap-0.5 px-2.5">
-              <p className="text-[15px] font-medium tracking-tight text-primary">
+            <div className="mb-3 flex flex-col gap-0.5 px-2">
+              <p className="text-[13px] font-medium tracking-tight text-primary">
                 {title}
               </p>
-              <p className="pkg text-[11px]">{packageName}</p>
+              <p className="pkg text-[10px]">{packageName}</p>
             </div>
             {nav.map((item) => (
               <NavLink
@@ -213,15 +213,15 @@ export function PackageDocsShell({
           </nav>
         </aside>
 
-        <main className="min-w-0 flex-1 pb-12 sm:pb-24">{children}</main>
+        <main className="min-w-0 flex-1 pb-10 sm:pb-16">{children}</main>
 
         <aside
           ref={rightRef}
           data-docs-sidebar="right"
-          className="sticky top-20 hidden h-[calc(100vh-6rem)] w-44 shrink-0 overflow-y-auto overscroll-contain xl:block"
+          className="sticky top-20 hidden h-[calc(100vh-6rem)] w-40 shrink-0 overflow-y-auto overscroll-contain xl:block"
         >
           <nav aria-label="On this page" className="flex flex-col pb-8">
-            <p className="mb-3 text-[11px] font-medium tracking-[0.14em] text-tertiary uppercase">
+            <p className="mb-2 text-[10px] font-medium tracking-[0.14em] text-tertiary uppercase">
               On this page
             </p>
             {rightToc.map((item) => (
@@ -233,8 +233,8 @@ export function PackageDocsShell({
               />
             ))}
             {sectionChildren.length > 0 ? (
-              <div className="mt-4 flex flex-col border-t-[0.5px] border-border pt-3">
-                <p className="mb-2 text-[11px] text-tertiary">In section</p>
+              <div className="mt-3 flex flex-col border-t-[0.5px] border-border pt-2.5">
+                <p className="mb-1.5 text-[10px] text-tertiary">In section</p>
                 {sectionChildren.map((item) => (
                   <NavLink
                     key={item.id}
@@ -249,7 +249,7 @@ export function PackageDocsShell({
           <button
             type="button"
             onClick={scrollToTop}
-            className="mt-6 text-left text-[12px] text-secondary transition-colors hover:text-primary"
+            className="mt-5 text-left text-[11px] text-secondary transition-colors hover:text-primary"
           >
             ↑ Back to top
           </button>

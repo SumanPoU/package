@@ -1,5 +1,3 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import type { Metadata } from "next";
 
 /** Canonical production origin for docs + Open Graph. */
@@ -367,21 +365,6 @@ export function githubPackageUrl(packageName: string): string {
 
 export function githubRepoUrl(): string {
   return "https://github.com/SumanPoU/package";
-}
-
-/** Read published package version from monorepo package.json (build-time). */
-export function getLocalPackageVersion(packageName: string): string {
-  try {
-    const dir = packageName.replace("@itzsa/", "");
-    const raw = readFileSync(
-      join(process.cwd(), "packages", dir, "package.json"),
-      "utf8",
-    );
-    const version = (JSON.parse(raw) as { version?: string }).version;
-    return version?.trim() || "latest";
-  } catch {
-    return "latest";
-  }
 }
 
 type BuildMetaOptions = {

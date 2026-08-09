@@ -28,7 +28,7 @@ const a11yFouc = getA11yFoucScript();
   panelAlign="left"
   defaultLocale="en"
   locales={{ ne: NE_MESSAGES }}
-  panelMaxHeight="70dvh"
+  // omit panelMaxHeight for full-height stretch; or pass e.g. "70dvh" to cap
   theme={{
     accent: "var(--accent)",
     header: "#15805f",

@@ -30,6 +30,8 @@ export type A11yMessages = {
   readAloudStop: string;
   readAloudRate: string;
   readAloudUnsupported: string;
+  /** Shown when SpeechSynthesis exists but no voice matches the active locale. */
+  readAloudNoVoice: string;
   /**
    * Stepped announce template.
    * Tokens: `{title}`, `{name}`, `{current}`, `{total}` — `{current}`/`{total}` are Arabic digits.
@@ -61,6 +63,7 @@ export type A11yMessagesPartial = {
   readAloudStop?: string;
   readAloudRate?: string;
   readAloudUnsupported?: string;
+  readAloudNoVoice?: string;
   announceStep?: string;
   sections?: Partial<Record<A11ySectionId, string>>;
   features?: Partial<

@@ -1,6 +1,8 @@
+import Script from "next/script";
+
+import { getLocalPackageVersion } from "@/lib/package-version";
 import {
   absoluteUrl,
-  getLocalPackageVersion,
   githubPackageUrl,
   githubRepoUrl,
   npmPackageUrl,
@@ -145,8 +147,10 @@ export function JsonLd() {
   };
 
   return (
-    <script
+    <Script
+      id="jsonld-site"
       type="application/ld+json"
+      strategy="afterInteractive"
       // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data
       dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
     />

@@ -22,6 +22,8 @@ export const EN_MESSAGES: A11yMessages = {
   readAloudStop: "Stop",
   readAloudRate: "Speech rate",
   readAloudUnsupported: "Text-to-speech is not available in this browser.",
+  readAloudNoVoice:
+    "No speech voice for this language is installed. Install a matching voice (for Nepali: a Nepali or Hindi Devanagari voice) in your OS or browser settings.",
   announceStep: "{title}: {name} ({current} of {total})",
   sections: {
     display: "Display",

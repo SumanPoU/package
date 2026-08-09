@@ -21,6 +21,8 @@ export const NE_MESSAGES: A11yMessages = {
   readAloudStop: "बन्द गर्नुहोस्",
   readAloudRate: "बोलीको गति",
   readAloudUnsupported: "यो ब्राउजरमा पाठ-देखि-वाणी उपलब्ध छैन।",
+  readAloudNoVoice:
+    "यस यन्त्रमा नेपाली बोली आवाज छैन। पढेर सुनाउन OS वा ब्राउजरमा नेपाली (वा हिन्दी) आवाज स्थापना गर्नुहोस्।",
   announceStep: "{title}: {name} ({current} मध्ये {total})",
   sections: {
     display: "प्रदर्शन",

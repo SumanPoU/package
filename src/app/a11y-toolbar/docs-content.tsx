@@ -56,10 +56,12 @@ export function DocsContent() {
           </h1>
           <p className="max-w-2xl text-base leading-relaxed text-secondary">
             Floating preference panel for text size, contrast, spacing, motion,
-            and reading aids. Preferences persist in localStorage and apply via
-            CSS under{" "}
+            and reading aids — including Read Aloud with Nepali (
+            <span lang="ne">नेपाली</span>) / Hindi Devanagari voice selection.
+            Preferences persist in localStorage and apply via CSS under{" "}
             <code className="font-mono text-primary">[data-a11y-content]</code>.
-            The floating control on this site is the live demo.
+            The floating control on this site is the live demo (full-height
+            panel by default).
           </p>
           <div className="flex flex-wrap gap-2 pt-1 text-xs text-secondary">
             <span className="pkg rounded-md border-[0.5px] border-border bg-card px-2 py-1 text-[12px]">
@@ -145,7 +147,10 @@ export function DocsContent() {
           <Callout title="Try it">
             Use the floating accessibility button, or press{" "}
             <kbd className="font-mono text-primary">Alt+A</kbd>. Open Language
-            in the header to switch English / नेपाली.
+            in the header to switch English / नेपाली. For Nepali Read Aloud, pick
+            नेपाली, enable Read Aloud, then click a paragraph under{" "}
+            <code className="font-mono text-primary">[data-a11y-content]</code>—
+            requires a Nepali (or Hindi) TTS voice installed on the device.
           </Callout>
 
           <div className="mt-8 flex flex-col gap-10">
@@ -262,7 +267,9 @@ export function DocsContent() {
                 <code className="font-mono text-accent">
                   fontFamilyByLocale
                 </code>
-                .
+                . Read Aloud uses{" "}
+                <code className="font-mono text-accent">ne-NP</code> and picks
+                an installed Nepali voice (Hindi Devanagari fallback).
               </Callout>
             </DocSection>
 
@@ -270,7 +277,7 @@ export function DocsContent() {
               id="props-placement"
               level={3}
               title="Placement & size"
-              description="position places the launcher; panelAlign places the panel horizontally; height props size the dialog."
+              description="position places the launcher; panelAlign places the panel horizontally. By default the panel stretches edge-to-edge (launcher floats on top — no gap above the icon)."
             >
               <PropsTable caption="Placement" rows={PLACEMENT_PROPS} />
             </DocSection>

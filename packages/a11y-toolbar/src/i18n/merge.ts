@@ -48,6 +48,7 @@ export function deepMergeMessages(
       "readAloudStop",
       "readAloudRate",
       "readAloudUnsupported",
+      "readAloudNoVoice",
       "announceStep",
     ]),
     sections: { ...base.sections },

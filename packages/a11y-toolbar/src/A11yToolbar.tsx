@@ -108,12 +108,12 @@ export type A11yToolbarProps = {
   launcherSize?: string;
   /**
    * Panel max height (e.g. `"32rem"`, `"70dvh"`).
-   * Default `min(40rem, calc(100dvh - 6rem))`.
+   * Default `none` (full stretch between safe edges / launcher).
    */
   panelMaxHeight?: string;
   /**
-   * Fixed panel height (e.g. `"28rem"`). When set, the panel uses this height
-   * and still respects `panelMaxHeight` as a ceiling.
+   * Optional fixed height. When unset, the panel stretches edge-to-edge
+   * (launcher floats on top — no gap reserved above/below the icon).
    */
   panelHeight?: string;
   /** @deprecated Prefer `theme.accent` / `theme.launcher`. */
@@ -180,26 +180,13 @@ export function resolvePanelStyle(
 ): CSSProperties {
   const align = resolvePanelAlign(position, panelAlign);
 
-  const vertical: CSSProperties = position.startsWith("bottom")
-    ? {
-        top: "auto",
-        bottom: `calc(var(--itzsa-a11y-launcher-size) + ${PANEL_GAP} + ${EDGE_BOTTOM})`,
-        marginBlock: 0,
-        height: "auto",
-      }
-    : position.startsWith("top")
-      ? {
-          bottom: "auto",
-          top: `calc(var(--itzsa-a11y-launcher-size) + ${PANEL_GAP} + ${EDGE_TOP})`,
-          marginBlock: 0,
-          height: "auto",
-        }
-      : {
-          top: 0,
-          bottom: 0,
-          marginBlock: "auto",
-          height: "fit-content",
-        };
+  // Full viewport stretch — do not leave a gap above/below the launcher icon.
+  // Do not set inline `height` — that would override `--itzsa-a11y-panel-height`.
+  const vertical: CSSProperties = {
+    top: EDGE_TOP,
+    bottom: EDGE_BOTTOM,
+    marginBlock: 0,
+  };
 
   const horizontal: CSSProperties =
     align === "left"
@@ -282,17 +269,12 @@ function resolveThemeStyle(
   } as CSSProperties;
 }
 
-function pickInitialLocale(
-  storageKey: string,
+function resolveDefaultLocale(
   defaultLocale: string,
   available: string[],
 ): string {
-  if (typeof window === "undefined") {
-    return available.includes(defaultLocale) ? defaultLocale : "en";
-  }
-  const stored = getStoredLocale(storageKey);
-  if (stored && available.includes(stored)) return stored;
-  return available.includes(defaultLocale) ? defaultLocale : "en";
+  if (available.includes(defaultLocale)) return defaultLocale;
+  return available[0] ?? "en";
 }
 
 export function A11yToolbar({
@@ -344,21 +326,44 @@ export function A11yToolbar({
     [onOpenChange, openProp, open],
   );
 
+  // SSR + first client paint must match — never read localStorage in useState.
   const [uncontrolledLocale, setUncontrolledLocale] = useState(() =>
-    pickInitialLocale(storageKey, defaultLocale, available),
+    resolveDefaultLocale(defaultLocale, available),
   );
+  const [prefs, setPrefs] = useState<A11yPreferences>(() => resetPreferences());
+  const [storageReady, setStorageReady] = useState(false);
+  const [announcement, setAnnouncement] = useState("");
+
+  useEffect(() => {
+    const storedPrefs = getStoredPreferences(storageKey);
+    setPrefs((prev) =>
+      isPreferencesEqual(prev, storedPrefs) ? prev : storedPrefs,
+    );
+    if (localeProp === undefined) {
+      const storedLocale = getStoredLocale(storageKey);
+      if (storedLocale && available.includes(storedLocale)) {
+        setUncontrolledLocale(storedLocale);
+      }
+    }
+    setStorageReady(true);
+  }, [storageKey, available, localeProp]);
 
   // Keep uncontrolled locale valid if availableLocales shrink.
   useEffect(() => {
     if (localeProp !== undefined) return;
     if (!available.includes(uncontrolledLocale)) {
-      const fallback = available.includes(defaultLocale)
-        ? defaultLocale
-        : (available[0] ?? "en");
+      const fallback = resolveDefaultLocale(defaultLocale, available);
       setUncontrolledLocale(fallback);
-      setStoredLocale(fallback, storageKey);
+      if (storageReady) setStoredLocale(fallback, storageKey);
     }
-  }, [available, defaultLocale, localeProp, storageKey, uncontrolledLocale]);
+  }, [
+    available,
+    defaultLocale,
+    localeProp,
+    storageKey,
+    uncontrolledLocale,
+    storageReady,
+  ]);
 
   const activeLocaleCode =
     localeProp !== undefined
@@ -396,18 +401,12 @@ export function A11yToolbar({
     document.documentElement.setAttribute("data-a11y-locale", activeLocaleCode);
   }, [activeLocaleCode]);
 
-  const [prefs, setPrefs] = useState<A11yPreferences>(() =>
-    typeof window === "undefined"
-      ? resetPreferences()
-      : getStoredPreferences(storageKey),
-  );
-  const [announcement, setAnnouncement] = useState("");
-
   useEffect(() => {
+    if (!storageReady) return;
     scheduleApplyA11yPreferences(prefs);
     setStoredPreferences(prefs, storageKey);
     onChange?.(prefs);
-  }, [prefs, storageKey, onChange]);
+  }, [prefs, storageKey, onChange, storageReady]);
 
   // Effect tokens (cursor / guide) must live on <html> so page-wide CSS sees them.
   useEffect(() => {
@@ -765,6 +764,7 @@ export function A11yToolbar({
                 {prefs.readAloud && isEnabled(features, "readAloud") ? (
                   <ReadAloudControls
                     rate={prefs.speechRate}
+                    lang={activeLocaleCode}
                     onRateChange={(next) => {
                       const speechRate = clampSpeechRate(next);
                       update(
@@ -778,6 +778,7 @@ export function A11yToolbar({
                       stop: t.readAloudStop,
                       rate: t.readAloudRate,
                       unsupported: t.readAloudUnsupported,
+                      noVoice: t.readAloudNoVoice,
                     }}
                     supported={isSpeechSynthesisSupported()}
                   />

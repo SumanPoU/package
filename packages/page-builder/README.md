@@ -15,6 +15,7 @@ Full docs (site): `/page-builder` in this monorepo. Design authority: `ARCHITECT
 | Render parity | Same `render` for canvas / preview / open |
 | Localization | First-class `i18nProps` with host-configured locales |
 | Author CSS / JS | Look from composers — no engine decorative skins |
+| Motion Effects | Entrance + hover via `block.motion` (canvas / preview / open parity) |
 | Visibility | Device, locale, publish, `renderContext` predicates |
 | Data sources | Repeater + `{{item.*}}` via `fetchDataSource` |
 | Feature toggling | `capabilities` + host UI flags |

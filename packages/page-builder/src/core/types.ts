@@ -1,6 +1,8 @@
 import type { ComponentType, ReactNode } from "react";
 import type { ZodType } from "zod";
 
+import type { BlockMotion } from "./motion";
+
 export type Device = "desktop" | "tablet" | "mobile";
 
 export type BlockSource = "core" | "tenant" | "plugin";
@@ -69,6 +71,8 @@ export type Block = {
   customJs?: CustomScript;
   style?: Record<string, unknown>;
   responsiveStyle?: Record<string, unknown>;
+  /** Entrance / hover motion (Elementor-style). Omit or entrance none = no effect. */
+  motion?: BlockMotion;
   visibility?: BlockVisibility;
   visibleWhen?: VisibleWhen;
   dataBinding?: DataBinding;

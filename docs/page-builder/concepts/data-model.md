@@ -24,8 +24,9 @@ Canonical persisted document is **`Page` JSON** (ADR-14). Full HTML is an option
   };
   customCss?: string;
   customJs?: CustomScript;
+  style?: Record<string, unknown>;
+  motion?: BlockMotion; // entrance + hover — see concepts/motion.md
   children?: Block[];
-  // Forward-compatible (resolve logic in later phases):
   visibility?: …;
   visibleWhen?: …;
   dataBinding?: …;

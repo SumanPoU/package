@@ -1,3 +1,4 @@
+import { getBlockMotion, hasActiveEntrance, hasActiveHover } from "./motion";
 import type { Block } from "./types";
 
 export const blockClassName = (blockId: string): string => `b-${blockId}`;
@@ -10,6 +11,9 @@ type BlockRootAttrs = {
   "data-block-type": string;
   className: string;
   id?: string;
+  "data-pb-motion"?: string;
+  "data-pb-motion-trigger"?: string;
+  "data-pb-hover"?: string;
 };
 
 /** Root attrs for every block render — one path for canvas / preview / open. */
@@ -20,6 +24,7 @@ export const blockRootAttrs = (block: Block): BlockRootAttrs => {
   };
   const extraClasses = style.cssClasses?.trim() ?? "";
   const cssId = style.cssId?.trim();
+  const motion = getBlockMotion(block);
 
   return {
     "data-block-id": block.id,
@@ -28,5 +33,12 @@ export const blockRootAttrs = (block: Block): BlockRootAttrs => {
       .filter(Boolean)
       .join(" "),
     ...(cssId ? { id: cssId } : {}),
+    ...(hasActiveEntrance(motion)
+      ? {
+          "data-pb-motion": motion.entrance,
+          "data-pb-motion-trigger": motion.trigger ?? "scroll",
+        }
+      : {}),
+    ...(hasActiveHover(motion) ? { "data-pb-hover": motion.hover } : {}),
   };
 };

@@ -22,6 +22,7 @@ export const DOC_NAV: NavItem[] = [
   { id: "background", label: "Background", indent: true },
   { id: "typography", label: "Typography", indent: true },
   { id: "visibility", label: "Visibility", indent: true },
+  { id: "motion", label: "Motion Effects", indent: true },
   { id: "data-binding", label: "Data sources", indent: true },
   { id: "feature-toggling", label: "Feature toggling", indent: true },
   { id: "palette-config", label: "Hide groups & blocks", indent: true },
@@ -41,5 +42,6 @@ export const DOC_NAV: NavItem[] = [
   { id: "guide-locale", label: "Add a locale", indent: true },
   { id: "guide-custom-css", label: "Custom CSS / JS", indent: true },
   { id: "guide-render-parity", label: "Render parity", indent: true },
+  { id: "guide-motion", label: "Motion Effects", indent: true },
   { id: "guide-signed-import", label: "Signed import", indent: true },
 ];

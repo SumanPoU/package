@@ -1,5 +1,5 @@
 import { z } from "zod";
-
+import { getMotionRuntimeScript, pageNeedsMotionRuntime } from "./motion";
 import type { CustomScript, Page } from "./types";
 
 export type ComposeJsOptions = {
@@ -36,6 +36,7 @@ export const validateCustomScript = (
  * Shape-validate CustomScript entries and wrap for runAt.
  * Network access is default-deny via CSP `connect-src` (see sandboxPolicy) —
  * this composer does not grant fetch; isolation is the control. Never uses eval.
+ * When any block has an entrance motion, appends the shared motion runtime.
  */
 export const composePageJs = (
   page: Page,
@@ -72,6 +73,14 @@ export const composePageJs = (
     }
   };
   walk(page.blocks);
+
+  if (pageNeedsMotionRuntime(page.blocks)) {
+    scripts.push({
+      code: getMotionRuntimeScript(),
+      runAt: "domReady",
+      enabled: true,
+    });
+  }
 
   return { scripts, errors };
 };

@@ -90,6 +90,7 @@ export const cloneBlock = (block: Block): Block => {
         }
       : undefined,
     customJs: block.customJs ? { ...block.customJs } : undefined,
+    motion: block.motion ? { ...block.motion } : undefined,
     style: block.style ? { ...block.style } : undefined,
     responsiveStyle: block.responsiveStyle
       ? { ...block.responsiveStyle }

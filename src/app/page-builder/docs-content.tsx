@@ -20,6 +20,7 @@ import {
   HOST_CHROME_EXAMPLE,
   INSTALL_CSS,
   LOCALES_EXAMPLE,
+  MOTION_EXAMPLE,
   PALETTE_CONFIG_EXAMPLE,
   PREVIEW_ROUTE_EXAMPLE,
   PUBLIC_PAGE_EXAMPLE,
@@ -464,12 +465,12 @@ export function DocsContent() {
         <DocSection
           id="integrating"
           title="Integrating"
-          description="Wire registry, locales, media, visibility, capabilities, and canvas into your host app."
+          description="Wire registry, locales, media, visibility, motion, capabilities, and canvas into your host app."
         >
           <P>
             The sections below match how you typically integrate a visual
             editor: register blocks, understand the data model, then layer
-            locales, CSS, uploads, and feature gates.
+            locales, CSS, motion, uploads, and feature gates.
           </P>
         </DocSection>
 
@@ -652,6 +653,36 @@ export function DocsContent() {
             <code>surface</code> in editor and published views so Preview
             matches Open Page.
           </P>
+        </DocSection>
+
+        <DocSection
+          id="motion"
+          title="Motion Effects"
+          level={3}
+          description="Elementor-style entrance + hover on block.motion. Same CSS/runtime for canvas, preview, and open page."
+        >
+          <CodeBlock code={MOTION_EXAMPLE} language="tsx" />
+          <Ul>
+            <li>
+              Inspector: select a block →{" "}
+              <strong className="font-medium text-primary">Advanced</strong> →{" "}
+              <strong className="font-medium text-primary">
+                Motion Effects
+              </strong>
+              .
+            </li>
+            <li>
+              Entrance presets (<code>fadeInUp</code>, <code>zoomIn</code>, …)
+              with <code>scroll</code> or <code>load</code> trigger; hover{" "}
+              <code>grow</code> / <code>shrink</code> / <code>float</code>.
+            </li>
+            <li>
+              <code>composePageCss</code> / <code>composePageJs</code> (+{" "}
+              <code>initPbMotion</code> on the embedded canvas). Honors{" "}
+              <code>prefers-reduced-motion</code>. No decorative defaults when
+              motion is omitted.
+            </li>
+          </Ul>
         </DocSection>
 
         <DocSection
@@ -1034,7 +1065,47 @@ export function DocsContent() {
             Canvas styles Preview lacks → remove engine/demo CSS. Overlay chrome
             on Open Page → move to parent overlays. Locale differs per surface →
             same <code>i18nResolve</code> + <code>activeLocale</code>{" "}
-            everywhere.
+            everywhere. Motion only on one surface → ensure{" "}
+            <code>composePageCss</code> / <code>composePageJs</code> (or{" "}
+            <code>initPbMotion</code>) run everywhere <code>block.motion</code>{" "}
+            is used.
+          </Callout>
+        </DocSection>
+
+        <DocSection
+          id="guide-motion"
+          title="Motion Effects"
+          level={3}
+          description="Add entrance and hover animations via block.motion — one render path, no engine skins by default."
+        >
+          <Ul>
+            <li>
+              Open{" "}
+              <Link
+                href="/page-builder/create"
+                className="font-medium text-accent underline-offset-2 hover:underline"
+              >
+                Create
+              </Link>
+              , select a block, open{" "}
+              <strong className="font-medium text-primary">Advanced</strong> →{" "}
+              <strong className="font-medium text-primary">
+                Motion Effects
+              </strong>
+              .
+            </li>
+            <li>
+              Pick entrance + trigger (scroll / load), duration, delay, optional
+              hover.
+            </li>
+            <li>
+              Confirm Preview and Open Page match the canvas for the same JSON.
+            </li>
+          </Ul>
+          <CodeBlock code={MOTION_EXAMPLE} language="tsx" />
+          <Callout title="Do not">
+            Bake fade/slide into every primitive&apos;s default CSS, or animate
+            only inside the editor. Motion is page content — parity required.
           </Callout>
         </DocSection>
 

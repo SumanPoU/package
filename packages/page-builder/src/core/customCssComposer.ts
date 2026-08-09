@@ -4,6 +4,7 @@ import {
   type CssParseOptions,
   parseAuthorCss,
 } from "./cssParser";
+import { MOTION_CSS, pageUsesMotion } from "./motion";
 import type { Page } from "./types";
 
 export type ComposeCssResult = {
@@ -39,6 +40,10 @@ export const composePageCss = (
 ): ComposeCssResult => {
   const errors: CssParseError[] = [];
   const chunks: string[] = [];
+
+  if (pageUsesMotion(page.blocks)) {
+    chunks.push(MOTION_CSS);
+  }
 
   if (page.globalCss?.trim()) {
     pushAuthorCss(page.globalCss, options, errors, chunks);

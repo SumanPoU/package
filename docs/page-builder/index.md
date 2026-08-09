@@ -12,8 +12,7 @@ Integrator-facing documentation for `@itzsa/page-builder`.
 | --- | --- |
 | Introduction | What it is, features table, demo CTA |
 | Getting started | Install, `PageBuilder`, `RenderPage` / `OpenPageView`, **show page on your site** |
-| Integrating | Blocks, Flex/Grid nesting, locales, CSS/JS, images, **background**, typography, visibility, capabilities, **palette filters**, canvas |
-| Integrating | Blocks, data model, locales, CSS/JS, images, visibility, data sources, capabilities, canvas, theming |
+| Integrating | Blocks, Flex/Grid, locales, CSS/JS, images, background, typography, visibility, **motion**, capabilities, palette filters, canvas |
 | API reference | Props tables + host callbacks + `validateAuthorCode` |
 | Guides | Links into the markdown tree below |
 
@@ -30,7 +29,7 @@ Integrator-facing documentation for `@itzsa/page-builder`.
 
 ### Concepts
 
-[composition](./concepts/composition.md) · [locales](./concepts/locales.md) · [visibility](./concepts/visibility.md) · [data-binding](./concepts/data-binding.md) · [author-css](./concepts/author-css.md) · [preview](./concepts/preview.md) · [persistence](./concepts/persistence.md) · [security](./concepts/security.md) · [accessibility](./concepts/accessibility.md)
+[composition](./concepts/composition.md) · [locales](./concepts/locales.md) · [visibility](./concepts/visibility.md) · [motion](./concepts/motion.md) · [data-binding](./concepts/data-binding.md) · [author-css](./concepts/author-css.md) · [preview](./concepts/preview.md) · [persistence](./concepts/persistence.md) · [security](./concepts/security.md) · [accessibility](./concepts/accessibility.md)
 
 ### Editor
 
@@ -42,8 +41,8 @@ Integrator-facing documentation for `@itzsa/page-builder`.
 
 ### Guides
 
-[custom CSS/JS](./guides/custom-css-js.md) · [Model A](./guides/register-custom-block.md) · [Model B](./guides/dynamic-block-data-binding.md) · [blog card loop](./guides/dynamic-blog-card.md) · [show on site](./guides/show-page-on-site.md) · [add a locale](./guides/add-a-locale.md) · [signed import](./guides/phase-19-signed-import.md)
+[custom CSS/JS](./guides/custom-css-js.md) · [motion effects](./guides/motion-effects.md) · [Model A](./guides/register-custom-block.md) · [Model B](./guides/dynamic-block-data-binding.md) · [blog card loop](./guides/dynamic-blog-card.md) · [show on site](./guides/show-page-on-site.md) · [add a locale](./guides/add-a-locale.md) · [signed import](./guides/phase-19-signed-import.md)
 
 ### §18.1 layout
 
-Matches architecture: `concepts/` (incl. author-css, accessibility, composition), `editor/`, `api/`, `guides/` (incl. show-page-on-site + phase-19-signed-import).
+Matches architecture: `concepts/` (incl. author-css, accessibility, composition, **motion**), `editor/`, `api/`, `guides/` (incl. show-page-on-site + motion-effects + phase-19-signed-import).

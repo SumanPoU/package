@@ -24,6 +24,28 @@ const blockBaseFields = {
   customJs: customScriptSchema.optional(),
   style: z.record(z.string(), z.unknown()).optional(),
   responsiveStyle: z.record(z.string(), z.unknown()).optional(),
+  motion: z
+    .object({
+      entrance: z
+        .enum([
+          "none",
+          "fadeIn",
+          "fadeInUp",
+          "fadeInDown",
+          "fadeInLeft",
+          "fadeInRight",
+          "zoomIn",
+          "slideInLeft",
+          "slideInRight",
+        ])
+        .optional(),
+      hover: z.enum(["none", "grow", "shrink", "float"]).optional(),
+      durationMs: z.number().nonnegative().optional(),
+      delayMs: z.number().nonnegative().optional(),
+      trigger: z.enum(["load", "scroll"]).optional(),
+    })
+    .strict()
+    .optional(),
   visibility: blockVisibilitySchema.optional(),
   visibleWhen: visibleWhenSchema.optional(),
 };

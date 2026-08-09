@@ -19,9 +19,19 @@ The inspector (Content / Style / Advanced) is the dynamic field system for editi
 | --- | --- |
 | **Content** | Typed props for the active locale (`ContentFields`) |
 | **Style** | Shared visual props (background, typography) when the block exposes them |
-| **Advanced** | `customCss` / `customJs` (capability-gated) |
-| **Visibility** | `visibility` / `visibleWhen` when hosts enable §23 |
+| **Advanced** | Motion Effects (`block.motion`), CSS id/classes, `customCss` / `customJs` (capability-gated), visibility |
 | **Binding** | Repeater / DataSource when `allowDataBinding` |
+
+## Motion Effects (Advanced)
+
+| Field | Notes |
+| --- | --- |
+| `motion.entrance` | CSS keyframe preset; omit / `none` = no entrance CSS |
+| `motion.trigger` | `scroll` (default) or `load` |
+| `motion.durationMs` / `delayMs` | Composed as CSS variables on `.b-{id}` |
+| `motion.hover` | CSS-only hover transform |
+
+See [motion](../concepts/motion.md) and [motion-effects](../guides/motion-effects.md).
 
 ## Limits & failure modes
 

@@ -39,6 +39,7 @@ Selection outlines, drag ghosts, hover rings, and toolbars live in the **parent*
 | Overlay chrome visible on Open Page | Move chrome to parent overlays |
 | Locale differs per surface | Same `i18nResolve` + `activeLocale` everywhere |
 | Registry mismatch | Missing types → `FallbackBlock` / blank — register the same set everywhere |
+| Motion only on one surface | Run `composePageCss` / `composePageJs` (or `initPbMotion`) wherever `block.motion` is used |
 
 ## Limits
 
@@ -49,4 +50,4 @@ Selection outlines, drag ghosts, hover rings, and toolbars live in the **parent*
 
 ## Related
 
-ADR-01–03 · [author-css](./author-css.md) · [preview](./preview.md) · [accessibility](./accessibility.md)
+ADR-01–03 · [author-css](./author-css.md) · [motion](./motion.md) · [preview](./preview.md) · [accessibility](./accessibility.md)

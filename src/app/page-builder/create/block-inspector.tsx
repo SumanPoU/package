@@ -2,14 +2,19 @@
 
 import {
   type Block,
+  type BlockMotion,
   type BlockRegistry,
   type BlockStyle,
   type Device,
   type DimValue,
+  getBlockMotion,
   getBlockStyle,
   type LocaleConfig,
   type LocaleDefinition,
   MediaUrlField,
+  MOTION_ENTRANCES,
+  MOTION_HOVERS,
+  normalizeMotion,
   type SpacingBox,
 } from "@itzsa/page-builder";
 import {
@@ -1260,6 +1265,128 @@ export function BlockInspector({
 
         {tab === "advanced" ? (
           <div>
+            <Section title="Motion Effects">
+              <p className="text-[11px] text-gray-500 italic">
+                Entrance animations play on canvas, preview, and open page.
+                Respects prefers-reduced-motion.
+              </p>
+              {(() => {
+                const motion = getBlockMotion(block);
+                const patchMotion = (patch: Partial<BlockMotion>) => {
+                  onChange({
+                    motion: normalizeMotion({ ...motion, ...patch }),
+                  });
+                };
+                return (
+                  <>
+                    <label className="flex flex-col gap-1">
+                      <span className="text-[11px] text-gray-500">
+                        Entrance
+                      </span>
+                      <select
+                        value={motion.entrance ?? "none"}
+                        aria-label="Entrance animation"
+                        onChange={(e) =>
+                          patchMotion({
+                            entrance: e.target.value as BlockMotion["entrance"],
+                          })
+                        }
+                        className="h-8 w-full max-w-[14rem] rounded border border-gray-200 px-2 text-[12px] outline-none focus:border-accent focus:ring-1 focus:ring-accent/25"
+                      >
+                        {MOTION_ENTRANCES.map((id) => (
+                          <option key={id} value={id}>
+                            {id === "none" ? "None" : id}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="flex flex-col gap-1">
+                      <span className="text-[11px] text-gray-500">Trigger</span>
+                      <select
+                        value={motion.trigger ?? "scroll"}
+                        aria-label="Motion trigger"
+                        disabled={
+                          !motion.entrance || motion.entrance === "none"
+                        }
+                        onChange={(e) =>
+                          patchMotion({
+                            trigger: e.target.value as BlockMotion["trigger"],
+                          })
+                        }
+                        className="h-8 w-full max-w-[14rem] rounded border border-gray-200 px-2 text-[12px] outline-none focus:border-accent focus:ring-1 focus:ring-accent/25 disabled:opacity-50"
+                      >
+                        <option value="scroll">On scroll (entrance)</option>
+                        <option value="load">On load</option>
+                      </select>
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      <label className="flex flex-col gap-1">
+                        <span className="text-[11px] text-gray-500">
+                          Duration (ms)
+                        </span>
+                        <input
+                          type="number"
+                          min={0}
+                          step={50}
+                          value={motion.durationMs ?? 600}
+                          aria-label="Motion duration"
+                          disabled={
+                            !motion.entrance || motion.entrance === "none"
+                          }
+                          onChange={(e) =>
+                            patchMotion({
+                              durationMs: Number(e.target.value) || 0,
+                            })
+                          }
+                          className="h-8 w-24 rounded border border-gray-200 px-2 text-[12px] outline-none focus:border-accent focus:ring-1 focus:ring-accent/25 disabled:opacity-50"
+                        />
+                      </label>
+                      <label className="flex flex-col gap-1">
+                        <span className="text-[11px] text-gray-500">
+                          Delay (ms)
+                        </span>
+                        <input
+                          type="number"
+                          min={0}
+                          step={50}
+                          value={motion.delayMs ?? 0}
+                          aria-label="Motion delay"
+                          disabled={
+                            !motion.entrance || motion.entrance === "none"
+                          }
+                          onChange={(e) =>
+                            patchMotion({
+                              delayMs: Number(e.target.value) || 0,
+                            })
+                          }
+                          className="h-8 w-24 rounded border border-gray-200 px-2 text-[12px] outline-none focus:border-accent focus:ring-1 focus:ring-accent/25 disabled:opacity-50"
+                        />
+                      </label>
+                    </div>
+                    <label className="flex flex-col gap-1">
+                      <span className="text-[11px] text-gray-500">Hover</span>
+                      <select
+                        value={motion.hover ?? "none"}
+                        aria-label="Hover animation"
+                        onChange={(e) =>
+                          patchMotion({
+                            hover: e.target.value as BlockMotion["hover"],
+                          })
+                        }
+                        className="h-8 w-full max-w-[14rem] rounded border border-gray-200 px-2 text-[12px] outline-none focus:border-accent focus:ring-1 focus:ring-accent/25"
+                      >
+                        {MOTION_HOVERS.map((id) => (
+                          <option key={id} value={id}>
+                            {id === "none" ? "None" : id}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </>
+                );
+              })()}
+            </Section>
+
             <Section title="CSS ID / Classes">
               <p className="text-[11px] text-gray-500 italic">
                 You can use your custom css id or classes from here.

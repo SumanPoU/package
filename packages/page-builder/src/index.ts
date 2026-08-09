@@ -198,6 +198,24 @@ export {
   NEPALI_LOCALE,
 } from "./core/localePresets";
 export {
+  type BlockMotion,
+  getBlockMotion,
+  getMotionRuntimeScript,
+  hasActiveEntrance,
+  hasActiveHover,
+  initPbMotion,
+  MOTION_CSS,
+  MOTION_ENTRANCES,
+  MOTION_HOVERS,
+  type MotionEntrance,
+  type MotionHover,
+  type MotionTrigger,
+  motionVarsCssRule,
+  normalizeMotion,
+  pageNeedsMotionRuntime,
+  pageUsesMotion,
+} from "./core/motion";
+export {
   type BlockRegistry,
   createRegistry,
   registerBlock,

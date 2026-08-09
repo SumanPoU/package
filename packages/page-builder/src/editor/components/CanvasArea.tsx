@@ -12,6 +12,7 @@ import {
 } from "../../core/dataBinding";
 import { FallbackBlock } from "../../core/fallbackBlock";
 import { resolveProps } from "../../core/i18nResolve";
+import { initPbMotion, pageNeedsMotionRuntime } from "../../core/motion";
 import type { BlockRegistry } from "../../core/registry";
 import type { Block, LocaleConfig } from "../../core/types";
 import {
@@ -108,6 +109,14 @@ export const CanvasArea = ({
       window.removeEventListener("resize", report);
     };
   }, [canvasRef, page, selectedId, device, authorCss]);
+
+  useEffect(() => {
+    const root = canvasRef.current;
+    if (!root || !pageNeedsMotionRuntime(page.blocks)) return;
+    initPbMotion(root);
+    const id = requestAnimationFrame(() => initPbMotion(root));
+    return () => cancelAnimationFrame(id);
+  }, [canvasRef, page]);
 
   const renderChrome = (block: Block, depth: number, siblings: Block[]) => {
     const def = registry.get(block.type);

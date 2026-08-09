@@ -1,5 +1,6 @@
 import { backgroundStyleDeclarations } from "../blocks/backgroundStyle";
 import { blockSelector } from "./blockClassName";
+import { motionVarsCssRule } from "./motion";
 import type { Block, Device } from "./types";
 
 export type SpacingBox = {
@@ -313,6 +314,9 @@ export const collectBlockStyleCssRules = (block: Block): string[] => {
   if (block.customCss?.trim()) {
     rules.push(...formatCustomCssRules(block.customCss, block.id));
   }
+
+  const motionRule = motionVarsCssRule(block);
+  if (motionRule) rules.push(motionRule);
 
   const hidden = block.visibility?.hiddenDevices ?? [];
   if (hidden.includes("desktop")) {

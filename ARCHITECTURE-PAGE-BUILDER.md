@@ -927,6 +927,7 @@ docs/page-builder/
 │   ├── persistence.md       # JSON default + optional HTML snapshot (ADR-14)
 │   ├── security.md          # sandbox, CSP nonce, bridge, sanitizer (§22)
 │   ├── visibility.md        # visibility + visibleWhen + item-scoped (§23)
+│   ├── motion.md            # entrance + hover (Elementor-style Motion Effects)
 │   ├── data-binding.md      # DataSource, repeater, tokens (§25)
 │   └── accessibility.md     # WCAG 2.2 AA / Web Interface Guidelines (ADR-13)
 ├── editor/
@@ -944,6 +945,7 @@ docs/page-builder/
     ├── add-a-block.md
     ├── add-a-locale.md
     ├── custom-css-js.md
+    ├── motion-effects.md                 # block.motion entrance + hover
     ├── register-custom-block.md          # §24 Model A
     ├── dynamic-block-data-binding.md     # §24 Model B
     └── dynamic-blog-card.md              # §25 Elementor-style loop

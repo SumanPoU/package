@@ -4,6 +4,7 @@
 
 ### Added
 
+- Motion Effects (Option B): `block.motion` entrance + hover, Advanced inspector, shared CSS/JS via composers, canvas `initPbMotion` (Canvas === Preview === Open Page)
 - Elementor-aligned catalog: `audio`, `anchor`, `social-icons`, `icon-list`, `gallery`, `carousel`, `tabs`, `accordion`, `toggle`, `read-more`; presets `icon-box`, `image-box`, `testimonial`; layout labels Section / Inner Section / Columns / Text Editor / Spacer / Google Maps (WP Shortcode/Sidebar out of scope)
 - Phase 18: `createProductionCapabilities`, `quote` + `alert` primitives, a11y smoke tests, `CORE_PRIMITIVE_TYPES` synced to full registry
 - Phase 19: `registerSignedBlock` — SRI-verified dynamic `import()` (default deny via `allowSignedBlockImport`)

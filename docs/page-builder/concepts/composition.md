@@ -11,6 +11,10 @@ Complex UI is a **tree of primitives** (and optional presets that expand to tree
 
 Palette groups (in order): **Layout → Basic → Presets → Other**.
 
+## Motion
+
+Optional `block.motion` (entrance + hover) — see [motion](./motion.md). Not a separate block type; every primitive can opt in via Advanced → Motion Effects.
+
 WordPress-only Elementor widgets (**Shortcode**, **Sidebar**) are intentionally out of scope — this engine is host-agnostic.
 
 ## Presets (not block types)

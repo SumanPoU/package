@@ -1,9 +1,12 @@
+import { useEffect } from "react";
+
 import { emitStyleTag } from "../canvas/injectStyles";
 import type { PageBuilderCapabilities } from "../core/capabilities";
 import type { CssParseOptions } from "../core/cssParser";
 import { composePageCss } from "../core/customCssComposer";
 import { composePageJs, emitScriptTag } from "../core/customJsComposer";
 import type { FetchDataSource } from "../core/dataBinding";
+import { initPbMotion, pageNeedsMotionRuntime } from "../core/motion";
 import type { BlockRegistry } from "../core/registry";
 import type { LocaleConfig, Page } from "../core/types";
 import type { RenderContext } from "../core/visibilityResolve";
@@ -39,6 +42,13 @@ export const OpenPageView = ({
 }: OpenPageViewProps) => {
   const { css, errors: cssErrors } = composePageCss(page, cssOptions);
   const { scripts, errors: jsErrors } = composePageJs(page, { nonce });
+
+  useEffect(() => {
+    if (!pageNeedsMotionRuntime(page.blocks)) return;
+    const root =
+      document.querySelector(`[data-pb-page="${page.id}"]`) ?? document.body;
+    initPbMotion(root);
+  }, [page]);
 
   return (
     <>

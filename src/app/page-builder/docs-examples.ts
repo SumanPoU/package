@@ -161,7 +161,8 @@ export const DATA_MODEL_EXAMPLE = `{
       "i18nProps": {
         "en": { "title": "Welcome" },
         "ne": { "title": "स्वागत छ" }
-      }
+      },
+      "motion": { "entrance": "fadeInUp", "trigger": "scroll" }
     }
   ]
 }`;
@@ -237,6 +238,26 @@ export const VISIBILITY_EXAMPLE = `// Default: omit visibility → always shown
     "allOf": [{ "key": "auth.isLoggedIn", "equals": true }]
   }
 }`;
+
+export const MOTION_EXAMPLE = `import type { Block } from "@itzsa/page-builder";
+
+const block: Block = {
+  id: "hero-title",
+  type: "heading",
+  props: { level: "h1" },
+  i18nProps: { en: { title: "Welcome" } },
+  motion: {
+    entrance: "fadeInUp", // fadeIn | fadeInUp | zoomIn | slideInLeft | …
+    trigger: "scroll",    // scroll | load
+    durationMs: 600,
+    delayMs: 0,
+    hover: "grow",        // none | grow | shrink | float
+  },
+};
+
+// Advanced tab → Motion Effects in the create editor.
+// composePageCss / composePageJs (+ initPbMotion on embedded canvas)
+// keep Canvas === Preview === Open Page.`;
 
 export const DATA_BINDING_EXAMPLE = `<PageBuilder
   /* … */
@@ -633,6 +654,11 @@ export const FEATURES_TABLE: { feature: string; description: string }[] = [
     feature: "Visibility",
     description:
       "Show or hide blocks by device, locale, publish state, or renderContext predicates.",
+  },
+  {
+    feature: "Motion Effects",
+    description:
+      "Elementor-style entrance + hover on block.motion — shared CSS/runtime for canvas, preview, and open page.",
   },
   {
     feature: "Presets & composition",

@@ -104,7 +104,7 @@ export function DocsContent() {
             Documentation · itzsa
           </p>
           <h1 className="text-3xl font-medium tracking-tight text-primary sm:text-4xl">
-            BS Date
+            Bikram Sambat Date Logic — @itzsa/bs-date
           </h1>
           <p className="max-w-2xl text-base leading-relaxed text-secondary">
             Headless Bikram Sambat date logic — convert, arithmetic, format, and

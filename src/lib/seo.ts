@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import type { Metadata } from "next";
 
 /** Canonical production origin for docs + Open Graph. */
@@ -6,12 +8,12 @@ export const SITE_URL = "https://itzsa.acharya-suman.com.np";
 export const SITE_NAME = "itzsa";
 
 export const SITE_DESCRIPTION =
-  "Open-source React + TypeScript packages for Nepal-ready UIs — DataTable, Nepali input, Bikram Sambat datepicker, BS date math, NRB forex, eSewa/Khalti/ConnectIPS payments, captcha, accessibility toolbar, geography selects, and TipTap editor. Install from npm: @itzsa/*.";
+  "Open-source React + TypeScript npm packages for Nepal-ready UIs: React DataTable (@itzsa/table), Nepali input & Bikram Sambat datepicker, BS date math, NRB forex, eSewa/Khalti/ConnectIPS, captcha, accessibility toolbar, Nepal geography selects, TipTap editor, and page builder. Install @itzsa/* from npm.";
 
 export const SITE_AUTHOR = {
   name: "Suman Acharya",
   url: "https://sumanacharya186.com.np/",
-  github: "https://github.com/sumanpou",
+  github: "https://github.com/SumanPoU",
   twitter: "@sumanpou",
   email: "sumanacharya186@gmail.com",
 } as const;
@@ -21,11 +23,14 @@ export type PackageSeoEntry = {
   packageName: string;
   /** Short card title on the homepage */
   shortName: string;
+  /** Visible / meta title — primary keyword first */
   title: string;
   description: string;
   blurb: string;
   /** Search keywords for web + aligned with npm package.json */
   keywords: string[];
+  /** Alternate names for JSON-LD */
+  alternateName?: string[];
   /** Sitemap priority — packages rank just under home */
   priority: number;
 };
@@ -39,138 +44,160 @@ export const PACKAGE_CATALOG: readonly PackageSeoEntry[] = [
     path: "/table",
     packageName: "@itzsa/table",
     shortName: "Table",
-    title: "@itzsa/table — React DataTable",
+    title:
+      "React DataTable Component — Sorting, Pagination, Export | @itzsa/table",
     description:
-      "Composable React DataTable with sorting, pagination, filters, row selection, editing, CSV/Excel export, and tree data. pnpm add @itzsa/table.",
+      "Best React DataTable for Next.js & TypeScript: sortable columns, pagination, filters, row selection, inline editing, CSV/Excel export, tree data, and keyboard navigation. Install: pnpm add @itzsa/table. Docs & demos.",
     blurb: "Data tables with selection, export, and actions.",
+    alternateName: [
+      "itzsa table",
+      "itzsa datatable",
+      "React DataTable",
+      "shadcn DataTable",
+    ],
     keywords: [
       "react datatable",
-      "data table",
+      "react data table",
+      "react table component",
+      "next.js datatable",
+      "typescript datatable",
+      "sortable table react",
+      "paginated table react",
       "tanstack table",
       "shadcn table",
-      "sortable table",
-      "pagination",
-      "csv export",
-      "excel export",
-      "tree data",
-      "row selection",
+      "shadcn datatable",
+      "csv export react",
+      "excel export react",
+      "tree data table",
+      "row selection table",
+      "editable data grid",
+      "mui datagrid alternative",
+      "npm react table",
+      "@itzsa/table",
     ],
-    priority: 0.95,
+    priority: 0.98,
   },
   {
-    path: "/nepali-datepicker",
-    packageName: "@itzsa/nepali-datepicker",
-    shortName: "Datepicker",
-    title: "@itzsa/nepali-datepicker — Bikram Sambat datepicker",
+    path: "/page-builder",
+    packageName: "@itzsa/page-builder",
+    shortName: "Page Builder",
+    title:
+      "React Page Builder — Drag & Drop Visual Editor | @itzsa/page-builder",
     description:
-      "Nepali Bikram Sambat date, datetime, and range pickers for React. AD↔BS aware UI with validation. pnpm add @itzsa/nepali-datepicker.",
-    blurb: "Bikram Sambat date, datetime, and range.",
-    keywords: [
-      "nepali datepicker",
-      "bikram sambat",
-      "bs calendar",
-      "nepali calendar",
-      "datetime picker",
-      "date range",
-      "nepal date",
+      "Elementor-style React page builder: drag-and-drop blocks, locales, motion effects, author CSS/JS, canvas/preview/open parity. Install: pnpm add @itzsa/page-builder.",
+    blurb: "Visual pages — canvas, preview, locales.",
+    alternateName: [
+      "itzsa page builder",
+      "react visual editor",
+      "react drag and drop page builder",
     ],
-    priority: 0.95,
-  },
-  {
-    path: "/nepali-input",
-    packageName: "@itzsa/nepali-input",
-    shortName: "Nepali Input",
-    title: "@itzsa/nepali-input — Nepali Unicode & Preeti",
-    description:
-      "React Input and Textarea that transliterate Latin keystrokes to Nepali Devanagari (Unicode or Preeti). pnpm add @itzsa/nepali-input.",
-    blurb: "Unicode & Preeti transliteration fields.",
     keywords: [
-      "nepali input",
-      "preeti",
-      "unicode nepali",
-      "devanagari",
-      "transliteration",
-      "roman to nepali",
-      "nepali textarea",
+      "react page builder",
+      "drag and drop page builder",
+      "visual page editor react",
+      "elementor for react",
+      "webflow alternative react",
+      "puck editor alternative",
+      "block based editor",
+      "i18n page builder",
+      "next.js page builder",
+      "@itzsa/page-builder",
     ],
-    priority: 0.94,
-  },
-  {
-    path: "/bs-date",
-    packageName: "@itzsa/bs-date",
-    shortName: "BS Date",
-    title: "@itzsa/bs-date — Headless Bikram Sambat",
-    description:
-      "Headless Bikram Sambat convert, arithmetic, format, and holidays with pluggable engines. pnpm add @itzsa/bs-date.",
-    blurb: "Headless BS convert, arithmetic, holidays.",
-    keywords: [
-      "bikram sambat",
-      "bs date",
-      "ad to bs",
-      "bs to ad",
-      "nepali date conversion",
-      "headless calendar",
-      "nepal holidays",
-    ],
-    priority: 0.93,
+    priority: 0.97,
   },
   {
     path: "/nepal-pay",
     packageName: "@itzsa/nepal-pay",
     shortName: "Nepal Pay",
-    title: "@itzsa/nepal-pay — eSewa, Khalti, ConnectIPS",
+    title:
+      "eSewa, Khalti & ConnectIPS Payment SDK (TypeScript) | @itzsa/nepal-pay",
     description:
-      "TypeScript payment SDK for eSewa ePay v2, Khalti KPG-2, and ConnectIPS with mandatory server-side verify. pnpm add @itzsa/nepal-pay.",
+      "Nepal payment gateway SDK: eSewa ePay v2, Khalti KPG-2, ConnectIPS with mandatory server-side verify. TypeScript-first. Install: pnpm add @itzsa/nepal-pay.",
     blurb: "eSewa + Khalti + ConnectIPS with verify.",
+    alternateName: ["itzsa nepal pay", "esewa khalti sdk"],
     keywords: [
       "esewa",
+      "esewa epay",
       "khalti",
+      "khalti kpg",
       "connectips",
-      "nepal payment",
-      "epay",
-      "kpg-2",
-      "npr payment gateway",
-      "payment sdk",
+      "nepal payment gateway",
+      "nepal payment sdk",
+      "npr payment",
+      "esewa typescript",
+      "khalti typescript",
+      "@itzsa/nepal-pay",
     ],
-    priority: 0.95,
+    priority: 0.97,
   },
   {
-    path: "/nrb-forex",
-    packageName: "@itzsa/nrb-forex",
-    shortName: "NRB Forex",
-    title: "@itzsa/nrb-forex — Nepal Rastra Bank rates",
+    path: "/nepali-datepicker",
+    packageName: "@itzsa/nepali-datepicker",
+    shortName: "Datepicker",
+    title:
+      "Nepali Bikram Sambat Datepicker for React | @itzsa/nepali-datepicker",
     description:
-      "Typed NRB forex client — fetch, cache, and convert foreign currency to NPR. pnpm add @itzsa/nrb-forex.",
-    blurb: "Official NRB rates — fetch, cache, convert.",
-    keywords: [
-      "nrb",
-      "nepal rastra bank",
-      "forex",
-      "exchange rate",
-      "npr",
-      "currency converter nepal",
-      "fx api",
+      "React Nepali (Bikram Sambat) date, datetime, and range pickers with AD↔BS conversion. Production-ready for Nepal apps. Install: pnpm add @itzsa/nepali-datepicker.",
+    blurb: "Bikram Sambat date, datetime, and range.",
+    alternateName: [
+      "nepali date picker",
+      "BS datepicker",
+      "bikram sambat picker",
     ],
-    priority: 0.92,
+    keywords: [
+      "nepali datepicker",
+      "nepali date picker",
+      "bikram sambat datepicker",
+      "bs calendar react",
+      "nepali calendar component",
+      "ad to bs datepicker",
+      "datetime picker nepal",
+      "date range nepali",
+      "@itzsa/nepali-datepicker",
+    ],
+    priority: 0.96,
+  },
+  {
+    path: "/nepali-input",
+    packageName: "@itzsa/nepali-input",
+    shortName: "Nepali Input",
+    title: "Nepali Unicode & Preeti Input for React | @itzsa/nepali-input",
+    description:
+      "React Input/Textarea that transliterates Latin keystrokes to Nepali Devanagari (Unicode or Preeti). Install: pnpm add @itzsa/nepali-input.",
+    blurb: "Unicode & Preeti transliteration fields.",
+    alternateName: ["preeti input", "nepali transliteration"],
+    keywords: [
+      "nepali input",
+      "preeti",
+      "preeti to unicode",
+      "unicode nepali",
+      "devanagari input",
+      "roman to nepali",
+      "nepali transliteration",
+      "nepali textarea",
+      "@itzsa/nepali-input",
+    ],
+    priority: 0.95,
   },
   {
     path: "/a11y-toolbar",
     packageName: "@itzsa/a11y-toolbar",
     shortName: "A11y Toolbar",
-    title: "@itzsa/a11y-toolbar — Accessibility toolbar",
+    title: "Accessibility Toolbar for React (WCAG) | @itzsa/a11y-toolbar",
     description:
-      "React accessibility preference toolbar — text size, contrast, motion, read aloud, WCAG-grounded chrome, FOUC-safe. pnpm add @itzsa/a11y-toolbar.",
+      "React accessibility preference toolbar: text size, contrast, reduced motion, read aloud. WCAG-grounded, FOUC-safe. Install: pnpm add @itzsa/a11y-toolbar.",
     blurb: "Reading aids — size, contrast, read aloud.",
+    alternateName: ["accessibility widget", "a11y toolbar react"],
     keywords: [
       "accessibility toolbar",
-      "a11y",
-      "wcag",
-      "read aloud",
-      "text to speech",
+      "a11y toolbar",
+      "wcag toolbar",
+      "read aloud website",
+      "text to speech widget",
       "contrast mode",
-      "dyslexia friendly",
-      "wordpress accessibility",
-      "site preferences",
+      "dyslexia friendly website",
+      "accessibility widget react",
+      "@itzsa/a11y-toolbar",
     ],
     priority: 0.94,
   },
@@ -178,76 +205,106 @@ export const PACKAGE_CATALOG: readonly PackageSeoEntry[] = [
     path: "/captcha",
     packageName: "@itzsa/captcha",
     shortName: "Captcha",
-    title: "@itzsa/captcha — Math, slider & canvas captcha",
+    title: "React Captcha — Math, Slider & Canvas | @itzsa/captcha",
     description:
-      "React captcha — canvas text, BODMAS math, and slider puzzles with client or server trust models. pnpm add @itzsa/captcha.",
+      "React captcha components: canvas text, BODMAS math, and slider puzzles with client or server trust models. Install: pnpm add @itzsa/captcha.",
     blurb: "Canvas, math & slider captcha.",
+    alternateName: ["math captcha react", "slider captcha"],
     keywords: [
       "react captcha",
       "math captcha",
       "slider captcha",
-      "bodmas",
-      "bot prevention",
-      "human verification",
       "canvas captcha",
+      "bodmas captcha",
+      "bot prevention react",
+      "human verification",
+      "@itzsa/captcha",
     ],
     priority: 0.93,
+  },
+  {
+    path: "/bs-date",
+    packageName: "@itzsa/bs-date",
+    shortName: "BS Date",
+    title: "Bikram Sambat Date Library (AD↔BS) | @itzsa/bs-date",
+    description:
+      "Headless Bikram Sambat convert, arithmetic, format, and Nepal holidays. Pluggable engines for React or Node. Install: pnpm add @itzsa/bs-date.",
+    blurb: "Headless BS convert, arithmetic, holidays.",
+    alternateName: ["bs date converter", "ad to bs javascript"],
+    keywords: [
+      "bikram sambat",
+      "bs date",
+      "ad to bs",
+      "bs to ad",
+      "nepali date conversion",
+      "nepal holidays api",
+      "headless calendar",
+      "@itzsa/bs-date",
+    ],
+    priority: 0.93,
+  },
+  {
+    path: "/nrb-forex",
+    packageName: "@itzsa/nrb-forex",
+    shortName: "NRB Forex",
+    title: "Nepal Rastra Bank Forex Rates API Client | @itzsa/nrb-forex",
+    description:
+      "Typed NRB forex client — fetch official exchange rates, cache, and convert foreign currency to NPR. Install: pnpm add @itzsa/nrb-forex.",
+    blurb: "Official NRB rates — fetch, cache, convert.",
+    alternateName: ["nrb exchange rate", "nepal forex api"],
+    keywords: [
+      "nrb forex",
+      "nepal rastra bank",
+      "nrb exchange rate",
+      "forex nepal",
+      "npr converter",
+      "currency converter nepal",
+      "fx api nepal",
+      "@itzsa/nrb-forex",
+    ],
+    priority: 0.92,
   },
   {
     path: "/nepal-geo",
     packageName: "@itzsa/nepal-geo",
     shortName: "Nepal Geo",
-    title: "@itzsa/nepal-geo — Nepal geography selects",
+    title:
+      "Nepal Province District Municipality Ward Selects | @itzsa/nepal-geo",
     description:
-      "Nepal provinces, districts, local levels, and wards — searchable cascade selects plus @itzsa/nepal-geo-data. pnpm add @itzsa/nepal-geo.",
+      "Nepal geography cascade selects: province → district → local level → ward, plus @itzsa/nepal-geo-data. Install: pnpm add @itzsa/nepal-geo.",
     blurb: "Province → district → local → ward.",
+    alternateName: ["nepal address select", "nepal municipality dropdown"],
     keywords: [
       "nepal geography",
-      "province",
-      "district",
-      "municipality",
-      "ward",
-      "local level",
-      "nepal address",
-      "cascade select",
+      "nepal province district",
+      "municipality select",
+      "ward select nepal",
+      "local level nepal",
+      "nepal address form",
+      "cascade select nepal",
+      "@itzsa/nepal-geo",
+      "@itzsa/nepal-geo-data",
     ],
     priority: 0.92,
-  },
-  {
-    path: "/page-builder",
-    packageName: "@itzsa/page-builder",
-    shortName: "Page Builder",
-    title: "@itzsa/page-builder — Visual page builder",
-    description:
-      "Drag-and-drop React page builder with locale-aware content, author CSS/JS, canvas/preview/open parity. pnpm add @itzsa/page-builder.",
-    blurb: "Visual pages — canvas, preview, locales.",
-    keywords: [
-      "page builder",
-      "drag and drop",
-      "visual editor",
-      "react page builder",
-      "block editor",
-      "i18n page builder",
-      "webflow alternative",
-    ],
-    priority: 0.95,
   },
   {
     path: "/editor",
     packageName: "@itzsa/editor",
     shortName: "Editor",
-    title: "@itzsa/editor — TipTap rich text",
+    title: "TipTap Rich Text Editor with Nepali Support | @itzsa/editor",
     description:
-      "TipTap rich text editor with Nepali Unicode/Preeti, media uploads, HTML sanitization, and toolbar. pnpm add @itzsa/editor.",
+      "TipTap WYSIWYG for React with Nepali Unicode/Preeti, media uploads, HTML sanitization, and toolbar. Install: pnpm add @itzsa/editor.",
     blurb: "Rich text with optional Nepali tooling.",
+    alternateName: ["itzsa editor", "nepali tiptap"],
     keywords: [
       "tiptap",
+      "tiptap react",
       "rich text editor",
-      "wysiwyg",
+      "wysiwyg react",
       "nepali editor",
-      "html sanitization",
-      "react editor",
       "prosemirror",
+      "html sanitization editor",
+      "@itzsa/editor",
     ],
     priority: 0.91,
   },
@@ -267,10 +324,36 @@ export const PACKAGE_ROUTES = [
   })),
   {
     path: "/registry",
-    title: "itzsa shadcn registry",
+    title: "itzsa shadcn registry — install components via CLI",
     description:
-      "Install itzsa components via the shadcn CLI registry, or use npm packages for semver.",
+      "Install itzsa components via the shadcn CLI registry, or use npm packages (@itzsa/*) for semver releases.",
   },
+] as const;
+
+/** Aggregated homepage / root keywords (deduped in buildMetadata). */
+export const SITE_KEYWORDS = [
+  "itzsa",
+  "itzsa npm",
+  "@itzsa",
+  "react component library",
+  "react typescript packages",
+  "nepal react components",
+  "nepal developer tools",
+  "open source nepal",
+  "npm packages nepal",
+  "react datatable",
+  "nepali datepicker",
+  "bikram sambat",
+  "esewa khalti",
+  "nrb forex",
+  "react page builder",
+  "accessibility toolbar",
+  "math captcha",
+  ...PACKAGE_CATALOG.flatMap((p) => [
+    p.packageName,
+    p.shortName.toLowerCase(),
+    ...(p.alternateName ?? []),
+  ]),
 ] as const;
 
 export function npmPackageUrl(packageName: string): string {
@@ -280,6 +363,25 @@ export function npmPackageUrl(packageName: string): string {
 export function githubPackageUrl(packageName: string): string {
   const dir = packageName.replace("@itzsa/", "");
   return `https://github.com/SumanPoU/package/tree/main/packages/${dir}`;
+}
+
+export function githubRepoUrl(): string {
+  return "https://github.com/SumanPoU/package";
+}
+
+/** Read published package version from monorepo package.json (build-time). */
+export function getLocalPackageVersion(packageName: string): string {
+  try {
+    const dir = packageName.replace("@itzsa/", "");
+    const raw = readFileSync(
+      join(process.cwd(), "packages", dir, "package.json"),
+      "utf8",
+    );
+    const version = (JSON.parse(raw) as { version?: string }).version;
+    return version?.trim() || "latest";
+  } catch {
+    return "latest";
+  }
 }
 
 type BuildMetaOptions = {
@@ -302,7 +404,7 @@ export function buildMetadata({
   index = true,
 }: BuildMetaOptions): Metadata {
   const url = new URL(path, SITE_URL).toString();
-  const ogTitle = title.includes(SITE_NAME) ? title : `${title} · ${SITE_NAME}`;
+  const ogTitle = title.includes(SITE_NAME) ? title : `${title}`;
 
   const baseKeywords = [
     "itzsa",
@@ -319,13 +421,15 @@ export function buildMetadata({
           packageName.replace("@itzsa/", ""),
           `npm ${packageName}`,
           `install ${packageName}`,
+          `pnpm add ${packageName}`,
         ]
       : []),
     ...keywords,
   ];
 
   return {
-    title,
+    // Absolute titles for home + packages (avoids layout template doubling).
+    title: packageName || path === "/" ? { absolute: title } : title,
     description,
     keywords: [...new Set(baseKeywords)],
     authors: [{ name: SITE_AUTHOR.name, url: SITE_AUTHOR.url }],
@@ -333,12 +437,14 @@ export function buildMetadata({
     publisher: SITE_NAME,
     applicationName: SITE_NAME,
     category: "technology",
+    classification: "Software Development",
     alternates: {
       canonical: url,
     },
     openGraph: {
       type: packageName ? "article" : "website",
       locale: "en_US",
+      alternateLocale: ["ne_NP"],
       url,
       siteName: SITE_NAME,
       title: ogTitle,
@@ -348,7 +454,7 @@ export function buildMetadata({
           url: "/opengraph-image",
           width: 1200,
           height: 630,
-          alt: `${SITE_NAME} — React component library`,
+          alt: ogTitle,
         },
       ],
     },
@@ -375,6 +481,12 @@ export function buildMetadata({
           index: false,
           follow: false,
         },
+    other: packageName
+      ? {
+          "package:name": packageName,
+          "package:ecosystem": "npm",
+        }
+      : undefined,
   };
 }
 
@@ -388,7 +500,11 @@ export function buildPackageMetadata(
     description: entry.description,
     path: entry.path,
     packageName: entry.packageName,
-    keywords: [...entry.keywords, ...extraKeywords],
+    keywords: [
+      ...entry.keywords,
+      ...(entry.alternateName ?? []),
+      ...extraKeywords,
+    ],
   });
 }
 

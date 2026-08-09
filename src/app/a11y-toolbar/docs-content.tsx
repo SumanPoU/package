@@ -52,7 +52,7 @@ export function DocsContent() {
             Documentation · itzsa
           </p>
           <h1 className="text-3xl font-medium tracking-tight text-primary sm:text-4xl">
-            A11y Toolbar
+            Accessibility Toolbar — @itzsa/a11y-toolbar
           </h1>
           <p className="max-w-2xl text-base leading-relaxed text-secondary">
             Floating preference panel for text size, contrast, spacing, motion,

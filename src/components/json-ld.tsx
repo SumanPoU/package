@@ -1,6 +1,8 @@
 import {
   absoluteUrl,
+  getLocalPackageVersion,
   githubPackageUrl,
+  githubRepoUrl,
   npmPackageUrl,
   PACKAGE_CATALOG,
   SITE_AUTHOR,
@@ -9,7 +11,7 @@ import {
   SITE_URL,
 } from "@/lib/seo";
 
-/** Site-wide JSON-LD: WebSite, Organization, ItemList of packages (packages first). */
+/** Site-wide JSON-LD: WebSite, Organization, ItemList of packages. */
 export function JsonLd() {
   const itemList = {
     "@type": "ItemList" as const,
@@ -27,7 +29,9 @@ export function JsonLd() {
       description: pkg.description,
       item: {
         "@type": "SoftwareSourceCode" as const,
+        "@id": `${absoluteUrl(pkg.path)}#software`,
         name: pkg.packageName,
+        alternateName: pkg.alternateName,
         description: pkg.description,
         url: absoluteUrl(pkg.path),
         codeRepository: githubPackageUrl(pkg.packageName),
@@ -35,26 +39,37 @@ export function JsonLd() {
         runtimePlatform: "Node.js",
         downloadUrl: npmPackageUrl(pkg.packageName),
         license: "https://opensource.org/licenses/MIT",
+        version: getLocalPackageVersion(pkg.packageName),
+        keywords: pkg.keywords.join(", "),
         author: { "@id": `${SITE_URL}/#person` },
+        sameAs: [
+          npmPackageUrl(pkg.packageName),
+          githubPackageUrl(pkg.packageName),
+        ],
       },
     })),
   };
 
   const softwareApps = PACKAGE_CATALOG.map((pkg) => ({
-    "@type": "SoftwareApplication" as const,
+    "@type": ["SoftwareApplication", "WebApplication"] as const,
+    "@id": `${absoluteUrl(pkg.path)}#app`,
     name: pkg.packageName,
+    alternateName: pkg.alternateName,
     applicationCategory: "DeveloperApplication",
-    operatingSystem: "Web",
+    applicationSubCategory: "React Component Library",
+    operatingSystem: "Any",
+    browserRequirements: "Requires JavaScript",
     url: absoluteUrl(pkg.path),
     downloadUrl: npmPackageUrl(pkg.packageName),
-    softwareVersion: "latest",
+    installUrl: npmPackageUrl(pkg.packageName),
+    softwareVersion: getLocalPackageVersion(pkg.packageName),
     description: pkg.description,
     keywords: pkg.keywords.join(", "),
-    author: {
-      "@type": "Person" as const,
-      name: SITE_AUTHOR.name,
-      url: SITE_AUTHOR.url,
-    },
+    license: "https://opensource.org/licenses/MIT",
+    codeRepository: githubPackageUrl(pkg.packageName),
+    sameAs: [npmPackageUrl(pkg.packageName), githubPackageUrl(pkg.packageName)],
+    author: { "@id": `${SITE_URL}/#person` },
+    publisher: { "@id": `${SITE_URL}/#organization` },
     offers: {
       "@type": "Offer" as const,
       price: "0",
@@ -71,25 +86,58 @@ export function JsonLd() {
         "@id": `${SITE_URL}/#website`,
         url: SITE_URL,
         name: SITE_NAME,
+        alternateName: [
+          "itzsa component library",
+          "@itzsa npm packages",
+          "itzsa React packages",
+        ],
         description: SITE_DESCRIPTION,
         publisher: { "@id": `${SITE_URL}/#organization` },
         inLanguage: ["en", "ne"],
+        keywords: PACKAGE_CATALOG.flatMap((p) => p.keywords.slice(0, 4)).join(
+          ", ",
+        ),
       },
       {
         "@type": "Person",
         "@id": `${SITE_URL}/#person`,
         name: SITE_AUTHOR.name,
         url: SITE_AUTHOR.url,
-        sameAs: [SITE_AUTHOR.github, SITE_AUTHOR.url],
+        email: SITE_AUTHOR.email,
+        sameAs: [SITE_AUTHOR.github, SITE_AUTHOR.url, githubRepoUrl()],
       },
       {
         "@type": "Organization",
         "@id": `${SITE_URL}/#organization`,
         name: SITE_NAME,
+        legalName: "itzsa",
         url: SITE_URL,
-        logo: absoluteUrl("/opengraph-image"),
+        logo: {
+          "@type": "ImageObject",
+          url: absoluteUrl("/opengraph-image"),
+        },
         founder: { "@id": `${SITE_URL}/#person` },
-        sameAs: [SITE_AUTHOR.github, "https://www.npmjs.com/org/itzsa"],
+        sameAs: [
+          SITE_AUTHOR.github,
+          githubRepoUrl(),
+          "https://www.npmjs.com/org/itzsa",
+          SITE_AUTHOR.url,
+        ],
+        contactPoint: {
+          "@type": "ContactPoint",
+          contactType: "customer support",
+          email: SITE_AUTHOR.email,
+          url: githubRepoUrl(),
+        },
+      },
+      {
+        "@type": "CollectionPage",
+        "@id": `${SITE_URL}/#collection`,
+        url: SITE_URL,
+        name: `${SITE_NAME} packages`,
+        description: SITE_DESCRIPTION,
+        isPartOf: { "@id": `${SITE_URL}/#website` },
+        mainEntity: { "@id": `${SITE_URL}/#packages` },
       },
       itemList,
       ...softwareApps,

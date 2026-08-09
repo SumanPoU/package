@@ -92,7 +92,7 @@ export function DocsContent() {
             Documentation · itzsa
           </p>
           <h1 className="text-3xl font-medium tracking-tight text-primary sm:text-4xl">
-            Editor
+            TipTap Rich Text Editor — @itzsa/editor
           </h1>
           <p className="max-w-2xl text-base leading-relaxed text-secondary">
             TipTap rich text editor with toolbar, HTML mode, tables and media,

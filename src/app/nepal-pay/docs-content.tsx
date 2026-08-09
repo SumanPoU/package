@@ -266,7 +266,7 @@ export function DocsContent() {
             Documentation · itzsa
           </p>
           <h1 className="text-3xl font-medium tracking-tight text-primary sm:text-4xl">
-            Nepal Pay
+            eSewa, Khalti & ConnectIPS — @itzsa/nepal-pay
           </h1>
           <p className="max-w-2xl text-base leading-relaxed text-secondary">
             Unified TypeScript SDK for eSewa (ePay v2), Khalti (KPG-2), and

@@ -113,7 +113,7 @@ export function DocsContent() {
             Documentation · itzsa
           </p>
           <h1 className="text-3xl font-medium tracking-tight text-primary sm:text-4xl">
-            Datepicker
+            Nepali Bikram Sambat Datepicker — @itzsa/nepali-datepicker
           </h1>
           <p className="max-w-2xl text-base leading-relaxed text-secondary">
             Production-ready Bikram Sambat pickers for React: calendar select,

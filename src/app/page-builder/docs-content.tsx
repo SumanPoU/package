@@ -283,7 +283,7 @@ export function DocsContent() {
             Documentation · @itzsa/page-builder
           </p>
           <h1 className="text-3xl font-medium tracking-tight text-primary sm:text-4xl">
-            Introduction
+            React Page Builder — @itzsa/page-builder
           </h1>
           <P>
             <code className="pkg text-[13px]">@itzsa/page-builder</code> is a

@@ -89,12 +89,13 @@ export function DocsContent() {
             Documentation · itzsa
           </p>
           <h1 className="text-3xl font-medium tracking-tight text-primary sm:text-4xl">
-            Table
+            React DataTable — @itzsa/table
           </h1>
           <p className="max-w-2xl text-base leading-relaxed text-secondary">
-            Composable DataTable for React — pagination, selection, sorting,
-            filters, editing, export, tree data, and keyboard navigation. Built
-            on shadcn-style primitives; features are opt-in via props.
+            Composable React DataTable for Next.js & TypeScript — sorting,
+            pagination, filters, row selection, inline editing, CSV/Excel
+            export, tree data, and keyboard navigation. Built on shadcn-style
+            primitives; features are opt-in via props.
           </p>
           <div className="flex flex-wrap gap-2 pt-1 text-xs text-secondary">
             <span className="pkg rounded-md border-[0.5px] border-border bg-card px-2 py-1 text-[12px]">

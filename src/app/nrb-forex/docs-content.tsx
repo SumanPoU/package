@@ -111,7 +111,7 @@ export function DocsContent() {
             Documentation · itzsa
           </p>
           <h1 className="text-3xl font-medium tracking-tight text-primary sm:text-4xl">
-            NRB Forex
+            NRB Forex Rates — @itzsa/nrb-forex
           </h1>
           <p className="max-w-2xl text-base leading-relaxed text-secondary">
             Typed client for Nepal Rastra Bank’s public forex API — fetch,

@@ -1,13 +1,21 @@
 # itzsa
 
-> Open-source React and TypeScript packages for Nepal-ready product UIs.
-> Docs: https://itzsa.acharya-suman.com.np
+> Open-source React and TypeScript npm packages (@itzsa/*) for Nepal-ready product UIs.
+> Primary docs: https://itzsa.acharya-suman.com.np
 > npm org: https://www.npmjs.com/org/itzsa
 > Monorepo: https://github.com/SumanPoU/package
 
-## Packages
+## High-intent packages
+
+- [@itzsa/table](https://itzsa.acharya-suman.com.np/table): React DataTable — sorting, pagination, filters, CSV/Excel export, tree data, row selection. Keywords: react datatable, next.js table, shadcn datatable.
+- [@itzsa/page-builder](https://itzsa.acharya-suman.com.np/page-builder): Drag-and-drop React page builder (Elementor-style). Keywords: react page builder, visual editor.
+- [@itzsa/nepali-datepicker](https://itzsa.acharya-suman.com.np/nepali-datepicker): Bikram Sambat (BS) date / datetime / range pickers.
+- [@itzsa/nepal-pay](https://itzsa.acharya-suman.com.np/nepal-pay): eSewa ePay v2, Khalti KPG-2, ConnectIPS TypeScript SDK.
+
+## All packages
 
 - [@itzsa/table](https://itzsa.acharya-suman.com.np/table): React DataTable
+- [@itzsa/page-builder](https://itzsa.acharya-suman.com.np/page-builder): Visual page builder
 - [@itzsa/nepali-datepicker](https://itzsa.acharya-suman.com.np/nepali-datepicker): Bikram Sambat datepicker
 - [@itzsa/nepali-input](https://itzsa.acharya-suman.com.np/nepali-input): Nepali Unicode / Preeti input
 - [@itzsa/bs-date](https://itzsa.acharya-suman.com.np/bs-date): Headless BS date logic
@@ -23,6 +31,8 @@
 
 ```bash
 pnpm add @itzsa/table
+# or
+npm install @itzsa/table
 ```
 
 ## Security

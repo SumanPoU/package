@@ -60,10 +60,15 @@
   },
   "keywords": [
     "react",
+    "react datatable",
+    "react data table",
     "datatable",
     "data-table",
     "table",
+    "next.js datatable",
+    "typescript datatable",
     "shadcn",
+    "shadcn table",
     "tanstack",
     "pagination",
     "sorting",
@@ -72,8 +77,10 @@
     "excel",
     "tree-data",
     "row-selection",
+    "editable data grid",
     "typescript",
-    "itzsa"
+    "itzsa",
+    "@itzsa/table"
   ],
   "homepage": "https://itzsa.acharya-suman.com.np/table",
   "bugs": {

@@ -1,7 +1,8 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "itzsa — React component library";
+export const alt =
+  "itzsa — React DataTable, Nepali UI & TypeScript npm packages";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -50,21 +51,21 @@ export default function OpenGraphImage() {
       <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
         <div
           style={{
-            fontSize: 56,
+            fontSize: 52,
             fontWeight: 600,
             letterSpacing: -1.5,
             lineHeight: 1.1,
-            maxWidth: 900,
+            maxWidth: 980,
           }}
         >
-          React components for Nepal-ready product UI
+          React DataTable & Nepal-ready TypeScript packages
         </div>
-        <div style={{ fontSize: 26, color: "#888780", maxWidth: 820 }}>
-          Table · Nepali Input · Datepicker · Nepal Geo · Editor
+        <div style={{ fontSize: 24, color: "#888780", maxWidth: 900 }}>
+          @itzsa/table · datepicker · nepal-pay · page-builder · more
         </div>
       </div>
       <div style={{ fontSize: 22, color: "#5f5e5a" }}>
-        itzsa.acharya-suman.com.np
+        itzsa.acharya-suman.com.np · npm @itzsa
       </div>
     </div>,
     { ...size },

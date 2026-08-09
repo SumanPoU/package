@@ -3,27 +3,18 @@ import Link from "next/link";
 
 import { InstallCommand } from "@/components/install-command";
 import { Button } from "@/components/ui/button";
-import { buildMetadata, PACKAGE_CATALOG, SITE_DESCRIPTION } from "@/lib/seo";
+import {
+  buildMetadata,
+  PACKAGE_CATALOG,
+  SITE_DESCRIPTION,
+  SITE_KEYWORDS,
+} from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-  title: "itzsa — React & TypeScript packages for Nepal",
+  title: "itzsa — React DataTable, Nepali UI & TypeScript packages",
   description: SITE_DESCRIPTION,
   path: "/",
-  keywords: [
-    "itzsa npm",
-    "react component library nepal",
-    "nepali ui components",
-    "bikram sambat",
-    "esewa khalti",
-    "nrb forex",
-    "react datatable",
-    "accessibility toolbar",
-    "math captcha",
-    ...PACKAGE_CATALOG.flatMap((p) => [
-      p.packageName,
-      p.shortName.toLowerCase(),
-    ]),
-  ],
+  keywords: [...SITE_KEYWORDS],
 });
 
 function GitHubIcon({ className }: { className?: string }) {
@@ -56,15 +47,15 @@ export default function Home() {
       <section className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-6 pt-8 pb-6 sm:gap-6 sm:pt-12 sm:pb-10">
         <div className="home-hero-in flex flex-col gap-5">
           <p className="text-[11px] font-medium tracking-[0.18em] text-secondary uppercase">
-            npm packages · @itzsa
+            npm packages · React · TypeScript · Nepal
           </p>
           <h1 className="text-5xl font-medium tracking-tight text-primary sm:text-6xl">
             itzsa
           </h1>
           <p className="max-w-xl text-base leading-relaxed text-secondary sm:text-lg">
-            Open-source React and TypeScript packages for Nepal-ready product UI
-            — tables, Nepali input, Bikram Sambat, payments, forex, captcha,
-            accessibility, geography, and editor. Install from npm.
+            Open-source React DataTable, Nepali Bikram Sambat datepicker, eSewa
+            / Khalti payments, NRB forex, page builder, and more — install{" "}
+            <span className="text-primary">@itzsa/*</span> from npm.
           </p>
           <div className="flex flex-wrap items-center gap-3 pt-1">
             <Button variant="primary" asChild>
